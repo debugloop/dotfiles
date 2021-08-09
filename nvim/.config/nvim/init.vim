@@ -14,10 +14,9 @@ endif
 
 call plug#begin()
 " views
-Plug 'simnalamburt/vim-mundo', { 'on':  'MundoToggle' }
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'mbbill/undotree'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf' }
 Plug 'junegunn/fzf.vim'
-Plug 'majutsushi/tagbar', { 'on':  'TagbarToggle' }
 Plug 'justinmk/vim-dirvish'
 
 " visuals
@@ -47,16 +46,10 @@ Plug 'goldfeld/vim-seek'
 "  $action + o + two chars = target the outer word with the chars and stay
 "  All those work backwards with their capital counterparts.
 
-" linter
-Plug 'w0rp/ale', {'for': 'python'}
-
 " language support
 Plug 'ap/vim-css-color', {'for': 'css'}
-Plug 'rust-lang/rust.vim'
 Plug 'pearofducks/ansible-vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'google/yapf', {'for': 'python'} " auto format
-Plug 'davidhalter/jedi-vim', {'for': 'python'} " auto completion
 Plug 'dag/vim-fish'
 Plug 'ledger/vim-ledger'
 
@@ -280,14 +273,6 @@ nnoremap <NL> i<CR><ESC>
 " bundle options and mappings {{{
 "####################################################################
 
-" Tagbar
-let g:tagbar_left = 1
-let g:tagbar_width = 30
-let g:tagbar_autofocus = 1
-let g:tagbar_zoomwidth = 0
-nnoremap <silent><leader>t :Tagbar<Cr>
-nnoremap <silent><leader>T :Tags<Cr>
-
 " fzf
 nnoremap <silent><leader>p :Files<CR>
 nnoremap <silent><leader>P :Files /home/danieln<CR>
@@ -295,7 +280,7 @@ nnoremap <silent><leader>P :Files /home/danieln<CR>
 " Colorscheme from bundle
 set background=dark
 " toggle light/dark (needs unimpaired.vim)
-nmap <leader>c yob
+nmap <leader>i yob
 set termguicolors
 let g:gruvbox_contrast_dark='hard'
 let g:airline_theme = 'gruvbox'
@@ -336,30 +321,19 @@ highlight GitGutterDelete guibg=background guifg=red
 highlight GitGutterChangeDelete guibg=background guifg=red
 nnoremap <silent><leader>g :GitGutterToggle<Cr>
 
-" change jedi mapping as leader g is git gutter
-let g:jedi#goto_assignments_command = "<leader>a"
 
-" Mundo
-nnoremap <silent><leader>u :MundoToggle<Cr>
-
-" autoformat python
-autocmd FileType python nnoremap <LocalLeader>= :0,$!yapf<CR>
-
-" mypy defaults
-let g:ale_linters = {
-\   'python': ['pylint', 'flake8'],
-\}
-let g:ale_fixers = {
-\   'python': ['autopep8'],
-\}
-let g:ale_python_autopep8_options = '--max-line-length 100'
-let g:ale_python_mypy_options = '--ignore-missing-imports'
-let g:ale_lint_on_enter = 0
-let g:ale_lint_on_filetype_changed = 0
-let g:ale_lint_on_text_changed = 'never'
-nnoremap <leader>= :ALEFix<CR>
-nnoremap <leader>l :ALEToggle<CR>
-nnoremap gn :ALENextWrap<CR>
+" Undo Tree
+nnoremap <silent><leader>u :UndoTreeToggle<Cr>
 
 let g:tex_flavor = "latex"
+
+" go stuff:
+let g:go_list_type = "quickfix"
+map <C-n> :cnext<CR>
+map <C-m> :cprevious<CR>
+nnoremap <leader>q :cclose<CR>
+autocmd FileType go nmap <leader>b  <Plug>(go-build)
+autocmd FileType go nmap <leader>r  <Plug>(go-run)
+autocmd FileType go nmap <leader>t  <Plug>(go-test)
+autocmd FileType go nmap <Leader>c <Plug>(go-coverage-toggle)
 "" }}}

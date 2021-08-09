@@ -37,6 +37,7 @@ seat * hide_cursor 5000
 bar {
     id main
     output eDP-1
+    output DP-4
     status_command i3status-rs ~/.config/sway/i3status-rs.toml
     position top
     colors {
@@ -54,6 +55,7 @@ bar {
 bar {
     id net
     output eDP-1
+    output DP-4
     workspace_buttons no
     binding_mode_indicator no
     status_command i3status-rs ~/.config/sway/i3status-rs-net.toml
@@ -79,7 +81,6 @@ bar {
     output DP-1
     output DP-2
     output DP-3
-    output DP-4
     output DP-5
     output DP-6
     status_command i3status-rs ~/.config/sway/i3status-rs-external.toml
@@ -121,8 +122,8 @@ input type:touchpad {
 }
 
 # output * bg ~/.wall.jpg fill $background
-output "Iiyama North America PLX2483H 1127951501478" position 1920 0 transform 270
-output eDP-1 position 0 0
+# output "Iiyama North America PLX2483H 1127951501478" position 1920 0 transform 270
+# output eDP-1 position 0 0
 
 ##################################
 # startup execs
@@ -133,12 +134,12 @@ exec mako --font "pango:Fira Mono 9" \
          --border-size 3 \
          --border-radius 1 \
          --icons 0 \
-         --output eDP-1 \
+         --output DP-3 \
          --default-timeout 5000 \
-         --anchor "bottom-right"
+         --anchor "top-right"
 exec gammastep -l 48.775846:9.182932
-exec alacritty -t 'scratch: ipython' -e 'fish -c "while true; ipython; end"'
-exec alacritty -t 'scratch: notes' -e 'fish -c "cd ~/notes/; while true; nvim *; end"'
+exec alacritty -t 'scratch: ipython' -e fish -c "while true; ipython; end"
+exec alacritty -t 'scratch: notes' -e fish -c "cd ~/notes/; while true; nvim *; end"
 
 exec swayidle -w \
     timeout 600 swaylock-blur \
@@ -169,13 +170,6 @@ for_window [title="^scratch: "] {
     move scratchpad
     sticky enable
 }
-for_window [app_id="^launcher$"] {
-    floating enable
-    resize set 1920px
-    move position 0px 0px
-    border none
-    opacity 0.96
-}
 
 ##################################
 # scratchpad and launcher
@@ -188,22 +182,10 @@ bindsym Scroll_Lock [title="scratch: notes"] scratchpad show
 bindsym XF86Explorer [title="scratch: ipython"] scratchpad show
 bindsym Pause [title="scratch: ipython"] scratchpad show
 
-bindsym Mod4+Scroll_Lock output "Iiyama North America PLX2483H 1127951501478" position 1920 0 transform 270
-bindsym Mod4+Pause output "Iiyama North America PLX2483H 1127951501478" position 1920 0 transform 0
+bindsym Mod4+Scroll_Lock output "Iiyama North America PLX2483H 1127951501478" toggle
+bindsym Mod4+Pause output eDP-1 toggle
 
-bindsym Mod4+d exec alacritty --name=launcher -e "bash -c 'compgen -c | grep -E '^[a-zA-Z]' | sort -u | fzf --layout=reverse | xargs -r swaymsg -t command exec'"
-
-# bindsym Mod4+d exec env BEMENU_BACKEND=wayland \
-#     bemenu-run -p " run >" \
-#     --fn "Fira Mono 11" -H25 \
-#     --tb=#458588 --tf=#ebdbb2 \
-#     --fb=#1d2021 --ff=#ebdbb2 \
-#     --nb=#1d2021 --nf=#ebdbb2 \
-#     --hb=#1d2021 --hf=#fb4934 \
-#     --sb=#1d2021 --sf=#fb4934 \
-#     --scb=#1d2021 --scf=#ebdbb2
-
-# bindsym Mod4+i exec alacritty --name=launcher -e fzf-pass
+bindsym Mod4+d exec wofi -G -t alacritty -S run
 
 ##################################
 # sway control key bindings
@@ -299,8 +281,16 @@ set $workspace8 "8: shell"
 set $workspace9 "9: shell"
 set $workspace0 "10: shell"
 
-workspace $workspace1 output eDP-1
-workspace $workspace2 output eDP-1
+workspace $workspace1 output DP-3
+workspace $workspace2 output DP-4
+workspace $workspace3 output DP-4
+workspace $workspace4 output eDP-1
+workspace $workspace5 output eDP-1
+workspace $workspace6 output DP-3
+workspace $workspace7 output DP-3
+workspace $workspace8 output DP-3
+workspace $workspace9 output DP-3
+workspace $workspace0 output DP-3
 
 bindsym Mod4+1 workspace $workspace1
 bindsym Mod4+2 workspace $workspace2
