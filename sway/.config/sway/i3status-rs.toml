@@ -1,12 +1,11 @@
 [theme]
 name = "gruvbox-dark"
-[theme.overrides]
-separator = "<span font='15'></span>"
 
 [icons]
-name = "awesome"
+name = "awesome5"
 [icons.overrides]
-time = " "
+time = ""
+music = ""
 
 [[block]]
 block = "cpu"
@@ -28,7 +27,8 @@ block = "temperature"
 collapsed = false
 interval = 1
 format = "{average}"
-chip = "coretemp-isa-0000"
+chip = "thinkpad-isa-0000"
+inputs = ["CPU"]
 idle = 60
 
 [[block]]
@@ -48,17 +48,24 @@ interval = 20
 warning = 20.0
 alert = 10.0
 
-#[[block]]
-#block = "backlight"
-
 [[block]]
 block = "sound"
 on_click = "swaymsg -q -- exec pavucontrol"
-#show_volume_when_muted = true
+
+[[block]]
+block = "custom"
+command = ''' /home/danieln/.config/sway/get_mic_status.sh '''
+signal = 4
+interval = "once"
+on_click = "pactl set-source-mute @DEFAULT_SOURCE@ toggle && pkill -SIGRTMIN+4 i3status-rs"
+json = true
 
 [[block]]
 block = "music"
 player = "spotify"
+marquee = false
+max_width = 35
+smart_trim = true
 buttons = ["play", "next"]
 on_collapsed_click = "spotify"
 

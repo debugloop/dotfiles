@@ -36,8 +36,8 @@ seat * hide_cursor 5000
 # main bar, always shown
 bar {
     id main
-    output eDP-1
-    output DP-4
+    output 'Dell Inc. DELL S3221QS 9VRRTB3'
+    output 'Unknown 0x573D 0x00000000'
     status_command i3status-rs ~/.config/sway/i3status-rs.toml
     position top
     colors {
@@ -54,8 +54,8 @@ bar {
 # additional bar, toggled with Mod4+;
 bar {
     id net
-    output eDP-1
-    output DP-4
+    output 'Dell Inc. DELL S3221QS 9VRRTB3'
+    output 'Unknown 0x573D 0x00000000'
     workspace_buttons no
     binding_mode_indicator no
     status_command i3status-rs ~/.config/sway/i3status-rs-net.toml
@@ -78,11 +78,7 @@ bar {
 # clock only bar for external displays
 bar {
     id ext
-    output DP-1
-    output DP-2
-    output DP-3
-    output DP-5
-    output DP-6
+    output 'Iiyama North America PLX2483H 1127951501478'
     status_command i3status-rs ~/.config/sway/i3status-rs-external.toml
     tray_output none
     position top
@@ -121,22 +117,25 @@ input type:touchpad {
     # natural_scroll enabled
 }
 
-# output * bg ~/.wall.jpg fill $background
-# output "Iiyama North America PLX2483H 1127951501478" position 1920 0 transform 270
-# output eDP-1 position 0 0
+output 'Dell Inc. DELL S3221QS 9VRRTB3' mode 3840x2160@60Hz scale 1.3 position 1080 0
+output 'Iiyama North America PLX2483H 1127951501478' mode 1920x1080@60Hz position 0 500 transform 270
+output 'Unknown 0x573D 0x00000000' mode 1920x1080@60Hz position 4033 0
 
 ##################################
 # startup execs
 exec mako --font "pango:Fira Mono 9" \
-         --text-color "$foreground"\
-         --background-color "$background" \
-         --border-color "$darkgreen" \
-         --border-size 3 \
-         --border-radius 1 \
-         --icons 0 \
-         --output DP-3 \
-         --default-timeout 5000 \
-         --anchor "top-right"
+        --text-color "#ebdbb2" \
+        --background-color "#1d2021" \
+        --border-color "#cc241d" \
+        --border-size 3 \
+        --border-radius 5 \
+        --padding 8 \
+        --icons 0 \
+        --default-timeout 10000 \
+        --height 150 \
+        --width 400 \
+        --max-visible 3 \
+        --anchor "top-center"
 exec gammastep -l 48.775846:9.182932
 exec alacritty -t 'scratch: ipython' -e fish -c "while true; ipython; end"
 exec alacritty -t 'scratch: notes' -e fish -c "cd ~/notes/; while true; nvim *; end"
@@ -145,9 +144,18 @@ exec swayidle -w \
     timeout 600 swaylock-blur \
     timeout 610 'swaymsg "output * dpms off"' \
     resume 'swaymsg "output * dpms on"' \
-    timeout 10 'if pgrep swaylock; then swaymsg "output * dpms off"; fi' \
-    resume 'if pgrep swaylock; then swaymsg "output * dpms on"; fi' \
+    timeout 10 'if pgrep -x swaylock; then swaymsg "output * dpms off"; fi' \
+    resume 'swaymsg "output * dpms on"' \
     before-sleep swaylock-blur
+
+# make gnome-keyrings pinentry work
+exec dbus-update-activation-environment --systemd DISPLAY
+
+# make clipboard persistent on window close
+exec wl-paste -pw wl-copy
+
+# set current desktop
+exec set -x XDG_CURRENT_DESKTOP sway
 
 ##################################
 # window rules
@@ -176,10 +184,10 @@ for_window [title="^scratch: "] {
 bindsym Mod4+Shift+minus move scratchpad
 bindsym Mod4+minus scratchpad show
 
-bindsym XF86LaunchA [title="scratch: notes"] scratchpad show
+bindsym XF86PickupPhone [title="scratch: notes"] scratchpad show
 bindsym Scroll_Lock [title="scratch: notes"] scratchpad show
 
-bindsym XF86Explorer [title="scratch: ipython"] scratchpad show
+bindsym XF86HangupPhone [title="scratch: ipython"] scratchpad show
 bindsym Pause [title="scratch: ipython"] scratchpad show
 
 bindsym Mod4+Scroll_Lock output "Iiyama North America PLX2483H 1127951501478" toggle
@@ -281,16 +289,16 @@ set $workspace8 "8: shell"
 set $workspace9 "9: shell"
 set $workspace0 "10: shell"
 
-workspace $workspace1 output DP-3
-workspace $workspace2 output DP-4
-workspace $workspace3 output DP-4
+workspace $workspace1 output 'Dell Inc. DELL S3221QS 9VRRTB3'
+workspace $workspace2 output 'Dell Inc. DELL S3221QS 9VRRTB3'
+workspace $workspace3 output 'Dell Inc. DELL S3221QS 9VRRTB3'
 workspace $workspace4 output eDP-1
 workspace $workspace5 output eDP-1
-workspace $workspace6 output DP-3
-workspace $workspace7 output DP-3
-workspace $workspace8 output DP-3
-workspace $workspace9 output DP-3
-workspace $workspace0 output DP-3
+workspace $workspace6 output 'Iiyama North America PLX2483H 1127951501478'
+workspace $workspace7 output 'Iiyama North America PLX2483H 1127951501478'
+workspace $workspace8 output 'Dell Inc. DELL S3221QS 9VRRTB3'
+workspace $workspace9 output 'Dell Inc. DELL S3221QS 9VRRTB3'
+workspace $workspace0 output 'Dell Inc. DELL S3221QS 9VRRTB3'
 
 bindsym Mod4+1 workspace $workspace1
 bindsym Mod4+2 workspace $workspace2
@@ -314,8 +322,8 @@ bindsym Mod4+Shift+9 move container to workspace $workspace9
 bindsym Mod4+Shift+0 move container to workspace $workspace0
 
 assign [app_id="firefox"] $workspace1
-assign [app_id="thunderbird"] $workspace2
-assign [app_id="nautilus"] $workspace3
+assign [app_id="evolution"] $workspace2
+assign [app_id="nemo"] $workspace3
 
 bindsym Ctrl+Shift+Mod4+h move workspace to output left
 bindsym Ctrl+Shift+Mod4+j move workspace to output down
@@ -386,10 +394,9 @@ bindsym Mod4+m mode "move"
 bindsym Mod4+Return exec alacritty
 
 mode "launch" {
-    # bindsym f exec env MOZ_ENABLE_WAYLAND=1 firefox-developer-edition; mode "default"
     bindsym f exec firefox; mode "default"
-    bindsym t exec env LC_TIME=de_DE.utf-8 thunderbird; mode "default"
-    bindsym n exec nautilus; mode "default"
+    bindsym t exec evolution; mode "default"
+    bindsym n exec nemo; mode "default"
 
     bindsym Return mode "default"
     bindsym Escape mode "default"
@@ -403,11 +410,11 @@ bindsym Mod4+Shift+n exec makoctl dismiss -a
 # fancy keys
 bindsym Print exec grim -g "$(slurp)"
 
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5% && pkill -RTMIN+1 i3blocks
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5% && pkill -RTMIN+1 i3blocks
-bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle && pkill -RTMIN+1 i3blocks
-bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
-bindsym Menu exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+bindsym XF86AudioRaiseVolume    exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume    exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute           exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute        exec pactl set-source-mute @DEFAULT_SOURCE@ toggle && pkill -SIGRTMIN+4 i3status-rs
+bindsym Menu                    exec pactl set-source-mute @DEFAULT_SOURCE@ toggle && pkill -SIGRTMIN+4 i3status-rs
 
 bindsym XF86AudioPlay exec playerctl -p spotify play-pause
 bindsym XF86AudioNext exec playerctl -p spotify next
@@ -418,4 +425,6 @@ bindsym XF86MonBrightnessUp exec light -A 5
 bindsym XF86MonBrightnessDown exec light -U 5
 
 bindsym XF86Display exec wdisplays
-bindsym XF86Tools input "2:7:SynPS/2_Synaptics_TouchPad" events toggle enabled disabled; exec notify-send "Touchpad" "Touchpad Input has been toggled."
+bindsym XF86NotificationCenter input "2:7:SynPS/2_Synaptics_TouchPad" events toggle enabled disabled; exec notify-send "Touchpad" "Touchpad Input has been toggled."
+
+# bindsym XF86Favorites

@@ -1,47 +1,25 @@
 [theme]
 name = "gruvbox-dark"
-[theme.overrides]
-separator = "<span font='15'></span>"
 
 [icons]
-name = "awesome"
+name = "awesome5"
 [icons.overrides]
-time = " "
-
-[[block]]
-block = "cpu"
-interval = 1
-info=80
-warning=90
-critical=95
-
-[[block]]
-block = "load"
-interval = 1
-format = "{1m}"
-info=3.5
-warning=4
-critical=5
-
-[[block]]
-block = "memory"
-display_type = "memory"
-format_mem = "{mem_used_percents}"
-clickable = false
-warning_mem=85
-critical_mem=90
+time = ""
+music = ""
 
 [[block]]
 block = "sound"
 on_click = "swaymsg -q -- exec pavucontrol"
-show_volume_when_muted = true
 
 [[block]]
-block = "music"
-player = "spotify"
-on_collapsed_click = "spotify"
+block = "custom"
+command = ''' /home/danieln/.config/sway/get_mic_status.sh '''
+signal = 4
+interval = "once"
+on_click = "pactl set-source-mute @DEFAULT_SOURCE@ toggle && pkill -SIGRTMIN+4 i3status-rs"
+json = true
 
 [[block]]
 block = "time"
 interval = 60
-format = "%R"
+format = "%a %d.%m %R"

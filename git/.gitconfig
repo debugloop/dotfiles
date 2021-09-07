@@ -1,5 +1,5 @@
 [user]
-    email = code@danieln.de
+    email = git@danieln.de
     name = Daniel Nägele
 [alias]
     ci = commit -v
