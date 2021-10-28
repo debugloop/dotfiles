@@ -5,29 +5,31 @@ font:
 
 draw_bold_text_with_bright_colors: true
 
+# Colors (One Half Dark)
 colors:
-  # gruvbox dark
   primary:
-    background:        &gruvbox_dark_bg '#1d2021'
-    foreground:        '#ebdbb2'
+    background: '#282c34'
+    foreground: '#dcdfe4'
+
   normal:
-    black:   '#282828'
-    red:     '#cc241d'
-    green:   '#98971a'
-    yellow:  '#d79921'
-    blue:    '#458588'
-    magenta: '#b16286'
-    cyan:    '#689d6a'
-    white:   '#a89984'
+    black: '#181c24'
+    red: '#e06c75'
+    green: '#98c379'
+    yellow: '#e5c07b'
+    blue: '#61afef'
+    magenta: '#c678dd'
+    cyan: '#56b6c2'
+    white: '#dcdfe4'
+
   bright:
-    black:   '#928374'
-    red:     '#fb4934'
-    green:   '#b8bb26'
-    yellow:  '#fabd2f'
-    blue:    '#83a598'
-    magenta: '#d3869b'
-    cyan:    '#8ec07c'
-    white:   '#ebdbb2'
+    black: '#383c44'
+    red: '#e06c75'
+    green: '#98c379'
+    yellow: '#e5c07b'
+    blue: '#61afef'
+    magenta: '#c678dd'
+    cyan: '#56b6c2'
+    white: '#dcdfe4'
 
 scrolling:
   history: 10000
@@ -36,10 +38,7 @@ scrolling:
 bell:
   animation: EaseOutExpo
   duration: 250
-  color: '#a89984'
-  #command:
-  #  program: notify-send
-  #  args: ["Hello, World!"]
+  color: '#383c44'
 
 shell:
   program: /usr/bin/fish

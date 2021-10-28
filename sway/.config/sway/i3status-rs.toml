@@ -1,5 +1,16 @@
 [theme]
 name = "gruvbox-dark"
+[theme.overrides]
+critical_bg = "#e06c75"
+critical_fg = "#282c34"
+good_bg = "#98c379"
+good_fg = "#282c34"
+idle_bg = "#282c34"
+idle_fg = "#dcdfe4"
+info_bg = "#61afef"
+info_fg = "#282c34"
+warning_bg = "#e5c07b"
+warning_fg = "#282c34"
 
 [icons]
 name = "awesome5"
@@ -16,16 +27,16 @@ critical=95
 
 [[block]]
 block = "load"
-interval = 1
+interval = 10
 format = "{1m}"
-info=3.5
-warning=4
-critical=5
+info=4
+warning=6
+critical=8
 
 [[block]]
 block = "temperature"
 collapsed = false
-interval = 1
+interval = 10
 format = "{average}"
 chip = "thinkpad-isa-0000"
 inputs = ["CPU"]
@@ -39,14 +50,23 @@ format_mem = "{mem_used_percents}"
 warning_mem=85
 critical_mem=90
 
+#[[block]]
+#block = "disk_space"
+#path = "/home"
+#info_type = "available"
+#unit = "GB"
+#interval = 20
+#warning = 20.0
+#alert = 10.0
+
 [[block]]
-block = "disk_space"
-path = "/"
-info_type = "available"
-unit = "GB"
-interval = 20
-warning = 20.0
-alert = 10.0
+block = "music"
+player = "spotify"
+marquee = false
+max_width = 35
+smart_trim = true
+buttons = ["play", "next"]
+on_collapsed_click = "spotify"
 
 [[block]]
 block = "sound"
@@ -61,18 +81,9 @@ on_click = "pactl set-source-mute @DEFAULT_SOURCE@ toggle && pkill -SIGRTMIN+4 i
 json = true
 
 [[block]]
-block = "music"
-player = "spotify"
-marquee = false
-max_width = 35
-smart_trim = true
-buttons = ["play", "next"]
-on_collapsed_click = "spotify"
-
-[[block]]
 block = "battery"
 device = "BAT0"
-interval = 10
+interval = 60
 format = "{percentage}"
 
 [[block]]

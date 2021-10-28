@@ -4,7 +4,7 @@
 set -x TERM xterm-256color
 set -x LANG en_US.UTF-8
 set -x EDITOR nvim
-set -x GTK_THEME "gruvbox-dark-gtk"
+set -x GTK_THEME "Arc-Darker"
 
 set fish_greeting ""
 
@@ -27,6 +27,8 @@ set -x LESS_TERMCAP_us (printf "\033[01;32m")
 if status is-login
    set -x (gnome-keyring-daemon --start | string split "=")
 end
+
+set fish_color_search_match --background=magenta
 
 # }}}
 
@@ -74,7 +76,7 @@ alias merge_pdf="gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepre
 alias ip='ip -c'
 alias dmesg='dmesg -T'
 alias ls='exa'
-alias cat='bat --theme=gruvbox-dark'
+alias cat='bat --theme=OneHalfDark'
 # }}}
 
 #####################################################################

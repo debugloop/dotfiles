@@ -21,6 +21,7 @@ Plug 'justinmk/vim-dirvish'
 
 " visuals
 Plug 'morhetz/gruvbox'
+Plug 'sonph/onehalf', { 'rtp': 'vim' }
 Plug 'airblade/vim-gitgutter', { 'on':  'GitGutterToggle' }
 Plug 'vim-airline/vim-airline'
 Plug 'ivyl/vim-bling'
@@ -75,6 +76,7 @@ set backspace=indent,eol,start
 " single settings
 set hidden " change buffers without saving
 set mousehide " no mouse
+set mouse=a " allow mouse usage
 set wildmenu " menu when tab completing commands
 set nostartofline " don't move the coursor to the beginning of the line
 set foldmethod=marker " use manual folding
@@ -279,12 +281,9 @@ nnoremap <silent><leader>P :Files /home/danieln<CR>
 
 " Colorscheme from bundle
 set background=dark
-" toggle light/dark (needs unimpaired.vim)
-nmap <leader>i yob
 set termguicolors
-let g:gruvbox_contrast_dark='hard'
-let g:airline_theme = 'gruvbox'
-colorscheme gruvbox
+let g:airline_theme = 'onehalfdark'
+colorscheme onehalfdark
 
 " toggle list
 nmap <leader>w col
@@ -323,7 +322,7 @@ nnoremap <silent><leader>g :GitGutterToggle<Cr>
 
 
 " Undo Tree
-nnoremap <silent><leader>u :UndoTreeToggle<Cr>
+nnoremap <silent><leader>u :UndotreeToggle<Cr>:UndotreeFocus<Cr>
 
 let g:tex_flavor = "latex"
 
@@ -335,5 +334,5 @@ nnoremap <leader>q :cclose<CR>
 autocmd FileType go nmap <leader>b  <Plug>(go-build)
 autocmd FileType go nmap <leader>r  <Plug>(go-run)
 autocmd FileType go nmap <leader>t  <Plug>(go-test)
-autocmd FileType go nmap <Leader>c <Plug>(go-coverage-toggle)
+autocmd FileType go nmap <leader>c <Plug>(go-coverage-toggle)
 "" }}}

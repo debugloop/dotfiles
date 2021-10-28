@@ -2,28 +2,20 @@
 # visual
 font pango:Fira Mono, FontAwesome, Hack Nerd Font Complete Mono 11
 
-set $background  #1d2021
-set $foreground  #ebdbb2
-set $black       #282828
-set $darkgrey    #928374
-set $darkred     #cc241d
-set $red         #fb4934
-set $darkgreen   #98971a
-set $green       #b8bb26
-set $darkyellow  #d79921
-set $yellow      #fabd2f
-set $darkblue    #458588
-set $blue        #83a598
-set $darkmagenta #b16286
-set $magenta     #d3869b
-set $darkcyan    #689d6a
-set $cyan        #8ec07c
-set $lightgrey   #a89984
-set $white       #ebdbb2
+set $background  #282c34
+set $foreground  #dcdfe4
+set $black       #282c34
+set $red         #e06c75
+set $green       #98c379
+set $yellow      #e5c07b
+set $blue        #61afef
+set $magenta     #c678dd
+set $cyan        #56b6c2
+set $white       #dcdfe4
 
-client.focused          $darkblue $darkblue $foreground $cyan $darkblue
-client.focused_inactive $black $black $foreground $black $black
-client.unfocused        $black $black $foreground $black $black
+client.focused          $blue $blue $background $cyan $blue
+client.focused_inactive $blue $background $foreground $background $blue
+client.unfocused        $background $background $foreground $background $background
 client.urgent           $red $red $background $red $red
 
 smart_borders on
@@ -43,12 +35,12 @@ bar {
     colors {
         background $background
         statusline $foreground
-        separator $darkgrey
+        separator $background
 
-        focused_workspace  $darkblue $darkblue $foreground
-        active_workspace   $darkblue $darkblue $foreground
-        inactive_workspace $background $background $darkgrey
-        urgent_workspace   $red $red $black
+        focused_workspace  $background $blue $background
+        active_workspace   $background $blue $background
+        inactive_workspace $background $background $foreground
+        urgent_workspace   $background $red $background
     }
 }
 # additional bar, toggled with Mod4+;
@@ -67,12 +59,12 @@ bar {
     colors {
         background $background
         statusline $foreground
-        separator $darkgrey
+        separator $background
 
-        focused_workspace  $darkblue $darkblue $foreground
-        active_workspace   $darkblue $darkblue $foreground
-        inactive_workspace $background $background $darkgrey
-        urgent_workspace   $red $red $black
+        focused_workspace  $background $blue $background
+        active_workspace   $background $blue $background
+        inactive_workspace $background $background $foreground
+        urgent_workspace   $background $red $background
     }
 }
 # clock only bar for external displays
@@ -85,12 +77,12 @@ bar {
     colors {
         background $background
         statusline $foreground
-        separator $darkgrey
+        separator $background
 
-        focused_workspace  $darkblue $darkblue $foreground
-        active_workspace   $darkblue $darkblue $foreground
-        inactive_workspace $background $background $darkgrey
-        urgent_workspace   $red $red $black
+        focused_workspace  $background $blue $background
+        active_workspace   $background $blue $background
+        inactive_workspace $background $background $foreground
+        urgent_workspace   $background $red $background
     }
 }
 
@@ -124,18 +116,14 @@ output 'Unknown 0x573D 0x00000000' mode 1920x1080@60Hz position 4033 0
 ##################################
 # startup execs
 exec mako --font "pango:Fira Mono 9" \
-        --text-color "#ebdbb2" \
-        --background-color "#1d2021" \
-        --border-color "#cc241d" \
+        --text-color "#dcdfe4" \
+        --background-color "#282c34" \
+        --border-color "#61afef" \
         --border-size 3 \
         --border-radius 5 \
-        --padding 8 \
-        --icons 0 \
-        --default-timeout 10000 \
-        --height 150 \
-        --width 400 \
+        --default-timeout 7500 \
         --max-visible 3 \
-        --anchor "top-center"
+        --anchor "top-right"
 exec gammastep -l 48.775846:9.182932
 exec alacritty -t 'scratch: ipython' -e fish -c "while true; ipython; end"
 exec alacritty -t 'scratch: notes' -e fish -c "cd ~/notes/; while true; nvim *; end"
@@ -156,6 +144,8 @@ exec wl-paste -pw wl-copy
 
 # set current desktop
 exec set -x XDG_CURRENT_DESKTOP sway
+
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
 ##################################
 # window rules

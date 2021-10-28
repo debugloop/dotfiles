@@ -1,5 +1,16 @@
 [theme]
 name = "gruvbox-dark"
+[theme.overrides]
+critical_bg = "#e06c75"
+critical_fg = "#282c34"
+good_bg = "#98c379"
+good_fg = "#282c34"
+idle_bg = "#282c34"
+idle_fg = "#dcdfe4"
+info_bg = "#61afef"
+info_fg = "#282c34"
+warning_bg = "#e5c07b"
+warning_fg = "#282c34"
 
 [icons]
 name = "awesome5"
