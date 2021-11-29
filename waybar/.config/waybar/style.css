@@ -1,0 +1,136 @@
+@define-color bg #2e3440;
+@define-color fg #d8dee9;
+@define-color black #3b4252;
+@define-color red #bf616a;
+@define-color green #a3be8c;
+@define-color yellow #ebcb8b;
+@define-color blue #81a1c1;
+@define-color magenta #b48ead;
+@define-color cyan #88c0d0;
+@define-color white #e5e9f0;
+
+* {
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#waybar {
+    background: @bg;
+    color: @fg;
+    font-family: Fira Mono;
+    font-size: 13px;
+}
+
+#waybar.net {
+    background: @fg;
+    color: @bg;
+}
+
+#workspaces button {
+    padding: 4px 10px;
+    color: @fg;
+    background-color: @bg;
+}
+
+#workspaces button:hover {
+    color: @bg;
+    background-color: @blue;
+}
+
+#workspaces button.focused {
+    color: @bg;
+    background-color: @fg;
+}
+
+#workspaces button.urgent {
+    color: @red;
+}
+
+tooltip {
+  background: @bg;
+  color: @fg;
+}
+
+/* Each module */
+.modules-left > * > *,
+.modules-center > * > *,
+.modules-right > * > * {
+    padding: 0px 8px;
+}
+.modules-left > widget:first-child > #workspaces {
+    padding: 0;
+}
+
+/* inverted color modules */
+#battery,
+#cpu,
+#disk,
+#idle_inhibitor,
+#memory,
+#network,
+#pulseaudio,
+#temperature {
+    color: @bg;
+    background-color: @fg;
+    /* border-top-right-radius: 10px; */
+}
+
+.warning {
+    color: @bg;
+    background-color: @yellow;
+}
+
+.critical {
+    color: @bg;
+    background-color: @red;
+}
+
+#custom-media {
+    color: rgb(102, 220, 105);
+    background-color: @bg;
+}
+
+#custom-mic {
+    color: @bg;
+    background-color: @red;
+    padding: 0px 10px;
+}
+
+#mode {
+    background: @magenta;
+    color: @bg;
+}
+
+#network.disconnected {
+    color: @bg;
+    background: @yellow;
+}
+
+/* styled transitions */
+/* #workspaces > button:first-child { */
+/*     border-top-left-radius: 10px; */
+/*     border-bottom-left-radius: 10px; */
+/* } */
+
+/* #workspaces > button:last-child { */
+/*     border-top-right-radius: 10px; */
+/*     border-bottom-right-radius: 10px; */
+/* } */
+
+#pulseaudio {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+#idle_inhibitor {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#custom-mic {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}

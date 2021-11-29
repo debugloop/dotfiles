@@ -1,0 +1,14 @@
+font=pango:Fira Mono 9
+
+text-color=#d8dee9
+background-color=#2e3440
+
+border-color=#81a1c1
+border-size=3
+border-radius=5
+
+default-timeout=7500
+max-visible=3
+
+[mode=dnd]
+invisible=1

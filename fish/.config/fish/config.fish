@@ -63,12 +63,14 @@ end
 function r --description 'Launch ranger if this terminal does not have one yet'
     set NUM (pstree -s %self | grep -o ranger | wc -l)
     if test $NUM -eq 0
-        ranger
+        ranger && history --merge
     else
-        echo "already running ranger"
+        exit
     end
 end
 
+
+alias dell='sudo ddcutil -b 12 setvcp 10'
 alias vim=nvim
 alias irc='mosh -p 61293 irc -- tmux a -t 0 -d'
 alias docker_ip="docker inspect --format '{{ .NetworkSettings.IPAddress }}'"
@@ -76,7 +78,7 @@ alias merge_pdf="gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepre
 alias ip='ip -c'
 alias dmesg='dmesg -T'
 alias ls='exa'
-alias cat='bat --theme=OneHalfDark'
+alias cat='bat --theme=Nord'
 # }}}
 
 #####################################################################

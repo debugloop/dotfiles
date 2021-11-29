@@ -8,84 +8,62 @@
 
 " automatic installation of plug on fresh deployments
 if !filereadable(expand('~/.config/nvim/autoload/plug.vim'))
-    silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall | source $MYVIMRC
+  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall | source $MYVIMRC
 endif
 
 call plug#begin()
 " views
-Plug 'mbbill/undotree'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf' }
-Plug 'junegunn/fzf.vim'
-Plug 'justinmk/vim-dirvish'
+Plug 'mbbill/undotree' " <leader>u, defined below
+Plug 'airblade/vim-gitgutter', { 'on':  'GitGutterToggle' } " <leader>g, defined below
+Plug 'justinmk/vim-dirvish' " -, defined by plug
 
 " visuals
-Plug 'morhetz/gruvbox'
-Plug 'sonph/onehalf', { 'rtp': 'vim' }
-Plug 'airblade/vim-gitgutter', { 'on':  'GitGutterToggle' }
-Plug 'vim-airline/vim-airline'
-Plug 'ivyl/vim-bling'
-Plug 'machakann/vim-highlightedyank'
+Plug 'arcticicestudio/nord-vim'
+Plug 'ap/vim-buftabline' " buffers as tabs
 
 " editing
+Plug 'tpope/vim-sleuth' " never bother with indents
 Plug 'tpope/vim-commentary' " toggle comments according to ft (mapping: gc)
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-unimpaired'
 " Cheatsheet for surround:
 "  cs + $old_surrounding + $new_surrounding = changes old to new, new waits for
 "      xml tags, to use xml tags as $old, use 't'
 "  ys adds/wraps
-Plug 'goldfeld/vim-seek'
-" Cheatsheet for seek:
-"  s + two chars = jump to the first of those chars
-"  action = {d,c,y}
-"  $action + s + two chars = target from here to the middle of those two chars
-"  $action + x + two chars = target from here to those two chars
-"  $action + r + two chars = target the inner word with the chars and jump back
-"  $action + p + two chars = target the inner word with the chars and stay
-"  $action + u + two chars = target the outer word with the chars and jump back
-"  $action + o + two chars = target the outer word with the chars and stay
-"  All those work backwards with their capital counterparts.
+" Plug 'justinmk/vim-sneak' " s motion, z as operator (i.e. dzxy)
+Plug 'ggandor/lightspeed.nvim'
+
+" new neovim features
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " language support
-Plug 'ap/vim-css-color', {'for': 'css'}
-Plug 'pearofducks/ansible-vim'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'dag/vim-fish'
-Plug 'ledger/vim-ledger'
+Plug 'fatih/vim-go', {'for': 'go'}
+Plug 'ap/vim-css-color'
+Plug 'pearofducks/ansible-vim', {'for': 'yaml.ansible'}
+Plug 'dag/vim-fish', {'for': 'fish'}
+Plug 'ledger/vim-ledger', {'for': 'ledger'}
 
 call plug#end()
 
 "" }}}
 
 "####################################################################
-" general settings{{{
+" general settings {{{
 "####################################################################
 " filetype plugin and syntax
 syntax on
-set synmaxcol=512
+set synmaxcol=512 " don't overdo it
 filetype plugin indent on
-
-" system
-set enc=utf-8
-if &shell =~# 'fish$'
-    set shell=sh
-endif
-set backspace=indent,eol,start
 
 " single settings
 set hidden " change buffers without saving
-set mousehide " no mouse
 set mouse=a " allow mouse usage
-set wildmenu " menu when tab completing commands
-set nostartofline " don't move the coursor to the beginning of the line
 set foldmethod=marker " use manual folding
 set scrolloff=16 " minimum lines to the screens end
-set showmatch " matching braces
-set noshowmode " airline does this already
+set sidescrolloff=5 " minimum columns to the screens end
 set noswapfile " 21. century, yay
 set gdefault " substitution is global by default, specify g to reverse
-set autoread " read changed files
 set clipboard^=unnamedplus " use system clipboard
 
 " open splits in nicer locations
@@ -93,67 +71,51 @@ set splitbelow
 set splitright
 
 " persistent undo and backup
-set history=1000
 set undofile
 set undodir=~/.undo/
 set backup
 set backupdir=~/.backup/
 
-" tabs and stuff
-set tabstop=8
-set expandtab
-set shiftwidth=4
-set softtabstop=4
-set smarttab
-set cindent
-
-" width
-set textwidth=0
-set wrapmargin=0
-call matchadd('ErrorMsg', '\%102v', -1) " highlight char 101 of a long line
-
 " search
 set ignorecase
 set smartcase
-set hlsearch
-set incsearch
 
 " snappy timeouts
 set notimeout
-set ttimeout
-set ttimeoutlen=0
+set nottimeout
 
 "" }}}
 
 "####################################################################
 " visual style {{{
 "####################################################################
-" line and column highlights
-set cul
-set cuc
-augroup cuc
-    au!
-    au WinLeave,InsertEnter * set nocuc
-    au WinEnter,InsertLeave * set cuc
-augroup END
 
-" statusbar
-set cmdheight=2
-set laststatus=2
-set showcmd
+" force nice colors in term
+set termguicolors
+
+" line and column highlights
+set cursorline
+set cursorcolumn
+augroup cursorcolumn
+  au!
+  au WinLeave,InsertEnter * set nocursorcolumn
+  au WinEnter,InsertLeave * set cursorcolumn
+augroup END
 
 " linenumbers
 set number
 set relativenumber
-set ruler
 
+" show whitespace chars
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·
-" set list
-" augroup list
-"     au!
-"     au WinLeave,InsertEnter * set nolist
-"     au WinEnter,InsertLeave * set list
-" augroup END
+augroup list
+  au!
+  au WinLeave,InsertEnter * set list
+  au WinEnter,InsertLeave * set nolist
+augroup END
+
+" in insert mode, don't vary beam color along with syntax highlight
+set guicursor=i:ver25Cursor/lCursor
 
 " highlight git merge markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
@@ -163,27 +125,19 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 " general auto commands {{{
 "####################################################################
 
-" vertical help
-command! -nargs=* -complete=help Help vertical belowright help <args>
-autocmd FileType help wincmd L
-
 " do not backup pass files
 autocmd BufRead,BufNewFile /dev/shm* set nobackup
 autocmd BufRead,BufNewFile /dev/shm* set noundofile
 autocmd BufRead,BufNewFile /dev/shm* set noswapfile
 
-" set file types
-au BufNewFile,BufRead *.go setlocal filetype=go noet ts=8 sw=8 sts=8
-au BufRead,BufNewFile *.ino set filetype=c
-
-" set ft specific
-au FileType ansible set sw=2
-au FileType tex set nocindent
-au FileType tex set textwidth=100
-au FileType vim set keywordprg=":help"
+" enforce ansible mode in playbook dir
+au BufRead,BufNewFile ~/playbook/*.yml set filetype=yaml.ansible
 
 " autoremove trailing whitespace
 au BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
+
+" highlight yanked
+au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=300, on_visual=true}
 
 " grow and shrink splits with the window
 au VimResized * :wincmd =
@@ -205,11 +159,8 @@ function! ToggleMovement(firstOp, thenOp)
     execute "normal! " . a:thenOp
   endif
 endfunction
-
-" start and end of line
 noremap <silent> H :call ToggleMovement('^', '0')<CR>
 noremap L $
-
 
 " jump to visual lines
 nnoremap j gj
@@ -231,17 +182,14 @@ nnoremap gV `[v`]
 " change Y from yy to y$
 map Y y$
 
-" remove search hl
-nnoremap <silent><C-C> :nohl<cr>
-
 " switch buffers
 nnoremap <silent><leader><Tab> :bd<cr>
 nnoremap <silent><Tab> :bn<cr>
 nnoremap <silent><S-Tab> :bp<cr>
 if exists(':tnoremap')
-    tnoremap <silent><Tab> :bn<cr>
-    tnoremap <silent><S-Tab> :bp<cr>
-    tnoremap <Esc> <C-\><C-n>
+  tnoremap <silent><Tab> :bn<cr>
+  tnoremap <silent><S-Tab> :bp<cr>
+  tnoremap <Esc> <C-\><C-n>
 endif
 
 " save with sudo
@@ -260,79 +208,103 @@ nnoremap <leader>8 :8b<cr>
 nnoremap <leader>9 :9b<cr>
 nnoremap <leader>0 :10b<cr>
 
-" move char to the end of the line, useful for closing stuff
-nnoremap <leader>z :let @z=@"<cr>x$p:let @"=@z<cr>
-
 " sorting of lines
-nnoremap <leader>s vip:!sort<cr>
 vnoremap <leader>s :!sort<cr>
 
-" new line from normal mode
-nnoremap <NL> i<CR><ESC>
+" quickfix usability
+map <C-n> :cnext<CR>
+map <C-m> :cprevious<CR>
+nnoremap <expr> <C-c> !empty(filter(tabpagebuflist(), 'getbufvar(v:val, "&buftype") is# "quickfix"')) ? ':cclose<Cr>' : ':nohl<Cr>'
+
+" remove search hl (see qf mapping above)
+" nnoremap <silent><C-c> :nohl<cr>
+
+" banish ex mode
+nnoremap Q <Nop>
+nnoremap gQ <Nop>
+
 "" }}}
 
 "####################################################################
-" bundle options and mappings {{{
+" status bar {{{
+"####################################################################
+set cmdheight=1
+set laststatus=2
+set showcmd
+set noshowmode
+
+function! StatuslineGit()
+  let l:branchname = trim(system("git -C " . expand("%:h") . " branch --show-current 2>/dev/null"))
+  return strlen(l:branchname) > 0?'  '.l:branchname.' ':''
+endfunction
+
+let g:currentmode={
+    \ 'n'  : 'Normal',
+    \ 'no' : 'Normal·Operator Pending',
+    \ 'v'  : 'Visual',
+    \ 'V'  : 'V·Line',
+    \ "\<C-V>" : 'V·Block',
+    \ 's'  : 'Select',
+    \ 'S'  : 'S·Line',
+    \ '^S' : 'S·Block',
+    \ 'i'  : 'Insert',
+    \ 'R'  : 'Replace',
+    \ 'Rv' : 'V·Replace',
+    \ 'c'  : 'Command',
+    \ 'cv' : 'Vim Ex',
+    \ 'ce' : 'Ex',
+    \ 'r'  : 'Prompt',
+    \ 'rm' : 'More',
+    \ 'r?' : 'Confirm',
+    \ '!'  : 'Shell',
+    \ 't'  : 'Terminal'
+    \}
+set statusline=%#Search#
+set statusline+=\ %{toupper(g:currentmode[mode()])}
+set statusline+=\ %#StatusLine#
+set statusline+=\ %f%m%r%h%w
+set statusline+=\ %#CursorLine#%{StatuslineGit()}%#StatusLine#
+set statusline+=%#StatusLine#
+set statusline+=%=
+set statusline+=\ %#CursorLine#
+set statusline+=\ %y
+set statusline+=\ %{&fileencoding?&fileencoding:&encoding}
+set statusline+=\ %L\ %l:%c
+
+"" }}}
+
+"####################################################################
+" plug options and mappings {{{
 "####################################################################
 
-" fzf
-nnoremap <silent><leader>p :Files<CR>
-nnoremap <silent><leader>P :Files /home/danieln<CR>
+" colorscheme fixes for lightspeed, adapted from shaunsingh/nord.nvim
+autocmd ColorScheme nord highlight LightspeedLabel guifg=#88C0D0 gui=bold
+autocmd ColorScheme nord highlight LightspeedLabelOverlapped guifg=#88C0D0 gui=bold,underline
+autocmd ColorScheme nord highlight LightspeedLabelDistant guifg=#B48EAD gui=bold
+autocmd ColorScheme nord highlight LightspeedLabelDistantOverlapped guifg=#B48EAD gui=bold,underline
+autocmd ColorScheme nord highlight LightspeedShortcut guifg=#5E81AC gui=bold
+autocmd ColorScheme nord highlight LightspeedShortcutOverlapped guifg=#5E81AC gui=bold,underline
+autocmd ColorScheme nord highlight LightspeedMaskedChar guifg=#434C5E gui=bold
+autocmd ColorScheme nord highlight LightspeedGreyWash guifg=#616E88
+autocmd ColorScheme nord highlight LightspeedUnlabeledMatch guifg=#D8DEE9 guibg=#3B4252
+autocmd ColorScheme nord highlight LightspeedOneCharMatch guifg=#88C0D0 gui=bold,reverse
+autocmd ColorScheme nord highlight LightspeedUniqueChar gui=bold,underline
 
-" Colorscheme from bundle
-set background=dark
-set termguicolors
-let g:airline_theme = 'onehalfdark'
-colorscheme onehalfdark
-
-" toggle list
-nmap <leader>w col
-
-" bling
-let g:bling_color = 'darkred'
-
-" Airline
-let g:airline_extensions = ["tabline"]
-let g:airline#extensions#tabline#fnamecollapse = 0
-let g:airline_exclude_preview = 1
-let g:airline_left_sep=''
-let g:airline_left_alt_sep=''
-let g:airline_right_sep=''
-let g:airline_right_alt_sep=''
-let g:airline_symbols={}
-let g:airline_symbols.space=' '
-let g:airline_symbols.linenr='☰'
-let g:airline_symbols.maxlinenr=''
-let g:airline_symbols.branch='⎇'
-let g:airline_symbols.whitespace='☲'
-
-" Seek
-let g:seek_subst_disable = 1
-let g:seek_enable_jumps = 1
-let g:seek_enable_jumps_in_diff = 1
+" colorscheme from plug
+colorscheme nord
 
 " GitGutter
-let g:gitgutter_enabled = 0
-highlight clear SignColumn
-highlight GitGutterAdd guibg=background guifg=darkyellow
-highlight GitGutterChange guibg=background guifg=grey
-highlight GitGutterDelete guibg=background guifg=red
-highlight GitGutterChangeDelete guibg=background guifg=red
 nnoremap <silent><leader>g :GitGutterToggle<Cr>
-
 
 " Undo Tree
 nnoremap <silent><leader>u :UndotreeToggle<Cr>:UndotreeFocus<Cr>
 
-let g:tex_flavor = "latex"
-
-" go stuff:
+" vim-go
 let g:go_list_type = "quickfix"
-map <C-n> :cnext<CR>
-map <C-m> :cprevious<CR>
-nnoremap <leader>q :cclose<CR>
-autocmd FileType go nmap <leader>b  <Plug>(go-build)
-autocmd FileType go nmap <leader>r  <Plug>(go-run)
-autocmd FileType go nmap <leader>t  <Plug>(go-test)
-autocmd FileType go nmap <leader>c <Plug>(go-coverage-toggle)
+au FileType go nmap gr <Plug>(go-referrers)
+au FileType go nmap gp <Plug>(go-channelpeers)
+au FileType go nmap <leader>a <Plug>(go-alternate-edit)
+au FileType go nmap <leader>c :GoCoverageToggle<cr>
+lua require'lspconfig'.gopls.setup{}
+
 "" }}}

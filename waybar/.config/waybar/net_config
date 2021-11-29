@@ -1,0 +1,81 @@
+/* vim: set ft=json: */
+{
+    "name": "net",
+    "position": "bottom",
+    "height": 24,
+    "modules-left": [
+        "custom/ovpn-udp-offline",
+        "custom/ovpn-udp-online",
+        "custom/tailscale-offline",
+        "custom/tailscale-online"
+    ],
+    "modules-center": [
+        "custom/ip",
+        "custom/asn"
+    ],
+    "modules-right": [
+        "network#wifi",
+        "network#dock"
+    ],
+    "custom/tailscale-offline": {
+        "format": "Tailscale ",
+        "exec": "echo '{\"class\": \"offline\"}'",
+        "exec-if": "! tailscale status > /dev/null",
+        "on-click": "sudo tailscale up && pkill -SIGRTMIN+4 waybar",
+        "signal": 4,
+        "interval": 5
+    },
+    "custom/tailscale-online": {
+        "format": "Tailscale ",
+        "exec": "echo '{\"class\": \"online\"}'",
+        "exec-if": "tailscale status > /dev/null",
+        "on-click": "sudo tailscale down && pkill -SIGRTMIN+4 waybar",
+        "signal": 4,
+        "interval": 5
+    },
+    "custom/ovpn-udp-offline": {
+        "format": "BelWü VPN ",
+        "exec": "echo '{\"class\": \"connected\"}'",
+        "exec-if": "! systemctl is-active openvpn-client@via-udp > /dev/null",
+        "on-click": "sudo systemctl start openvpn-client@via-udp && pkill -SIGRTMIN+4 waybar",
+        "signal": 4,
+        "interval": 5
+    },
+    "custom/ovpn-udp-online": {
+        "format": "BelWü VPN ",
+        "exec": "echo '{\"class\": \"connected\"}'",
+        "exec-if": "systemctl is-active openvpn-client@via-udp > /dev/null",
+        "on-click": "sudo systemctl stop openvpn-client@via-udp && pkill -SIGRTMIN+4 waybar",
+        "signal": 4,
+        "interval": 1
+    },
+    "custom/ip": {
+        "exec": "echo -n 'default src/asn:  '; curl 'https://q.danieln.de/ip'",
+        "interval": 5
+    },
+    "custom/asn": {
+        "exec": "curl 'https://q.danieln.de/asn'",
+        "interval": 5
+    },
+    "network#dock": {
+        "interface": "enp7s0f3u1u1",
+        "interval": 1,
+        "format-ethernet": "  {ipaddr}/{cidr}  {bandwidthUpBits} {bandwidthDownBits}",
+        "format-disconnected": " disconnected",
+        "format-disabled": " down",
+        "format-linked": " down",
+        "on-click": "sudo networkctl up enp7s0f3u1u1 && pkill -SIGRTMIN+4 waybar",
+        "on-click-right": "sudo networkctl down enp7s0f3u1u1 && pkill -SIGRTMIN+4 waybar",
+        "tooltip-format": "{ifname}: {ipaddr}"
+    },
+    "network#wifi": {
+        "interface": "wlan0",
+        "interval": 5,
+        "format-wifi": "  {ipaddr}/{cidr} @ {essid} ({signalStrength}%)  {bandwidthUpBits} {bandwidthDownBits}",
+        "format-disconnected": " disconnected",
+        "format-disabled": " down",
+        "on-click": "sudo networkctl up wlan0 && pkill -SIGRTMIN+4 waybar",
+        "on-click-right": "sudo networkctl down wlan0 && pkill -SIGRTMIN+4 waybar",
+        "tooltip-format": "{ifname}: {ipaddr}"
+    }
+}

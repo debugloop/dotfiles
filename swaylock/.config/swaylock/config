@@ -1,28 +1,37 @@
+screenshots
+effect-blur=5x5
+fade-in=0.5
+grace=5
+grace-no-mouse
+clock
+datestr=%a, %d.%m.%Y
+indicator
+
 ignore-empty-password
 show-failed-attempts
 
-indicator-radius=200
-indicator-thickness=20
+indicator-radius=300
+indicator-thickness=30
 
-inside-color=1d202100
-inside-ver-color=1d202100
-inside-clear-color=1d202100
-inside-wrong-color=1d202100
-separator-color=1d202100
+inside-color=2e344000
+inside-ver-color=2e344000
+inside-clear-color=2e344000
+inside-wrong-color=2e344000
+separator-color=2e344000
 
-key-hl-color=458588
-bs-hl-color=fb4934
+key-hl-color=88c0d0
+bs-hl-color=bf616a
 
 line-uses-inside
 
-ring-color=1d2021b0
-text-color=fb4934b0
+ring-color=2e344000
+text-color=d8dee9ff
 
-ring-clear-color=1d2021b0
-text-clear-color=ebdbb200
+ring-clear-color=2e344000
+text-clear-color=d8dee9ff
 
-ring-ver-color=458588b0
-text-ver-color=ebdbb200
+ring-ver-color=81a1c1ff
+text-ver-color=2e344000
 
-ring-wrong-color=fb4934b0
-text-wrong-color=ebdbb200
+ring-wrong-color=bf616aff
+text-wrong-color=bf616aff

@@ -2,21 +2,23 @@
 # visual
 font pango:Fira Mono, FontAwesome, Hack Nerd Font Complete Mono 11
 
-set $background  #282c34
-set $foreground  #dcdfe4
-set $black       #282c34
-set $red         #e06c75
-set $green       #98c379
-set $yellow      #e5c07b
-set $blue        #61afef
-set $magenta     #c678dd
-set $cyan        #56b6c2
-set $white       #dcdfe4
+set $background #2e3440
+set $foreground #d8dee9
+set $black #3b4252
+set $red #bf616a
+set $green #a3be8c
+set $yellow #ebcb8b
+set $blue #81a1c1
+set $magenta #b48ead
+set $cyan #88c0d0
+set $white #e5e9f0
+set $grey #4c566a
 
-client.focused          $blue $blue $background $cyan $blue
-client.focused_inactive $blue $background $foreground $background $blue
+#                       border      bg          text        indicator   child border
+client.focused          $foreground $foreground $background $red        $foreground
+client.focused_inactive $grey       $grey       $foreground $grey       $grey
 client.unfocused        $background $background $foreground $background $background
-client.urgent           $red $red $background $red $red
+client.urgent           $red        $red        $background $background $red
 
 smart_borders on
 hide_edge_borders both
@@ -24,67 +26,8 @@ default_border pixel 1
 
 # hide mouse after 5s on keyboard
 seat * hide_cursor 5000
-
-# main bar, always shown
-bar {
-    id main
-    output 'Dell Inc. DELL S3221QS 9VRRTB3'
-    output 'Unknown 0x573D 0x00000000'
-    status_command i3status-rs ~/.config/sway/i3status-rs.toml
-    position top
-    colors {
-        background $background
-        statusline $foreground
-        separator $background
-
-        focused_workspace  $background $blue $background
-        active_workspace   $background $blue $background
-        inactive_workspace $background $background $foreground
-        urgent_workspace   $background $red $background
-    }
-}
-# additional bar, toggled with Mod4+;
-bar {
-    id net
-    output 'Dell Inc. DELL S3221QS 9VRRTB3'
-    output 'Unknown 0x573D 0x00000000'
-    workspace_buttons no
-    binding_mode_indicator no
-    status_command i3status-rs ~/.config/sway/i3status-rs-net.toml
-    tray_output none
-    modifier none
-    mode hide
-    hidden_state hide
-    position top
-    colors {
-        background $background
-        statusline $foreground
-        separator $background
-
-        focused_workspace  $background $blue $background
-        active_workspace   $background $blue $background
-        inactive_workspace $background $background $foreground
-        urgent_workspace   $background $red $background
-    }
-}
-# clock only bar for external displays
-bar {
-    id ext
-    output 'Iiyama North America PLX2483H 1127951501478'
-    status_command i3status-rs ~/.config/sway/i3status-rs-external.toml
-    tray_output none
-    position top
-    colors {
-        background $background
-        statusline $foreground
-        separator $background
-
-        focused_workspace  $background $blue $background
-        active_workspace   $background $blue $background
-        inactive_workspace $background $background $foreground
-        urgent_workspace   $background $red $background
-    }
-}
+# seat * hide_cursor when-typing enable
+# mouse_warping container
 
 ##################################
 # hardware
@@ -98,15 +41,11 @@ input type:keyboard {
     # find options using: localectl list-x11-keymap-options | grep caps
 }
 
-input type:pointer {
-}
-
 input type:touchpad {
     events disabled
     tap enabled
     dwt enabled
     middle_emulation enabled
-    # natural_scroll enabled
 }
 
 output 'Dell Inc. DELL S3221QS 9VRRTB3' mode 3840x2160@60Hz scale 1.3 position 1080 0
@@ -115,58 +54,55 @@ output 'Unknown 0x573D 0x00000000' mode 1920x1080@60Hz position 4033 0
 
 ##################################
 # startup execs
-exec mako --font "pango:Fira Mono 9" \
-        --text-color "#dcdfe4" \
-        --background-color "#282c34" \
-        --border-color "#61afef" \
-        --border-size 3 \
-        --border-radius 5 \
-        --default-timeout 7500 \
-        --max-visible 3 \
-        --anchor "top-right"
+exec kanshi
+exec mako -c ~/.config/mako/config
 exec gammastep -l 48.775846:9.182932
 exec alacritty -t 'scratch: ipython' -e fish -c "while true; ipython; end"
 exec alacritty -t 'scratch: notes' -e fish -c "cd ~/notes/; while true; nvim *; end"
+exec waybar -b main
 
 exec swayidle -w \
-    timeout 600 swaylock-blur \
+    timeout 600 swaylock \
     timeout 610 'swaymsg "output * dpms off"' \
     resume 'swaymsg "output * dpms on"' \
-    timeout 10 'if pgrep -x swaylock; then swaymsg "output * dpms off"; fi' \
-    resume 'swaymsg "output * dpms on"' \
-    before-sleep swaylock-blur
+    timeout 10 'if pgrep swaylock; then swaymsg "output * dpms off"; fi' \
+    resume 'if pgrep swaylock; then swaymsg "output * dpms on"; fi' \
+    before-sleep swaylock
 
 # make gnome-keyrings pinentry work
 exec dbus-update-activation-environment --systemd DISPLAY
 
-# make clipboard persistent on window close
-exec wl-paste -pw wl-copy
-
-# set current desktop
-exec set -x XDG_CURRENT_DESKTOP sway
-
+# make screensharing work
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+
+# clipboard manager
+exec clipman clear --all
+exec wl-paste -t text --watch clipman store
+bindsym Mod4+Ctrl+v exec clipman pick -t wofi
 
 ##################################
 # window rules
 for_window [shell="xwayland"] title_format "ಠ_ಠ :: %title"
 
 for_window [app_id="firefox"] inhibit_idle fullscreen
-# for_window [app_id="firefox" title="Firefox Developer Edition - Sharing Indicator"] {
-#     floating enable
-#     resize set 30px
-#     move position 1800px 0px
-#     border none
-# }
+for_window [app_id="firefox" title="Firefox — Sharing Indicator"] {
+    floating enable
+    resize set 30px
+    border none
+}
 
 for_window [app_id="vlc"] inhibit_idle visible
 for_window [instance="spotify"] inhibit_idle visible
 
 for_window [app_id="gcr-prompter"] border pixel 1
 
-for_window [title="^scratch: "] {
+for_window [title="^scratch:"] {
     move scratchpad
     sticky enable
+}
+
+for_window [title="^float:"] {
+    floating enable
 }
 
 ##################################
@@ -187,13 +123,12 @@ bindsym Mod4+d exec wofi -G -t alacritty -S run
 
 ##################################
 # sway control key bindings
-bindsym Mod4+Backslash exec swaylock-blur
+bindsym Mod4+Backslash exec swaylock
 bindsym Mod4+Shift+c reload
 bindsym Mod4+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
 
-bindsym Mod4+period bar mode toggle main
-bindsym Mod4+slash bar mode toggle ext
-bindsym Mod4+semicolon bar mode toggle net
+bindsym Mod4+period exec killall -SIGUSR1 waybar
+bindsym Mod4+semicolon exec ~/.config/waybar/toggle_net.sh
 
 mode "escape" {
     bindsym Escape mode "default"
@@ -205,7 +140,7 @@ bindsym Mod4+Escape mode "escape"
 floating_modifier Mod4 normal
 
 bindsym --whole-window Mod4+button2 kill
-mode "close? [Y/n]" {
+mode "close" {
     bindsym y kill; mode "default"
     bindsym c kill; mode "default"
     bindsym n mode "default"
@@ -213,7 +148,7 @@ mode "close? [Y/n]" {
     bindsym Return kill; mode "default"
     bindsym Escape mode "default"
 }
-bindsym Mod4+c mode "close? [Y/n]"
+bindsym Mod4+c mode "close"
 
 bindsym Mod4+h focus left
 bindsym Mod4+j focus down
@@ -268,16 +203,29 @@ workspace_auto_back_and_forth yes
 bindsym Ctrl+Mod4+j workspace prev_on_output
 bindsym Ctrl+Mod4+k workspace next_on_output
 
-set $workspace1 "1: web"
-set $workspace2 "2: com"
-set $workspace3 "3: file"
-set $workspace4 "4: misc"
-set $workspace5 "5: misc"
-set $workspace6 "6: misc"
-set $workspace7 "7: shell"
-set $workspace8 "8: shell"
-set $workspace9 "9: shell"
-set $workspace0 "10: shell"
+set $workspace1 "1:web"
+set $workspace2 "2:com"
+set $workspace3 "3:file"
+set $workspace4 "4:music"
+set $workspace5 "5:steam"
+set $workspace6 "6:misc"
+set $workspace7 "7:misc"
+set $workspace8 "8:term"
+set $workspace9 "9:term"
+set $workspace0 "10:term"
+
+set $workspacef1 "11:misc"
+set $workspacef2 "12:misc"
+set $workspacef3 "13:misc"
+set $workspacef4 "14:misc"
+set $workspacef5 "15:term"
+set $workspacef6 "16:term"
+set $workspacef7 "17:term"
+set $workspacef8 "18:term"
+set $workspacef9 "19:term"
+set $workspacef10 "20:term"
+set $workspacef11 "21:term"
+set $workspacef12 "22:term"
 
 workspace $workspace1 output 'Dell Inc. DELL S3221QS 9VRRTB3'
 workspace $workspace2 output 'Dell Inc. DELL S3221QS 9VRRTB3'
@@ -300,6 +248,29 @@ bindsym Mod4+7 workspace $workspace7
 bindsym Mod4+8 workspace $workspace8
 bindsym Mod4+9 workspace $workspace9
 bindsym Mod4+0 workspace $workspace0
+bindsym Mod4+XF86AudioPlay workspace $workspacef1
+bindsym Mod4+F1 workspace $workspacef1
+bindsym Mod4+XF86AudioStop workspace $workspacef2
+bindsym Mod4+F2 workspace $workspacef2
+bindsym Mod4+XF86AudioPrev workspace $workspacef3
+bindsym Mod4+F3 workspace $workspacef3
+bindsym Mod4+XF86AudioNext workspace $workspacef4
+bindsym Mod4+F4 workspace $workspacef4
+bindsym Mod4+XF86AudioMute workspace $workspacef5
+bindsym Mod4+F5 workspace $workspacef5
+bindsym Mod4+XF86AudioLowerVolume workspace $workspacef6
+bindsym Mod4+F6 workspace $workspacef6
+bindsym Mod4+XF86AudioRaiseVolume workspace $workspacef7
+bindsym Mod4+F7 workspace $workspacef7
+bindsym Mod4+XF86AudioMicMute workspace $workspacef8
+bindsym Mod4+F8 workspace $workspacef8
+bindsym Mod4+XF86MonBrightnessDown workspace $workspacef9
+bindsym Mod4+F9 workspace $workspacef9
+bindsym Mod4+XF86MonBrightnessUp workspace $workspacef10
+bindsym Mod4+F10 workspace $workspacef10
+bindsym Mod4+F11 workspace $workspacef11
+bindsym Mod4+F12 workspace $workspacef12
+
 bindsym Mod4+Shift+1 move container to workspace $workspace1
 bindsym Mod4+Shift+2 move container to workspace $workspace2
 bindsym Mod4+Shift+3 move container to workspace $workspace3
@@ -310,10 +281,35 @@ bindsym Mod4+Shift+7 move container to workspace $workspace7
 bindsym Mod4+Shift+8 move container to workspace $workspace8
 bindsym Mod4+Shift+9 move container to workspace $workspace9
 bindsym Mod4+Shift+0 move container to workspace $workspace0
+bindsym Mod4+Shift+XF86AudioPlay move container to workspace $workspacef1
+bindsym Mod4+Shift+F1 move container to workspace $workspacef1
+bindsym Mod4+Shift+XF86AudioStop move container to workspace $workspacef2
+bindsym Mod4+Shift+F2 move container to workspace $workspacef2
+bindsym Mod4+Shift+XF86AudioPrev move container to workspace $workspacef3
+bindsym Mod4+Shift+F3 move container to workspace $workspacef3
+bindsym Mod4+Shift+XF86AudioNext move container to workspace $workspacef4
+bindsym Mod4+Shift+F4 move container to workspace $workspacef4
+bindsym Mod4+Shift+XF86AudioMute move container to workspace $workspacef5
+bindsym Mod4+Shift+F5 move container to workspace $workspacef5
+bindsym Mod4+Shift+XF86AudioLowerVolume move container to workspace $workspacef6
+bindsym Mod4+Shift+F6 move container to workspace $workspacef6
+bindsym Mod4+Shift+XF86AudioRaiseVolume move container to workspace $workspacef7
+bindsym Mod4+Shift+F7 move container to workspace $workspacef7
+bindsym Mod4+Shift+XF86AudioMicMute move container to workspace $workspacef8
+bindsym Mod4+Shift+F8 move container to workspace $workspacef8
+bindsym Mod4+Shift+XF86MonBrightnessDown move container to workspace $workspacef9
+bindsym Mod4+Shift+F9 move container to workspace $workspacef9
+bindsym Mod4+Shift+XF86MonBrightnessUp move container to workspace $workspacef10
+bindsym Mod4+Shift+F10 move container to workspace $workspacef10
+bindsym Mod4+Shift+F11 move container to workspace $workspacef11
+bindsym Mod4+Shift+F12 move container to workspace $workspacef12
 
 assign [app_id="firefox"] $workspace1
 assign [app_id="evolution"] $workspace2
 assign [app_id="nemo"] $workspace3
+assign [instance="spotify"] $workspace4
+for_window [class="Spotify"] move container to workspace $workspace4
+assign [instance="Steam"] $workspace5
 
 bindsym Ctrl+Shift+Mod4+h move workspace to output left
 bindsym Ctrl+Shift+Mod4+j move workspace to output down
@@ -333,11 +329,13 @@ bindsym Mod4+a layout toggle split # default is e
 bindsym Mod4+q sticky toggle
 
 bindsym Mod4+f fullscreen
+bindsym Mod4+Shift+f fullscreen global
 
 bindsym Mod4+Shift+space floating toggle
 bindsym Mod4+space focus mode_toggle
 
-bindsym Mod4+o focus parent # default is a
+bindsym Mod4+o focus parent
+bindsym Mod4+i focus child
 
 mode "resize" {
     bindsym h resize shrink horizontal 20 px
@@ -387,6 +385,7 @@ mode "launch" {
     bindsym f exec firefox; mode "default"
     bindsym t exec evolution; mode "default"
     bindsym n exec nemo; mode "default"
+    bindsym s exec spotify; mode "default"
 
     bindsym Return mode "default"
     bindsym Escape mode "default"
@@ -398,13 +397,15 @@ bindsym Mod4+Shift+n exec makoctl dismiss -a
 
 ##################################
 # fancy keys
+bindsym Insert mouse_warping container; focus child; mouse_warping none; seat - cursor press button2;
+
 bindsym Print exec grim -g "$(slurp)"
+bindsym Shift+Print exec 'if pgrep wf-recorder; then killall -SIGINT wf-recorder; else wf-recorder -g "$(slurp)"; fi'
 
 bindsym XF86AudioRaiseVolume    exec pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym XF86AudioLowerVolume    exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym XF86AudioMute           exec pactl set-sink-mute @DEFAULT_SINK@ toggle
-bindsym XF86AudioMicMute        exec pactl set-source-mute @DEFAULT_SOURCE@ toggle && pkill -SIGRTMIN+4 i3status-rs
-bindsym Menu                    exec pactl set-source-mute @DEFAULT_SOURCE@ toggle && pkill -SIGRTMIN+4 i3status-rs
+bindsym XF86AudioMicMute        exec pactl set-source-mute @DEFAULT_SOURCE@ toggle && pkill -SIGRTMIN+4 waybar
 
 bindsym XF86AudioPlay exec playerctl -p spotify play-pause
 bindsym XF86AudioNext exec playerctl -p spotify next
@@ -413,6 +414,8 @@ bindsym XF86AudioStop exec playerctl -p spotify stop
 
 bindsym XF86MonBrightnessUp exec light -A 5
 bindsym XF86MonBrightnessDown exec light -U 5
+bindsym XF86AudioForward exec sudo ddcutil -b 12 setvcp 10 + 5
+bindsym XF86AudioRewind exec sudo ddcutil -b 12 setvcp 10 - 5
 
 bindsym XF86Display exec wdisplays
 bindsym XF86NotificationCenter input "2:7:SynPS/2_Synaptics_TouchPad" events toggle enabled disabled; exec notify-send "Touchpad" "Touchpad Input has been toggled."
