@@ -1,0 +1,276 @@
+/* vim: set ft=json: */
+[
+    {
+        "output": "!Iiyama North America PLX2483H 1127951501478",
+        "modules-left": [
+            "sway/workspaces",
+            "sway/mode",
+            "sway/window"
+        ],
+        "modules-center": [
+            "custom/media"
+        ],
+        "modules-right": [
+            "pulseaudio",
+            "network",
+            "temperature",
+            "cpu",
+            "memory",
+            "disk",
+            "battery",
+            "idle_inhibitor",
+            "tray",
+            "custom/weather",
+            "clock",
+            "custom/mic",
+            "custom/screenrecord"
+        ],
+
+        "battery": {
+            "interval": 10,
+            "states": {
+                "full": 95,
+                "warning": 30,
+                "critical": 10
+            },
+            "format": " {capacity}%",
+            "format-discharging": "{icon} {capacity}%",
+            "format-full": "",
+            "format-icons": [
+                "",
+                "",
+                "",
+                "",
+                ""
+            ],
+            "tooltip": true
+        },
+
+        "clock": {
+            "interval": 1,
+            "format": "{:%a, %d.%m. %H:%M:%S}",
+            "tooltip-format": "<tt>{calendar}</tt>",
+            "locale": "en_GB.utf-8"
+        },
+
+        "custom/media": {
+            "format": " {icon}{} ",
+            "return-type": "json",
+            "format-icons": {
+                "Paused": " "
+            },
+            "max-length": 80,
+            "exec": "playerctl -p spotify metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{ artist }} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
+            "on-click": "playerctl -p spotify play-pause",
+            "on-click-right": "playerctl -p spotify next",
+            "on-scroll-down": "playerctl -p spotify next",
+            "on-scroll-up": "playerctl -p spotify previous"
+        },
+
+        "custom/mic": {
+            "interval": 5,
+            "signal": 4,
+            "return-type": "json",
+            "format": "{icon}",
+            "format-icons": {
+                "mute": ""
+            },
+            "exec": "echo '{\"alt\": \"mute\"}'",
+            "exec-if": "pactl get-source-mute @DEFAULT_SOURCE@ | grep -vq yes",
+            "on-click": ""
+        },
+
+        "custom/screenrecord": {
+            "format": "",
+            "interval": "once",
+            "signal": 8,
+            "exec": "pgrep 'slurp'",
+            "tooltip": false
+        },
+
+        "custom/weather": {
+            "exec": "curl 'https://wttr.in/?format=1'",
+            "on-click": "firefox https://wttr.in/",
+            "interval": 3600
+        },
+
+        "cpu": {
+            "interval": 5,
+            "format": " {usage}%",
+            "states": {
+                "warning": 70,
+                "critical": 90
+            }
+        },
+
+        "disk": {
+            "interval": 60,
+            "format": " {percentage_used}%",
+            "path": "/home"
+        },
+
+        "idle_inhibitor": {
+            "format": "{icon}",
+            "format-icons": {
+                "activated": "",
+                "deactivated": ""
+            }
+        },
+
+        "memory": {
+            "interval": 5,
+            "format": " {}%",
+            "states": {
+                "warning": 70,
+                "critical": 90
+            }
+        },
+
+        "network": {
+            "interval": 5,
+            "format-wifi": " {essid} ({signalStrength}%)",
+            "format-ethernet": " {ipaddr}",
+            "format-disconnected": "⚠ offline",
+            "tooltip-format": "{ifname}: {ipaddr}",
+            "on-click": "iwgtk"
+        },
+
+        "pulseaudio": {
+            "format": "{format_source}{icon} {volume}%",
+            "format-bluetooth": "{icon} {volume}%",
+            //"format-source": "<span color=\"#e06c75\"></span> ",
+            "format-source-muted": "",
+            "format-muted": " {volume}%",
+            "format-icons": {
+                "hdmi": "",
+                "speaker": "",
+                "default": ""
+            },
+            "states": {
+                "warning": 80,
+                "critical": 100
+            },
+            "on-click": "pavucontrol",
+            //"on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+            //"on-click-middle": "pactl set-source-mute @DEFAULT_SOURCE@ toggle",
+            "on-click-right": "pactl set-default-sink alsa_output.pci-0000_07_00.1.HiFi__hw_Generic_9__sink",
+            "on-click-middle": "pactl set-default-sink alsa_output.usb-Lenovo_ThinkPad_USB-C_Dock_Gen2_USB_Audio_000000000000-00.analog-stereo"
+        },
+
+        "sway/mode": {
+            "format": " {}",
+            "tooltip": false
+        },
+
+        "sway/window": {
+            "format": "{}",
+            "max-length": 60,
+            "rewrite": {
+                "(.*) — Mozilla Firefox": " $1",
+                "(.*) — Evolution": " $1",
+                "vim (.*) (.*)": " $2/{$1}",
+                "fish (.*)": " $1"
+            }
+        },
+
+        "sway/workspaces": {
+            "all-outputs": false,
+            "format": "{icon} {name}",
+            "format-icons": {
+                "1:web": "",
+                "2:com": "",
+                "3:file": "",
+                "4:music": "",
+                "5:steam": "",
+                "8:term": "",
+                "9:term": "",
+                "10:term": "",
+                "15:term": "",
+                "16:term": "",
+                "17:term": "",
+                "18:term": "",
+                "19:term": "",
+                "20:term": "",
+                "21:term": "",
+                "22:term": "",
+                "urgent": "",
+                "focused": "",
+                "default": ""
+            }
+        },
+
+        "temperature": {
+            "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
+            "critical-threshold": 70,
+            "interval": 5,
+            "format": "{icon} {temperatureC}°C",
+            "format-icons": [
+                "",
+                "",
+                "",
+                "",
+                ""
+            ],
+            "tooltip": true
+        }
+    },
+    {
+        "output": "Iiyama North America PLX2483H 1127951501478",
+        "modules-left": [
+            "sway/workspaces",
+            "sway/mode",
+            "sway/window"
+        ],
+        "modules-center": [
+        ],
+        "modules-right": [
+            "clock"
+        ],
+
+        "clock": {
+            "interval": 1,
+            "format": "{:%a, %d.%m. %H:%M:%S}",
+            "tooltip-format": "<tt>{calendar}</tt>",
+            "locale": "en_GB.utf-8"
+        },
+
+        "sway/mode": {
+            "format": " {}",
+            "tooltip": false
+        },
+
+        "sway/window": {
+            "format": "{}",
+            "max-length": 60,
+            "rewrite": {
+                "(.*) — Mozilla Firefox": " $1",
+                "(.*) — Evolution": " $1",
+                "vim (.*) (.*)": " $2/{$1}",
+                "fish (.*)": " $1"
+            }
+        },
+
+        "sway/workspaces": {
+            "all-outputs": false,
+            "disable-scroll": true,
+            "format": "{icon} {name}",
+            "format-icons": {
+                "1:web": "",
+                "2:com": "",
+                "3:file": "",
+                "4:music": "",
+                "8:shell": "",
+                "9:shell": "",
+                "10:shell": "",
+                "urgent": "",
+                "focused": "",
+                "default": ""
+            }
+        },
+
+        "tray": {
+            "icon-size": 21,
+            "spacing": 10
+        }
+    }
+]

@@ -1,0 +1,61 @@
+[user]
+    email = git@danieln.de
+    name = Daniel Nägele
+
+[alias]
+    ci = commit -v
+    co = checkout
+    a = add
+    ds = -c delta.side-by-side=true diff
+    p = pull --ff-only --prune
+    s = status -s
+    lv = log --first-parent -m --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --stat=99,99 --date=relative
+    lg = log --graph --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%G?:\\ %cn]" --decorate --date=relative
+    grep = grep -Ii
+    rdy = rebase -i @{u}
+    bs = remote update origin --prune
+
+[color]
+    ui = true
+
+[push]
+	default = current
+
+[pull]
+    rebase = true
+
+[core]
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[diff]
+    colorMoved = default
+
+[delta]
+    navigate = true
+    ; side-by-side = true
+    dark = true
+    syntax-theme = Nord
+    features = unobtrusive-line-numbers
+
+[delta "unobtrusive-line-numbers"]
+    line-numbers = true
+    line-numbers-minus-style = "#a5abb6"
+    line-numbers-zero-style = "#a5abb6"
+    line-numbers-plus-style = "#a5abb6"
+    line-numbers-left-format = "{nm:>4}┊"
+    line-numbers-right-format = "{np:>4}│"
+    line-numbers-left-style = blue
+    line-numbers-right-style = blue
+[help]
+	autocorrect = 1
+
+[rebase]
+	autoStash = true
+
+[branch]
+	autosetupmerge = always
+[fetch]
+	prune = true
