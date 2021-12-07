@@ -3,6 +3,7 @@
 #####################################################################
 set -x TERM xterm-256color
 set -x LANG en_US.UTF-8
+set -x LC_TIME en_GB.UTF-8
 set -x EDITOR nvim
 set -x GTK_THEME "Arc-Darker"
 set -x HIGHLIGHT_STYLE nord

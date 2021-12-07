@@ -311,7 +311,7 @@ bindsym Mod4+Shift+F11 move container to workspace $workspacef11
 bindsym Mod4+Shift+F12 move container to workspace $workspacef12
 
 assign [app_id="firefox"] $workspace1
-assign [app_id="evolution"] $workspace2
+assign [app_id="thunderbird"] $workspace2
 assign [app_id="nemo"] $workspace3
 assign [instance="spotify"] $workspace4
 for_window [class="Spotify"] move container to workspace $workspace4
@@ -389,7 +389,7 @@ bindsym Mod4+Return exec alacritty
 
 mode "launch" {
     bindsym f exec firefox; mode "default"
-    bindsym t exec evolution; mode "default"
+    bindsym t exec thunderbird; mode "default"
     bindsym n exec nemo; mode "default"
     bindsym s exec spotify; mode "default"
 

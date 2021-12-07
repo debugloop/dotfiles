@@ -1,0 +1,4 @@
+set -x RESTIC_REPOSITORY b2:{{ .chezmoi.hostname }}:
+set -x RESTIC_PASSWORD {{ gopass "backup/RESTIC_PASSWORD" }}
+set -x B2_ACCOUNT_ID {{ gopass "backup/B2_ACCOUNT_ID" }}
+set -x B2_ACCOUNT_KEY {{ gopass "backup/B2_ACCOUNT_KEY" }}
