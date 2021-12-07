@@ -1,0 +1,6 @@
+[diff]
+    pager = "delta --hunk-header-style omit"
+
+[git]
+    autoCommit = true
+    autoPush = true
