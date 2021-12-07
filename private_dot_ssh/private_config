@@ -1,0 +1,19 @@
+Include specific_hosts.conf
+
+# mikrotik hosts need older key types
+Host 192.168.88.0/24
+    PubkeyAcceptedKeyTypes +ssh-rsa
+
+# use proxy when not in vpn
+Match Host *.belwue.de !Exec "systemctl is-active openvpn-client@via-udp.service > /dev/null"
+    ProxyJump login
+
+# defaults
+Host *
+    ForwardAgent no
+    VisualHostKey no
+    ForwardX11 no
+    PermitLocalCommand yes
+    LocalCommand notify-send "%r@%h" "Connection successful."
+    ServerAliveInterval 600
+    AddKeysToAgent yes
