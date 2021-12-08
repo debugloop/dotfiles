@@ -102,6 +102,11 @@ for_window [instance="spotify"] inhibit_idle visible
 
 for_window [app_id="gcr-prompter"] border pixel 1
 
+for_window [app_id="thunderbird", title="^.* Reminder$"] {
+    floating enable
+    sticky enable
+}
+
 for_window [title="^scratch:"] {
     move scratchpad
     sticky enable
