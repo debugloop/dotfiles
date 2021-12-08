@@ -72,6 +72,9 @@ function r --description 'Launch ranger if this terminal does not have one yet'
 end
 
 
+set -x LEDGER_FILE /home/danieln/finance/hledger.journal
+alias hl=hledger
+
 alias dell='sudo ddcutil -b 12 setvcp 10'
 alias vim=nvim
 alias irc='mosh -p 61293 irc -- tmux a -t 0 -d'
@@ -85,8 +88,7 @@ alias cat='bat --theme=Nord'
 # }}}
 
 #####################################################################
-# ledger stuff {{{
+# external addons {{{
 #####################################################################
-set -x LEDGER_FILE /home/danieln/finance/hledger.journal
-alias hl=hledger
+direnv hook fish | source
 # }}}
