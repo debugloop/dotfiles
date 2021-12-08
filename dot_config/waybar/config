@@ -56,16 +56,15 @@
         "custom/media": {
             "format": " {icon}{} ",
             "return-type": "json",
-            "signal": 8,
             "format-icons": {
                 "Paused": " "
             },
             "max-length": 80,
-            "exec": "playerctl -p spotifyd metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{ artist }} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}'",
-            "on-click": "playerctl -p spotifyd play-pause; pkill -RTMIN+8 waybar",
-            "on-click-right": "playerctl -p spotifyd next; pkill -RTMIN+8 waybar",
-            "on-scroll-down": "playerctl -p spotifyd next; pkill -RTMIN+8 waybar",
-            "on-scroll-up": "playerctl -p spotifyd previous; pkill -RTMIN+8 waybar"
+            "exec": "playerctl -p spotify metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{ artist }} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
+            "on-click": "playerctl -p spotify play-pause",
+            "on-click-right": "playerctl -p spotify next",
+            "on-scroll-down": "playerctl -p spotify next",
+            "on-scroll-up": "playerctl -p spotify previous"
         },
 
         "custom/mic": {
