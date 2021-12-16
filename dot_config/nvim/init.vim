@@ -38,7 +38,12 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " language support
-Plug 'fatih/vim-go', {'for': 'go'}
+Plug 'arp242/gopher.vim', {'for': 'go'} " modern vim-go, lsp friendly
+" Plug 'sebdah/vim-delve', {'for': 'go'} " debug go
+Plug 'mfussenegger/nvim-dap'
+Plug 'rcarriga/nvim-dap-ui'
+Plug 'theHamsta/nvim-dap-virtual-text'
+Plug 'leoluz/nvim-dap-go', {'for': 'go'}
 Plug 'ap/vim-css-color'
 Plug 'pearofducks/ansible-vim', {'for': 'yaml.ansible'}
 Plug 'dag/vim-fish', {'for': 'fish'}
@@ -66,7 +71,7 @@ set noswapfile " 21. century, yay
 set gdefault " substitution is global by default, specify g to reverse
 set clipboard^=unnamedplus " use system clipboard
 set completeopt=menu,menuone,noselect " better completion experience
-inoremap <S-Tab> <C-x><C-o>
+inoremap <S-Tab> <C-x><C-o><C-n>
 
 " open splits in nicer locations
 set splitbelow
@@ -161,7 +166,7 @@ function! ToggleMovement(firstOp, thenOp)
     execute "normal! " . a:thenOp
   endif
 endfunction
-noremap <silent> H :call ToggleMovement('^', '0')<CR>
+noremap <silent> H :call ToggleMovement('^', '0')<cr>
 noremap L $
 
 " jump to visual lines
@@ -171,8 +176,8 @@ nnoremap gj j
 nnoremap gk k
 
 " move visual block
-vnoremap J :m '>+1<CR>gv=gv
-vnoremap K :m '<-2<CR>gv=gv
+vnoremap J :m '>+1<cr>gv=gv
+vnoremap K :m '<-2<cr>gv=gv
 
 " stay in visual after indent
 vnoremap < <gv
@@ -214,9 +219,9 @@ nnoremap <leader>0 :10b<cr>
 vnoremap <leader>s :!sort<cr>
 
 " quickfix usability
-map <C-n> :cnext<CR>
-map <C-m> :cprevious<CR>
-nnoremap <expr> <C-c> !empty(filter(tabpagebuflist(), 'getbufvar(v:val, "&buftype") is# "quickfix"')) ? ':cclose<Cr>' : ':nohl<Cr>'
+map <C-n> :cnext<cr>
+map <C-m> :cprevious<cr>
+nnoremap <expr> <C-c> !empty(filter(tabpagebuflist(), 'getbufvar(v:val, "&buftype") is# "quickfix"')) ? ':cclose<cr>' : ':nohl<cr>:lua vim.lsp.buf.clear_references()<cr>'
 
 " remove search hl (see qf mapping above)
 " nnoremap <silent><C-c> :nohl<cr>
@@ -296,55 +301,127 @@ autocmd ColorScheme nord highlight LightspeedUniqueChar gui=bold,underline
 colorscheme nord
 
 " GitGutter
-nnoremap <silent><leader>g :GitGutterToggle<Cr>
+nnoremap <silent><leader>g :GitGutterToggle<cr>
 
 " Undo Tree
-nnoremap <silent><leader>u :UndotreeToggle<Cr>:UndotreeFocus<Cr>
+nnoremap <silent><leader>u :UndotreeToggle<cr>:UndotreeFocus<cr>
+"" }}}
 
-" vim-go
-let g:go_list_type = "quickfix"
-au FileType go nmap gr <Plug>(go-referrers)
-au FileType go nmap gp <Plug>(go-channelpeers)
-au FileType go nmap <leader>a <Plug>(go-alternate-edit)
-au FileType go nmap <leader>c :GoCoverageToggle<cr>
-
+"####################################################################
+" golang settings {{{
+"####################################################################
+" dlv plug
+lua require('dap-go').setup()
 lua << EOF
-local nvim_lsp = require('lspconfig')
+require("dapui").setup({
+  sidebar = {
+    elements = {
+      { id = "scopes", size = 0.6 },
+      { id = "stacks", size = 0.2 },
+      { id = "breakpoints", size = 0.2 },
+    },
+    size = 40,
+    position = "left",
+  },
+  tray = {
+    elements = { "repl" },
+    size = 16,
+    position = "bottom",
+  },
+})
+EOF
+autocmd FileType dapui* set statusline=\ %f
+autocmd FileType dap-repl set statusline=\ %f
+lua require("nvim-dap-virtual-text").setup()
 
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+au FileType go nmap <silent><leader>b :lua require'dap'.toggle_breakpoint()<cr>
+au FileType go nmap <silent><leader>B :lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<cr>
 
-  -- Enable completion triggered by <c-x><c-o>
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+au FileType go nmap <silent><leader>k :lua require("dapui").eval()<cr>
+au FileType go nmap <silent><leader>D :lua require("dapui").toggle()<cr>
 
-  -- Mappings.
-  local opts = { noremap=true, silent=true }
+au FileType go nmap <silent><leader>d :lua require('dap').continue()<cr>
+au FileType go nmap <silent><leader>c :lua require('dap').continue()<cr>
+au FileType go nmap <silent><leader>C :lua require("dap").run_to_cursor()<cr>
+au FileType go nmap <silent><leader>s :lua require('dap').step_over()<cr>
+au FileType go nmap <silent><leader>i :lua require('dap').step_into()<cr>
+au FileType go nmap <silent><leader>o :lua require('dap').step_out()<cr>
+au FileType go nmap <silent><leader>fd :lua require('dap').down()<cr>
+au FileType go nmap <silent><leader>fu :lua require('dap').up()<cr>
+au FileType go nmap <silent><leader>q :lua require('dap').terminate()<cr>:lua require('dap').repl.close()<cr>:lua require("dapui").close()<cr>:lua require("nvim-dap-virtual-text").disable()<cr>
 
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+au FileType go nmap <silent><leader>td :lua require('dap-go').debug_test()<cr>
 
-end
-nvim_lsp.gopls.setup{}
+" gopher plug
+au FileType go nmap <leader>tc :GoCoverage toggle<cr>
 
+" go lsp setup:
+lua <<EOF
+  lspconfig = require "lspconfig"
+  lspconfig.gopls.setup {
+    cmd = {"gopls", "serve"},
+    settings = {
+      gopls = {
+        analyses = {
+          unusedparams = true,
+        },
+        staticcheck = true,
+      },
+    },
+  }
 EOF
 
+" go imports taken from https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
+lua <<EOF
+  function goimports(timeout_ms)
+    local context = { only = { "source.organizeImports" } }
+    vim.validate { context = { context, "t", true } }
+
+    local params = vim.lsp.util.make_range_params()
+    params.context = context
+
+    -- See the implementation of the textDocument/codeAction callback
+    -- (lua/vim/lsp/handler.lua) for how to do this properly.
+    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
+    if not result or next(result) == nil then return end
+    local actions = result[1].result
+    if not actions then return end
+    local action = actions[1]
+
+    -- textDocument/codeAction can return either Command[] or CodeAction[]. If it
+    -- is a CodeAction, it can have either an edit, a command or both. Edits
+    -- should be executed first.
+    if action.edit or type(action.command) == "table" then
+      if action.edit then
+        vim.lsp.util.apply_workspace_edit(action.edit)
+      end
+      if type(action.command) == "table" then
+        vim.lsp.buf.execute_command(action.command)
+      end
+    else
+      vim.lsp.buf.execute_command(action)
+    end
+  end
+EOF
+autocmd BufWritePre *.go lua goimports(1000)
+
+" auto gofmt
+autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
+
+" go lsp specific bindings
+au FileType go nmap gr :lua vim.lsp.buf.references()<cr>:lua vim.lsp.buf.document_highlight()<cr>
+au FileType go nmap gd :lua vim.lsp.buf.definition()<cr>
+au FileType go nmap gi :lua vim.lsp.buf.implementation()<cr>
+au FileType go nmap <leader>m :lua vim.lsp.buf.document_symbol()<cr>
+au FileType go nmap <leader>f :lua vim.lsp.buf.formatting()<cr>
+au FileType go nmap <leader>r :lua vim.lsp.buf.rename()<cr>
+au FileType go nmap K :lua vim.lsp.buf.hover()<cr>
+au FileType go nmap <leader>h :lua vim.lsp.buf.document_highlight()<cr>
+au FileType go nmap <leader>H :lua vim.lsp.buf.clear_references()<cr>
+
+" highlighing rules for document_highlight
+highlight LspReference guifg=NONE guibg=#B48EAD guisp=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=59
+highlight! link LspReferenceText LspReference
+highlight! link LspReferenceRead LspReference
+highlight! link LspReferenceWrite LspReference
 "" }}}

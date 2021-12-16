@@ -8,6 +8,7 @@
     a = add
     ds = -c delta.side-by-side=true diff
     p = pull --ff-only --prune
+    pub = !git push -u origin $(git symbolic-ref --short HEAD)
     s = status -s
     lv = log --first-parent -m --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --stat=99,99 --date=relative
     lg = log --graph --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%G?:\\ %cn]" --decorate --date=relative
@@ -23,6 +24,7 @@
 
 [pull]
     rebase = true
+	default = current
 
 [core]
     pager = delta
