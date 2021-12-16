@@ -409,15 +409,15 @@ autocmd BufWritePre *.go lua goimports(1000)
 autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
 
 " go lsp specific bindings
-au FileType go nmap gr :lua vim.lsp.buf.references()<cr>:lua vim.lsp.buf.document_highlight()<cr>
-au FileType go nmap gd :lua vim.lsp.buf.definition()<cr>
-au FileType go nmap gi :lua vim.lsp.buf.implementation()<cr>
-au FileType go nmap <leader>m :lua vim.lsp.buf.document_symbol()<cr>
-au FileType go nmap <leader>f :lua vim.lsp.buf.formatting()<cr>
-au FileType go nmap <leader>r :lua vim.lsp.buf.rename()<cr>
-au FileType go nmap K :lua vim.lsp.buf.hover()<cr>
-au FileType go nmap <leader>h :lua vim.lsp.buf.document_highlight()<cr>
-au FileType go nmap <leader>H :lua vim.lsp.buf.clear_references()<cr>
+au FileType go nmap <silent>gr :lua vim.lsp.buf.references()<cr>:lua vim.lsp.buf.document_highlight()<cr>
+au FileType go nmap <silent>gd :lua vim.lsp.buf.definition()<cr>
+au FileType go nmap <silent>gi :lua vim.lsp.buf.implementation()<cr>
+au FileType go nmap <silent><leader>m :lua vim.lsp.buf.document_symbol()<cr>
+au FileType go nmap <silent><leader>f :lua vim.lsp.buf.formatting()<cr>
+au FileType go nmap <silent><leader>r :lua vim.lsp.buf.rename()<cr>
+au FileType go nmap <silent>K :lua vim.lsp.buf.hover()<cr>
+au FileType go nmap <silent><leader>h :lua vim.lsp.buf.document_highlight()<cr>
+autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
 
 " highlighing rules for document_highlight
 highlight LspReference guifg=NONE guibg=#B48EAD guisp=NONE gui=NONE cterm=NONE ctermfg=NONE ctermbg=59

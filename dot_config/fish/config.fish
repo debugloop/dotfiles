@@ -77,6 +77,7 @@ alias hl=hledger
 
 alias dell='sudo ddcutil -b 12 setvcp 10'
 alias vim=nvim
+alias vimdiff='nvim -d'
 alias irc='mosh -p 61293 irc -- tmux a -t 0 -d'
 alias docker_ip="docker inspect --format '{{ .NetworkSettings.IPAddress }}'"
 alias merge_pdf="gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -sOutputFile=merged.pdf"
