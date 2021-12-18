@@ -76,6 +76,7 @@ set -x LEDGER_FILE /home/danieln/finance/hledger.journal
 alias hl=hledger
 
 alias dell='sudo ddcutil -b 12 setvcp 10'
+alias cvim=/usr/bin/vim
 alias vim=nvim
 alias vimdiff='nvim -d'
 alias irc='mosh -p 61293 irc -- tmux a -t 0 -d'
