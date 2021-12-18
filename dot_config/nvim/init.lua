@@ -10,9 +10,9 @@ vim.cmd [[source ~/.vimrc]]
 
 -- set neovim only options
 vim.opt.undofile = true  -- undofiles between vim and nvim are incompatible
-vim.opt.undodir = "~/.undo/"
+vim.opt.undodir = "/home/danieln/.undo/"
 vim.opt.backup = true  -- no backups on servers (vim), just on localhost (nvim)
-vim.opt.backupdir = "~/.backup/"
+vim.opt.backupdir = "/home/danieln/.backup/"
 vim.opt.showmode = false  -- cursor and statusline show this already
 vim.opt.termguicolors = true  -- proper colors
 
