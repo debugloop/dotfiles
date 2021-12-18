@@ -1,0 +1,150 @@
+"####################################################################
+" .vimrc
+"####################################################################
+
+" filetype plugin and syntax when there's no treesitter
+syntax on
+set synmaxcol=512 " don't overdo it
+filetype plugin indent on
+
+" colorscheme if not overridden by plugins
+colorscheme industry
+
+" change buffers without saving
+set hidden
+
+" allow backspace in vim insert
+set backspace=indent,eol,start
+
+" allow mouse
+set mouse=a
+
+" complete commands
+set wildmenu
+set wildcharm=<Tab>
+
+" allow folding by indent manually
+set foldmethod=indent
+set nofoldenable
+
+" keep distance from edges
+set scrolloff=8
+set sidescrolloff=5
+
+" don't clutter the place
+set noswapfile
+
+" search settings
+set hlsearch
+set gdefault
+set ignorecase
+set smartcase
+
+" use system clipboard
+set clipboard^=unnamedplus
+
+" open splits in nicer locations
+set splitbelow
+set splitright
+
+" our cursor does this, statusbar too
+set noshowmode
+
+" line and column highlights
+set cursorline
+set nocursorcolumn
+augroup cursorcolumn
+  au!
+  au WinLeave,InsertEnter * set cursorcolumn
+  au WinEnter,InsertLeave * set nocursorcolumn
+augroup END
+
+" linenumbers
+set number
+set relativenumber
+
+" show whitespace chars
+set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·
+augroup list
+  au!
+  au WinLeave,InsertEnter * set list
+  au WinEnter,InsertLeave * set nolist
+augroup END
+
+" in insert mode, don't vary beam color along with syntax highlight
+set guicursor=i:ver25Cursor/lCursor
+
+" highlight git merge markers
+match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
+
+" autoremove trailing whitespace
+au BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
+
+" grow and shrink splits with the window
+au VimResized * :wincmd =
+
+"####################################################################
+" keymaps
+"####################################################################
+
+let mapleader = " "
+
+map q: :q
+
+" smarter go to beginning of line
+function! ToggleMovement(firstOp, thenOp)
+  let pos = getpos('.')
+  execute "normal! " . a:firstOp
+  if pos == getpos('.')
+    execute "normal! " . a:thenOp
+  endif
+endfunction
+noremap <silent> H :call ToggleMovement('^', '0')<cr>
+noremap L $
+
+" jump to visual lines
+nnoremap j gj
+nnoremap k gk
+nnoremap gj j
+nnoremap gk k
+
+" move visual block
+vnoremap J :m '>+1<cr>gv=gv
+vnoremap K :m '<-2<cr>gv=gv
+
+" stay in visual after indent
+vnoremap < <gv
+vnoremap > >gv
+
+" highlight last inserted text
+nnoremap gV `[v`]
+
+" change Y from yy to y$
+map Y y$
+
+" switch buffers
+nnoremap <silent><leader><Tab> :bd<cr>
+nnoremap <silent><Tab> :bn<cr>
+nnoremap <silent><S-Tab> :bp<cr>
+
+" save with sudo
+cmap w!! w !sudo tee %
+
+" jump to buffer
+nnoremap <leader>1 :1b<cr>
+nnoremap <leader>2 :2b<cr>
+nnoremap <leader>3 :3b<cr>
+nnoremap <leader>4 :4b<cr>
+nnoremap <leader>5 :5b<cr>
+nnoremap <leader>6 :6b<cr>
+nnoremap <leader>7 :7b<cr>
+nnoremap <leader>8 :8b<cr>
+nnoremap <leader>9 :9b<cr>
+nnoremap <leader>0 :10b<cr>
+
+" sorting of lines
+vnoremap <leader>s :!sort<cr>
+
+" banish ex mode
+nnoremap Q <Nop>
+nnoremap gQ <Nop>
