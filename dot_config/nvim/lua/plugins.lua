@@ -141,6 +141,7 @@ return require('packer').startup({function(use)
       })
       vim.api.nvim_command([[
       highlight MiniTablineModifiedHidden guifg=#b48ead guibg=#373e4d
+      highlight! link MiniTablineVisible MiniTablineHidden
       ]])
       -- these are not visual plugins but basic text editing helpers
       require('mini.comment').setup()
