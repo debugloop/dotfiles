@@ -363,20 +363,6 @@ return require('packer').startup({function(use)
     end
   }
 
-  use { -- debug value annotations
-    'theHamsta/nvim-dap-virtual-text',
-    requires = { 'folke/which-key.nvim', 'mfussenegger/nvim-dap' },
-    ft = "go", -- just the languages which have their adapter installed
-    config = function()
-      dapvt = require("nvim-dap-virtual-text")
-      dapvt.setup()
-      dapvt.disable()
-      require('which-key').register({
-        ["<leader>a"] = { "<cmd>lua require('nvim-dap-virtual-text').toggle()<cr>", "debug: toggle annotations" },
-      })
-    end
-  }
-
   -- language support
   use { -- debug module for go
     'leoluz/nvim-dap-go',
