@@ -41,6 +41,19 @@ return require('packer').startup({function(use)
   --   end
   -- }
 
+  use { -- file grepping and finding UI
+    'nvim-telescope/telescope.nvim',
+    requires = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('telescope').setup({})
+      require('which-key').register({
+        ["<leader>ff"] = { require('telescope.builtin').find_files, "telescope: find files" },
+        ["<leader>fg"] = { require('telescope.builtin').live_grep, "telescope: live grep" },
+        ["<leader>gc"] = { require('telescope.builtin').git_bcommits, "telescope: git commits" },
+      })
+    end
+  }
+
   use { -- smooth scrolling
     'karb94/neoscroll.nvim',
     config = function()
