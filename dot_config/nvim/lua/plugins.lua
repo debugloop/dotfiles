@@ -74,8 +74,8 @@ return require('packer').startup({function(use)
         ["<leader>gU"] = { require('gitsigns').reset_buffer_index, "git: undo stage buffer" },
       })
       require('which-key').register({
-        ["<leader>gs"] = { "<cmd>Gitsigns stage_hunk<cr>", "git: stage" },
-        ["<leader>gr"] = { "<cmd>Gitsigns reset_hunk<cr>", "git: reset" },
+        ["<leader>gs"] = { require('gitsigns').stage_hunk, "git: stage" },
+        ["<leader>gr"] = { require('gitsigns').reset_hunk, "git: reset" },
       }, { mode = "v" })
     end
   }
