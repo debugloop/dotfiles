@@ -34,4 +34,3 @@ nnoremap <expr> <C-c> !empty(filter(tabpagebuflist(), 'getbufvar(v:val, "&buftyp
 
 -- include plugins
 require('plugins')
-

@@ -25,10 +25,26 @@ return require('packer').startup({function(use)
     end
   }
 
+  -- use {
+  --   'folke/tokyonight.nvim',
+  --   config = function()
+  --     vim.g.tokyonight_style = "night"
+  --     vim.cmd[[colorscheme tokyonight]]
+  --   end
+  -- }
+
+  -- use {
+  --   'sainnhe/everforest',
+  --   config = function()
+  --     vim.g.everforest_background = 'hard'
+  --     vim.cmd[[colorscheme everforest]]
+  --   end
+  -- }
+
   use { -- smooth scrolling
     'karb94/neoscroll.nvim',
     config = function()
-      require('neoscroll').setup()
+      require('neoscroll').setup({ respect_scrolloff = true })
     end
   }
 
@@ -167,7 +183,11 @@ return require('packer').startup({function(use)
     branch = 'v1',
     config = function()
       require('hop').setup({})
-      vim.api.nvim_set_keymap('n', 'S', "<cmd>lua require('hop').hint_char2({})<cr>", {})
+      require('which-key').register({
+        ["S"] = { require('hop').hint_char2, "hop anywhere with two chars" },
+        ["S"] = { require('hop').hint_char2, "hop anywhere with two chars", mode = "o" },
+        ["S"] = { require('hop').hint_char2, "hop anywhere with two chars", mode = "v" },
+      })
     end
   }
 
@@ -193,8 +213,8 @@ return require('packer').startup({function(use)
               ["iC"] = "@class.inner",
               ["ac"] = "@conditional.outer",
               ["ic"] = "@conditional.inner",
-              ["ae"] = "@block.outer",
-              ["ie"] = "@block.inner",
+              ["ab"] = "@block.outer",
+              ["ib"] = "@block.inner",
               ["al"] = "@loop.outer",
               ["il"] = "@loop.inner",
               ["is"] = "@statement.inner",
@@ -230,6 +250,18 @@ return require('packer').startup({function(use)
     end
   }
 
+  use {
+    'mfussenegger/nvim-treehopper',
+    config = function()
+      -- TODO: figure out how the following work in which-key
+      vim.api.nvim_command([[
+        omap     <silent> m :<C-U>lua require('tsht').nodes()<CR>
+        vnoremap <silent> m :lua require('tsht').nodes()<CR>
+        highlight TSNodeKey guibg=#ebcb8b guifg=#2e3440
+      ]])
+    end
+  }
+
   use { -- set commentstring from treesitter, used by mini.comment above
     'JoosepAlviste/nvim-ts-context-commentstring',
     requires = { 'nvim-treesitter/nvim-treesitter' }
@@ -239,7 +271,7 @@ return require('packer').startup({function(use)
   use { -- lsp configuration, mappings, autocommands
     'neovim/nvim-lspconfig',
     ft = "go",
-    requires = { 'folke/which-key.nvim', '~/scratch/vim-illuminate' },
+    requires = { 'folke/which-key.nvim', 'RRethy/vim-illuminate' },
     config = function()
       require("lspconfig").gopls.setup {
         cmd = {"gopls", "serve"},
@@ -251,13 +283,23 @@ return require('packer').startup({function(use)
             staticcheck = true,
           },
         },
-        on_attach = function(client)
+        on_attach = function(client, bufnr)
           require('illuminate').on_attach(client)
           require('which-key').register({
-            ["]i"] = { function() for i=1,vim.v.count1 do require('illuminate').next_reference({wrap=true, navigation_message=false}) end end, "jump to next reference" },
-            ["[i"] = { function() for i=1,vim.v.count1 do require('illuminate').next_reference({wrap=true, reverse=true, navigation_message=false}) end end, "jump to previous reference" },
+            ["K"] = { vim.lsp.buf.hover, "lsp: show help" },
+            ["gr"] = { vim.lsp.buf.references, "lsp: show references" },
+            ["gd"] = { vim.lsp.buf.definition, "lsp: goto type definition" },
+            ["gi"] = { vim.lsp.buf.implementation, "lsp: show implementations" },
+            ["<leader>m"] = { vim.lsp.buf.document_symbol, "lsp: map all symbols" },
+            ["<leader>f"] = { vim.lsp.buf.formatting, "lsp: run formatter" },
+            ["<leader>r"] = { vim.lsp.buf.rename, "lsp: rename symbol" },
+            ["<leader>?"] = { vim.lsp.buf.code_action, "lsp: run code action" },
+            ["]d"] = { function() for i=1,vim.v.count1 do vim.diagnostic.goto_next() end end, "jump to next diagnostic" },
+            ["[d"] = { function() for i=1,vim.v.count1 do vim.diagnostic.goto_prev() end end, "jump to previous diagnostic" },
+            ["]i"] = { function() for i=1,vim.v.count1 do require('illuminate').next_reference({wrap=true, silent=true}) end end, "jump to next reference" },
+            ["[i"] = { function() for i=1,vim.v.count1 do require('illuminate').next_reference({wrap=true, reverse=true, silent=true}) end end, "jump to previous reference" },
             ["<leader>it"] = { require('illuminate').toggle_pause, "illuminate: toggle updates" },
-          })
+          }, { buffer = bufnr })
           vim.api.nvim_command([[
           highlight LspReference guibg=NONE guifg=#bf616a gui=underline
           highlight! link LspReferenceText LspReference
@@ -293,21 +335,12 @@ return require('packer').startup({function(use)
       autocmd BufWritePre *.go :lua goimports(1000)
       autocmd BufWritePre *.go :lua vim.lsp.buf.formatting()
       augroup end
-      au FileType go nmap <silent>K :lua vim.lsp.buf.hover()<cr>
       ]], false)
-      require('which-key').register({
-        ["gr"] = { "<cmd>lua vim.lsp.buf.references()<cr>", "lsp: show references" },
-        ["gd"] = { "<cmd>lua vim.lsp.buf.definition()<cr>", "lsp: goto definition" },
-        ["gi"] = { "<cmd>lua vim.lsp.buf.implementation()<cr>", "lsp: show implementations" },
-        ["<leader>m"] = { "<cmd>lua vim.lsp.buf.document_symbol()<cr>", "lsp: map all symbols" },
-        ["<leader>f"] = { "<cmd>lua vim.lsp.buf.formatting()<cr>", "lsp: run formatter" },
-        ["<leader>r"] = { "<cmd>lua vim.lsp.buf.rename()<cr>", "lsp: rename symbol" },
-      })
     end
   }
 
   use { -- highlight references for lsp
-    '~/scratch/vim-illuminate',
+    'RRethy/vim-illuminate',
     ft = "go"
   }
 
@@ -317,17 +350,18 @@ return require('packer').startup({function(use)
     requires = { 'folke/which-key.nvim' },
     config = function()
       require('which-key').register({
-        ["<leader>b"] = { "<cmd>lua require('dap').toggle_breakpoint()<cr>", "debug: toggle breakpoint" },
-        ["<leader>B"] = { "<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))", "debug: set conditional breakpoint" },
-        ["<leader>d"] = { "<cmd>lua require('dap').continue()<cr>", "debug: start or continue" },
-        ["<leader>c"] = { "<cmd>lua require('dap').continue()<cr>", "debug: continue or start" },
-        ["<leader>C"] = { "<cmd>lua require('dap').run_to_cursor()<cr>", "debug: continue to cursor" },
-        ["<leader>s"] = { "<cmd>lua require('dap').step_over()<cr>", "debug: step" },
-        ["<leader>i"] = { "<cmd>lua require('dap').step_into()<cr>", "debug: step into" },
-        ["<leader>o"] = { "<cmd>lua require('dap').step_out()<cr>", "debug: step out" },
-        ["<leader>fd"] = { "<cmd>lua require('dap').down()<cr>", "debug: frame down" },
-        ["<leader>fu"] = { "<cmd>lua require('dap').up()<cr>", "debug: frame up" },
-        ["<leader>q"] = { "<cmd>lua require('dap').terminate()<cr><cmd>lua require('dap').repl.close()<cr><cmd>lua require('dapui').close()<cr><cmd>lua require('nvim-dap-virtual-text').disable()<cr>", "quit debugging" },
+        ["<leader>b"] = {  require('dap').toggle_breakpoint, "debug: toggle breakpoint" },
+        ["<leader>B"] = {  function() require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, "debug: set conditional breakpoint" },
+        ["<leader>d"] = {  function() dap = require('dap'); dap.terminate(); dap.continue(); end, "debug: start or restart" },
+        ["<leader>c"] = {  require('dap').continue, "debug: continue or start" },
+        ["<leader>C"] = {  require('dap').run_to_cursor, "debug: continue to cursor" },
+        ["<leader>s"] = {  require('dap').step_over, "debug: step" },
+        ["<leader>i"] = {  require('dap').step_into, "debug: step into" },
+        ["<leader>o"] = {  require('dap').step_out, "debug: step out" },
+        ["<leader>fd"] = { require('dap').down, "debug: frame down" },
+        ["<leader>fu"] = { require('dap').up, "debug: frame up" },
+        ["<leader>q"] = {  function() dap = require('dap'); dap.terminate(); dap.repl.close(); end, "quit debugging" },
+        ["<leader>Q"] = {  function() dap = require('dap'); dap.terminate(); dap.repl.close(); require("dap.breakpoints").clear(); require('dapui').close() end, "quit debugging and clear breakpoints" },
       })
     end
   }
@@ -358,8 +392,8 @@ return require('packer').startup({function(use)
       autocmd FileType dap-repl set statusline=\ %f
       ]], false)
       require('which-key').register({
-        ["<leader>k"] = { "<cmd>lua require('dapui').eval()<cr>", "debug: show value" },
-        ["<leader>D"] = { "<cmd>lua require('dapui').toggle()<cr>", "debug: toggle view" },
+        ["<leader>k"] = { require('dapui').eval, "debug: show value" },
+        ["<leader>D"] = { require('dapui').toggle, "debug: toggle view" },
       })
     end
   }
@@ -372,7 +406,7 @@ return require('packer').startup({function(use)
     config = function ()
       require('dap-go').setup()
       require('which-key').register({
-        ["<leader>td"] = { "<cmd>lua require('dap-go').debug_test()<cr>", "test: start debugging closest" },
+        ["<leader>td"] = { require('dap-go').debug_test, "test: start debugging closest" },
       })
     end
   }
@@ -386,10 +420,10 @@ return require('packer').startup({function(use)
       local goc = require'nvim-goc'
       goc.setup({ verticalSplit = false })
       require('which-key').register({
-        ["<leader>tc"] = { "<cmd>lua require('nvim-goc').Coverage()<cr>", "test: show coverage" },
-        ["<leader>tf"] = { "<cmd>lua require('nvim-goc').CoverageFunc()<cr>", "test: show coverage for function" },
-        ["<leader>tC"] = { "<cmd>lua require('nvim-goc').ClearCoverage()<cr>", "test: clear coverage" },
-        ["<leader>a"] = { "<cmd>lua require('nvim-goc').Alternate()<cr>", "goto or create test file" },
+        ["<leader>tc"] = { require('nvim-goc').Coverage, "test: show coverage" },
+        ["<leader>tf"] = { require('nvim-goc').CoverageFunc, "test: show coverage for function" },
+        ["<leader>tC"] = { require('nvim-goc').ClearCoverage, "test: clear coverage" },
+        ["<leader>a"] = { require('nvim-goc').Alternate, "goto or create test file" },
       })
     end
   }

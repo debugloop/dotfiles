@@ -27,6 +27,9 @@ set wildcharm=<Tab>
 set foldmethod=indent
 set nofoldenable
 
+" better autowrap
+set breakindent
+
 " keep distance from edges
 set scrolloff=8
 set sidescrolloff=5
@@ -39,6 +42,8 @@ set hlsearch
 set gdefault
 set ignorecase
 set smartcase
+nnoremap n nzz
+nnoremap N Nzz
 
 " use system clipboard
 set clipboard^=unnamedplus
@@ -91,7 +96,7 @@ let mapleader = " "
 
 map q: :q
 
-" smarter go to beginning of line
+" smarter go to begin of line
 function! ToggleMovement(firstOp, thenOp)
   let pos = getpos('.')
   execute "normal! " . a:firstOp
@@ -99,8 +104,12 @@ function! ToggleMovement(firstOp, thenOp)
     execute "normal! " . a:thenOp
   endif
 endfunction
-noremap <silent> H :call ToggleMovement('^', '0')<cr>
+nnoremap <silent> H :call ToggleMovement('^', '0')<cr>
+noremap H 0
 noremap L $
+
+" jump back
+nnoremap <bs> ''
 
 " jump to visual lines
 nnoremap j gj
@@ -128,7 +137,7 @@ nnoremap <silent><Tab> :bn<cr>
 nnoremap <silent><S-Tab> :bp<cr>
 
 " save with sudo
-cmap w!! w !sudo tee %
+command! SudoWrite w !sudo tee > /dev/null %
 
 " jump to buffer
 nnoremap <leader>1 :1b<cr>
@@ -148,3 +157,15 @@ vnoremap <leader>s :!sort<cr>
 " banish ex mode
 nnoremap Q <Nop>
 nnoremap gQ <Nop>
+
+" no yank delete
+nnoremap X "_d
+nnoremap XX "_dd
+
+" motions for braces and parenthesis
+onoremap b i[|
+onoremap p i(|
+
+" replace current word
+nnoremap c* *``cgn
+nnoremap c# #``cgN
