@@ -193,13 +193,17 @@ return require('packer').startup({function(use)
 
   use { -- two char jump on S
     'phaazon/hop.nvim',
-    branch = 'v1',
     config = function()
       require('hop').setup({})
+      -- TODO: somehow this clunky triple require is needed to accept not only the last mapping
       require('which-key').register({
-        ["S"] = { require('hop').hint_char2, "hop anywhere with two chars" },
-        ["S"] = { require('hop').hint_char2, "hop anywhere with two chars", mode = "o" },
+        ["S"] = { require('hop').hint_char2, "hop anywhere with two chars"},
+      })
+      require('which-key').register({
         ["S"] = { require('hop').hint_char2, "hop anywhere with two chars", mode = "v" },
+      })
+      require('which-key').register({
+        ["S"] = { require('hop').hint_char2, "hop anywhere with two chars", mode = "o" },
       })
     end
   }
