@@ -17,3 +17,4 @@ Host *
     LocalCommand notify-send "%r@%h" "Connection successful."
     ServerAliveInterval 600
     AddKeysToAgent yes
+    SetEnv TERM=xterm-256color
