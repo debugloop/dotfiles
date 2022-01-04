@@ -1,14 +1,16 @@
-@define-color bg #2e3440;
-@define-color fg #d8dee9;
-@define-color dim_fg #a5abb6;
-@define-color black #3b4252;
-@define-color red #bf616a;
-@define-color green #a3be8c;
-@define-color yellow #ebcb8b;
-@define-color blue #81a1c1;
-@define-color magenta #b48ead;
-@define-color cyan #88c0d0;
-@define-color white #e5e9f0;
+@define-color bg #1f1f28;
+@define-color fg #dcd7ba;
+@define-color dim_fg #727169;
+@define-color black #090618;
+@define-color red #c34043;
+@define-color green #76946a;
+@define-color yellow #c0a36e;
+@define-color blue #7e9cd8;
+@define-color magenta #957fb8;
+@define-color cyan #6a9589;
+@define-color white #c8c093;
+@define-color dark_bg #16161d;
+@define-color light_bg #363646;
 
 * {
     border: none;
@@ -19,7 +21,7 @@
 }
 
 #waybar {
-    background: @bg;
+    background: @dark_bg;
     color: @fg;
     font-family: Fira Mono, "Font Awesome 5 Free";
     font-size: 13px;
@@ -33,25 +35,22 @@
 #workspaces button {
     padding: 4px 10px;
     color: @fg;
-    background-color: @bg;
+    background-color: @dark_bg;
 }
 
 #workspaces button:hover {
-    color: @bg;
-    background-color: @blue;
+    background-color: @bg;
+    border-top: 1px solid @cyan;
 }
 
 #workspaces button.focused {
-    color: @bg;
-    background-color: @fg;
-    /* border-top-left-radius: 10px; */
-    /* border-bottom-left-radius: 10px; */
-    /* border-top-right-radius: 10px; */
-    /* border-bottom-right-radius: 10px; */
+    color: @fg;
+    background-color: @light_bg;
+    border-top: 1px solid @blue;
 }
 
 #workspaces button.urgent {
-    color: @red;
+    border-top: 1px solid @red;
 }
 
 tooltip {
@@ -65,26 +64,46 @@ tooltip {
 .modules-right > * > * {
     padding: 0px 8px;
 }
+
+/* no padding in front */
 .modules-left > widget:first-child > #workspaces {
     padding: 0;
 }
 
-/* inverted color modules */
+/* all right hand modules */
+.modules-right > * > * {
+    margin: 0 2px 0 2px;
+}
+
+/* settings modules */
+#idle_inhibitor,
+#pulseaudio {
+    border-top: 1px solid @fg;
+}
+
+#tray {
+    border-top: 1px solid @white;
+}
+
+/* device status modules */
 #battery,
 #cpu,
 #disk,
-#idle_inhibitor,
 #memory,
 #network,
-#pulseaudio,
 #temperature {
-    color: @bg;
-    background-color: @fg;
+    border-top: 1px solid @cyan;
+}
+
+/* outside status modules */
+#custom-weather,
+#clock {
+    border-top: 1px solid @blue;
 }
 
 #window {
     color: @dim_fg;
-    background-color: @bg;
+    background-color: @dark_bg;
 }
 
 .warning {
@@ -99,14 +118,14 @@ tooltip {
 
 #custom-media {
     color: rgb(102, 220, 105);
-    background-color: @bg;
+    background-color: @dark_bg;
 }
 
 #custom-mic,
 #custom-screenrecord{
     color: @bg;
     background-color: @red;
-    padding: 0px 10px;
+    padding: 0px 8px;
 }
 
 #mode {
@@ -117,29 +136,4 @@ tooltip {
 #network.disconnected {
     color: @bg;
     background: @yellow;
-}
-
-/* styled transitions */
-/* #workspaces > button:first-child { */
-/*     border-top-left-radius: 10px; */
-/*     border-bottom-left-radius: 10px; */
-/* } */
-/* #workspaces > button:last-child { */
-/*     border-top-right-radius: 10px; */
-/*     border-bottom-right-radius: 10px; */
-/* } */
-
-#pulseaudio {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-
-#idle_inhibitor {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-#custom-mic {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
 }

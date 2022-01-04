@@ -12,17 +12,17 @@
         ],
         "modules-right": [
             "pulseaudio",
+            "idle_inhibitor",
+            "tray",
             "network",
             "temperature",
             "cpu",
             "memory",
             "disk",
             "battery",
-            "idle_inhibitor",
-            "tray",
             "custom/weather",
             "clock",
-            "custom/mic",
+            //"custom/mic",
             "custom/screenrecord"
         ],
 
@@ -60,11 +60,11 @@
                 "Paused": " "
             },
             "max-length": 80,
-            "exec": "playerctl -p spotify metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{ artist }} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
-            "on-click": "playerctl -p spotify play-pause",
-            "on-click-right": "playerctl -p spotify next",
-            "on-scroll-down": "playerctl -p spotify next",
-            "on-scroll-up": "playerctl -p spotify previous"
+            "exec": "playerctl -p spotify,psst metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{ artist }} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
+            "on-click": "playerctl -p spotify,psst play-pause",
+            "on-click-right": "playerctl -p spotify,psst next",
+            "on-scroll-down": "playerctl -p spotify,psst next",
+            "on-scroll-up": "playerctl -p spotify,psst previous"
         },
 
         "custom/mic": {
@@ -138,7 +138,7 @@
         "pulseaudio": {
             "format": "{format_source}{icon} {volume}%",
             "format-bluetooth": "{icon} {volume}%",
-            //"format-source": "<span color=\"#e06c75\"></span> ",
+            "format-source": "<span color=\"#c34043\"> </span>",
             "format-source-muted": "",
             "format-muted": " {volume}%",
             "format-icons": {
@@ -151,9 +151,7 @@
                 "critical": 100
             },
             "on-click": "pavucontrol",
-            //"on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
-            //"on-click-middle": "pactl set-source-mute @DEFAULT_SOURCE@ toggle",
-            "on-click-right": "pactl set-default-sink alsa_output.pci-0000_07_00.1.HiFi__hw_Generic_9__sink",
+            "on-click-right": "pactl set-default-sink alsa_output.pci-0000_07_00.1.HiFi__hw_Generic_1_9__sink",
             "on-click-middle": "pactl set-default-sink alsa_output.usb-Lenovo_ThinkPad_USB-C_Dock_Gen2_USB_Audio_000000000000-00.analog-stereo"
         },
 
