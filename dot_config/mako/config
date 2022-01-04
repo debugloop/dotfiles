@@ -1,9 +1,9 @@
 font=pango:Fira Mono 9
 
-text-color=#d8dee9
-background-color=#2e3440
+text-color=#dcd7ba
+background-color=#1f1f28
 
-border-color=#81a1c1
+border-color=#7e9cd8
 border-size=3
 border-radius=5
 

@@ -15,31 +15,31 @@ return require('packer').startup({function(use)
 
   -- visual plugins
   use { -- colorscheme
-    'andersevenrud/nordic.nvim',
-    config = function()
-      require('nordic').colorscheme({
-        underline_option = 'undercurl',
-        italic = false,
-        italic_comments = false,
+    "rebelot/kanagawa.nvim",
+    config = function ()
+      require('kanagawa').setup({
+        -- default colors
+        colors = {},
+        overrides = {},
+        -- no fancy term features
+        undercurl = false,
+        transparent = false,
+        -- no special styling such as bold or italic
+        commentStyle = "NONE",
+        functionStyle = "NONE",
+        keywordStyle = "NONE",
+        statementStyle = "NONE",
+        typeStyle = "NONE",
+        variablebuiltinStyle = "NONE",
+        -- no extra splashes of color
+        specialReturn = false,
+        specialException = false,
       })
+
+      -- setup must be called before loading
+      vim.cmd("colorscheme kanagawa")
     end
   }
-
-  -- use {
-  --   'folke/tokyonight.nvim',
-  --   config = function()
-  --     vim.g.tokyonight_style = "night"
-  --     vim.cmd[[colorscheme tokyonight]]
-  --   end
-  -- }
-
-  -- use {
-  --   'sainnhe/everforest',
-  --   config = function()
-  --     vim.g.everforest_background = 'hard'
-  --     vim.cmd[[colorscheme everforest]]
-  --   end
-  -- }
 
   use { -- file grepping and finding UI
     'nvim-telescope/telescope.nvim',
@@ -57,7 +57,7 @@ return require('packer').startup({function(use)
   use { -- smooth scrolling
     'karb94/neoscroll.nvim',
     config = function()
-      require('neoscroll').setup({ respect_scrolloff = true })
+      require('neoscroll').setup({})
     end
   }
 
@@ -169,7 +169,7 @@ return require('packer').startup({function(use)
         set_vim_settings = true
       })
       vim.api.nvim_command([[
-      highlight MiniTablineModifiedHidden guifg=#b48ead guibg=#373e4d
+      " highlight MiniTablineModifiedHidden guifg=#b48ead guibg=#373e4d
       highlight! link MiniTablineVisible MiniTablineHidden
       ]])
       -- these are not visual plugins but basic text editing helpers
@@ -179,7 +179,7 @@ return require('packer').startup({function(use)
       vim.api.nvim_set_keymap('i', [[<S-Tab>]], [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], { noremap = true, expr = true })
       require('mini.jump').setup()
       vim.api.nvim_command([[
-      highlight MiniJump guibg=NONE guibg=#bf616a
+      " highlight MiniJump guibg=NONE guifg=#3b4252 guibg=#ebcb8b
       ]])
       require('mini.pairs').setup()
       require('mini.surround').setup()
@@ -274,7 +274,7 @@ return require('packer').startup({function(use)
       vim.api.nvim_command([[
         omap     <silent> m :<C-U>lua require('tsht').nodes()<CR>
         vnoremap <silent> m :lua require('tsht').nodes()<CR>
-        highlight TSNodeKey guibg=#ebcb8b guifg=#2e3440
+        " highlight TSNodeKey guibg=#ebcb8b guifg=#2e3440
       ]])
     end
   }
@@ -318,10 +318,10 @@ return require('packer').startup({function(use)
             ["<leader>it"] = { require('illuminate').toggle_pause, "illuminate: toggle updates" },
           }, { buffer = bufnr })
           vim.api.nvim_command([[
-          highlight LspReference guibg=NONE guifg=#bf616a gui=underline
-          highlight! link LspReferenceText LspReference
-          highlight! link LspReferenceRead LspReference
-          highlight! link LspReferenceWrite LspReference
+          " highlight LspReference guibg=NONE guifg=#bf616a gui=underline
+          " highlight! link LspReferenceText LspReference
+          " highlight! link LspReferenceRead LspReference
+          " highlight! link LspReferenceWrite LspReference
           ]])
         end
       }

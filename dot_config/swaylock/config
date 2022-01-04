@@ -13,25 +13,25 @@ show-failed-attempts
 indicator-radius=300
 indicator-thickness=30
 
-inside-color=2e344000
-inside-ver-color=2e344000
-inside-clear-color=2e344000
-inside-wrong-color=2e344000
-separator-color=2e344000
+inside-color=1f1f2800
+inside-ver-color=1f1f2800
+inside-clear-color=1f1f2800
+inside-wrong-color=1f1f2800
+separator-color=1f1f2800
 
-key-hl-color=88c0d0
-bs-hl-color=bf616a
+key-hl-color=6a9589
+bs-hl-color=c34043
 
 line-uses-inside
 
-ring-color=2e344000
-text-color=d8dee9ff
+ring-color=1f1f2800
+text-color=dcd7baff
 
-ring-clear-color=2e344000
-text-clear-color=d8dee9ff
+ring-clear-color=1f1f2800
+text-clear-color=dcd7baff
 
-ring-ver-color=81a1c1ff
-text-ver-color=2e344000
+ring-ver-color=7e9cd8ff
+text-ver-color=1f1f2800
 
-ring-wrong-color=bf616aff
-text-wrong-color=bf616aff
+ring-wrong-color=c34043ff
+text-wrong-color=c34043ff
