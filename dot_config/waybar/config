@@ -142,17 +142,24 @@
             "format-source-muted": "",
             "format-muted": " {volume}%",
             "format-icons": {
-                "hdmi": "",
-                "speaker": "",
-                "default": ""
+                "default": "",
+                "headphone": "",
+                "speaker": "",
+                "hdmi": "",
+                "headset": "",
+                "hands-free": "",
+                "portable": "",
+                "car": "",
+                "hifi": "",
+                "phone": ""
             },
             "states": {
                 "warning": 80,
                 "critical": 100
             },
             "on-click": "pavucontrol",
-            "on-click-right": "pactl set-default-sink alsa_output.pci-0000_07_00.1.HiFi__hw_Generic_1_9__sink",
-            "on-click-middle": "pactl set-default-sink alsa_output.usb-Lenovo_ThinkPad_USB-C_Dock_Gen2_USB_Audio_000000000000-00.analog-stereo"
+            "on-click-middle": "pactl set-default-sink alsa_output.pci-0000_07_00.6.HiFi__hw_Generic_1__sink",
+            "on-click-right": "pactl set-default-sink alsa_output.usb-Lenovo_ThinkPad_USB-C_Dock_Gen2_USB_Audio_000000000000-00.analog-stereo"
         },
 
         "sway/mode": {
