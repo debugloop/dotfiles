@@ -5,7 +5,8 @@ set -x LANG en_US.UTF-8
 set -x LC_TIME en_GB.UTF-8
 set -x EDITOR nvim
 set -x GTK_THEME "Arc-Darker"
-set -x HIGHLIGHT_STYLE nord
+set -x HIGHLIGHT_STYLE "base16/grayscale-dark"
+set -x BAT_THEME "ansi"
 
 set fish_greeting ""
 
@@ -85,7 +86,7 @@ alias ip='ip -c'
 alias dmesg='dmesg -T'
 alias ls='exa'
 alias ag='rg'
-alias cat='bat --theme=Nord'
+alias cat='bat'
 # }}}
 
 #####################################################################
