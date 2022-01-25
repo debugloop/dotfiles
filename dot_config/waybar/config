@@ -60,7 +60,7 @@
                 "Paused": " "
             },
             "max-length": 80,
-            "exec": "playerctl -p spotify,psst metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{ artist }} - {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
+            "exec": "playerctl -p spotify,psst metadata --format '{\"text\": \"{{ markup_escape(artist) }} - {{ markup_escape(title) }}\", \"tooltip\": \"{{ markup_escape(artist) }} - {{ markup_escape(title) }}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
             "on-click": "playerctl -p spotify,psst play-pause",
             "on-click-right": "playerctl -p spotify,psst next",
             "on-scroll-down": "playerctl -p spotify,psst next",
@@ -143,23 +143,12 @@
             "format-muted": " {volume}%",
             "format-icons": {
                 "default": "",
-                "headphone": "",
-                "speaker": "",
-                "hdmi": "",
-                "headset": "",
-                "hands-free": "",
-                "portable": "",
-                "car": "",
-                "hifi": "",
-                "phone": ""
-            },
-            "states": {
-                "warning": 80,
-                "critical": 100
+                "alsa_output.usb-Tdlasunnic_Sharkoon_Gaming_DAC_Pro_S_20181228.1-00.analog-stereo": "",
+                "easyeffects_sink": ""
             },
             "on-click": "pavucontrol",
-            "on-click-middle": "pactl set-default-sink alsa_output.pci-0000_07_00.6.HiFi__hw_Generic_1__sink",
-            "on-click-right": "pactl set-default-sink alsa_output.usb-Lenovo_ThinkPad_USB-C_Dock_Gen2_USB_Audio_000000000000-00.analog-stereo"
+            "on-click-middle": "/home/danieln/code/scripts/switch_sink.sh",
+            "on-click-right": "easyeffects"
         },
 
         "sway/mode": {

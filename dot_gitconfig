@@ -10,11 +10,13 @@
     p = pull --ff-only --prune
     pub = !git push -u origin $(git symbolic-ref --short HEAD)
     s = status -s
-    lv = log --first-parent -m --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --stat=99,99 --date=relative
-    lg = log --graph --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%G?:\\ %cn]" --decorate --date=relative
+    lv = log --first-parent -m --pretty=format:"%C(yellow)%h\\ %C(green)%ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --stat=99,99 --date=relative
+    lg = log --graph --pretty=format:"%C(yellow)%h\\ %C(green)%ad%Cred%d\\ %Creset%s%Cblue\\ [%G?:\\ %cn]" --decorate --date=relative
     grep = grep -Ii
     rdy = rebase -i @{u}
     bs = remote update origin --prune
+    b = branch --color="always" --sort=-authordate --format="%(color:blue)%(refname:short)\\ %(color:green)%(authordate:relative)\\ %(color:yellow)%(authorname)"
+    sweep = !git branch --merged $([[ $1 != \"-f\" ]] \\\n&& git rev-parse master) | egrep -v \"(^\\*|^\\s*(master|develop)$)\" \\\n| xargs git branch -d
 
 [color]
     ui = true
@@ -39,7 +41,7 @@
     navigate = true
     ; side-by-side = true
     dark = true
-    syntax-theme = Nord
+    syntax-theme = ansi
     features = unobtrusive-line-numbers
 
 [delta "unobtrusive-line-numbers"]

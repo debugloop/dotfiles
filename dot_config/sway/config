@@ -391,6 +391,15 @@ bindsym Mod4+m mode "move"
 
 ##################################
 # execution keys
+mode "ptt" {
+    bindsym --no-repeat XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle && pkill -SIGRTMIN+4 waybar
+    bindsym --no-repeat --release XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle && pkill -SIGRTMIN+4 waybar
+    bindsym Shift+XF86AudioMicMute mode "default"
+}
+bindsym Shift+XF86AudioMicMute mode "ptt"
+
+##################################
+# execution keys
 bindsym Mod4+Return exec foot
 
 mode "launch" {
