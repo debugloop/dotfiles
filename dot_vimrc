@@ -3,9 +3,11 @@
 "####################################################################
 
 " filetype plugin and syntax when there's no treesitter
-syntax on
+if !has('nvim')
+  syntax on
+  filetype plugin indent on
+endif
 set synmaxcol=512 " don't overdo it
-filetype plugin indent on
 
 " colorscheme if not overridden by plugins
 colorscheme industry
