@@ -13,6 +13,14 @@ return require('packer').startup({function(use)
     end
   }
 
+  -- test space
+  use{ 'anuvyklack/pretty-fold.nvim',
+     config = function()
+        require('pretty-fold').setup{}
+        require('pretty-fold.preview').setup({ key = 'l' })
+     end
+  }
+
   -- visual plugins
   use { -- colorscheme
     "rebelot/kanagawa.nvim",
@@ -214,7 +222,7 @@ return require('packer').startup({function(use)
     requires = { 'nvim-treesitter/nvim-treesitter-textobjects', 'folke/which-key.nvim' },
     run = ':TSUpdate',
     config = function()
-      require("nvim-treesitter.configs").setup {
+      require("nvim-treesitter.configs").setup({
         ensure_installed = "maintained",
         highlight = {
           enable = true,
@@ -258,7 +266,7 @@ return require('packer').startup({function(use)
             },
           },
         },
-      }
+      })
       -- TODO: if the move section above worked, I wouldn't need these:
       require('which-key').register({
         ["]]"] = { function() for i=1,vim.v.count1 do vim.api.nvim_command("TSTextobjectGotoNextStart @function.outer") end end, "jump to next function" },
@@ -367,6 +375,7 @@ return require('packer').startup({function(use)
     requires = { 'folke/which-key.nvim' },
     config = function()
       require('which-key').register({
+        ["<leader>k"] = { require('dap.ui.widgets').hover, "debug: show value", mode = "v" },
         ["<leader>b"] = {  require('dap').toggle_breakpoint, "debug: toggle breakpoint" },
         ["<leader>B"] = {  function() require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, "debug: set conditional breakpoint" },
         ["<leader>d"] = {  function() dap = require('dap'); dap.terminate(); dap.continue(); end, "debug: start or restart" },

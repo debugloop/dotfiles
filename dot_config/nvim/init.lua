@@ -16,8 +16,15 @@ vim.opt.backupdir = "/home/danieln/.backup/"
 vim.opt.showmode = false  -- cursor and statusline show this already
 vim.opt.termguicolors = true  -- proper colors
 
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldlevel = 99
+vim.opt.foldnestmax=1
+
 -- set neovim only options that are not lua-ready yet
 vim.api.nvim_exec([[
+syntax off
+
 " exceptions to backup setting (gopass edit is in /dev/shm/*)
 autocmd BufRead,BufNewFile /dev/* set nobackup
 autocmd BufRead,BufNewFile /dev/* set noundofile
