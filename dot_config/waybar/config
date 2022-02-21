@@ -22,7 +22,6 @@
             "battery",
             "custom/weather",
             "clock",
-            //"custom/mic",
             "custom/screenrecord"
         ],
 
@@ -65,19 +64,6 @@
             "on-click-right": "playerctl -p spotify,psst next",
             "on-scroll-down": "playerctl -p spotify,psst next",
             "on-scroll-up": "playerctl -p spotify,psst previous"
-        },
-
-        "custom/mic": {
-            "interval": 5,
-            "signal": 4,
-            "return-type": "json",
-            "format": "{icon}",
-            "format-icons": {
-                "mute": ""
-            },
-            "exec": "echo '{\"alt\": \"mute\"}'",
-            "exec-if": "pactl get-source-mute @DEFAULT_SOURCE@ | grep -vq yes",
-            "on-click": ""
         },
 
         "custom/screenrecord": {
@@ -140,7 +126,7 @@
             "format-bluetooth": "{icon} {volume}%",
             "format-source": "<span color=\"#c34043\"> </span>",
             "format-source-muted": "",
-            "format-muted": " {volume}%",
+            "format-muted": "{format_source} {volume}%",
             "format-icons": {
                 "default": "",
                 "alsa_output.usb-Tdlasunnic_Sharkoon_Gaming_DAC_Pro_S_20181228.1-00.analog-stereo": "",
@@ -208,63 +194,4 @@
             "tooltip": true
         }
     },
-    {
-        "output": "Iiyama North America PLX2483H 1127951501478",
-        "modules-left": [
-            "sway/workspaces",
-            "sway/mode",
-            "sway/window"
-        ],
-        "modules-center": [
-        ],
-        "modules-right": [
-            "clock"
-        ],
-
-        "clock": {
-            "interval": 1,
-            "format": "{:%a, %d.%m. %H:%M:%S}",
-            "tooltip-format": "<tt>{calendar}</tt>",
-            "locale": "en_GB.utf-8"
-        },
-
-        "sway/mode": {
-            "format": " {}",
-            "tooltip": false
-        },
-
-        "sway/window": {
-            "format": "{}",
-            "max-length": 60,
-            "rewrite": {
-                "(.*) — Mozilla Firefox": " $1",
-                "(.*) — Evolution": " $1",
-                "vim (.*) (.*)": " $2/{$1}",
-                "fish (.*)": " $1"
-            }
-        },
-
-        "sway/workspaces": {
-            "all-outputs": false,
-            "disable-scroll": true,
-            "format": "{icon} {name}",
-            "format-icons": {
-                "1:web": "",
-                "2:com": "",
-                "3:file": "",
-                "4:music": "",
-                "8:shell": "",
-                "9:shell": "",
-                "10:shell": "",
-                "urgent": "",
-                "focused": "",
-                "default": ""
-            }
-        },
-
-        "tray": {
-            "icon-size": 21,
-            "spacing": 10
-        }
-    }
 ]

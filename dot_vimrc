@@ -6,11 +6,9 @@
 if !has('nvim')
   syntax on
   filetype plugin indent on
+  colorscheme industry
 endif
 set synmaxcol=512 " don't overdo it
-
-" colorscheme if not overridden by plugins
-colorscheme industry
 
 " change buffers without saving
 set hidden
@@ -44,8 +42,6 @@ set hlsearch
 set gdefault
 set ignorecase
 set smartcase
-nnoremap n nzz
-nnoremap N Nzz
 
 " use system clipboard
 set clipboard^=unnamedplus
@@ -84,9 +80,6 @@ set guicursor=i:ver25Cursor/lCursor
 " highlight git merge markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
-" autoremove trailing whitespace
-au BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
-
 " grow and shrink splits with the window
 au VimResized * :wincmd =
 
@@ -107,7 +100,8 @@ function! ToggleMovement(firstOp, thenOp)
   endif
 endfunction
 nnoremap <silent> H :call ToggleMovement('^', '0')<cr>
-noremap H 0
+vnoremap H ^
+onoremap H ^
 noremap L $
 
 " jump back

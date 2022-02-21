@@ -23,7 +23,7 @@
 #waybar {
     background: @dark_bg;
     color: @fg;
-    font-family: Fira Mono, "Font Awesome 5 Free";
+    font-family: Fira Mono, "Font Awesome 6 Free";
     font-size: 13px;
 }
 

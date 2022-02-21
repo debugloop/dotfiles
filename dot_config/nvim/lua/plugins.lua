@@ -13,14 +13,6 @@ return require('packer').startup({function(use)
     end
   }
 
-  -- test space
-  use{ 'anuvyklack/pretty-fold.nvim',
-     config = function()
-        require('pretty-fold').setup{}
-        require('pretty-fold.preview').setup({ key = 'l' })
-     end
-  }
-
   -- visual plugins
   use { -- colorscheme
     "rebelot/kanagawa.nvim",
@@ -49,24 +41,19 @@ return require('packer').startup({function(use)
     end
   }
 
-  use { -- file grepping and finding UI
-    'nvim-telescope/telescope.nvim',
-    requires = { 'nvim-lua/plenary.nvim' },
-    config = function()
-      require('telescope').setup({})
-      require('which-key').register({
-        ["<leader>ff"] = { require('telescope.builtin').find_files, "telescope: find files" },
-        ["<leader>fg"] = { require('telescope.builtin').live_grep, "telescope: live grep" },
-        ["<leader>gc"] = { require('telescope.builtin').git_bcommits, "telescope: git commits" },
-      })
-    end
-  }
-
   use { -- smooth scrolling
     'karb94/neoscroll.nvim',
     config = function()
       require('neoscroll').setup({})
     end
+  }
+
+  use{ -- nice folds with previews
+    'anuvyklack/pretty-fold.nvim',
+     config = function()
+        require('pretty-fold').setup{}
+        require('pretty-fold.preview').setup({ key = 'l' })
+     end
   }
 
   use { -- git status in sign column (as well as some mappings and text objects)
@@ -177,7 +164,6 @@ return require('packer').startup({function(use)
         set_vim_settings = true
       })
       vim.api.nvim_command([[
-      " highlight MiniTablineModifiedHidden guifg=#b48ead guibg=#373e4d
       highlight! link MiniTablineVisible MiniTablineHidden
       ]])
       -- these are not visual plugins but basic text editing helpers
@@ -185,12 +171,21 @@ return require('packer').startup({function(use)
       require('mini.completion').setup()
       vim.api.nvim_set_keymap('i', [[<Tab>]],   [[pumvisible() ? "\<C-n>" : "\<Tab>"]],   { noremap = true, expr = true })
       vim.api.nvim_set_keymap('i', [[<S-Tab>]], [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], { noremap = true, expr = true })
+      require('mini.indentscope').setup({
+        symbol = 'ˑּ'
+      })
       require('mini.jump').setup()
       vim.api.nvim_command([[
-      " highlight MiniJump guibg=NONE guifg=#3b4252 guibg=#ebcb8b
+      highlight MiniJump guibg=NONE guifg=#1f1f28 guibg=#ffa066
       ]])
-      require('mini.pairs').setup()
       require('mini.surround').setup()
+      require('mini.trailspace').setup()
+      vim.api.nvim_command([[
+      highlight MiniTrailspace guibg=NONE guifg=#1f1f28 guibg=#e82424
+      ]])
+      require('which-key').register({
+        ["<leader>w"] = { require('mini.trailspace').trim, "trim trailing whitespace"},
+      })
     end
   }
 
@@ -213,6 +208,9 @@ return require('packer').startup({function(use)
       require('which-key').register({
         ["S"] = { require('hop').hint_char2, "hop anywhere with two chars", mode = "o" },
       })
+      vim.api.nvim_command([[
+        highlight HopNextKey guibg=NONE guifg=#1f1f28 guibg=#ffa066
+      ]])
     end
   }
 
@@ -282,8 +280,24 @@ return require('packer').startup({function(use)
       vim.api.nvim_command([[
         omap     <silent> m :<C-U>lua require('tsht').nodes()<CR>
         vnoremap <silent> m :lua require('tsht').nodes()<CR>
-        " highlight TSNodeKey guibg=#ebcb8b guifg=#2e3440
+        highlight TSNodeKey guibg=NONE guifg=#1f1f28 guibg=#ffa066
       ]])
+    end
+  }
+
+  use {
+    'romgrk/nvim-treesitter-context',
+    config = function()
+      require('treesitter-context').setup({
+        enable = true,
+        max_lines = 1,
+        patterns = {
+          default = {
+            'function',
+            'method',
+          },
+        },
+      })
     end
   }
 
@@ -321,16 +335,10 @@ return require('packer').startup({function(use)
             ["<leader>?"] = { vim.lsp.buf.code_action, "lsp: run code action" },
             ["]d"] = { function() for i=1,vim.v.count1 do vim.diagnostic.goto_next() end end, "jump to next diagnostic" },
             ["[d"] = { function() for i=1,vim.v.count1 do vim.diagnostic.goto_prev() end end, "jump to previous diagnostic" },
-            ["]i"] = { function() for i=1,vim.v.count1 do require('illuminate').next_reference({wrap=true, silent=true}) end end, "jump to next reference" },
-            ["[i"] = { function() for i=1,vim.v.count1 do require('illuminate').next_reference({wrap=true, reverse=true, silent=true}) end end, "jump to previous reference" },
+            ["]r"] = { function() for i=1,vim.v.count1 do require('illuminate').next_reference({wrap=true, silent=true}) end end, "jump to next reference" },
+            ["[r"] = { function() for i=1,vim.v.count1 do require('illuminate').next_reference({wrap=true, reverse=true, silent=true}) end end, "jump to previous reference" },
             ["<leader>it"] = { require('illuminate').toggle_pause, "illuminate: toggle updates" },
           }, { buffer = bufnr })
-          vim.api.nvim_command([[
-          " highlight LspReference guibg=NONE guifg=#bf616a gui=underline
-          " highlight! link LspReferenceText LspReference
-          " highlight! link LspReferenceRead LspReference
-          " highlight! link LspReferenceWrite LspReference
-          ]])
         end
       }
       -- goimports function from https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
@@ -370,6 +378,11 @@ return require('packer').startup({function(use)
   }
 
   -- debugging
+  use { -- nvim startup profiling
+    'tweekmonster/startuptime.vim',
+    cmd = "StartupTime"
+  }
+
   use { -- debug adapter
     'mfussenegger/nvim-dap',
     requires = { 'folke/which-key.nvim' },
