@@ -41,6 +41,14 @@ return require('packer').startup({function(use)
     end
   }
 
+  use({ -- additional colors for variety
+    "themercorp/themer.lua",
+    config = function()
+      require("themer").setup({
+      })
+    end
+  })
+
   use { -- smooth scrolling
     'karb94/neoscroll.nvim',
     config = function()
@@ -157,7 +165,7 @@ return require('packer').startup({function(use)
             })
           end
         },
-        set_vim_settings = true,
+        set_vim_settings = false,
       })
       require('mini.tabline').setup({
         show_icons = false,
@@ -192,6 +200,39 @@ return require('packer').startup({function(use)
   -- text editing
   use { -- never bother with indent
     'tpope/vim-sleuth'
+  }
+
+  use { -- yankring
+    'gbprod/yanky.nvim',
+    requires = { 'folke/which-key.nvim' },
+    config = function()
+      require("yanky").setup({
+        ring = {
+          history_length = 10,
+          storage = "shada",
+          sync_with_numbered_registers = true,
+        },
+        system_clipboard = {
+          sync_with_ring = true,
+        },
+      })
+      require('which-key').register({
+        ["p"] = { "<Plug>(YankyPutAfter)", "yank: put after" },
+        ["P"] = { "<Plug>(YankyPutBefore)", "yank: put before" },
+        ["gp"] = { "<Plug>(YankyPutAfter)", "yank: put after" },
+        ["gP"] = { "<Plug>(YankyPutBefore)", "yank: put after" },
+        ["y"] = { "<Plug>(YankyYank)", "yank" },
+        ["<C-y>"] = { "<Plug>(YankyCycleForward)", "cycle to previous yank" },
+      })
+    end
+  }
+
+  use { -- smart pair completion
+    'ZhiyuanLck/smart-pairs',
+    event = 'InsertEnter',
+    config = function()
+      require('pairs'):setup()
+    end
   }
 
   use { -- two char jump on S
@@ -313,22 +354,12 @@ return require('packer').startup({function(use)
     requires = { 'folke/which-key.nvim', 'RRethy/vim-illuminate' },
     config = function()
       require("lspconfig").gopls.setup {
-        cmd = {"gopls", "serve"},
-        settings = {
-          gopls = {
-            analyses = {
-              unusedparams = true,
-            },
-            staticcheck = true,
-          },
-        },
         on_attach = function(client, bufnr)
           require('illuminate').on_attach(client)
           require('which-key').register({
             ["K"] = { vim.lsp.buf.hover, "lsp: show help" },
             ["gr"] = { vim.lsp.buf.references, "lsp: show references" },
             ["gd"] = { vim.lsp.buf.definition, "lsp: goto type definition" },
-            ["gi"] = { vim.lsp.buf.implementation, "lsp: show implementations" },
             ["<leader>m"] = { vim.lsp.buf.document_symbol, "lsp: map all symbols" },
             ["<leader>f"] = { vim.lsp.buf.formatting, "lsp: run formatter" },
             ["<leader>r"] = { vim.lsp.buf.rename, "lsp: rename symbol" },
@@ -341,31 +372,24 @@ return require('packer').startup({function(use)
           }, { buffer = bufnr })
         end
       }
-      -- goimports function from https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
-      function goimports(timeout_ms)
-        local context = { only = { "source.organizeImports" } }
-        vim.validate { context = { context, "t", true } }
+      function OrgImports(wait_ms)
         local params = vim.lsp.util.make_range_params()
-        params.context = context
-        local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
-        if not result or next(result) == nil then return end
-        local actions = result[1].result
-        if not actions then return end
-        local action = actions[1]
-        if action.edit or type(action.command) == "table" then
-          if action.edit then
-            vim.lsp.util.apply_workspace_edit(action.edit)
+        params.context = {only = {"source.organizeImports"}}
+        local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, wait_ms)
+        for _, res in pairs(result or {}) do
+          for _, r in pairs(res.result or {}) do
+            if r.edit then
+              vim.lsp.util.apply_workspace_edit(r.edit, 'utf-8')
+            else
+              vim.lsp.buf.execute_command(r.command)
+            end
           end
-          if type(action.command) == "table" then
-            vim.lsp.buf.execute_command(action.command)
-          end
-        else
-          vim.lsp.buf.execute_command(action)
         end
       end
+      -- goimports function from https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
       vim.api.nvim_exec([[
       augroup on_save_go
-      autocmd BufWritePre *.go :lua goimports(1000)
+      autocmd BufWritePre *.go :lua OrgImports(1000)
       autocmd BufWritePre *.go :lua vim.lsp.buf.formatting()
       augroup end
       ]], false)

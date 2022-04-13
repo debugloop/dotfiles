@@ -14,6 +14,7 @@ function fish_user_key_bindings
     fish_default_key_bindings -M insert
     fish_vi_key_bindings --no-erase insert
     fzf_key_bindings
+    bind -M insert \cx "fg &> /dev/null"
 end
 
 set -x NVIM_TUI_ENABLE_TRUE_COLOR 1
@@ -87,6 +88,8 @@ alias dmesg='dmesg -T'
 alias ls='exa'
 alias ag='rg'
 alias cat='bat'
+alias sloc='tokei'
+alias cloc='tokei'
 # }}}
 
 #####################################################################

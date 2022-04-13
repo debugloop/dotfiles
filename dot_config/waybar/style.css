@@ -36,6 +36,7 @@
     padding: 4px 10px;
     color: @fg;
     background-color: @dark_bg;
+    border-top: 1px solid @bg;
 }
 
 #workspaces button:hover {

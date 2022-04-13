@@ -37,7 +37,8 @@
 
 [diff]
     colorMoved = default
-	algorithm = patience
+    algorithm = patience
+    tool = nvimdiff
 
 [delta]
     navigate = true

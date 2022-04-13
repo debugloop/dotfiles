@@ -15,11 +15,12 @@ vim.opt.backup = true  -- no backups on servers (vim), just on localhost (nvim)
 vim.opt.backupdir = "/home/danieln/.backup/"
 vim.opt.showmode = false  -- cursor and statusline show this already
 vim.opt.termguicolors = true  -- proper colors
+vim.opt.laststatus = 3 -- single status line
 
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldlevel = 99
-vim.opt.foldnestmax=1
+vim.opt.foldnestmax = 1
 
 -- set neovim only options that are not lua-ready yet
 vim.api.nvim_exec([[
@@ -29,8 +30,8 @@ syntax off
 autocmd BufRead,BufNewFile /dev/* set nobackup
 autocmd BufRead,BufNewFile /dev/* set noundofile
 
-" highlight yanked
-au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=300, on_visual=true}
+" highlight yanked without plugin
+au TextYankPost * lua vim.highlight.on_yank {higroup="Search", timeout=300, on_visual=true}
 
 " quickfix usability, some plugins use this heavily
 map <C-n> :cnext<cr>
