@@ -262,7 +262,7 @@ return require('packer').startup({function(use)
     run = ':TSUpdate',
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = "maintained",
+        ensure_installed = "all",
         highlight = {
           enable = true,
         },
@@ -368,7 +368,7 @@ return require('packer').startup({function(use)
             ["[d"] = { function() for i=1,vim.v.count1 do vim.diagnostic.goto_prev() end end, "jump to previous diagnostic" },
             ["]r"] = { function() for i=1,vim.v.count1 do require('illuminate').next_reference({wrap=true, silent=true}) end end, "jump to next reference" },
             ["[r"] = { function() for i=1,vim.v.count1 do require('illuminate').next_reference({wrap=true, reverse=true, silent=true}) end end, "jump to previous reference" },
-            ["<leader>it"] = { require('illuminate').toggle_pause, "illuminate: toggle updates" },
+            ["<leader>I"] = { require('illuminate').toggle_pause, "illuminate: toggle updates" },
           }, { buffer = bufnr })
         end
       }
