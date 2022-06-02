@@ -19,6 +19,12 @@ set backspace=indent,eol,start
 " allow mouse
 set mouse=a
 
+" grep
+if executable("rg")
+  set grepprg=rg\ --vimgrep\ --smart-case\ --hidden
+  set grepformat=%f:%l:%c:%m
+endif
+
 " complete commands
 set wildmenu
 set wildcharm=<Tab>

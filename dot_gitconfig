@@ -7,7 +7,7 @@
     co = checkout
     a = add
     ds = -c delta.side-by-side=true diff --ignore-space-change
-    p = pull --ff-only --prune
+    p = pull -r --ff-only --prune
     pub = !git push -u origin $(git symbolic-ref --short HEAD)
     s = status -s
     l = -c delta.side-by-side=true log --pretty=format:"%C(yellow)%h\\ %C(green)%ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --date=relative -32
@@ -23,39 +23,11 @@
     ui = true
 
 [push]
-	default = current
+    default = current
 
 [pull]
-    rebase = true
-	default = current
+    default = current
 
-[core]
-    pager = delta
-
-[interactive]
-    diffFilter = delta --color-only
-
-[diff]
-    colorMoved = default
-    algorithm = patience
-    tool = nvimdiff
-
-[delta]
-    navigate = true
-    ; side-by-side = true
-    dark = true
-    syntax-theme = ansi
-    features = unobtrusive-line-numbers
-
-[delta "unobtrusive-line-numbers"]
-    line-numbers = true
-    line-numbers-minus-style = "#a5abb6"
-    line-numbers-zero-style = "#a5abb6"
-    line-numbers-plus-style = "#a5abb6"
-    line-numbers-left-format = "{nm:>4}┊"
-    line-numbers-right-format = "{np:>4}│"
-    line-numbers-left-style = blue
-    line-numbers-right-style = blue
 [help]
 	autocorrect = 1
 
@@ -67,3 +39,31 @@
 
 [fetch]
 	prune = true
+
+[core]
+    pager = delta
+
+[delta]
+    navigate = true
+    ; side-by-side = true
+    dark = true
+    syntax-theme = ansi
+    features = unobtrusive-line-numbers
+
+[interactive]
+    diffFilter = delta --color-only
+
+[diff]
+    colorMoved = default
+    algorithm = patience
+    tool = nvimdiff
+
+[delta "unobtrusive-line-numbers"]
+    line-numbers = true
+    line-numbers-minus-style = "#a5abb6"
+    line-numbers-zero-style = "#a5abb6"
+    line-numbers-plus-style = "#a5abb6"
+    line-numbers-left-format = "{nm:>4}┊"
+    line-numbers-right-format = "{np:>4}│"
+    line-numbers-left-style = blue
+    line-numbers-right-style = blue

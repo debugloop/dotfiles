@@ -58,10 +58,18 @@ return require('packer').startup({function(use)
 
   use{ -- nice folds with previews
     'anuvyklack/pretty-fold.nvim',
-     config = function()
-        require('pretty-fold').setup{}
-        require('pretty-fold.preview').setup({ key = 'l' })
-     end
+    requires = 'anuvyklack/nvim-keymap-amend',
+    config = function()
+       require('pretty-fold').setup({})
+       require('pretty-fold.preview').setup({ default_keybindings = false })
+       local keymap_amend = require('keymap-amend')
+       local mapping = require('pretty-fold.preview').mapping
+       keymap_amend('n', 'l',  mapping.show_close_preview_open_fold)
+       keymap_amend('n', 'h',  mapping.close_preview_open_fold)
+       keymap_amend('n', 'zo', mapping.close_preview)
+       keymap_amend('n', 'zO', mapping.close_preview)
+       keymap_amend('n', 'zc', mapping.close_preview_without_defer)
+    end
   }
 
   use { -- git status in sign column (as well as some mappings and text objects)
@@ -202,8 +210,9 @@ return require('packer').startup({function(use)
     'tpope/vim-sleuth'
   }
 
-  use { -- yankring
+  use { -- yankring TODO: reenable as soon as it works again...
     'gbprod/yanky.nvim',
+    disable = 1,
     requires = { 'folke/which-key.nvim' },
     config = function()
       require("yanky").setup({
@@ -323,22 +332,6 @@ return require('packer').startup({function(use)
         vnoremap <silent> m :lua require('tsht').nodes()<CR>
         highlight TSNodeKey guibg=NONE guifg=#1f1f28 guibg=#ffa066
       ]])
-    end
-  }
-
-  use {
-    'romgrk/nvim-treesitter-context',
-    config = function()
-      require('treesitter-context').setup({
-        enable = true,
-        max_lines = 1,
-        patterns = {
-          default = {
-            'function',
-            'method',
-          },
-        },
-      })
     end
   }
 

@@ -27,8 +27,10 @@ set -x LESS_TERMCAP_so (printf "\033[01;44;33m")
 set -x LESS_TERMCAP_ue (printf "\033[0m")
 set -x LESS_TERMCAP_us (printf "\033[01;32m")
 
-if status is-login
-   set -x (gnome-keyring-daemon --start | string split "=")
+if test -n "$DISPLAY"
+    for env_var in (gnome-keyring-daemon --start);
+        set -x (echo $env_var | string split "=")
+    end
 end
 
 set fish_color_search_match --background=magenta
@@ -90,6 +92,7 @@ alias ag='rg'
 alias cat='bat'
 alias sloc='tokei'
 alias cloc='tokei'
+alias past="curl -F 'f:1=<-' ix.io | wl-copy"
 # }}}
 
 #####################################################################

@@ -64,8 +64,8 @@ output "*" bg ~/.bg.jpg fill
 exec kanshi
 exec mako -c ~/.config/mako/config
 exec gammastep -l 48.775846:9.182932
-exec foot -t 'scratch: ipython' -e fish -c "while true; ipython; end"
-exec foot -t 'scratch: notes' -e fish -c "cd ~/notes/; while true; nvim *; end"
+exec foot -T 'scratch: ipython' fish -c "while true; ipython; end"
+exec foot -T 'scratch: notes' fish -c "cd ~/notes/; while true; nvim *; end"
 exec waybar -b main
 
 exec swayidle -w \
@@ -96,6 +96,7 @@ for_window [app_id="firefox" title="Firefox — Sharing Indicator"] {
     floating enable
     resize set 30px
     border none
+    move position 66ppt -25px
 }
 
 for_window [app_id="vlc"] inhibit_idle visible
