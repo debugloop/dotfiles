@@ -7,7 +7,7 @@ return require('packer').startup(function(use)
         group = vim.api.nvim_create_augroup('on_save_nvim_plugins', {}),
         pattern = "plugins.lua",
         callback = function()
-          require("plugins")
+          vim.cmd('source ~/.config/nvim/init.lua')
           require('packer').sync()
         end
       })
@@ -24,6 +24,27 @@ return require('packer').startup(function(use)
     end
   })
 
+  use { -- mapping modes
+    'anuvyklack/hydra.nvim',
+  }
+
+  use({ -- beautify folds
+    'anuvyklack/pretty-fold.nvim',
+    config = function()
+      require('pretty-fold').setup()
+    end
+  })
+
+  use({ -- preview folds
+    'anuvyklack/fold-preview.nvim',
+    requires = 'anuvyklack/keymap-amend.nvim',
+    config = function()
+      require('fold-preview').setup({default_keybindings = false})
+
+      vim.keymap.set('n', 'l',  function() require('fold-preview').mapping.show_close_preview_open_fold(function() for i=1,vim.v.count1 do vim.api.nvim_feedkeys("l", "n", true) end end) end)
+    end
+  })
+
   use { -- smooth scrolling
     'karb94/neoscroll.nvim',
     config = function()
@@ -33,19 +54,75 @@ return require('packer').startup(function(use)
 
   use { -- git status in sign column (as well as some mappings and text objects)
     'lewis6991/gitsigns.nvim',
+    require = { "anuvyklack/hydra.nvim" },
     config = function()
       require('gitsigns').setup()
-      vim.keymap.set('n', '<leader>gt', require('gitsigns').toggle_signs, { desc = "git: toggle signs" })
-      vim.keymap.set('n', "]g", function() for i=1,vim.v.count1 do require('gitsigns').next_hunk({wrap = true, navigation_message = false}) end end, { desc = "jump to next git hunk" })
-      vim.keymap.set('n', "[g", function() for i=1,vim.v.count1 do require('gitsigns').prev_hunk({wrap = true, navigation_message = false}) end end, { desc = "jump to previous git hunk" })
-      vim.keymap.set('n', "<leader>ga", require('gitsigns').stage_hunk, { desc = "git: stage hunk" })
-      vim.keymap.set('n', "<leader>gA", require('gitsigns').stage_buffer, { desc = "git: stage buffer" })
-      vim.keymap.set('n', "<leader>gu", require('gitsigns').undo_stage_hunk, { desc = "git: undo stage hunk" })
-      vim.keymap.set('n', "<leader>gU", require('gitsigns').reset_buffer_index, { desc = "git: undo stage buffer" })
-      vim.keymap.set('n', "<leader>gr", require('gitsigns').reset_hunk, { desc = "git: reset hunk" })
-      vim.keymap.set('n', "<leader>gR", require('gitsigns').reset_buffer, { desc = "git: reset buffer" })
-      vim.keymap.set('n', "<leader>gd", require('gitsigns').preview_hunk, { desc = "git: diff hunk" })
-      vim.keymap.set('n', "<leader>gb", require('gitsigns').blame_line, { desc = "git: blame line" })
+      local hint = [[
+ _s_: stage hunk  _S_: stage buffer     _u_: undo last stage  _U_: unstage buffer
+ _J_: next hunk   _K_: previous hunk    _p_: preview hunk     _C_: change base
+ _b_: blame       _B_: blame with diff  _d_: toggle deleted   _w_: toggle word diff
+ ^
+ ^ ^              _q_/_<Esc>_: quit
+]]
+
+      local Hydra = require("hydra")
+      Hydra({
+        name = 'Git',
+        hint = hint,
+        config = {
+          buffer = bufnr,
+          color = 'pink',
+          invoke_on_body = true,
+          hint = {
+            type = 'window',
+            border = 'single',
+            position = 'bottom'
+          },
+          on_enter = function()
+            vim.cmd 'mkview'
+            vim.cmd 'silent! %foldopen!'
+            vim.bo.modifiable = false
+            require('gitsigns').toggle_linehl(true)
+          end,
+          on_exit = function()
+            local cursor_pos = vim.api.nvim_win_get_cursor(0)
+            vim.cmd 'loadview'
+            vim.api.nvim_win_set_cursor(0, cursor_pos)
+            require('gitsigns').toggle_linehl(false)
+            require('gitsigns').toggle_deleted(false)
+          end,
+        },
+        mode = {'n','x'},
+        body = '<leader>g',
+        heads = {
+          { 'J',
+            function()
+              if vim.wo.diff then return ']c' end
+              vim.schedule(function() require('gitsigns').next_hunk() end)
+              return '<Ignore>'
+            end,
+            { expr = true, desc = 'next hunk' } },
+          { 'K',
+            function()
+              if vim.wo.diff then return '[c' end
+              vim.schedule(function() require('gitsigns').prev_hunk() end)
+              return '<Ignore>'
+            end,
+            { expr = true, desc = 'prev hunk' } },
+          { 's', require('gitsigns').stage_hunk, { silent = true, nowait = true, desc = 'stage hunk' } },
+          { 'S', require('gitsigns').stage_buffer, { desc = 'stage buffer' } },
+          { 'u', require('gitsigns').undo_stage_hunk, { desc = 'undo last stage' } },
+          { 'U', require('gitsigns').reset_buffer_index, { silent = true, nowait = true, desc = 'unstage all' } },
+          { 'p', require('gitsigns').preview_hunk, { desc = 'preview hunk' } },
+          { 'd', require('gitsigns').toggle_deleted, { nowait = true, desc = 'toggle deleted' } },
+          { 'w', require('gitsigns').toggle_word_diff, { nowait = true, desc = 'toggle word diff' } },
+          { 'b', require('gitsigns').blame_line, { desc = 'blame' } },
+          { 'B', function() require('gitsigns').blame_line({ full = true }) end, { desc = 'blame show full' } },
+          { 'C', function() require('gitsigns').change_base(vim.fn.input('Branch: ')) end, { desc = 'change base branch' } },
+          { 'q', nil, { exit = true, nowait = true, desc = 'exit' } },
+          { '<Esc>', nil, { exit = true, nowait = true, desc = 'exit' } }
+        }
+      })
     end
   }
 
@@ -148,6 +225,7 @@ return require('packer').startup(function(use)
     config = function()
       require("nvim-treesitter.configs").setup({
         ensure_installed = "all",
+        auto_install = true,
         highlight = {
           enable = true,
         },
@@ -242,7 +320,9 @@ return require('packer').startup(function(use)
 
       vim.keymap.set('n', "K", vim.lsp.buf.hover, { desc = "lsp: show help" })
       vim.keymap.set('n', "gr", vim.lsp.buf.references, { desc = "lsp: show references" })
-      vim.keymap.set('n', "gd", vim.lsp.buf.definition, { desc = "lsp: goto type definition" })
+      vim.keymap.set('n', "gd", vim.lsp.buf.definition, { desc = "lsp: goto definition" })
+      vim.keymap.set('n', "gD", vim.lsp.buf.declaration, { desc = "lsp: goto declaration" })
+      vim.keymap.set('n', "gi", vim.lsp.buf.implementation, { desc = "lsp: list implementations" })
       vim.keymap.set('n', "<leader>m", vim.lsp.buf.document_symbol, { desc = "lsp: map all symbols" })
       vim.keymap.set('n', "<leader>f", vim.lsp.buf.formatting, { desc = "lsp: format file" })
       vim.keymap.set('n', "<leader>r", vim.lsp.buf.rename, { desc = "lsp: rename symbol" })
@@ -255,7 +335,7 @@ return require('packer').startup(function(use)
     end
   }
 
-  use {  -- better display of diagnostics
+  use { -- better display of diagnostics
     "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
     config = function()
       require("lsp_lines").setup()
@@ -277,57 +357,144 @@ return require('packer').startup(function(use)
 
   use { -- debug adapter
     'mfussenegger/nvim-dap',
+    require = { "anuvyklack/hydra.nvim" },
     config = function()
       vim.keymap.set('n', "<leader>b",  require('dap').toggle_breakpoint, { desc = "debug: toggle breakpoint" })
       vim.keymap.set('n', "<leader>B",  function() require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, { desc = "debug: set conditional breakpoint" })
-      vim.keymap.set('n', "<leader>d",  function() dap = require('dap'); dap.terminate(); dap.continue(); end, { desc = "debug: start or restart" })
-      vim.keymap.set('n', "<leader>c",  require('dap').continue, { desc = "debug: continue or start" })
-      vim.keymap.set('n', "<leader>C",  require('dap').run_to_cursor, { desc = "debug: continue to cursor" })
-      vim.keymap.set('n', "<leader>s",  require('dap').step_over, { desc = "debug: step" })
-      vim.keymap.set('n', "<leader>i",  require('dap').step_into, { desc = "debug: step into" })
-      vim.keymap.set('n', "<leader>o",  require('dap').step_out, { desc = "debug: step out" })
-      vim.keymap.set('n', "<leader>fd", require('dap').down, { desc = "debug: frame down" })
-      vim.keymap.set('n', "<leader>fu", require('dap').up, { desc = "debug: frame up" })
-      vim.keymap.set('n', "<leader>q",  function() dap = require('dap'); dap.terminate(); dap.repl.close(); end, { desc = "quit debugging" })
-      vim.keymap.set('n', "<leader>Q",  function() dap = require('dap'); dap.terminate(); dap.repl.close(); require("dap.breakpoints").clear(); require('dapui').close() end, { desc = "quit debugging and clear breakpoints" })
-    end
-  }
-
-  use { -- debug ui
-    'rcarriga/nvim-dap-ui',
-    requires = { 'mfussenegger/nvim-dap' },
-    ft = "go", -- just the languages which have their adapter installed
-    config = function()
-      require("dapui").setup({
-        layouts = {
-          {
-            elements = {
-              'scopes',
-              'breakpoints',
-              'stacks',
-              'watches',
-            },
-            size = 40,
-            position = 'left',
-          },
-          {
-            elements = {
-              'repl',
-              'console',
-            },
-            size = 10,
-            position = 'bottom',
-          },
-        },
-      })
 
       vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup('on_dap_windows', {}),
-        pattern = "dap*",
-        callback = function() vim.statusline = "" end,
+        group = vim.api.nvim_create_augroup('on_dap_repl', {}),
+        pattern = "dap-repl",
+        callback = function()
+          vim.cmd("startinsert")
+        end,
       })
-      vim.keymap.set('n', "<leader>k", require('dapui').eval, { desc = "debug: show value" })
-      vim.keymap.set('n', "<leader>D", require('dapui').toggle, { desc = "debug: toggle view" })
+
+      local Hydra = require("hydra")
+      local hint = [[
+ _c_: continue      _s_: step over    _fu_: frame up         _e_: evaluate at cursor
+ _C_: run to cursor _i_: step into    _fd_: frame down       _E_: evaluate expression
+ _r_: open repl     _o_: step out     _b_: toggle breakpoint _B_: set conditional breakpoint
+ ^
+ ^ ^              _q_/_<Esc>_: quit              _Q_: quit and reset
+]]
+
+      Hydra({
+        name = 'Debug',
+        hint = hint,
+        config = {
+          color = 'pink',
+          invoke_on_body = true,
+          hint = {
+            type = 'window',
+            border = 'single',
+            position = 'bottom'
+          },
+          on_enter = function()
+            require('dap').continue();
+          end,
+          on_exit = function()
+            require('dap').terminate()
+          end
+        },
+        mode = {'n','x'},
+        body = '<leader>d',
+        heads = {
+          { 'c',
+            function()
+              require('dap').continue()
+            end,
+            { desc = "continue or start" }
+          },
+          { 'C',
+            function()
+              require('dap').run_to_cursor()
+            end,
+            { desc = "run to cursor" }
+          },
+          { 's',
+            function()
+              require('dap').step_over()
+            end,
+            { desc = "step over" }
+          },
+          { 'i',
+            function()
+              require('dap').step_into()
+            end,
+            { desc = "step into" }
+          },
+          { 'o',
+            function()
+              require('dap').step_out()
+            end,
+            { desc = "step out" }
+          },
+          { 'fd',
+            function()
+              require('dap').down()
+            end,
+            { desc = "frame down" }
+          },
+          { 'fu',
+            function()
+              require('dap').up()
+            end,
+            { desc = "frame up" }
+          },
+          { 'e',
+            function()
+              require('dap.ui.widgets').preview()
+            end,
+            { desc = "evaluate value under cursor" }
+          },
+          { 'E',
+            function()
+              require('dap.ui.widgets').preview(vim.fn.input('Expression: '))
+            end,
+            { desc = "evaluate given expression" }
+          },
+          { 'b',
+            function()
+              require('dap').toggle_breakpoint()
+            end,
+            { desc = "toggle breakpoint" }
+          },
+          { 'B',
+            function()
+              require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))
+            end,
+            { desc = "set conditional breakpoint" }
+          },
+          { 'r',
+            function()
+              require('dap').repl.toggle()
+              vim.cmd("wincmd j")
+            end,
+            { desc = "debug: repl" }
+          },
+          { 'q',
+            function()
+              require('dap').repl.close()
+            end,
+            { desc = "quit", exit = true }
+          },
+          { '<Esc>',
+            function()
+              require('dap').repl.close()
+            end,
+            { desc = "quit", exit = true }
+          },
+          { 'Q',
+            function()
+              require('dap').repl.close()
+              require("dap.breakpoints").clear()
+              require('dapui').close()
+            end,
+            { desc = "quit and reset", exit = true }
+          },
+        }
+      })
     end
   }
 
@@ -344,13 +511,19 @@ return require('packer').startup(function(use)
 
   use { -- go test coverage
     'ja-he/nvim-goc.lua',
-    ft = "go",
     branch = "fix-deprecated-hi-link",
     config = function ()
       require('nvim-goc').setup({ verticalSplit = false })
-      vim.keymap.set('n', "<leader>tc", require('nvim-goc').Coverage, { desc = "test: show coverage" })
-      vim.keymap.set('n', "<leader>tf", require('nvim-goc').CoverageFunc, { desc = "test: show coverage for function" })
-      vim.keymap.set('n', "<leader>tC", require('nvim-goc').ClearCoverage, { desc = "test: clear coverage" })
+      vim.keymap.set('n', "<leader>tc",
+        function()
+          if goc_coverage_on == true then
+            require('nvim-goc').ClearCoverage()
+            goc_coverage_on = false
+          else
+            require('nvim-goc').Coverage()
+            goc_coverage_on = true
+          end
+        end, { desc = "test: show coverage" })
       vim.keymap.set('n', "<leader>a", require('nvim-goc').Alternate, { desc = "goto or create test file" })
     end
   }

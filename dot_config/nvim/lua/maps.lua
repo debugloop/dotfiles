@@ -30,8 +30,8 @@ vim.keymap.set('n', '<C-c>', '<cmd>nohl<cr>')
 vim.keymap.set('n', '<bs>', "''")
 
 -- navigate between visual lines, even if they're wrapped
-vim.keymap.set('n', 'j', 'gj')
-vim.keymap.set('n', 'k', 'gk')
+vim.keymap.set('n', 'j', function() if (vim.v.count == 0) then return 'gj' else return 'j' end end, {expr = true})
+vim.keymap.set('n', 'k', function() if (vim.v.count == 0) then return 'gk' else return 'k' end end, {expr = true})
 vim.keymap.set('n', 'gj', 'j')
 vim.keymap.set('n', 'gk', 'k')
 
@@ -47,6 +47,10 @@ vim.keymap.set('v', '>', ">gv")
 vim.keymap.set('n', 'Y', 'y$')
 
 -- jump to buffer
+vim.keymap.set('n', '<leader>1', '<cmd>1b<cr>', { desc = "go to buffer 1" })
+vim.keymap.set('n', '<leader>1', '<cmd>1b<cr>', { desc = "go to buffer 1" })
+vim.keymap.set('n', '<leader>1', '<cmd>1b<cr>', { desc = "go to buffer 1" })
+vim.keymap.set('n', '<leader>1', '<cmd>1b<cr>', { desc = "go to buffer 1" })
 vim.keymap.set('n', '<leader>1', '<cmd>1b<cr>', { desc = "go to buffer 1" })
 vim.keymap.set('n', '<leader>2', '<cmd>2b<cr>', { desc = "go to buffer 2" })
 vim.keymap.set('n', '<leader>3', '<cmd>3b<cr>', { desc = "go to buffer 3" })
@@ -67,3 +71,7 @@ vim.keymap.set('n', 'gQ', '<nop>')
 -- no yank delete
 vim.keymap.set('n', 'X', '"_d')
 vim.keymap.set('n', 'XX', '"_dd')
+
+-- nvim terminal
+vim.keymap.set('t', '<C-n>', '<C-\\><C-n>')         -- go into terminal normal mode easily
+vim.keymap.set('n', '<C-Cr>', '<cmd>terminal<cr>')  -- open terminal

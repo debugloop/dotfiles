@@ -1,5 +1,6 @@
 -- general behavior
 vim.opt.clipboard = 'unnamedplus'   -- sync yank with system clipboard
+vim.opt.lazyredraw = true           -- enable lazy redraw during macros
 vim.opt.swapfile = false            -- disable swap files
 vim.opt.undofile = true             -- enable persistent undo
 vim.opt.undodir = '~/.undo'         -- set undo location
@@ -15,7 +16,7 @@ vim.api.nvim_create_autocmd("BufRead,BufNewFile", {  -- disable undofile and bac
 })
 
 -- editing
-vim.opt.foldenable = false  -- no folding unless I close one myself
+vim.opt.foldlevel = 999   -- no folding unless I close one myself
 vim.opt.foldmethod = "expr"  -- use below expression for folding
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"  -- get that folding expression from treesitter
 
@@ -33,22 +34,25 @@ vim.opt.smartcase = true  -- search case-sensitive when capital letters are sear
 vim.opt.termguicolors = true    -- assume a modern terminal and use 24bit RGB
 vim.opt.breakindent = true      -- indent wrapped lines
 vim.opt.number = true           -- enable line numbers
-vim.opt.relativenumber = true   -- enable relative line numbers as well
+vim.opt.relativenumber = true   -- enable relative line numbers
 vim.opt.scrolloff = 8           -- always show this many lines of context at the edges
 vim.opt.sidescrolloff = 5       -- always show this many columns of context at the edges
 vim.opt.laststatus = 3          -- single status line for all windows
 vim.opt.cmdheight = 0           -- gain an extra line
 vim.opt.splitbelow = true       -- open horizontal splits below the current window
 vim.opt.splitright = true       -- open vertical splits to the right of the current window
-vim.opt.cursorline = true       -- enable line highlight in any case
+
+vim.opt.listchars = "eol:¬,tab:»·,trail:~,space:·"  -- list these chars if enabled
 
 vim.api.nvim_create_autocmd({"WinLeave", "InsertEnter"}, {  -- only in insert mode and unfocused window
   group = vim.api.nvim_create_augroup('on_insert_enter', {}),
   pattern = "*",
   callback = function()
-    vim.opt.cursorcolumn = true
-    vim.opt.listchars = "eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·"
-    vim.opt.list = true
+    vim.opt.cursorline = true           -- show line highlight
+    vim.opt.cursorcolumn = true         -- show cursor column
+    vim.opt.list = true                 -- show whitespace chars
+    vim.opt.relativenumber = false      -- show relative line numbers
+    vim.g.miniindentscope_disable=true  -- disable plugin drawn guides, if present
   end,
 })
 
@@ -56,8 +60,11 @@ vim.api.nvim_create_autocmd({"WinEnter", "InsertLeave"}, {  -- revert to this on
   group = vim.api.nvim_create_augroup('on_insert_leave', {}),
   pattern = "*",
   callback = function()
-    vim.opt.cursorcolumn = false
-    vim.opt.list = false
+    vim.opt.cursorline = false            -- don't show line highlight
+    vim.opt.cursorcolumn = false          -- don't show cursor column
+    vim.opt.list = false                  -- don't show whitespace chars
+    vim.opt.relativenumber = true         -- don't show relative line numbers
+    vim.g.miniindentscope_disable=false   -- reenable plugin drawn guides, if present
   end,
 })
 
@@ -70,5 +77,20 @@ vim.api.nvim_create_autocmd("VimResized", {  -- equalize windows on resize
 
 vim.api.nvim_create_autocmd("TextYankPost", {  -- flash yanked text
   group = vim.api.nvim_create_augroup('on_yank', {}),
-  callback = function() vim.highlight.on_yank({timeout = 300, on_visual = false}) end,
+  callback = function() vim.highlight.on_yank({timeout = 300}) end,
+})
+
+vim.api.nvim_create_autocmd("TermOpen", {  -- special settings for terminal
+  pattern = "*",
+  callback = function()
+    vim.cmd("startinsert")
+    vim.opt.relativenumber = false
+  end,
+})
+
+vim.api.nvim_create_autocmd("TermClose", {  -- run on terminal close
+  pattern = "*",
+  callback = function()
+    vim.api.nvim_input("<cr>")
+  end,
 })
