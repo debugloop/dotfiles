@@ -64,8 +64,8 @@ output "*" bg ~/.bg.jpg fill
 exec kanshi
 exec mako -c ~/.config/mako/config
 exec gammastep -l 48.775846:9.182932
-exec foot -T 'scratch: ipython' fish -c "while true; ipython; end"
-exec foot -T 'scratch: notes' fish -c "cd ~/notes/; while true; nvim *; end"
+exec kitty -T 'scratch: ipython' fish -c "while true; ipython; end"
+exec kitty -T 'scratch: notes' fish -c "cd ~/notes/; while true; nvim *; end"
 exec waybar -b main
 
 exec swayidle -w \
@@ -77,10 +77,7 @@ exec swayidle -w \
     before-sleep swaylock
 
 # make gnome-keyrings pinentry work
-exec dbus-update-activation-environment --systemd DISPLAY
-
-# make screensharing work
-exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
 # clipboard manager
 exec clipman clear --all
@@ -401,7 +398,7 @@ bindsym Shift+XF86AudioMicMute mode "ptt"
 
 ##################################
 # execution keys
-bindsym Mod4+Return exec foot
+bindsym Mod4+Return exec kitty
 
 mode "launch" {
     bindsym f exec firefox; mode "default"
@@ -424,8 +421,10 @@ bindsym Insert mouse_warping container; focus child; mouse_warping none; seat - 
 bindsym Print exec grim -g "$(slurp)"
 bindsym Shift+Print exec 'if pgrep wf-recorder; then killall -SIGINT wf-recorder; else wf-recorder -g "$(slurp)"; fi'; exec 'pkill -RTMIN+8 waybar'
 
-bindsym XF86AudioRaiseVolume    exec pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym XF86AudioLowerVolume    exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioRaiseVolume    exec pactl set-sink-volume @DEFAULT_SINK@ +1%
+bindsym XF86AudioLowerVolume    exec pactl set-sink-volume @DEFAULT_SINK@ -1%
+bindsym Shift+XF86AudioRaiseVolume    exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym Shift+XF86AudioLowerVolume    exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym XF86AudioMute           exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioMicMute        exec pactl set-source-mute @DEFAULT_SOURCE@ toggle && pkill -SIGRTMIN+4 waybar
 

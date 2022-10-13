@@ -24,22 +24,22 @@
 
 [push]
     default = current
-	autoSetupRemote = true
+    autoSetupRemote = true
 
 [pull]
     default = current
 
 [help]
-	autocorrect = 1
+    autocorrect = 1
 
 [rebase]
-	autoStash = true
+    autoStash = true
 
 [branch]
-	autosetupmerge = always
+    autosetupmerge = always
 
 [fetch]
-	prune = true
+    prune = true
 
 [core]
     pager = delta
