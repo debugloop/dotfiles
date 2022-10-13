@@ -16,6 +16,9 @@ function fish_user_key_bindings
     fzf_key_bindings
     bind -M insert \cx "fg &> /dev/null"
 end
+set fish_cursor_default block
+set fish_cursor_insert line
+set fish_cursor_visual block
 
 set -x NVIM_TUI_ENABLE_TRUE_COLOR 1
 set -x MANWIDTH 100
@@ -40,6 +43,31 @@ set fish_color_search_match --background=magenta
 #####################################################################
 # prompt stuff {{{
 #####################################################################
+function fish_prompt --description 'Write out the prompt (default with some edits)'
+    set -l last_pipestatus $pipestatus
+    set -l normal (set_color normal)
+    set -q fish_color_status
+    set -l color_cwd $fish_color_cwd
+    set -l suffix '>'
+
+    set -l bold_flag --bold
+    set -q __fish_prompt_status_generation; or set -g __fish_prompt_status_generation $status_generation
+    if test $__fish_prompt_status_generation = $status_generation
+        set bold_flag
+    end
+    set __fish_prompt_status_generation $status_generation
+    set -l status_color (set_color $fish_color_status)
+    set -l statusb_color (set_color $bold_flag $fish_color_status)
+    set -l prompt_status (__fish_print_pipestatus "[" "]" "|" "$status_color" "$statusb_color" $last_pipestatus)
+    if [ (prompt_pwd) = "~" ]
+        set pwd "~ "
+    else
+        set pwd (prompt_pwd)
+    end
+
+    echo -n -s (prompt_login)' ' (set_color $color_cwd) $pwd $normal (fish_vcs_prompt) $normal " "$prompt_status $suffix " "
+end
+
 set -g fish_prompt_pwd_dir_length 0
 
 set -g __fish_git_prompt_show_informative_status 1
@@ -74,7 +102,6 @@ function r --description 'Launch ranger if this terminal does not have one yet'
     end
 end
 
-
 set -x LEDGER_FILE /home/danieln/finance/hledger.journal
 alias hl=hledger
 
@@ -93,6 +120,7 @@ alias cat='bat'
 alias sloc='tokei'
 alias cloc='tokei'
 alias past="curl -F 'f:1=<-' ix.io | wl-copy"
+alias s="kitty +kitten ssh"
 # }}}
 
 #####################################################################
