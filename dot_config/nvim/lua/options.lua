@@ -1,18 +1,19 @@
-vim.cmd('syntax off') -- let treesitter handle things
+vim.cmd("syntax off") -- let treesitter handle things
 
 -- general behavior
-vim.opt.clipboard = 'unnamedplus'           -- sync yank with system clipboard
-vim.opt.swapfile = false                    -- disable swap files
-vim.opt.undofile = true                     -- enable persistent undo
-vim.opt.undodir = '/home/danieln/.undo'     -- set undo location
-vim.opt.backup = true                       -- enable backup files
-vim.opt.backupdir = '/home/danieln/.backup' -- set backup location
+vim.opt.clipboard = "unnamedplus" -- sync yank with system clipboard
+vim.opt.swapfile = false -- disable swap files
+vim.opt.undofile = true -- enable persistent undo
+vim.opt.undodir = "/home/danieln/.undo" -- set undo location
+vim.opt.backup = true -- enable backup files
+vim.opt.backupdir = "/home/danieln/.backup" -- set backup location
 vim.opt.title = true
+vim.opt.jumpoptions = "stack"
 vim.opt.titlestring = [[vim %f %{substitute(getcwd(), '/home/danieln', '~', 0)}]]
 
-vim.api.nvim_create_autocmd('BufRead,BufNewFile', { -- disable undofile and backup in gopass
-  group = vim.api.nvim_create_augroup('on_read_dev', {}),
-  pattern = '/dev/*',
+vim.api.nvim_create_autocmd("BufRead,BufNewFile", { -- disable undofile and backup in gopass
+  group = vim.api.nvim_create_augroup("on_read_dev", {}),
+  pattern = "/dev/*",
   callback = function()
     vim.opt.undofile = false
     vim.opt.backup = false
@@ -20,117 +21,70 @@ vim.api.nvim_create_autocmd('BufRead,BufNewFile', { -- disable undofile and back
 })
 
 -- editing
-vim.opt.foldlevel = 999                         -- no folding unless I close one myself
-vim.opt.foldmethod = 'expr'                     -- use below expression for folding
-vim.opt.foldexpr = 'nvim_treesitter#foldexpr()' -- get that folding expression from treesitter
+vim.opt.foldlevel = 999 -- no folding unless I close one myself
+vim.opt.foldmethod = "expr" -- use below expression for folding
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()" -- get that folding expression from treesitter
+vim.opt.spell = true -- spellcheck comments
+vim.opt.spelllang = "en,de" -- spellcheck comments
 
 -- finding stuff
-vim.opt.gdefault = true   -- show multiple matches per line without specifying global
+vim.opt.gdefault = true -- show multiple matches per line without specifying global
 vim.opt.ignorecase = true -- search case-insensitive
-vim.opt.smartcase = true  -- search case-sensitive when capital letters are searched
+vim.opt.smartcase = true -- search case-sensitive when capital letters are searched
 
 -- visuals
-vim.opt.termguicolors = true  -- assume a modern terminal and use 24bit RGB
-vim.opt.breakindent = true    -- indent wrapped lines
-vim.opt.number = true         -- enable line numbers
+vim.opt.termguicolors = true -- assume a modern terminal and use 24bit RGB
+vim.opt.breakindent = true -- indent wrapped lines
+vim.opt.number = true -- enable line numbers
 vim.opt.relativenumber = true -- enable relative line numbers
-vim.opt.scrolloff = 5         -- always show this many lines of context at the edges
-vim.opt.sidescrolloff = 5     -- always show this many columns of context at the edges
-vim.opt.laststatus = 3        -- single status line for all windows
-vim.opt.splitbelow = true     -- open horizontal splits below the current window
-vim.opt.splitright = true     -- open vertical splits to the right of the current window
+vim.opt.scrolloff = 5 -- always show this many lines of context at the edges
+vim.opt.sidescrolloff = 5 -- always show this many columns of context at the edges
+vim.opt.laststatus = 3 -- single status line for all windows
+vim.opt.splitbelow = true -- open horizontal splits below the current window
+vim.opt.splitright = true -- open vertical splits to the right of the current window
 
-vim.opt.listchars = 'eol:¬,tab:»·,trail:~,space:·' -- list these chars if enabled
+vim.opt.listchars = "eol:¬,tab:»·,trail:~,space:·" -- list these chars if enabled
 
-vim.api.nvim_create_autocmd({'InsertEnter'}, { -- only in insert mode
-  group = vim.api.nvim_create_augroup('on_insert_enter', {}),
-  pattern = '*',
+vim.api.nvim_create_autocmd({ "InsertEnter" }, { -- only in insert mode
+  group = vim.api.nvim_create_augroup("on_insert_enter", {}),
+  pattern = "*",
   callback = function()
-    vim.opt.cursorline = true          -- show line highlight
-    vim.opt.relativenumber = false     -- show relative line numbers
-    vim.g.miniindentscope_disable=true -- disable plugin drawn guides, if present
+    vim.opt.cursorline = true -- show line highlight
+    vim.opt.relativenumber = false -- show relative line numbers
+    vim.g.miniindentscope_disable = true -- disable plugin drawn guides, if present
   end,
 })
 
-vim.api.nvim_create_autocmd({'InsertLeave'}, { -- revert to this on return
-  group = vim.api.nvim_create_augroup('on_insert_leave', {}),
-  pattern = '*',
+vim.api.nvim_create_autocmd({ "InsertLeave" }, { -- revert to this on return
+  group = vim.api.nvim_create_augroup("on_insert_leave", {}),
+  pattern = "*",
   callback = function()
-    vim.opt.cursorline = false          -- don't show line highlight
-    vim.opt.relativenumber = true       -- don't show relative line numbers
-    vim.g.miniindentscope_disable=false -- reenable plugin drawn guides, if present
+    vim.opt.cursorline = false -- don't show line highlight
+    vim.opt.relativenumber = true -- don't show relative line numbers
+    vim.g.miniindentscope_disable = false -- reenable plugin drawn guides, if present
   end,
 })
 
-vim.api.nvim_create_autocmd('VimResized', { -- equalize windows on resize
-  group = vim.api.nvim_create_augroup('on_resize', {}),
+vim.api.nvim_create_autocmd("VimResized", { -- equalize windows on resize
+  group = vim.api.nvim_create_augroup("on_resize", {}),
   callback = function()
-    vim.cmd('wincmd =')
+    vim.cmd("wincmd =")
   end,
 })
 
-vim.api.nvim_create_autocmd('TextYankPost', { -- flash yanked text
+vim.api.nvim_create_autocmd("TextYankPost", { -- flash yanked text
   -- fallback, not used as long as yanky is installed
-  group = vim.api.nvim_create_augroup('on_yank', {}),
-  callback = function() vim.highlight.on_yank({timeout = 300}) end,
-})
-
-vim.api.nvim_create_autocmd('TermOpen', { -- special settings for terminal
-  pattern = '*',
+  group = vim.api.nvim_create_augroup("on_yank", {}),
   callback = function()
-    vim.cmd('startinsert')
-    vim.opt.relativenumber = false
+    vim.highlight.on_yank({ timeout = 300 })
   end,
 })
 
-vim.api.nvim_create_autocmd('TermClose', { -- run on terminal close
-  pattern = '*',
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, { -- special settings for thunderbird
+  pattern = "external_editor_revived_*.eml",
   callback = function()
-    vim.api.nvim_input('<cr>')
-  end,
-})
-
-vim.api.nvim_create_autocmd({'BufRead', 'BufNewFile'}, { -- special settings for thunderbird
-  pattern = 'external_editor_revived_*.eml',
-  callback = function()
-    vim.cmd(vim.api.nvim_replace_termcodes('normal /^$', true, true, true))
-    vim.cmd('normal 2n')
+    vim.cmd(vim.api.nvim_replace_termcodes("normal /^$", true, true, true))
+    vim.cmd("normal 2n")
     -- vim.cmd('startinsert')
-  end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'go',
-  callback = function()
-    vim.lsp.start({
-      name = 'gopls',
-      cmd = {'gopls'},
-      root_dir = vim.fs.dirname(vim.fs.find({'go.mod', 'go.sum', '.git'}, { upward = true })[1]),
-    })
-    -- automatic format on save
-    vim.api.nvim_create_autocmd('BufWritePre', {
-      group = vim.api.nvim_create_augroup('LspFormat', { clear = true }),
-      callback = function()
-        vim.lsp.buf.format({ async = false }, 3000)
-      end
-    })
-    -- automatic organize imports on save
-    vim.api.nvim_create_autocmd('BufWritePre', {
-      group = vim.api.nvim_create_augroup('LspOrganizeImports', { clear = true }),
-      callback = function()
-        local params = vim.lsp.util.make_range_params(nil, vim.lsp.util._get_offset_encoding())
-        params.context = { only = {'source.organizeImports'} }
-        local result = vim.lsp.buf_request_sync(0, 'textDocument/codeAction', params, 3000)
-        for _, res in pairs(result or {}) do
-          for _, r in pairs(res.result or {}) do
-            if r.edit then
-              vim.lsp.util.apply_workspace_edit(r.edit, vim.lsp.util._get_offset_encoding())
-            else
-              vim.lsp.buf.execute_command(r.command)
-            end
-          end
-        end
-      end
-    })
   end,
 })

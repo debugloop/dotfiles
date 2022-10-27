@@ -59,11 +59,11 @@
                 "Paused": " "
             },
             "max-length": 80,
-            "exec": "playerctl -p spotify,psst metadata --format '{\"text\": \"{{ markup_escape(artist) }} - {{ markup_escape(title) }}\", \"tooltip\": \"{{ markup_escape(artist) }} - {{ markup_escape(title) }}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
-            "on-click": "playerctl -p spotify,psst play-pause",
-            "on-click-right": "playerctl -p spotify,psst next",
-            "on-scroll-down": "playerctl -p spotify,psst next",
-            "on-scroll-up": "playerctl -p spotify,psst previous"
+            "exec": "playerctl -p spotify,vlc metadata --format '{\"text\": \"{{ markup_escape(artist) }} - {{ markup_escape(title) }} ({{duration(position)}}/{{duration(mpris:length)}})\", \"tooltip\": \"{{ markup_escape(artist) }} - {{ markup_escape(title) }} ({{duration(position)}}/{{duration(mpris:length)}})\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F",
+            "on-click": "playerctl -p spotify,vlc play-pause",
+            "on-click-right": "playerctl -p spotify,vlc next",
+            "on-scroll-down": "playerctl -p spotify,vlc next",
+            "on-scroll-up": "playerctl -p spotify,vlc previous"
         },
 
         "custom/screenrecord": {
