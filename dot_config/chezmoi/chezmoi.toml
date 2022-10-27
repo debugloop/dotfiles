@@ -1,2 +1,6 @@
 [diff]
     pager = "delta --hunk-header-style omit"
+
+[merge]
+    command = "nvim"
+    args = ["-d", "{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]
