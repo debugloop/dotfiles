@@ -1,6 +1,6 @@
 require("nvim-treesitter.install").update()
 require("nvim-treesitter.configs").setup({
-  ensure_installed = { "go", "python", "rust" },
+  ensure_installed = "all",
   auto_install = true,
   highlight = {
     enable = true,
