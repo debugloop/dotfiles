@@ -20,32 +20,32 @@ vim.cmd("packadd nvim-notify")
 -- Visual enhancements to nvim.
 
 -- repo: https://github.com/rebelot/kanagawa.nvim
--- config: ~/.config/nvim/lua/plugins/kanagawa.lua
-vim.cmd("packadd kanagawa")
+-- config: ./plugins/kanagawa.lua
+vim.cmd("packadd kanagawa.nvim")
 require("plugins/kanagawa")
 
 -- repo: https://github.com/nvim-lualine/lualine.nvim
--- config: ~/.config/nvim/lua/plugins/lualine.lua
+-- config: ./plugins/lualine.lua
 vim.cmd("packadd lualine.nvim")
 require("plugins/lualine")
 
 -- repo: https://github.com/echasnovski/mini.indentscope
--- config: ~/.config/nvim/lua/plugins/mini-indentscope.lua
+-- config: ./plugins/mini-indentscope.lua
 vim.cmd("packadd mini.indentscope")
 require("plugins/mini-indentscope")
 
 -- repo: https://github.com/karb94/neoscroll.nvim
--- config: ~/.config/nvim/lua/plugins/neoscroll.lua
+-- config: ./plugins/neoscroll.lua
 vim.cmd("packadd neoscroll.nvim")
 require("neoscroll").setup()
 
 -- repo: https://github.com/folke/noice.nvim
--- config: ~/.config/nvim/lua/plugins/noice.lua
+-- config: ./plugins/noice.lua
 vim.cmd("packadd noice.nvim")
 require("plugins/noice")
 
 -- repo: https://github.com/nvim-treesitter/nvim-treesitter
--- config: ~/.config/nvim/lua/plugins/nvim-treesitter.lua
+-- config: ./plugins/nvim-treesitter.lua
 -- dependencies:
 --  * https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 vim.cmd("packadd nvim-treesitter")
@@ -53,7 +53,7 @@ vim.cmd("packadd nvim-treesitter-textobjects") -- dependency for nvim-treesitter
 require("plugins/nvim-treesitter")
 
 -- repo: https://github.com/akinsho/toggleterm.nvim
--- config: ~/.config/nvim/lua/plugins/toggleterm.lua
+-- config: ./plugins/toggleterm.lua
 vim.cmd("packadd toggleterm.nvim")
 require("plugins/toggleterm")
 
@@ -61,17 +61,17 @@ require("plugins/toggleterm")
 -- Additional movements that go beyond stock vi.
 
 -- repo: https://github.com/ggandor/leap.nvim
--- config: ~/.config/nvim/lua/plugins/leap.lua
+-- config: ./plugins/leap.lua
 vim.cmd("packadd leap.nvim")
 require("plugins/leap")
 
 -- repo: https://github.com/echasnovski/mini.jump
--- config: ~/.config/nvim/lua/plugins/mini-jump.lua
+-- config: ./plugins/mini-jump.lua
 vim.cmd("packadd mini.jump")
 require("plugins/mini-jump")
 
 -- repo: https://github.com/mfussenegger/nvim-treehopper
--- config: ~/.config/nvim/lua/plugins/nvim-treehopper.lua
+-- config: ./plugins/nvim-treehopper.lua
 vim.cmd("packadd nvim-treehopper")
 require("plugins/nvim-treehopper")
 
@@ -94,12 +94,12 @@ vim.cmd("packadd mini.surround")
 require("mini.surround").setup({ search_method = "cover_or_next" })
 
 -- repo: https://github.com/echasnovski/mini.trailspace
--- config: ~/.config/nvim/lua/plugins/mini-traispace.lua
+-- config: ./plugins/mini-traispace.lua
 vim.cmd("packadd mini.trailspace")
 require("plugins/mini-trailspace")
 
 -- repo: https://github.com/windwp/nvim-autopairs
--- config: ~/.config/nvim/lua/plugins/nvim-autopairs.lua
+-- config: ./plugins/nvim-autopairs.lua
 vim.cmd("packadd nvim-autopairs")
 require("nvim-autopairs").setup()
 
@@ -108,7 +108,7 @@ require("nvim-autopairs").setup()
 vim.cmd("packadd vim-sleuth")
 
 -- repo: https://github.com/gbprod/yanky.nvim
--- config: ~/.config/nvim/lua/plugins/yanky.lua
+-- config: ./plugins/yanky.lua
 vim.cmd("packadd yanky.nvim")
 require("plugins/yanky")
 
@@ -128,7 +128,7 @@ vim.cmd("packadd nvim-unception")
 
 if vim.fn.executable("ranger") == 1 then
   -- repo: https://github.com/kevinhwang91/rnvimr
-  -- config: ~/.config/nvim/lua/plugins/rnvimr.lua
+  -- config: ./plugins/rnvimr.lua
   vim.cmd("packadd rnvimr")
   require("plugins/rnvimr")
 end
@@ -137,17 +137,17 @@ end
 -- Autocompletion, language servers and debuggers.
 
 -- repo: https://git.sr.ht/~whynothugo/lsp_lines.nvim
--- config: ~/.config/nvim/lua/plugins/lsp_lines.lua
+-- config: ./plugins/lsp_lines.lua
 vim.cmd("packadd lsp_lines.nvim")
 require("plugins/lsp_lines")
 
 -- repo: https://github.com/jose-elias-alvarez/null-ls.nvim
--- config: ~/.config/nvim/lua/plugins/null-ls.lua
+-- config: ./plugins/null-ls.lua
 vim.cmd("packadd null-ls.nvim")
 require("plugins/null-ls")
 
 -- repo: https://github.com/hrsh7th/nvim-cmp
--- config: ~/.config/nvim/lua/plugins/nvim-cmp.lua
+-- config: ./plugins/nvim-cmp.lua
 -- dependencies:
 --  * https://github.com/hrsh7th/cmp-nvim-lsp
 --  * https://github.com/hrsh7th/cmp-buffer
@@ -157,17 +157,17 @@ vim.cmd("packadd nvim-cmp")
 require("plugins/nvim-cmp")
 
 -- repo: https://github.com/mfussenegger/nvim-dap
--- config: ~/.config/nvim/lua/plugins/nvim-dap.lua
+-- config: ./plugins/nvim-dap.lua
 vim.cmd("packadd nvim-dap")
 require("plugins/nvim-dap")
 
 -- repo: https://github.com/neovim/nvim-lspconfig
--- config: ~/.config/nvim/lua/plugins/nvim-lspconfig.lua
+-- config: ./plugins/nvim-lspconfig.lua
 vim.cmd("packadd nvim-lspconfig")
 require("plugins/nvim-lspconfig")
 
 -- repo: https://github.com/RRethy/vim-illuminate
--- config: ~/.config/nvim/lua/plugins/vim-illuminate.lua
+-- config: ./plugins/vim-illuminate.lua
 vim.cmd("packadd vim-illuminate")
 require("plugins/vim-illuminate")
 
@@ -179,12 +179,12 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "go",
   callback = function()
     -- repo: https://github.com/leoluz/nvim-dap-go
-    -- config: ~/.config/nvim/lua/plugins/nvim-dap-go.lua
+    -- config: ./plugins/nvim-dap-go.lua
     vim.cmd("packadd nvim-dap-go")
     require("plugins/nvim-dap-go")
 
     -- repo: https://github.com/rafaelsq/nvim-goc.lua
-    -- config: ~/.config/nvim/lua/plugins/nvim-goc.lua
+    -- config: ./plugins/nvim-goc.lua
     vim.cmd("packadd nvim-goc.lua")
     require("plugins/nvim-goc")
   end,
@@ -194,7 +194,7 @@ vim.api.nvim_create_autocmd("FileType", {
 -- Plugins that provide additional views or windows.
 
 -- repo: https://github.com/anuvyklack/hydra.nvim
--- config: ~/.config/nvim/lua/plugins/hydra.lua
+-- config: ./plugins/hydra.lua
 -- dependencies:
 --  * gitsigns.nvim
 --  * nvim-dap
@@ -202,18 +202,18 @@ vim.cmd("packadd hydra.nvim")
 require("plugins/hydra")
 
 -- repo: https://github.com/nvim-telescope/telescope.nvim
--- config: ~/.config/nvim/lua/plugins/telescope.lua
+-- config: ./plugins/telescope.lua
 -- dependencies:
 --  * noice.nvim
 vim.cmd("packadd telescope.nvim")
 require("plugins/telescope")
 
 -- repo: https://github.com/mbbill/undotree
--- config: ~/.config/nvim/lua/plugins/undotree.lua
+-- config: ./plugins/undotree.lua
 vim.cmd("packadd undotree")
 require("plugins/undotree")
 
 -- repo: https://github.com/folke/which-key.nvim
--- config: ~/.config/nvim/lua/plugins/which-key.lua
+-- config: ./plugins/which-key.lua
 vim.cmd("packadd which-key.nvim")
 require("plugins/which-key")
