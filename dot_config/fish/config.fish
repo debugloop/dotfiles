@@ -141,6 +141,15 @@ function r --description 'Launch ranger if this terminal does not have one yet'
     end
 end
 
+function nvim_plugins
+    for d in (ls .config/nvim/pack/plugins/opt)
+        cd .config/nvim/pack/plugins/opt/$d
+        git pull
+        git l ORIG_HEAD..
+        cd -
+    end
+end
+
 set -x LEDGER_FILE /home/danieln/finance/hledger.journal
 alias hl=hledger
 
