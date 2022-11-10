@@ -6,7 +6,7 @@
 if !has('nvim')
   syntax on
   filetype plugin indent on
-  colorscheme industry
+  colorscheme desert
 endif
 set synmaxcol=512 " don't overdo it
 

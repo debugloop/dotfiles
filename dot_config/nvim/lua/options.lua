@@ -8,8 +8,8 @@ vim.opt.undodir = "/home/danieln/.undo" -- set undo location
 vim.opt.backup = true -- enable backup files
 vim.opt.backupdir = "/home/danieln/.backup" -- set backup location
 vim.opt.title = true
+vim.opt.titlestring = [[vim %{substitute(getcwd(), '/home/danieln', '~', 0)}]]
 vim.opt.jumpoptions = "stack"
-vim.opt.titlestring = [[vim %f %{substitute(getcwd(), '/home/danieln', '~', 0)}]]
 
 vim.api.nvim_create_autocmd("BufRead,BufNewFile", { -- disable undofile and backup in gopass
   group = vim.api.nvim_create_augroup("on_read_dev", {}),

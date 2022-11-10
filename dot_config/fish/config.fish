@@ -3,10 +3,11 @@
 #####################################################################
 set -x LANG en_US.UTF-8
 set -x LC_TIME en_GB.UTF-8
-set -x EDITOR nvim
 set -x GTK_THEME "Arc-Darker"
 set -x HIGHLIGHT_STYLE "base16/grayscale-dark"
 set -x BAT_THEME "ansi"
+set -x EDITOR nvim
+set -x VISUAL nvim
 
 set fish_greeting ""
 
@@ -100,6 +101,10 @@ function fish_prompt --description 'Write out the prompt (default with some edit
     end
 
     echo -n -s (prompt_login)' ' (set_color $color_cwd) $pwd $normal (fish_vcs_prompt) $normal " "$prompt_status $suffix " "
+end
+
+function fish_title --description 'Write out the title'
+    echo fish (prompt_pwd)
 end
 
 set -g fish_prompt_pwd_dir_length 0

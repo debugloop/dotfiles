@@ -19,6 +19,10 @@ vim.keymap.set("n", "<c-q>", "<cmd>cclose<cr>")
 -- jump back to last position
 vim.keymap.set("n", "<bs>", "<c-o>")
 
+-- change next match mapping
+vim.keymap.set("n", "cn", "*``cgn")
+vim.keymap.set("n", "cN", "*``cgN")
+
 -- move visual blocks
 vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { silent = true })
 vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { silent = true })
@@ -38,11 +42,6 @@ vim.keymap.set("n", "<c-h>", "<c-w>h")
 vim.keymap.set("n", "<c-j>", "<c-w>j")
 vim.keymap.set("n", "<c-k>", "<c-w>k")
 vim.keymap.set("n", "<c-l>", "<c-w>l")
-
-vim.keymap.set("n", "<left>", "<c-w>h")
-vim.keymap.set("n", "<down>", "<c-w>j")
-vim.keymap.set("n", "<up>", "<c-w>k")
-vim.keymap.set("n", "<right>", "<c-w>l")
 
 vim.keymap.set({ "n", "t" }, "<s-up>", "<cmd>resize +2<cr>")
 vim.keymap.set({ "n", "t" }, "<s-down>", "<cmd>resize -2<cr>")
