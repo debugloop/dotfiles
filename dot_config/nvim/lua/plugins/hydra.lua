@@ -274,9 +274,9 @@ _b_: blame       _B_: blame with diff  _d_: toggle deleted   _w_: toggle word di
 Hydra({
   name = "Debug",
   hint = [[
-_c_: continue      _s_: step over    _fu_: frame up         _e_: evaluate at cursor
-_C_: run to cursor _i_: step into    _fd_: frame down       _E_: evaluate expression
-_r_: open repl     _o_: step out     _b_: toggle breakpoint _B_: set conditional breakpoint         ]],
+_t_: debug test    _c_: continue     _s_: step over      _fu_: frame up      _fd_: frame down
+_C_: run to cursor _i_: step into    _e_: evaluate at cursor  _E_: evaluate expression
+_r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set conditional breakpoint         ]],
   config = {
     color = "pink",
     invoke_on_body = true,
@@ -285,22 +285,23 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint _B_: set conditional
       border = "single",
       position = "bottom",
     },
-    on_enter = function()
-      require("dap").continue()
-    end,
-    on_exit = function()
-      require("dap").terminate()
-    end,
   },
   mode = { "n", "x" },
   body = "<leader>d",
   heads = {
     {
+      "t",
+      function()
+        require("dap-go").debug_test()
+      end,
+      { desc = "debug test" },
+    },
+    {
       "c",
       function()
         require("dap").continue()
       end,
-      { desc = "continue or start" },
+      { desc = "continue" },
     },
     {
       "C",
@@ -384,6 +385,7 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint _B_: set conditional
       "q",
       function()
         require("dap").repl.close()
+        require("dap").terminate()
       end,
       { desc = "quit", exit = true },
     },
@@ -398,8 +400,8 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint _B_: set conditional
       "Q",
       function()
         require("dap").repl.close()
+        require("dap").terminate()
         require("dap.breakpoints").clear()
-        require("dapui").close()
       end,
       { desc = "quit and reset", exit = true },
     },

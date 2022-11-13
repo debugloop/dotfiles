@@ -142,9 +142,10 @@ function r --description 'Launch ranger if this terminal does not have one yet'
 end
 
 function nvim_plugins
-    for d in (ls .config/nvim/pack/plugins/opt)
-        cd .config/nvim/pack/plugins/opt/$d
-        git pull
+    for d in (ls ~/.config/nvim/pack/plugins/opt)
+        cd ~/.config/nvim/pack/plugins/opt/$d
+        git pull &> /dev/null
+        echo $d
         git l ORIG_HEAD..
         cd -
     end
