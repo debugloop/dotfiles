@@ -32,9 +32,6 @@
 .config/nvim/pack/plugins/opt/mini.indentscope:
   type: git-repo
   url: https://github.com/echasnovski/mini.indentscope
-.config/nvim/pack/plugins/opt/mini.jump:
-  type: git-repo
-  url: https://github.com/echasnovski/mini.jump
 .config/nvim/pack/plugins/opt/mini.surround:
   type: git-repo
   url: https://github.com/echasnovski/mini.surround
@@ -89,6 +86,9 @@
 .config/nvim/pack/plugins/opt/plenary.nvim:
   type: git-repo
   url: https://github.com/nvim-lua/plenary.nvim
+.config/nvim/pack/plugins/opt/quick-scope:
+  type: git-repo
+  url: https://github.com/unblevable/quick-scope
 .config/nvim/pack/plugins/opt/rnvimr:
   type: git-repo
   url: https://github.com/kevinhwang91/rnvimr

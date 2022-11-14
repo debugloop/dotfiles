@@ -65,15 +65,15 @@ require("plugins/toggleterm")
 vim.cmd("packadd leap.nvim")
 require("plugins/leap")
 
--- repo: https://github.com/echasnovski/mini.jump
--- config: ./plugins/mini-jump.lua
-vim.cmd("packadd mini.jump")
-require("plugins/mini-jump")
-
 -- repo: https://github.com/mfussenegger/nvim-treehopper
 -- config: ./plugins/nvim-treehopper.lua
 vim.cmd("packadd nvim-treehopper")
 require("plugins/nvim-treehopper")
+
+-- repo: https://github.com/unblevable/quick-scope
+-- config: none
+vim.g.qs_highlight_on_keys = { "f", "F", "t", "T" }
+vim.cmd("packadd quick-scope")
 
 ---------------------------------------------------------------- Text
 -- Text-related mappings, completions, and text-objects.
