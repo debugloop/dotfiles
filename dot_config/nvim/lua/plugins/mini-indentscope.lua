@@ -2,7 +2,7 @@ require("mini.indentscope").setup({
   draw = {
     animation = require("mini.indentscope").gen_animation("none"),
   },
-  symbol = "ˑּ",
+  symbol = "·",
   options = {
     try_as_border = true,
   },
