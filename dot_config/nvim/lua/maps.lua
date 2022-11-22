@@ -19,6 +19,10 @@ vim.keymap.set("n", "<c-q>", "<cmd>cclose<cr>")
 -- jump back to last position
 vim.keymap.set("n", "<bs>", "<c-o>")
 
+-- scroll
+vim.keymap.set("n", "<scrollwheelup>", "kzz")
+vim.keymap.set("n", "<scrollwheeldown>", "jzz")
+
 -- change next match mapping
 vim.keymap.set("n", "cn", "*``cgn")
 vim.keymap.set("n", "cN", "*``cgN")
