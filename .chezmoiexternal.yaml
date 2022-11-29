@@ -113,3 +113,6 @@
 .config/nvim/pack/plugins/opt/yanky.nvim:
   type: git-repo
   url: https://github.com/gbprod/yanky.nvim
+.config/nvim/pack/plugins/opt/cellular-automaton.nvim:
+  type: git-repo
+  url: https://github.com/Eandrju/cellular-automaton.nvim

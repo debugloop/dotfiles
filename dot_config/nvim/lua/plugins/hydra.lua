@@ -7,6 +7,7 @@ Options
 _v_ %{ve} set virtualedit
 _b_ %{bg} set background
 _l_ %{list} set list
+_w_ %{wrap} set wrap
 _s_ %{spell} set spell
 _c_ %{cux} draw crosshair
 _n_ %{nu} set number
@@ -133,6 +134,17 @@ _L_ %{lsp} set lsp diagnostic      ]],
         end
       end,
       { desc = "set list" },
+    },
+    {
+      "w",
+      function()
+        if vim.o.wrap == true then
+          vim.o.wrap = false
+        else
+          vim.o.wrap = true
+        end
+      end,
+      { desc = "set wrap" },
     },
     {
       "L",

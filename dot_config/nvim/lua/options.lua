@@ -35,6 +35,7 @@ vim.opt.smartcase = true -- search case-sensitive when capital letters are searc
 -- visuals
 vim.opt.termguicolors = true -- assume a modern terminal and use 24bit RGB
 vim.opt.breakindent = true -- indent wrapped lines
+vim.opt.wrap = false -- don't wrap by default
 vim.opt.number = true -- enable line numbers
 vim.opt.relativenumber = true -- enable relative line numbers
 vim.opt.scrolloff = 5 -- always show this many lines of context at the edges

@@ -110,9 +110,10 @@ end
 set -g fish_prompt_pwd_dir_length 0
 
 set -g __fish_git_prompt_show_informative_status 1
+set -g __fish_git_prompt_showuntrackedfiles 1
 set -g __fish_git_prompt_color_branch magenta
-set -g __fish_git_prompt_showupstream "informative"
 set -g __fish_git_prompt_color_dirtystate blue
+set -g __fish_git_prompt_color_untrackedfiles brblack
 set -g __fish_git_prompt_color_stagedstate yellow
 set -g __fish_git_prompt_color_invalidstate red
 set -g __fish_git_prompt_color_cleanstate green

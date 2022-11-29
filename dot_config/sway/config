@@ -25,9 +25,7 @@ hide_edge_borders both
 default_border pixel 1
 
 # hide mouse after 5s on keyboard
-seat * hide_cursor 5000
-# seat * hide_cursor when-typing enable
-# mouse_warping container
+seat * hide_cursor 2000
 
 ##################################
 # hardware

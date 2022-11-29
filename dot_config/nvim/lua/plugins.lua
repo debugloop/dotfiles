@@ -57,6 +57,11 @@ require("plugins/nvim-treesitter")
 vim.cmd("packadd toggleterm.nvim")
 require("plugins/toggleterm")
 
+-- repo: https://github.com/Eandrju/cellular-automaton.nvim
+-- config: ./plugins/cellular-automaton.lua
+vim.cmd("packadd cellular-automaton.nvim")
+vim.keymap.set("n", "<leader>fml", "<cmd>CellularAutomaton make_it_rain<cr>")
+
 ---------------------------------------------------------------- Movement
 -- Additional movements that go beyond stock vi.
 
