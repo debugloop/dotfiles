@@ -19,6 +19,11 @@ vim.cmd("packadd nvim-notify")
 ---------------------------------------------------------------- Visuals
 -- Visual enhancements to nvim.
 
+-- repo: https://github.com/Eandrju/cellular-automaton.nvim
+-- config: ./plugins/cellular-automaton.lua
+vim.cmd("packadd cellular-automaton.nvim")
+require("plugins/cellular-automaton")
+
 -- repo: https://github.com/rebelot/kanagawa.nvim
 -- config: ./plugins/kanagawa.lua
 vim.cmd("packadd kanagawa.nvim")
@@ -56,11 +61,6 @@ require("plugins/nvim-treesitter")
 -- config: ./plugins/toggleterm.lua
 vim.cmd("packadd toggleterm.nvim")
 require("plugins/toggleterm")
-
--- repo: https://github.com/Eandrju/cellular-automaton.nvim
--- config: ./plugins/cellular-automaton.lua
-vim.cmd("packadd cellular-automaton.nvim")
-vim.keymap.set("n", "<leader>fml", "<cmd>CellularAutomaton make_it_rain<cr>")
 
 ---------------------------------------------------------------- Movement
 -- Additional movements that go beyond stock vi.
