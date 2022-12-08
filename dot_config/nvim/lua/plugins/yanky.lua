@@ -1,4 +1,21 @@
-require("yanky").setup({})
+require("yanky").setup({
+  picker = {
+    telescope = {
+      mappings = {
+        default = require("yanky.telescope.mapping").put("p"),
+      },
+    },
+  },
+})
+
+require("telescope").load_extension("yank_history")
+vim.keymap.set(
+  "n",
+  "<leader>p",
+  require("telescope").extensions.yank_history.yank_history,
+  { desc = "paste from yank history" }
+)
+
 vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
 vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
 vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutBefore)")

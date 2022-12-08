@@ -112,11 +112,6 @@ require("nvim-autopairs").setup()
 -- config: none
 vim.cmd("packadd vim-sleuth")
 
--- repo: https://github.com/gbprod/yanky.nvim
--- config: ./plugins/yanky.lua
-vim.cmd("packadd yanky.nvim")
-require("plugins/yanky")
-
 ---------------------------------------------------------------- Integration
 -- Integration of external software.
 
@@ -213,8 +208,15 @@ require("plugins/hydra")
 vim.cmd("packadd telescope.nvim")
 require("plugins/telescope")
 
+-- repo: https://github.com/gbprod/yanky.nvim
+-- config: ./plugins/yanky.lua
+vim.cmd("packadd yanky.nvim")
+require("plugins/yanky")
+
 -- repo: https://github.com/mbbill/undotree
 -- config: ./plugins/undotree.lua
+-- dependencies:
+--  * telescope
 vim.cmd("packadd undotree")
 require("plugins/undotree")
 

@@ -91,10 +91,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
   callback = function()
     -- map lsp keys if attached only
     vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "lsp: show help", silent = true })
-    vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = "lsp: show references", silent = true })
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "lsp: goto definition", silent = true })
-    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "lsp: goto declaration", silent = true })
-    vim.keymap.set("n", "<leader>s", vim.lsp.buf.document_symbol, { desc = "lsp: map all symbols", silent = true })
     vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { desc = "lsp: rename symbol", silent = true })
     vim.keymap.set("n", "<leader>?", vim.lsp.buf.code_action, { desc = "lsp: run code action", silent = true })
     vim.keymap.set("n", "]d", function()

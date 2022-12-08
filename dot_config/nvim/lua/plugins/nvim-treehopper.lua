@@ -1,1 +1,1 @@
-vim.keymap.set({ "n", "o", "v" }, "<cr>", require("tsht").nodes, { desc = "select scope" })
+vim.keymap.set({ "n", "o", "v" }, "<leader><cr>", require("tsht").nodes, { desc = "select scope" })
