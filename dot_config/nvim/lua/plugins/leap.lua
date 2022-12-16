@@ -1,6 +1,0 @@
-vim.keymap.set({ "n" }, "S", function()
-  require("leap").leap({ target_windows = { vim.fn.win_getid() } })
-end)
-vim.keymap.set({ "v", "o" }, "S", function()
-  require("leap").leap({ target_windows = { vim.fn.win_getid() }, offset = -1 })
-end)
