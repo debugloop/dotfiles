@@ -6,14 +6,14 @@ return {
     end,
   },
 
-  {
-    "debugloop/telescope-undo.nvim",
-    function()
-      require("telescope").load_extension("undo")
-      vim.keymap.set("n", "<leader>u", "<cmd>Telescope undo<cr>")
-    end,
-    requires = { "nvim-telescope/telescope.nvim" },
-  },
+  -- {
+  --   "debugloop/telescope-undo.nvim",
+  --   function()
+  --     require("telescope").load_extension("undo")
+  --     vim.keymap.set("n", "<leader>u", "<cmd>Telescope undo<cr>")
+  --   end,
+  --   requires = { "nvim-telescope/telescope.nvim" },
+  -- },
 
   {
     "lewis6991/gitsigns.nvim",

@@ -17,3 +17,7 @@ vim.cmd("packadd dep")
 require("dep")({
   modules = { "plugins" },
 })
+
+vim.cmd("packadd telescope-undo.nvim")
+require("telescope").load_extension("undo")
+vim.keymap.set("n", "<leader>u", "<cmd>Telescope undo<cr>")
