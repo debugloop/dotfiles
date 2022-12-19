@@ -406,7 +406,7 @@ _L_ %{lsp} set lsp diagnostic      ]],
   {
     "echasnovski/mini.comment",
     function()
-      require("mini.comment").setup()
+      require("mini.comment").setup({})
     end,
   },
 
@@ -530,6 +530,7 @@ _L_ %{lsp} set lsp diagnostic      ]],
   {
     "hrsh7th/nvim-cmp",
     function()
+      require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
       local has_words_before = function()
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
         return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
@@ -768,7 +769,25 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
   {
     "neovim/nvim-lspconfig",
     function()
-      require("lspconfig")["gopls"].setup({
+      local on_attach = function(_, bufnr)
+        vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
+          vim.lsp.buf.format()
+        end, { desc = "Format current buffer with LSP" })
+      end
+
+      require("mason").setup()
+      local servers = { "clangd", "rust_analyzer", "pyright", "sumneko_lua", "gopls" }
+      require("mason-lspconfig").setup({
+        ensure_installed = servers,
+      })
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      for _, lsp in ipairs(servers) do
+        require("lspconfig")[lsp].setup({
+          on_attach = on_attach,
+          capabilities = capabilities,
+        })
+      end
+      require("lspconfig").gopls.setup({
         on_attach = function(client, bufnr)
           -- automatic format on save
           vim.api.nvim_create_autocmd("BufWritePre", {
@@ -797,9 +816,32 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
               end
             end,
           })
+
+          on_attach(client, bufnr)
         end,
+        capabilities = capabilities,
+      })
+      local runtime_path = vim.split(package.path, ";")
+      table.insert(runtime_path, "lua/?.lua")
+      table.insert(runtime_path, "lua/?/init.lua")
+      require("lspconfig").sumneko_lua.setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+        settings = {
+          Lua = {
+            runtime = {
+              version = "LuaJIT",
+              path = runtime_path,
+            },
+            diagnostics = {
+              globals = { "vim" },
+            },
+            telemetry = { enable = false },
+          },
+        },
       })
     end,
+    requires = { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim" },
   },
 
   {

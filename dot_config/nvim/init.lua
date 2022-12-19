@@ -15,7 +15,6 @@ vim.cmd("packadd dep")
 
 -- install all plugins
 require("dep")({
-  modules = { "plugins", "myplugins" },
   {
     "debugloop/telescope-undo.nvim",
     function()
@@ -24,10 +23,11 @@ require("dep")({
     end,
     requires = { "nvim-telescope/telescope.nvim" },
   },
+  modules = { "plugins" },
 })
 
--- for development:
--- run: mkdir -p ~/.config/nvim/pack/plugins/opt/; ln -sf ~/code/telescope-undo.nvim ~/.config/nvim/pack/plugins/opt/telescope-undo.nvim
+-- mkdir -p ~/.config/nvim/pack/plugins/opt/; ln -sf ~/code/telescope-undo.nvim ~/.config/nvim/pack/plugins/opt/telescope-undo.nvim
+-- rm -r ~/.config/nvim/pack
 -- vim.cmd("packadd telescope-undo.nvim")
 -- require("telescope").load_extension("undo")
 -- vim.keymap.set("n", "<leader>u", "<cmd>Telescope undo<cr>")
