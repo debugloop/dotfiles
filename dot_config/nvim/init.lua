@@ -6,28 +6,41 @@ if vim.g.vscode then
   return
 end
 
--- automatically install dep on startup
-local path = vim.fn.stdpath("data") .. "/site/pack/deps/opt/dep"
-if vim.fn.empty(vim.fn.glob(path)) > 0 then
-  vim.fn.system({ "git", "clone", "--depth=1", "https://github.com/chiyadev/dep", path })
+-- automatically install lazy on startup
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "--single-branch",
+    "https://github.com/folke/lazy.nvim.git",
+    lazypath,
+  })
 end
-vim.cmd("packadd dep")
+vim.opt.runtimepath:prepend(lazypath)
 
--- install all plugins
-require("dep")({
-  {
-    "debugloop/telescope-undo.nvim",
-    function()
-      require("telescope").load_extension("undo")
-      vim.keymap.set("n", "<leader>u", "<cmd>Telescope undo<cr>")
-    end,
-    requires = { "nvim-telescope/telescope.nvim" },
+require("lazy").setup("plugins", {
+  dev = {
+    path = "~/code",
+    patterns = { "debugloop" },
   },
-  modules = { "plugins" },
+  checker = {
+    enabled = true,
+  },
+  performance = {
+    rtp = {
+      disabled_plugins = {
+        "gzip",
+        "matchit",
+        "matchparen",
+        "netrwPlugin",
+        "tarPlugin",
+        "tohtml",
+        "tutor",
+        "zipPlugin",
+      },
+    },
+  },
 })
-
--- mkdir -p ~/.config/nvim/pack/plugins/opt/; ln -sf ~/code/telescope-undo.nvim ~/.config/nvim/pack/plugins/opt/telescope-undo.nvim
--- rm -r ~/.config/nvim/pack
--- vim.cmd("packadd telescope-undo.nvim")
--- require("telescope").load_extension("undo")
--- vim.keymap.set("n", "<leader>u", "<cmd>Telescope undo<cr>")
+vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Manage plugins" })

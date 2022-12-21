@@ -24,8 +24,8 @@ vim.api.nvim_create_autocmd("BufRead,BufNewFile", { -- disable undofile and back
 vim.opt.foldlevel = 999 -- no folding unless I close one myself
 vim.opt.foldmethod = "expr" -- use below expression for folding
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()" -- get that folding expression from treesitter
-vim.opt.spell = true -- spellcheck comments
-vim.opt.spelllang = "en,de" -- spellcheck comments
+-- vim.opt.spell = true -- spellcheck comments
+-- vim.opt.spelllang = "en,de" -- spellcheck comments
 
 -- finding stuff
 vim.opt.gdefault = true -- show multiple matches per line without specifying global
