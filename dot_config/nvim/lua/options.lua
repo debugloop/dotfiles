@@ -38,13 +38,17 @@ vim.opt.breakindent = true -- indent wrapped lines
 vim.opt.wrap = false -- don't wrap by default
 vim.opt.number = true -- enable line numbers
 vim.opt.relativenumber = true -- enable relative line numbers
-vim.opt.scrolloff = 5 -- always show this many lines of context at the edges
-vim.opt.sidescrolloff = 42 -- always show this many columns of context at the edges
+vim.opt.listchars = "eol:¬,tab:»·,trail:~,space:·" -- list these chars if enabled
+
 vim.opt.laststatus = 3 -- single status line for all windows
 vim.opt.splitbelow = true -- open horizontal splits below the current window
 vim.opt.splitright = true -- open vertical splits to the right of the current window
-
-vim.opt.listchars = "eol:¬,tab:»·,trail:~,space:·" -- list these chars if enabled
+vim.opt.scrolloff = 5 -- always show this many lines of context at the edges
+vim.opt.sidescrolloff = 42 -- always show this many columns of context at the edges
+vim.opt.winminwidth = 5 -- minimum width of windows
+vim.opt.winwidth = 140 -- standard width of windows
+vim.opt.winheight = 50 -- minimum height of windows
+vim.opt.winminheight = 5 -- standard height of windows
 
 vim.api.nvim_create_autocmd({ "InsertEnter" }, { -- only in insert mode
   group = vim.api.nvim_create_augroup("on_insert_enter", {}),
@@ -62,7 +66,7 @@ vim.api.nvim_create_autocmd({ "InsertLeave" }, { -- revert to this on return
   callback = function()
     vim.opt.cursorline = false -- don't show line highlight
     vim.opt.relativenumber = true -- don't show relative line numbers
-    vim.g.miniindentscope_disable = false -- reenable plugin drawn guides, if present
+    vim.g.miniindentscope_disable = false -- re-enable plugin drawn guides, if present
   end,
 })
 
@@ -87,5 +91,20 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, { -- special settings f
     vim.cmd(vim.api.nvim_replace_termcodes("normal /^$", true, true, true))
     vim.cmd("normal 2n")
     -- vim.cmd('startinsert')
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufReadPre", { -- go to last position
+  pattern = "*",
+  callback = function()
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "<buffer>",
+      once = true,
+      callback = function()
+        vim.cmd(
+          [[if &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exe 'normal! g`"' | endif]]
+        )
+      end,
+    })
   end,
 })

@@ -9,6 +9,8 @@ set -x BAT_THEME "ansi"
 set -x EDITOR nvim
 set -x VISUAL nvim
 
+fish_add_path /home/danieln/.local/share/neovim/bin
+
 set fish_greeting ""
 
 function fish_user_key_bindings

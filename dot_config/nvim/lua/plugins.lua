@@ -1,3 +1,11 @@
+local function override_highlight(callback)
+  callback()
+  vim.api.nvim_create_autocmd("ColorScheme", {
+    pattern = "*",
+    callback = callback,
+  })
+end
+
 return {
   {
     "Eandrju/cellular-automaton.nvim",
@@ -11,6 +19,7 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     event = "BufReadPre",
+    dependencies = "anuvyklack/hydra.nvim",
     config = function()
       require("gitsigns").setup()
       require("hydra")({
@@ -97,7 +106,6 @@ _b_: blame       _B_: blame with diff  _d_: toggle deleted   _w_: toggle word di
         },
       })
     end,
-    dependencies = "anuvyklack/hydra.nvim",
   },
 
   {
@@ -320,8 +328,16 @@ _L_ %{lsp} set lsp diagnostic      ]],
   },
 
   {
+    "ggandor/flit.nvim",
+    keys = { "f", "F", "t", "T" },
+    dependencies = { "ggandor/flit.nvim" },
+    config = function()
+      require("flit").setup()
+    end,
+  },
+
+  {
     "ggandor/leap.nvim",
-    keys = { "S" },
     config = function()
       vim.keymap.set({ "n" }, "S", function()
         require("leap").leap({ target_windows = { vim.fn.win_getid() } })
@@ -329,6 +345,15 @@ _L_ %{lsp} set lsp diagnostic      ]],
       vim.keymap.set({ "v", "o" }, "S", function()
         require("leap").leap({ target_windows = { vim.fn.win_getid() }, offset = -1 })
       end)
+      override_highlight(function()
+        vim.api.nvim_set_hl(0, "LeapBackdrop", { link = "Comment" })
+        vim.api.nvim_set_hl(0, "LeapMatch", {
+          fg = vim.o.background == "dark" and "white" or "black",
+          bold = true,
+          nocombine = true,
+        })
+      end)
+      require("leap").opts.highlight_unlabeled_phase_one_targets = true
     end,
   },
 
@@ -402,11 +427,16 @@ _L_ %{lsp} set lsp diagnostic      ]],
   },
 
   {
-    "echasnovski/mini.ai",
+    "echasnovski/mini.nvim",
     event = "VeryLazy",
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter-textobjects", dependencies = { "nvim-treesitter/nvim-treesitter" } }, -- mini.ai
+      { "JoosepAlviste/nvim-ts-context-commentstring" }, -- mini.comment
+    },
     config = function()
+      -- mini.ai
       local ai = require("mini.ai")
-      require("mini.ai").setup({
+      ai.setup({
         n_lines = 500,
         custom_textobjects = {
           o = ai.gen_spec.treesitter({
@@ -432,40 +462,18 @@ _L_ %{lsp} set lsp diagnostic      ]],
           end
         end
       end
-      vim.keymap.set({ "n", "x", "o" }, "]]", function()
-        ai.move_cursor("left", "a", "f", { search_method = "next" })
-      end, {
-        desc = "beginning of next function",
-      })
-      vim.keymap.set({ "n", "x", "o" }, "[[", function()
-        ai.move_cursor("left", "a", "f", { search_method = "prev" })
-      end, {
-        desc = "beginning of last function",
-      })
       map("f", "function")
       map("c", "class")
-      map("o", "block")
-    end,
-    dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
-  },
-
-  {
-    "echasnovski/mini.bufremove",
-    keys = { "<leader><tab>", "<leader><S-tab>" },
-    config = function()
+      -- mini.animate
+      require("mini.animate").setup({})
+      -- mini.bufremove
       vim.keymap.set("n", "<leader><tab>", function()
         require("mini.bufremove").delete(0, false)
       end)
       vim.keymap.set("n", "<leader><S-tab>", function()
         require("mini.bufremove").delete(0, true)
       end)
-    end,
-  },
-
-  {
-    "echasnovski/mini.comment",
-    event = "VeryLazy",
-    config = function()
+      --mini.comment
       require("mini.comment").setup({
         hooks = {
           pre = function()
@@ -473,14 +481,7 @@ _L_ %{lsp} set lsp diagnostic      ]],
           end,
         },
       })
-    end,
-    dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
-  },
-
-  {
-    "echasnovski/mini.indentscope",
-    event = "VeryLazy",
-    config = function()
+      -- mini.indentscope
       require("mini.indentscope").setup({
         draw = {
           animation = require("mini.indentscope").gen_animation.none(),
@@ -497,38 +498,18 @@ _L_ %{lsp} set lsp diagnostic      ]],
           require("mini.indentscope").config.options.border = "top"
         end,
       })
-    end,
-  },
-
-  {
-    "echasnovski/mini.surround",
-    keys = { "s" },
-    config = function()
+      -- mini.surround
       require("mini.surround").setup({ search_method = "cover_or_next" })
-    end,
-  },
-
-  {
-    "echasnovski/mini.trailspace",
-    event = "VeryLazy",
-    config = function()
-      require("mini.trailspace").setup({}) -- highlight and remove trailing spaces
-      vim.api.nvim_set_hl(0, "MiniTrailspace", { undercurl = true, sp = "red" })
+      -- mini.trailspace
+      require("mini.trailspace").setup({})
       vim.keymap.set("n", "<leader>w", require("mini.trailspace").trim, { desc = "trim trailing whitespace" })
-    end,
-  },
-
-  {
-    "karb94/neoscroll.nvim",
-    keys = { "<C-u>", "<C-d>", "<C-b>", "<C-f>", "<C-y>", "<C-e>", "zt", "zz", "zb" },
-    config = function()
-      require("neoscroll").setup()
     end,
   },
 
   {
     "folke/noice.nvim",
     event = "VeryLazy",
+    dependencies = { "MunifTanjim/nui.nvim", "rcarriga/nvim-notify" },
     config = function()
       require("noice").setup({
         lsp = {
@@ -540,23 +521,34 @@ _L_ %{lsp} set lsp diagnostic      ]],
         },
       })
     end,
-    dependencies = { "MunifTanjim/nui.nvim", "rcarriga/nvim-notify" },
   },
 
   {
     "jose-elias-alvarez/null-ls.nvim",
     event = "VeryLazy",
+    dependencies = { "nvim-lua/plenary.nvim", "williamboman/mason.nvim" },
+    init = function()
+      local mason = require("mason-core.package")
+      local reg = require("mason-registry")
+
+      for _, pkg_name in ipairs({ "stylua", "vale", "yamllint" }) do
+        local pkg = reg.get_package(pkg_name)
+        if pkg:is_installed() == false then
+          mason.install(pkg)
+        end
+      end
+    end,
     config = function()
-      require("null-ls").setup({
+      local null_ls = require("null-ls")
+      null_ls.setup({
         sources = {
-          -- yaml and ansible
-          -- require("null-ls").builtins.diagnostics.ansiblelint,
-          require("null-ls").builtins.diagnostics.yamllint,
           -- lua
-          require("null-ls").builtins.formatting.stylua,
+          null_ls.builtins.formatting.stylua,
           -- markdown and prose
-          require("null-ls").builtins.diagnostics.vale,
-          require("null-ls").builtins.hover.dictionary,
+          null_ls.builtins.diagnostics.vale,
+          null_ls.builtins.hover.dictionary,
+          -- yaml
+          null_ls.builtins.diagnostics.yamllint,
         },
       })
       -- autoformat lua on save
@@ -580,28 +572,25 @@ _L_ %{lsp} set lsp diagnostic      ]],
           LspDisplay = 2
         end,
       })
-      -- autodetect ansible
-      vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-        pattern = "/home/danieln/playbook/**.yml",
-        callback = function()
-          vim.o.filetype = "yaml.ansible"
-        end,
-      })
     end,
-    dependencies = { "nvim-lua/plenary.nvim" },
   },
 
   {
     "windwp/nvim-autopairs",
     event = "InsertEnter",
     config = function()
-      require("nvim-autopairs").setup()
+      require("nvim-autopairs").setup({})
     end,
   },
 
   {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "windwp/nvim-autopairs",
+    },
     config = function()
       require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
       local has_words_before = function()
@@ -655,13 +644,14 @@ _L_ %{lsp} set lsp diagnostic      ]],
           end
         end,
       })
+      require("cmp").event:on("confirm_done", require("nvim-autopairs.completion.cmp").on_confirm_done())
     end,
-    dependencies = { "hrsh7th/cmp-buffer", "hrsh7th/cmp-nvim-lsp" },
   },
 
   {
     "mfussenegger/nvim-dap",
     event = "VeryLazy",
+    dependencies = "anuvyklack/hydra.nvim",
     config = function()
       vim.keymap.set("n", "<leader>b", require("dap").toggle_breakpoint, { desc = "debug: toggle breakpoint" })
       vim.keymap.set("n", "<leader>B", function()
@@ -811,17 +801,16 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
         },
       })
     end,
-    dependencies = "anuvyklack/hydra.nvim",
   },
 
   {
     "leoluz/nvim-dap-go",
     ft = "go",
+    dependencies = { "mfussenegger/nvim-dap" },
     config = function()
       require("dap-go").setup()
       vim.keymap.set("n", "<leader>td", require("dap-go").debug_test, { desc = "test: start debugging closest" })
     end,
-    dependencies = { "mfussenegger/nvim-dap" },
   },
 
   {
@@ -843,27 +832,32 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
   },
 
   {
+    "williamboman/mason.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("mason").setup()
+      vim.keymap.set("n", "<leader>m", "<cmd>Mason<cr>", { desc = "Manage additional tools" })
+    end,
+  },
+
+  {
     "neovim/nvim-lspconfig",
     event = "VeryLazy",
+    dependencies = { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim" },
     config = function()
       local on_attach = function(_, bufnr)
         vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
           vim.lsp.buf.format()
         end, { desc = "Format current buffer with LSP" })
       end
-      require("mason").setup()
-      vim.keymap.set("n", "<leader>m", "<cmd>Mason<cr>", { desc = "Manage LSP" })
-      local servers = { "clangd", "rust_analyzer", "pyright", "sumneko_lua", "gopls" }
+      -- install servers using mason
+      local servers = { "gopls", "sumneko_lua" }
       require("mason-lspconfig").setup({
         ensure_installed = servers,
       })
+      -- configure lsp servers
       local capabilities = vim.lsp.protocol.make_client_capabilities()
-      for _, lsp in ipairs(servers) do
-        require("lspconfig")[lsp].setup({
-          on_attach = on_attach,
-          capabilities = capabilities,
-        })
-      end
+      -- gopls
       require("lspconfig").gopls.setup({
         on_attach = function(client, bufnr)
           -- automatic format on save
@@ -897,6 +891,7 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
         end,
         capabilities = capabilities,
       })
+      -- sumneko_lua
       local runtime_path = vim.split(package.path, ";")
       table.insert(runtime_path, "lua/?.lua")
       table.insert(runtime_path, "lua/?/init.lua")
@@ -917,7 +912,6 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
         },
       })
     end,
-    dependencies = { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim" },
   },
 
   {
@@ -926,6 +920,12 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
     config = function()
       vim.keymap.set({ "n", "o", "v" }, "<leader><cr>", require("tsht").nodes, { desc = "select scope" })
     end,
+  },
+
+  {
+    "nvim-treesitter/playground",
+    cmd = "TSPlaygroundToggle",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
   },
 
   {
@@ -941,6 +941,24 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
         indent = {
           enable = true,
         },
+        playground = {
+          enable = true,
+          disable = {},
+          updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+          persist_queries = true, -- Whether the query persists across vim sessions
+          keybindings = {
+            toggle_query_editor = "o",
+            toggle_hl_groups = "i",
+            toggle_injected_languages = "t",
+            toggle_anonymous_nodes = "a",
+            toggle_language_display = "I",
+            focus_language = "f",
+            unfocus_language = "F",
+            update = "R",
+            goto_node = "<cr>",
+            show_help = "?",
+          },
+        },
       })
     end,
     build = function()
@@ -952,14 +970,6 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
     "samjwill/nvim-unception",
     event = "TermOpen",
     config = function() end,
-  },
-
-  {
-    "unblevable/quick-scope",
-    keys = { "f", "F", "t", "T" },
-    init = function()
-      vim.g.qs_highlight_on_keys = { "f", "F", "t", "T" }
-    end,
   },
 
   {
@@ -975,6 +985,13 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
 
   {
     "nvim-telescope/telescope.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "debugloop/telescope-undo.nvim",
+      "gbprod/yanky.nvim",
+      "folke/noice.nvim",
+    },
     config = function()
       require("telescope").setup({
         defaults = {
@@ -1002,12 +1019,7 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
       -- lsp related pickers
       vim.keymap.set("n", "gd", require("telescope.builtin").lsp_definitions, { desc = "lsp: goto definition" })
       vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, { desc = "lsp: list references" })
-      vim.keymap.set(
-        "n",
-        "gI",
-        require("telescope.builtin").lsp_implementations,
-        { desc = "lsp: list implementations" }
-      )
+      vim.keymap.set("n", "gI", require("telescope.builtin").lsp_implementations, { desc = "lsp: list impls" })
       vim.keymap.set("n", "gO", require("telescope.builtin").lsp_document_symbols, { desc = "lsp: outline symbols" })
       vim.keymap.set("n", "gC", require("telescope.builtin").lsp_incoming_calls, { desc = "lsp: list incoming calls" })
       -- telescope-undo.nvim
@@ -1025,7 +1037,6 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
         { desc = "paste from yank history" }
       )
     end,
-    dependencies = { "nvim-lua/plenary.nvim", "debugloop/telescope-undo.nvim", "gbprod/yanky.nvim", "folke/noice.nvim" },
   },
 
   {
@@ -1085,19 +1096,21 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
         },
       })
       vim.keymap.set("n", "<leader>i", require("illuminate").toggle, { desc = "illuminate: toggle" })
-      vim.keymap.set("n", "]r", function()
+      vim.keymap.set("n", "]]", function()
         for _ = 1, vim.v.count1 do
           require("illuminate").goto_next_reference()
         end
       end, { desc = "illuminate: jump to next reference" })
-      vim.keymap.set("n", "[r", function()
+      vim.keymap.set("n", "[[", function()
         for _ = 1, vim.v.count1 do
           require("illuminate").goto_prev_reference()
         end
       end, { desc = "illuminate: jump to previous reference" })
-      vim.api.nvim_set_hl(0, "IlluminatedWordRead", { link = "Visual" })
-      vim.api.nvim_set_hl(0, "IlluminatedWordText", { link = "Visual" })
-      vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { fg = "orange" })
+      override_highlight(function()
+        vim.api.nvim_set_hl(0, "IlluminatedWordRead", { link = "Visual" })
+        vim.api.nvim_set_hl(0, "IlluminatedWordText", { link = "Visual" })
+        vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { fg = "orange" })
+      end)
     end,
   },
 
@@ -1127,7 +1140,7 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
 
   {
     "gbprod/yanky.nvim",
-    event = "VeryLazy",
+    keys = { "p", "P", "gp", "gP", "<C-n>", "<C-p>" },
     config = function()
       require("yanky").setup({
         picker = {
@@ -1144,8 +1157,6 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
       vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutAfter)")
       vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
       vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
-      vim.api.nvim_set_hl(0, "YankyPut", { link = "IncSearch" })
-      vim.api.nvim_set_hl(0, "YankyYanked", { link = "IncSearch" })
     end,
   },
 }
