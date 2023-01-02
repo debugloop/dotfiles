@@ -25,6 +25,9 @@ require("lazy").setup("plugins", {
     path = "~/code",
     patterns = { "debugloop" },
   },
+  diff = {
+    cmd = "terminal_git",
+  },
   checker = {
     enabled = true,
     notify = false,

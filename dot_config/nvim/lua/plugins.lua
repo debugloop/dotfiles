@@ -338,6 +338,7 @@ _L_ %{lsp} set lsp diagnostic      ]],
 
   {
     "ggandor/leap.nvim",
+    keys = { "S" },
     config = function()
       vim.keymap.set({ "n" }, "S", function()
         require("leap").leap({ target_windows = { vim.fn.win_getid() } })
@@ -423,6 +424,14 @@ _L_ %{lsp} set lsp diagnostic      ]],
           require("lualine").refresh({ place = { "statusline" } })
         end,
       })
+    end,
+  },
+
+  {
+    "phaazon/mind.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("mind").setup()
     end,
   },
 
@@ -530,7 +539,6 @@ _L_ %{lsp} set lsp diagnostic      ]],
     init = function()
       local mason = require("mason-core.package")
       local reg = require("mason-registry")
-
       for _, pkg_name in ipairs({ "stylua", "vale", "yamllint" }) do
         local pkg = reg.get_package(pkg_name)
         if pkg:is_installed() == false then
@@ -985,11 +993,11 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
 
   {
     "nvim-telescope/telescope.nvim",
-    event = "VeryLazy",
+    -- event = "VeryLazy",
+    keys = { "<leader>t", "<leader>/", "gd", "gr", "gI", "gO", "gC", "<leader>u", "<leader>n", "<leader>p" },
     dependencies = {
       "nvim-lua/plenary.nvim",
       "debugloop/telescope-undo.nvim",
-      "gbprod/yanky.nvim",
       "folke/noice.nvim",
     },
     config = function()
@@ -1014,7 +1022,7 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
           },
         },
       })
-      vim.keymap.set("n", "<leader>ft", require("telescope.builtin").builtin, { desc = "telescope pick telescope" })
+      vim.keymap.set("n", "<leader>f", require("telescope.builtin").builtin, { desc = "telescope pick telescope" })
       vim.keymap.set("n", "<leader>/", require("telescope.builtin").live_grep, { desc = "telescope grep in project" })
       -- lsp related pickers
       vim.keymap.set("n", "gd", require("telescope.builtin").lsp_definitions, { desc = "lsp: goto definition" })
@@ -1028,14 +1036,6 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
       -- noice.nvim
       require("telescope").load_extension("noice")
       vim.keymap.set("n", "<leader>n", require("telescope").extensions.noice.noice, { desc = "open messages" })
-      -- yanky.nvim
-      require("telescope").load_extension("yank_history")
-      vim.keymap.set(
-        "n",
-        "<leader>p",
-        require("telescope").extensions.yank_history.yank_history,
-        { desc = "paste from yank history" }
-      )
     end,
   },
 
@@ -1082,6 +1082,30 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
   },
 
   {
+    "drybalka/tree-climber.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    config = function()
+      local keyopts = { noremap = true, silent = true }
+      vim.keymap.set({ "n", "v", "o" }, "<m-h>", function()
+        require("tree-climber").goto_parent({ highlight = true })
+      end, keyopts)
+      vim.keymap.set({ "n", "v", "o" }, "<m-l>", function()
+        require("tree-climber").goto_child({ highlight = true })
+      end, keyopts)
+      vim.keymap.set({ "n", "v", "o" }, "<m-j>", function()
+        require("tree-climber").goto_next({ highlight = true })
+      end, keyopts)
+      vim.keymap.set({ "n", "v", "o" }, "<m-k>", function()
+        require("tree-climber").goto_prev({ highlight = true })
+      end, keyopts)
+      vim.keymap.set("n", "<c-m-k>", require("tree-climber").swap_prev, keyopts)
+      vim.keymap.set("n", "<c-m-j>", require("tree-climber").swap_next, keyopts)
+      vim.keymap.set("n", "<c-m-h>", require("tree-climber").swap_prev, keyopts)
+      vim.keymap.set("n", "<c-m-l>", require("tree-climber").swap_next, keyopts)
+    end,
+  },
+
+  {
     "RRethy/vim-illuminate",
     event = "BufReadPost",
     config = function()
@@ -1116,11 +1140,12 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
 
   {
     "tpope/vim-sleuth",
-    event = "VeryLazy",
+    event = "BufReadPre",
   },
 
   {
     "folke/which-key.nvim",
+    event = "VeryLazy",
     config = function()
       require("which-key").setup({
         plugins = {
@@ -1140,8 +1165,11 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
 
   {
     "gbprod/yanky.nvim",
-    keys = { "p", "P", "gp", "gP", "<C-n>", "<C-p>" },
+    event = "VeryLazy",
+    keys = { "<leader>p", "p", "P", "gp", "gP" }, -- no <C-n> or <C-p>, these are only pressed after paste
+    dependencies = { "nvim-telescope/telescope.nvim" },
     config = function()
+      -- "reverse-load" this telescope extension, as it requires it's config here...
       require("yanky").setup({
         picker = {
           telescope = {
@@ -1151,6 +1179,13 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
           },
         },
       })
+      require("telescope").load_extension("yank_history")
+      vim.keymap.set(
+        "n",
+        "<leader>p",
+        require("telescope").extensions.yank_history.yank_history,
+        { desc = "paste from yank history" }
+      )
       vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
       vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
       vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutBefore)")
