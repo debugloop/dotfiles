@@ -16,6 +16,10 @@ vim.keymap.set("n", "<c-n>", "<cmd>cnext<cr>")
 vim.keymap.set("n", "<c-m>", "<cmd>cprevious<cr>")
 vim.keymap.set("n", "<c-q>", "<cmd>cclose<cr>")
 
+-- center view after move
+vim.keymap.set("n", "<c-d>", "<c-d>zz")
+vim.keymap.set("n", "<c-u>", "<c-u>zz")
+
 -- jump back to last position
 vim.keymap.set("n", "<bs>", "<c-o>")
 
@@ -36,7 +40,8 @@ vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
 -- clear highlight
-vim.keymap.set("n", "<c-c>", ":nohl<cr>", { silent = true })
+vim.keymap.set({ "n", "i" }, "<esc>", "<cmd>nohl<cr><esc>")
+vim.keymap.set("n", "<c-c>", "<cmd>nohl<cr>")
 
 -- fix Y map
 vim.keymap.set("n", "Y", "y$")
@@ -47,6 +52,13 @@ vim.keymap.set("n", "<c-j>", "<c-w>j")
 vim.keymap.set("n", "<c-k>", "<c-w>k")
 vim.keymap.set("n", "<c-l>", "<c-w>l")
 
+-- same for terminal and insert mode
+vim.keymap.set({ "i", "t" }, "<c-h>", "<c-\\><c-n><c-w>h")
+vim.keymap.set({ "i", "t" }, "<c-j>", "<c-\\><c-n><c-w>j")
+vim.keymap.set({ "i", "t" }, "<c-k>", "<c-\\><c-n><c-w>k")
+vim.keymap.set({ "i", "t" }, "<c-l>", "<c-\\><c-n><c-w>l")
+
+-- window resize
 vim.keymap.set({ "n", "t" }, "<s-up>", "<cmd>resize +2<cr>")
 vim.keymap.set({ "n", "t" }, "<s-down>", "<cmd>resize -2<cr>")
 vim.keymap.set({ "n", "t" }, "<s-left>", "<cmd>vertical resize -2<cr>")
@@ -81,10 +93,10 @@ vim.keymap.set("n", "<cr>", "j")
 vim.keymap.set("n", "X", "'_d")
 vim.keymap.set("n", "XX", "'_dd")
 
-vim.keymap.set({ "i", "t" }, "<c-h>", "<c-\\><c-n><c-w>h")
-vim.keymap.set({ "i", "t" }, "<c-j>", "<c-\\><c-n><c-w>j")
-vim.keymap.set({ "i", "t" }, "<c-k>", "<c-\\><c-n><c-w>k")
-vim.keymap.set({ "i", "t" }, "<c-l>", "<c-\\><c-n><c-w>l")
+-- add undo states when inserting these characters
+vim.keymap.set("i", ",", ",<c-g>u")
+vim.keymap.set("i", ".", ".<c-g>u")
+vim.keymap.set("i", ";", ";<c-g>u")
 
 -- lsp mappings
 vim.api.nvim_create_autocmd("LspAttach", {

@@ -288,15 +288,13 @@ _L_ %{lsp} set lsp diagnostic      ]],
           {
             "c",
             function()
-              if vim.o.cursorline == true then
-                vim.o.cursorline = false
+              if vim.o.cursorcolumn == true then
                 vim.o.cursorcolumn = false
               else
-                vim.o.cursorline = true
                 vim.o.cursorcolumn = true
               end
             end,
-            { desc = "draw crosshair" },
+            { desc = "draw cursorcolumn" },
           },
           { "q", nil, { exit = true, nowait = true, desc = false } },
           { "<Esc>", nil, { exit = true, nowait = true, desc = false } },
@@ -338,6 +336,7 @@ _L_ %{lsp} set lsp diagnostic      ]],
 
   {
     "ggandor/leap.nvim",
+    -- TODO: switch to default keys, change mini.surround
     keys = { "S" },
     config = function()
       vim.keymap.set({ "n" }, "S", function()
@@ -373,7 +372,12 @@ _L_ %{lsp} set lsp diagnostic      ]],
 
   {
     "nvim-lualine/lualine.nvim",
+    dependencies = { "rebelot/kanagawa.nvim" }, -- add colorschemes here so lualine has that theme
     config = function()
+      local function empty()
+        return " "
+      end
+
       require("lualine").setup({
         options = {
           component_separators = { left = "", right = "" },
@@ -415,6 +419,7 @@ _L_ %{lsp} set lsp diagnostic      ]],
                 alternate_file = "",
               },
             },
+            { empty },
           },
         },
       })
@@ -424,14 +429,6 @@ _L_ %{lsp} set lsp diagnostic      ]],
           require("lualine").refresh({ place = { "statusline" } })
         end,
       })
-    end,
-  },
-
-  {
-    "phaazon/mind.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      require("mind").setup()
     end,
   },
 
@@ -474,7 +471,7 @@ _L_ %{lsp} set lsp diagnostic      ]],
       map("f", "function")
       map("c", "class")
       -- mini.animate
-      require("mini.animate").setup({})
+      -- require("mini.animate").setup({})
       -- mini.bufremove
       vim.keymap.set("n", "<leader><tab>", function()
         require("mini.bufremove").delete(0, false)
@@ -539,39 +536,12 @@ _L_ %{lsp} set lsp diagnostic      ]],
     init = function()
       local mason = require("mason-core.package")
       local reg = require("mason-registry")
-      for _, pkg_name in ipairs({ "stylua", "vale", "yamllint" }) do
+      for _, pkg_name in ipairs({ "vale", "yamllint" }) do
         local pkg = reg.get_package(pkg_name)
         if pkg:is_installed() == false then
           mason.install(pkg)
         end
       end
-    end,
-    config = function()
-      local null_ls = require("null-ls")
-      null_ls.setup({
-        sources = {
-          -- lua
-          null_ls.builtins.formatting.stylua,
-          -- markdown and prose
-          null_ls.builtins.diagnostics.vale,
-          null_ls.builtins.hover.dictionary,
-          -- yaml
-          null_ls.builtins.diagnostics.yamllint,
-        },
-      })
-      -- autoformat lua on save
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = "lua",
-        callback = function()
-          -- automatic format on save
-          vim.api.nvim_create_autocmd("BufWritePre", {
-            group = vim.api.nvim_create_augroup("LspFormat", { clear = true }),
-            callback = function()
-              vim.lsp.buf.format({ async = false }, 3000)
-            end,
-          })
-        end,
-      })
       -- start without diagnostics on markdown
       vim.api.nvim_create_autocmd("FileType", {
         pattern = "markdown",
@@ -579,6 +549,18 @@ _L_ %{lsp} set lsp diagnostic      ]],
           vim.diagnostic.disable(0)
           LspDisplay = 2
         end,
+      })
+    end,
+    config = function()
+      local null_ls = require("null-ls")
+      null_ls.setup({
+        sources = {
+          -- markdown and prose
+          null_ls.builtins.diagnostics.vale,
+          null_ls.builtins.hover.dictionary,
+          -- yaml
+          null_ls.builtins.diagnostics.yamllint,
+        },
       })
     end,
   },
@@ -658,7 +640,7 @@ _L_ %{lsp} set lsp diagnostic      ]],
 
   {
     "mfussenegger/nvim-dap",
-    event = "VeryLazy",
+    keys = { "<leader>b", "<leader>B", "<leader>d" },
     dependencies = "anuvyklack/hydra.nvim",
     config = function()
       vim.keymap.set("n", "<leader>b", require("dap").toggle_breakpoint, { desc = "debug: toggle breakpoint" })
@@ -814,6 +796,7 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
   {
     "leoluz/nvim-dap-go",
     ft = "go",
+    keys = { "<leader>b", "<leader>B", "<leader>d", "<leader>td" },
     dependencies = { "mfussenegger/nvim-dap" },
     config = function()
       require("dap-go").setup()
@@ -824,6 +807,7 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
   {
     "rafaelsq/nvim-goc.lua",
     ft = "go",
+    keys = { "<leader>a", "<leader>tc" },
     config = function()
       require("nvim-goc").setup({ verticalSplit = false })
       vim.keymap.set("n", "<leader>tc", function()
@@ -850,7 +834,7 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
 
   {
     "neovim/nvim-lspconfig",
-    event = "VeryLazy",
+    ft = { "go", "lua" },
     dependencies = { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim" },
     config = function()
       local on_attach = function(_, bufnr)
@@ -870,7 +854,7 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
         on_attach = function(client, bufnr)
           -- automatic format on save
           vim.api.nvim_create_autocmd("BufWritePre", {
-            group = vim.api.nvim_create_augroup("LspFormat", { clear = false }),
+            group = vim.api.nvim_create_augroup("GoplsFormat", { clear = false }),
             buffer = bufnr,
             callback = function()
               vim.lsp.buf.format({ async = false }, 3000)
@@ -878,7 +862,7 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
           })
           -- automatic organize imports on save
           vim.api.nvim_create_autocmd("BufWritePre", {
-            group = vim.api.nvim_create_augroup("LspOrganizeImports", { clear = false }),
+            group = vim.api.nvim_create_augroup("GoplsOrganizeImports", { clear = false }),
             buffer = bufnr,
             callback = function()
               local params = vim.lsp.util.make_range_params(nil, vim.lsp.util._get_offset_encoding())
@@ -904,7 +888,17 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
       table.insert(runtime_path, "lua/?.lua")
       table.insert(runtime_path, "lua/?/init.lua")
       require("lspconfig").sumneko_lua.setup({
-        on_attach = on_attach,
+        on_attach = function(client, bufnr)
+          -- automatic format on save
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            group = vim.api.nvim_create_augroup("SumnekoFormat", { clear = false }),
+            buffer = bufnr,
+            callback = function()
+              vim.lsp.buf.format({ async = false }, 3000)
+            end,
+          })
+          on_attach(client, bufnr)
+        end,
         capabilities = capabilities,
         settings = {
           Lua = {
@@ -923,14 +917,6 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
   },
 
   {
-    "mfussenegger/nvim-treehopper",
-    keys = { "<leader><cr>" },
-    config = function()
-      vim.keymap.set({ "n", "o", "v" }, "<leader><cr>", require("tsht").nodes, { desc = "select scope" })
-    end,
-  },
-
-  {
     "nvim-treesitter/playground",
     cmd = "TSPlaygroundToggle",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
@@ -945,6 +931,15 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
         auto_install = false,
         highlight = {
           enable = true,
+        },
+        incremental_selection = {
+          enable = true,
+          keymaps = {
+            init_selection = "<CR>",
+            node_incremental = "<CR>",
+            scope_incremental = "<S-CR>",
+            node_decremental = "<BS>",
+          },
         },
         indent = {
           enable = true,
@@ -992,8 +987,55 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
   },
 
   {
+    "renerocksai/telekasten.nvim",
+    event = "VeryLazy",
+    dependencies = { "renerocksai/calendar-vim", "nvim-telescope/telescope.nvim" },
+    config = function()
+      local home = vim.fn.expand("~/zettelkasten")
+      require("telekasten").setup({
+        home = home,
+        template_new_note = home .. "/templates/new.md",
+        template_new_daily = home .. "/templates/daily.md",
+        template_new_weekly = home .. "/templates/weekly.md",
+      })
+      vim.keymap.set(
+        { "n" },
+        "<leader>zf",
+        require("telekasten").find_notes,
+        { desc = "Zettelkasten: find notes by title" }
+      )
+      vim.keymap.set(
+        { "n" },
+        "<leader>zg",
+        require("telekasten").search_notes,
+        { desc = "Zettelkasten: search note contents" }
+      )
+      vim.keymap.set(
+        { "n" },
+        "<leader>zd",
+        require("telekasten").goto_today,
+        { desc = "Zettelkasten: open daily note" }
+      )
+      vim.keymap.set(
+        { "n" },
+        "<leader>zc",
+        require("telekasten").show_calendar,
+        { desc = "Zettelkasten: show calendar" }
+      )
+      vim.keymap.set(
+        { "n" },
+        "<leader>zZ",
+        require("telekasten").show_backlinks,
+        { desc = "Zettelkasten: incoming links" }
+      )
+      vim.keymap.set({ "n" }, "<leader>zz", require("telekasten").follow_link, { desc = "Zettelkasten: follow link" })
+      vim.keymap.set({ "n" }, "<leader>zr", require("telekasten").rename_note, { desc = "Zettelkasten: rename note" })
+      vim.keymap.set({ "n" }, "<leader>z", require("telekasten").panel, { desc = "Zettelkasten: bring up functions" })
+    end,
+  },
+
+  {
     "nvim-telescope/telescope.nvim",
-    -- event = "VeryLazy",
     keys = { "<leader>t", "<leader>/", "gd", "gr", "gI", "gO", "gC", "<leader>u", "<leader>n", "<leader>p" },
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -1041,7 +1083,7 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
 
   {
     "akinsho/toggleterm.nvim",
-    keys = { "<c-cr", "<c-s-cr>" },
+    keys = { "<c-cr>", "<c-s-cr>" },
     config = function()
       require("toggleterm").setup({
         size = function(term)
@@ -1083,25 +1125,24 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
 
   {
     "drybalka/tree-climber.nvim",
+    keys = { "<m-o>", "<m-i>", "<m-n>", "<m-p>", "<c-m-n>", "<c-m-p>" },
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function()
       local keyopts = { noremap = true, silent = true }
-      vim.keymap.set({ "n", "v", "o" }, "<m-h>", function()
+      vim.keymap.set({ "n", "v", "o" }, "<m-o>", function()
         require("tree-climber").goto_parent({ highlight = true })
       end, keyopts)
-      vim.keymap.set({ "n", "v", "o" }, "<m-l>", function()
+      vim.keymap.set({ "n", "v", "o" }, "<m-i>", function()
         require("tree-climber").goto_child({ highlight = true })
       end, keyopts)
-      vim.keymap.set({ "n", "v", "o" }, "<m-j>", function()
+      vim.keymap.set({ "n", "v", "o" }, "<m-n>", function()
         require("tree-climber").goto_next({ highlight = true })
       end, keyopts)
-      vim.keymap.set({ "n", "v", "o" }, "<m-k>", function()
+      vim.keymap.set({ "n", "v", "o" }, "<m-p>", function()
         require("tree-climber").goto_prev({ highlight = true })
       end, keyopts)
-      vim.keymap.set("n", "<c-m-k>", require("tree-climber").swap_prev, keyopts)
-      vim.keymap.set("n", "<c-m-j>", require("tree-climber").swap_next, keyopts)
-      vim.keymap.set("n", "<c-m-h>", require("tree-climber").swap_prev, keyopts)
-      vim.keymap.set("n", "<c-m-l>", require("tree-climber").swap_next, keyopts)
+      vim.keymap.set("n", "<c-m-p>", require("tree-climber").swap_prev, keyopts)
+      vim.keymap.set("n", "<c-m-n>", require("tree-climber").swap_next, keyopts)
     end,
   },
 
