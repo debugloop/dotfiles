@@ -4,6 +4,7 @@
 set -x LANG en_US.UTF-8
 set -x LC_TIME en_GB.UTF-8
 set -x GTK_THEME "Arc-Darker"
+set -x MOZ_ENABLE_WAYLAND 1
 set -x HIGHLIGHT_STYLE "base16/grayscale-dark"
 set -x BAT_THEME "ansi"
 set -x EDITOR nvim
@@ -34,7 +35,7 @@ set -x LESS_TERMCAP_ue (printf "\033[0m")
 set -x LESS_TERMCAP_us (printf "\033[01;32m")
 
 if test -n "$DISPLAY"
-    for env_var in (gnome-keyring-daemon --start);
+    for env_var in (gnome-keyring-daemon --start 2>/dev/null);
         set -x (echo $env_var | string split "=")
     end
 end

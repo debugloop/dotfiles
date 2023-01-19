@@ -1,8 +1,8 @@
 profile {
-    output "Dell Inc. DELL S3221QS 9VRRTB3" mode 3840x2160@60Hz position 1080,0 scale 1.3
-    output "Unknown 0x573D 0x00000000" mode 1920x1080@60Hz position 4033,0 disable
+    output "Dell Inc. DELL S3221QS 9VRRTB3" mode 3840x2160@60Hz scale 1.3
+    output "AU Optronics 0x573D Unknown" disable
 }
 
 profile {
-    output "Unknown 0x573D 0x00000000" mode 1920x1080@60Hz position 0,0
+    output "AU Optronics 0x573D Unknown" mode 1920x1080@60Hz position 0,0
 }
