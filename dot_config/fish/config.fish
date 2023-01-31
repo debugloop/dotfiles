@@ -1,118 +1,22 @@
-#####################################################################
-# basic settings {{{
-#####################################################################
-set -x LANG en_US.UTF-8
-set -x LC_TIME en_GB.UTF-8
-set -x GTK_THEME "Arc-Darker"
-set -x MOZ_ENABLE_WAYLAND 1
+# locale
+set -x LANG "en_US.UTF-8"
+set -x LC_TIME "en_GB.UTF-8"
+
+# defaults
+set -x EDITOR "nvim"
+set -x VISUAL "nvim"
+set -x PAGER "less -R --use-color -Dd+r -Du+b"
+
+# tools
 set -x HIGHLIGHT_STYLE "base16/grayscale-dark"
 set -x BAT_THEME "ansi"
-set -x EDITOR nvim
-set -x VISUAL nvim
 
-fish_add_path ~/.local/share/neovim/bin
-fish_add_path ~/.nix-profile/bin
-
-set fish_greeting ""
-
-function fish_user_key_bindings
-    fish_default_key_bindings -M insert
-    fish_vi_key_bindings --no-erase insert
-    fzf_key_bindings
-    bind -M insert \cz 'fg 2>/dev/null; commandline -f repaint'
-end
-set fish_cursor_default block
-set fish_cursor_insert line
-set fish_cursor_visual block
-
-set -x NVIM_TUI_ENABLE_TRUE_COLOR 1
-set -x MANWIDTH 100
-set -x LESS_TERMCAP_mb (printf "\033[01;31m")
-set -x LESS_TERMCAP_md (printf "\033[01;31m")
-set -x LESS_TERMCAP_me (printf "\033[0m")
-set -x LESS_TERMCAP_se (printf "\033[0m")
-set -x LESS_TERMCAP_so (printf "\033[01;44;33m")
-set -x LESS_TERMCAP_ue (printf "\033[0m")
-set -x LESS_TERMCAP_us (printf "\033[01;32m")
-
-if test -n "$DISPLAY"
-    for env_var in (gnome-keyring-daemon --start 2>/dev/null);
-        set -x (echo $env_var | string split "=")
-    end
-end
-
-set fish_color_search_match --background=magenta
-
-# Kanagawa Fish shell theme
-set -l foreground DCD7BA
-set -l selection 2D4F67
-set -l comment 727169
-set -l red C34043
-set -l orange FF9E64
-set -l yellow C0A36E
-set -l green 76946A
-set -l purple 957FB8
-set -l cyan 7AA89F
-set -l pink D27E99
-
-# Syntax Highlighting Colors
-set -g fish_color_normal $foreground
-set -g fish_color_command $cyan
-set -g fish_color_keyword $pink
-set -g fish_color_quote $yellow
-set -g fish_color_redirection $foreground
-set -g fish_color_end $orange
-set -g fish_color_error $red
-set -g fish_color_param $purple
-set -g fish_color_comment $comment
-set -g fish_color_selection --background=$selection
-set -g fish_color_search_match --background=$selection
-set -g fish_color_operator $green
-set -g fish_color_escape $pink
-set -g fish_color_autosuggestion $comment
-
-# Completion Pager Colors
-set -g fish_pager_color_progress $comment
-set -g fish_pager_color_prefix $cyan
-set -g fish_pager_color_completion $foreground
-set -g fish_pager_color_description $comment
-
-# }}}
-
-#####################################################################
-# prompt stuff {{{
-#####################################################################
-function fish_prompt --description 'Write out the prompt (default with some edits)'
-    set -l last_pipestatus $pipestatus
-    set -l normal (set_color normal)
-    set -q fish_color_status
-    set -l color_cwd $fish_color_cwd
-    set -l suffix '>'
-
-    set -l bold_flag --bold
-    set -q __fish_prompt_status_generation; or set -g __fish_prompt_status_generation $status_generation
-    if test $__fish_prompt_status_generation = $status_generation
-        set bold_flag
-    end
-    set __fish_prompt_status_generation $status_generation
-    set -l status_color (set_color $fish_color_status)
-    set -l statusb_color (set_color $bold_flag $fish_color_status)
-    set -l prompt_status (__fish_print_pipestatus "[" "]" "|" "$status_color" "$statusb_color" $last_pipestatus)
-    if [ (prompt_pwd) = "~" ]
-        set pwd "~ "
-    else
-        set pwd (prompt_pwd)
-    end
-
-    echo -n -s (prompt_login)' ' (set_color $color_cwd) $pwd $normal (fish_vcs_prompt) $normal " "$prompt_status $suffix " "
-end
-
-function fish_title --description 'Write out the title'
-    echo fish (prompt_pwd)
-end
-
+# fish styles
+set -g fish_greeting ""
+set -g fish_cursor_default block
+set -g fish_cursor_insert line
+set -g fish_cursor_visual block
 set -g fish_prompt_pwd_dir_length 0
-
 set -g __fish_git_prompt_show_informative_status 1
 set -g __fish_git_prompt_showuntrackedfiles 1
 set -g __fish_git_prompt_color_branch magenta
@@ -121,22 +25,16 @@ set -g __fish_git_prompt_color_untrackedfiles brblack
 set -g __fish_git_prompt_color_stagedstate yellow
 set -g __fish_git_prompt_color_invalidstate red
 set -g __fish_git_prompt_color_cleanstate green
-# }}}
 
-#####################################################################
-# custom commands {{{
-#####################################################################
-function unclean_repos
-    for path in (find -name ".git" -type d | grep -v "/.cache/")
-        cd $path/..
-        git status | grep clean > /dev/null
-        if test $status -ne 0
-            echo $path/..
-        end
-        cd -
-    end
+# keyboard
+function fish_user_key_bindings
+    fish_default_key_bindings -M insert
+    fish_vi_key_bindings --no-erase insert
+    fzf_key_bindings
+    bind -M insert \cz 'fg 2>/dev/null; commandline -f repaint'
 end
 
+# user stuff
 function r --description 'Launch ranger if this terminal does not have one yet'
     set NUM (pstree -s %self | grep -o ranger | wc -l)
     if test $NUM -eq 0
@@ -146,26 +44,12 @@ function r --description 'Launch ranger if this terminal does not have one yet'
     end
 end
 
-function nvim_plugins
-    for d in (ls ~/.config/nvim/pack/plugins/opt)
-        cd ~/.config/nvim/pack/plugins/opt/$d
-        git pull &> /dev/null
-        echo $d
-        git l ORIG_HEAD..
-        cd -
-    end
-end
-
-set -x LEDGER_FILE /home/danieln/finance/hledger.journal
 alias hl=hledger
-
 alias dell='sudo ddcutil -b 12 setvcp 10'
 alias cvim=/usr/bin/vim
 alias vim=nvim
 alias vimdiff='nvim -d'
-alias irc='mosh -p 61293 irc -- tmux a -t 0 -d'
 alias docker_ip="docker inspect --format '{{ .NetworkSettings.IPAddress }}'"
-alias merge_pdf="gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -sOutputFile=merged.pdf"
 alias ip='ip -c'
 alias dmesg='dmesg -T'
 alias ls='exa'
@@ -175,10 +59,3 @@ alias sloc='tokei'
 alias cloc='tokei'
 alias past="curl -F 'f:1=<-' ix.io | wl-copy"
 alias s="kitty +kitten ssh"
-# }}}
-
-#####################################################################
-# external addons {{{
-#####################################################################
-direnv hook fish | source
-# }}}
