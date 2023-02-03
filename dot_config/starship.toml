@@ -1,0 +1,71 @@
+format = """$all"""
+right_format = """$memory_usage$battery"""
+
+# right hand side (conditional)
+[[battery.display]]
+threshold = 10
+style = 'bold bright-red'
+
+[memory_usage]
+disabled = false
+threshold = 60
+symbol = ''
+style = 'bold bright-red'
+format = '[$symbol ${ram}( | ${swap})]($style)'
+
+# left hand side
+[username]
+format = '[$user]($style)@'
+style_user = 'bright-green'
+show_always = true
+
+[hostname]
+format = '[$ssh_symbol$hostname]($style) '
+style = 'none'
+ssh_only = false
+
+[directory]
+truncate_to_repo = false
+style = 'green'
+before_repo_root_style = 'green'
+repo_root_style = 'bold green'
+
+[git_branch]
+format = '\([$symbol$branch(:$remote_branch)]($style)|'
+symbol = ""
+
+[git_commit]
+tag_disabled = false
+
+[git_status]
+format = '[$conflicted$deleted$renamed](red)[$modified](blue)[$staged](yellow)[$untracked$stashed](bright-black)$ahead_behind\) '
+style = 'bright-black'
+conflicted = '❖$count'
+deleted = '✖$count'
+modified = '✚$count'
+renamed = '»$count'
+staged = '●$count'
+stashed = '✱$count'
+untracked = '…$count'
+
+[status]
+disabled = false
+pipestatus = true
+format = '[$status $common_meaning$signal_name]($style)'
+
+# language runtimes
+[golang]
+format = '[$symbol($version )]($style)'
+symbol = " "
+
+[lua]
+format = '[$symbol($version )]($style)'
+symbol = " "
+
+[nix_shell]
+format = '[$symbol$state( \($name\))]($style)'
+symbol = " "
+
+[python]
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+symbol = " "
