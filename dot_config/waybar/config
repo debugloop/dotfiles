@@ -1,7 +1,6 @@
 /* vim: set ft=json: */
 [
     {
-        "output": "!Iiyama North America PLX2483H 1127951501478",
         "modules-left": [
             "sway/workspaces",
             "sway/mode",
