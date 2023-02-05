@@ -9,4 +9,4 @@ if test -n "$DISPLAY"
 end
 
 direnv hook fish | source
-source (/usr/bin/starship init fish --print-full-init | psub)
+starship init fish | source
