@@ -15,15 +15,14 @@ format = '[$symbol ${ram}( | ${swap})]($style)'
 
 # left hand side
 [username]
-format = '[$user]($style)@'
+format = '[$user]($style)'
 style_user = 'bright-green'
 show_always = true
 
 [hostname]
-format = '[$ssh_symbol$hostname]($style) '
+format = '@[$hostname]($style) '
 style = 'none'
-ssh_only = false
-ssh_symbol = ""
+ssh_only = true
 
 [directory]
 truncate_to_repo = false
@@ -45,7 +44,7 @@ style = 'bright-black'
 ahead = ' ↑$count'
 behind = ' ↓$count'
 diverged = ' ↑$ahead_count↓$behind_count'
-conflicted = ' ❗$count'
+conflicted = '$count'
 deleted = ' ✖$count'
 modified = ' ✚$count'
 renamed = ' »$count'
