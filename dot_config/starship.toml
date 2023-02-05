@@ -33,25 +33,25 @@ repo_root_style = 'bold green'
 read_only = '✖'
 
 [git_branch]
-format = '\([$symbol$branch(:$remote_branch)]($style)|'
+format = '\([$symbol$branch(:$remote_branch)]($style)'
 symbol = ""
 
 [git_commit]
 tag_disabled = false
 
 [git_status]
-format = '[$conflicted$deleted$renamed](red)[$modified](blue)[$staged](yellow)[$untracked$stashed](bright-black)[$ahead_behind](bold white)\) '
+format = '[$conflicted$deleted$renamed](red)[$modified](blue)[$staged](yellow)[$untracked$stashed](bright-black)[$ahead_behind](bold)\) '
 style = 'bright-black'
-ahead = '↑$count'
-behind = '↓$count'
-diverged = '↑$ahead_count↓$behind_count'
-conflicted = '❖$count'
-deleted = '✖$count'
-modified = '✚$count'
-renamed = '»$count'
-staged = '●$count'
-stashed = '✱$count'
-untracked = '…$count'
+ahead = ' ↑$count'
+behind = ' ↓$count'
+diverged = ' ↑$ahead_count↓$behind_count'
+conflicted = ' ❗$count'
+deleted = ' ✖$count'
+modified = ' ✚$count'
+renamed = ' »$count'
+staged = ' ●$count'
+stashed = ' ✱$count'
+untracked = ' …$count'
 
 [status]
 disabled = false
