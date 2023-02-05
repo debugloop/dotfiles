@@ -23,12 +23,14 @@ show_always = true
 format = '[$ssh_symbol$hostname]($style) '
 style = 'none'
 ssh_only = false
+ssh_symbol = ""
 
 [directory]
 truncate_to_repo = false
 style = 'green'
 before_repo_root_style = 'green'
 repo_root_style = 'bold green'
+read_only = '✖'
 
 [git_branch]
 format = '\([$symbol$branch(:$remote_branch)]($style)|'
