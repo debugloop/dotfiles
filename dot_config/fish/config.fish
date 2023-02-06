@@ -49,6 +49,7 @@ function r --description 'Launch ranger if this terminal does not have one yet'
     end
 end
 
+abbr --add nix-shell "nix-shell --command fish"
 alias hl=hledger
 alias dell='sudo ddcutil -b 12 setvcp 10'
 alias cvim=/usr/bin/vim
