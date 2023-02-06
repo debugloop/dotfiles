@@ -58,8 +58,7 @@ output "*" bg $dark_bg solid_color
 
 ##################################
 # startup execs
-exec dbus-sway-environment
-exec configure-gtk
+exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
 
 exec systemctl --user start kanshi.service
 exec mako -c ~/.config/mako/config
