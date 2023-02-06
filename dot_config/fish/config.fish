@@ -11,6 +11,11 @@ set -x PAGER "less -R --use-color -Dd+r -Du+b"
 set -x HIGHLIGHT_STYLE "base16/grayscale-dark"
 set -x BAT_THEME "ansi"
 
+# start sway
+if status is-login
+    [ (tty) = /dev/tty1 ] && exec sway &>~/.Wsession.errors
+end
+
 # fish styles
 set -g fish_greeting ""
 set -g fish_cursor_default block

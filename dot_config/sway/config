@@ -60,18 +60,16 @@ output "*" bg $dark_bg solid_color
 # startup execs
 exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
 
-exec systemctl --user start kanshi.service
-exec mako -c ~/.config/mako/config
-exec gammastep -l 48.775846:9.182932
+exec waybar
+exec kanshi
+# exec mako # gets executed automatically (dbus?)
 exec kitty -T 'scratch: ipython' fish -c "while true; ipython; end"
-exec waybar -b main
 
 exec swayidle -w \
-    timeout 10 'if pgrep swaylock; then swaymsg "output * dpms off"; fi' \
-    timeout 600 swaylock \
-    timeout 610 'swaymsg "output * power off"' \
-    resume 'swaymsg "output * power on"' \
-    before-sleep swaylock
+    timeout 10 'if pgrep swaylock; then swaymsg "output * power off"; fi' resume 'swaymsg "output * power on"' \
+    timeout 600 'swaylock -f' \
+    timeout 610 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+    before-sleep 'swaylock -f'
 
 # clipboard manager
 exec clipman clear --all
@@ -113,7 +111,7 @@ for_window [title="^float:"] {
 bindsym Mod4+Shift+minus move scratchpad
 bindsym Mod4+minus scratchpad show
 
-bindsym XF86HangupPhone [title="scratch: ipython"] scratchpad show
+bindsym XF86Favorites [title="scratch: ipython"] scratchpad show
 bindsym Pause [title="scratch: ipython"] scratchpad show
 
 bindsym Mod4+Scroll_Lock output "Iiyama North America PLX2483H 1127951501478" toggle
@@ -123,9 +121,9 @@ bindsym Mod4+d exec wofi -G -t kitty -S run
 
 ##################################
 # sway control key bindings
-bindsym Mod4+Backslash exec swaylock
+bindsym Mod4+Backslash exec 'swaylock -f'
 bindsym Mod4+Shift+c reload
-bindsym Mod4+Shift+e exec swaynag -t warning -m 'Exit?' -b 'Yes.' 'swaymsg exit'
+bindsym Mod4+Shift+e exec 'swaynag -t warning -m "Exit?" -b "Yes." "swaymsg exit"'
 
 bindsym Mod4+period exec killall -SIGUSR1 waybar
 
@@ -311,5 +309,3 @@ bindsym XF86AudioRewind exec sudo ddcutil -b 12 setvcp 10 - 5
 
 bindsym XF86Display exec wdisplays
 bindsym XF86NotificationCenter input type:touchpad events toggle enabled disabled; exec notify-send "Touchpad" "Touchpad Input has been toggled."
-
-# bindsym XF86Favorites

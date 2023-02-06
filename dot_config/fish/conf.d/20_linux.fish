@@ -1,5 +1,4 @@
 set -x GTK_THEME "Arc-Darker"
-set -x MOZ_ENABLE_WAYLAND 1
 set -x LEDGER_FILE /home/danieln/finance/hledger.journal
 
 if test -n "$DISPLAY"
