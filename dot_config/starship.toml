@@ -36,9 +36,12 @@ read_only = '✖'
 [git_branch]
 format = '\([$symbol$branch(:$remote_branch)]($style)'
 symbol = ""
+style = "purple"
 
 [git_commit]
+format = '\([$hash$tag]($style) '
 tag_disabled = false
+style = "purple"
 
 [git_status]
 format = '[$conflicted$deleted$renamed](red)[$modified](blue)[$staged](yellow)[$untracked$stashed](bright-black)[$ahead_behind](bold)\) '

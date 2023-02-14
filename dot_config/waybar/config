@@ -122,7 +122,7 @@
 
         "pulseaudio": {
             "format": "{format_source}{icon} {volume}%",
-            "format-bluetooth": "{icon} {volume}%",
+            "format-bluetooth": "{format_source}{icon} {volume}%",
             "format-source": "<span color=\"#c34043\"> </span>",
             "format-source-muted": "",
             "format-muted": "{format_source} {volume}%",

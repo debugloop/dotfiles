@@ -304,6 +304,29 @@ _L_ %{lsp} set lsp diagnostic      ]],
   },
 
   {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    config = function()
+      require("catppuccin").setup({
+        flavour = "mocha", -- latte, frappe, macchiato, mocha
+        dim_inactive = {
+          enabled = true,
+        },
+        no_italic = true,
+        highlight_overrides = {
+          all = function(colors)
+            return {
+              WinSeparator = { fg = colors.base },
+            }
+          end,
+        }
+      })
+      -- setup must be called before loading
+      -- vim.cmd.colorscheme("catppuccin")
+    end
+  },
+
+  {
     "rebelot/kanagawa.nvim",
     config = function()
       local default_colors = require("kanagawa.colors").setup()
@@ -843,7 +866,7 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
         end, { desc = "Format current buffer with LSP" })
       end
       -- install servers using mason
-      local servers = { "gopls", "sumneko_lua" }
+      local servers = { "gopls", "lua_ls" }
       require("mason-lspconfig").setup({
         ensure_installed = servers,
       })
@@ -883,11 +906,11 @@ _r_: open repl     _o_: step out     _b_: toggle breakpoint   _B_: set condition
         end,
         capabilities = capabilities,
       })
-      -- sumneko_lua
+      -- lua_ls
       local runtime_path = vim.split(package.path, ";")
       table.insert(runtime_path, "lua/?.lua")
       table.insert(runtime_path, "lua/?/init.lua")
-      require("lspconfig").sumneko_lua.setup({
+      require("lspconfig").lua_ls.setup({
         on_attach = function(client, bufnr)
           -- automatic format on save
           vim.api.nvim_create_autocmd("BufWritePre", {
