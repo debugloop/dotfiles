@@ -1,0 +1,153 @@
+# function calls
+snippet append "append"
+	append(${1:someslice}, ${0:value})
+
+snippet make "make"
+	make(${1:[]string}, ${0:0})
+
+snippet fmtPrintf "fmt.Printf()"
+	fmt.Printf("${1}\n", ${2:var})
+
+snippet logPrintf "log.Printf()"
+	log.Printf("${1}", ${2:var})
+
+snippet fmtPrintln "fmt.Println()"
+	fmt.Println("${1}")
+
+snippet logPrintln "log.Println()"
+	log.Println("${1}")
+
+# types
+snippet map "map"
+	map[${1:string}]${0:int}
+
+# defers
+snippet defer "defer"
+	defer ${0:func}()
+
+snippet deferf "defer anonymous function"
+	defer func(){
+		${0}
+	}()
+
+snippet deferr "defer recover"
+	defer func() {
+		if err := recover(); err != nil {
+			${0}
+		}
+	}()
+
+# if
+snippet iferr "if error not nil, return err"
+	if err != nil {
+		return err
+	}
+	${0}
+
+snippet iferrw "if error not nil, return wrapped err"
+	if err != nil {
+		return fmt.Errorf("${1} %w", err)
+	}
+	${0}
+
+snippet if "if key in a map"
+	if ${1:value}, ok := ${2:map}[${3:key}]; ok == true {
+		${4:/* code */}
+	}
+
+# for
+snippet for "for range loop"
+	for ${1:e} := range ${2:collection} {
+		${0}
+	}
+
+snippet fori "for int loop"
+	for ${2:i} := 0; $2 < ${1:count}; $2${3:++} {
+		${0}
+	}
+
+# other control flow
+snippet select "select"
+	select {
+	case ${1:v1} := <-${2:chan1}
+		${3}
+	default:
+		${0}
+	}
+
+snippet switch "switch"
+	switch ${1:var} {
+	case ${2:value1}:
+		${3}
+	default:
+		${0}
+	}
+
+# declarations
+snippet func "function"
+	func ${1:funcName}(${2}) ${3:error} {
+		${0}
+	}
+
+snippet closure "anonymous function"
+	func(${1}) {
+		${2}
+	}(${3})
+
+snippet method "method"
+	func (${1:receiver} ${2:type}) ${3:funcName}(${4}) ${5:error} {
+		${0}
+	}
+
+snippet struct "struct"
+	type ${1:structName} struct {
+		${0}
+	}
+
+snippet interface "interface"
+	type ${1:interfaceName} interface {
+		${0}
+	}
+
+snippet const "constants with iota"
+	const (
+		${1:FOO} = iota
+		${0:BAR}
+	)
+
+# templates
+snippet funcdebug "debug test function"
+	func TestDebug(t *testing.T) {
+		${0}
+	}
+
+snippet functest "test function"
+	func Test${1:Name}(t *testing.T) {
+		${0}
+	}
+
+snippet functestt "table test function"
+	func Test${1:name}(t *testing.T) {
+		tests := []struct {
+			name string
+		}{
+			{
+				name: "${2:test name}",
+			},
+		}
+
+		for _, test := range tests {
+			t.Run(test.name, func(t *testing.T) {
+				${0}
+			})
+		}
+	}
+
+snippet funcbench "benchmark function"
+	func Benchmark${1:name}(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			${2}
+		}
+	}
+	${0}
+
