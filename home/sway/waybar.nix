@@ -4,25 +4,27 @@
   home.packages = with pkgs; [
     playerctl
   ];
+  systemd.user.services.waybar.Service.Environment = "PATH=/run/wrappers/bin:${pkgs.hyprland}/bin";
   programs.waybar = {
     enable = true;
+    package = pkgs.waybar-hyprland;
     systemd = {
       enable = true;
-      target = "sway-session.target";
+      target = "graphical-session.target";
     };
     settings = [
       {
         "modules-left" = [
-          "sway/workspaces"
-          "sway/mode"
-          "sway/window"
+          "wlr/workspaces"
+          "hyprland/submap"
+          "hyprland/window"
         ];
         "modules-center" = [
           "custom/media"
         ];
         "modules-right" = [
           "pulseaudio"
-          "idle_inhibitor"
+          #"idle_inhibitor"
           "tray"
           "temperature"
           "cpu"
@@ -118,32 +120,38 @@
           "on-click-middle" = "${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list sinks short | ${pkgs.gnugrep}/bin/grep -v $(${pkgs.pulseaudio}/bin/pactl get-default-sink) | ${pkgs.coreutils}/bin/cut -f 1 | ${pkgs.coreutils}/bin/head -1)";
           "on-click-right" = "${pkgs.easyeffects}/bin/easyeffects";
         };
-        "sway/mode" = {
+        "hyprland/submap" = {
           "format" = " {}";
           "tooltip" = false;
         };
-        "sway/window" = {
+        "hyprland/window" = {
           "format" = "{}";
           "max-length" = 160;
           "rewrite" = {
             "(.*) — Mozilla Firefox" = " $1";
-            "(.*) — Evolution" = " $1";
+            "(.*) - Slack" = "󰒱 $1";
+            "(.*) - Google Chrome" = " $1";
             "vim (.*)" = " vim $1";
             "fish (.*)" = " $1";
           };
         };
-        "sway/workspaces" = {
+        "wlr/workspaces" = {
           "all-outputs" = false;
-          "format" = "{icon} {name}";
+          "sort-by-number" = true;
+          "on-click" = "activate";
+          "format" = "{icon}";
           "format-icons" = {
-            "1:web" = "";
-            "2:com" = "";
-            "3:file" = "";
-            "4:music" = "";
-            "5:steam" = "";
-            "8:term" = "";
-            "9:term" = "";
-            "10:term" = "";
+            "1" = " web";
+            "2" = " com";
+            "3" = " music";
+            "4" = " 4:misc";
+            "5" = " 5:misc";
+            "6" = " 6:code";
+            "7" = " 7:code";
+            "8" = " 8:code";
+            "9" = " 9:code";
+            "10" = " 10:code";
+            "code" = "";
             "urgent" = "";
             "focused" = "";
             "default" = "";
@@ -189,7 +197,7 @@
         background-color: #${config.colors.background};
         border-top: 1px solid #${config.colors.cyan};
       }
-      #workspaces button.focused {
+      #workspaces button.active {
         color: #${config.colors.foreground};
         background-color: #${config.colors.light_bg};
         border-top: 1px solid #${config.colors.blue};

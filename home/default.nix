@@ -12,7 +12,7 @@
     #./ranger.nix
     ./starship.nix
     ./sway
-    #./hyprland.nix
+    ./hyprland.nix
   ];
 
   services.blueman-applet.enable = true;
@@ -32,6 +32,7 @@
       XDG_DESKTOP_DIR = "/home/danieln";
       XDG_DOWNLOAD_DIR = "/home/danieln/downloads";
       XDG_PICTURES_DIR = "/home/danieln/pictures";
+      GRIM_DEFAULT_DIR = "/home/danieln/pictures";
       XDG_DOCUMENTS_DIR = "/home/danieln/documents";
       ZK_NOTEBOOK_DIR = "/home/danieln/documents/notes";
     };
@@ -95,21 +96,29 @@
       nms
       # graphical
       arc-theme
+      cinnamon.nemo
       filezilla
       gimp
+      gnome.eog
       gnome.evince
       gnome-icon-theme
       google-chrome
+      grim
       hicolor-icon-theme
       inkscape
+      kanshi
       libreoffice
+      mako
       pinentry-emacs.gnome3
+      playerctl
       python311Packages.managesieve
       slack
+      slurp
       spotify
       teamspeak_client
       virt-manager
       vlc
+      wofi
       xdg-utils
       # cli image tools
       ghostscript_headless
@@ -117,7 +126,6 @@
       imagemagick
       pdftk
       # hardware
-      ddcutil
       easyeffects
       pavucontrol
       powertop

@@ -8,6 +8,6 @@
 
   services.clipman = {
     enable = true;
-    systemdTarget = "sway-session.target";
+    systemdTarget = "graphical-session.target";
   };
 }

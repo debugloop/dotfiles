@@ -3,6 +3,7 @@
 {
   services.kanshi = {
     enable = true;
+    systemdTarget = "graphical-session.target";
     profiles = {
       home = {
         outputs = [
@@ -13,17 +14,27 @@
             status = "enable";
           }
           {
-            criteria = "*";
+            criteria = "eDP-1";
             status = "disable";
           }
+        ];
+        exec = [
+          "systemctl --user stop swayidle.service"
         ];
       };
       other = {
         outputs = [
           {
+            criteria = "eDP-1";
+            status = "enable";
+          }
+          {
             criteria = "*";
             status = "enable";
           }
+        ];
+        exec = [
+          "systemctl --user start swayidle.service"
         ];
       };
     };

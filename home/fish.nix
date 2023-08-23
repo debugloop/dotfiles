@@ -40,9 +40,9 @@
     '';
     loginShellInit = ''
       # start sway on tty1
-      if test (tty) = /dev/tty1
-        sway
-      end
+      #if test (tty) = /dev/tty1
+      #  sway
+      #end
     '';
     shellAbbrs = {
       g = "git";
@@ -92,7 +92,7 @@
       ag = "rg";
       cat = "bat";
       cloc = "tokei";
-      dell = "sudo ddcutil -b 12 setvcp 10";
+      ext_brightness = "sudo ddcutil -d 1 setvcp 10";
       tcurl = "curl -s -o /dev/null -w 'time_namelookup: %{time_namelookup}\ntime_connect: %{time_connect}\ntime_appconnect: %{time_appconnect}\ntime_pretransfer: %{time_pretransfer}\ntime_redirect: %{time_redirect}\ntime_starttransfer: %{time_starttransfer}\ntime_total: %{time_total}\n'";
       dmesg = "dmesg -T";
       docker-ip = "docker inspect --format '{{ .NetworkSettings.IPAddress }}'";

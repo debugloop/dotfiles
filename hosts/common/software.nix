@@ -34,6 +34,7 @@
       # hardware support
       efibootmgr
       xfsprogs
+      ddcutil
 
       networkmanagerapplet # required system-wide for icons
       pinentry-emacs.gnome3 # required for gnupg agent
@@ -79,7 +80,7 @@
     printing.enable = true;
     prometheus.exporters = {
       node = {
-        enable = true;
+        enable = false;
         enabledCollectors = [ "systemd" ];
       };
     };
@@ -101,8 +102,11 @@
 
   xdg.portal = {
     enable = true;
+    extraPortals = [
+      pkgs.xdg-desktop-portal-hyprland
+    ];
     wlr = {
-      enable = true;
+      enable = false;
       settings = {
         screencast = {
           max_fps = 30;

@@ -3,6 +3,7 @@
 {
   services.swayidle = {
     enable = true;
+    systemdTarget = "graphical-session.target";
     timeouts = [
       {
         timeout = 10;
