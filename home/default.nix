@@ -11,8 +11,7 @@
     ./nvim
     #./ranger.nix
     ./starship.nix
-    ./sway
-    ./hyprland.nix
+    ./wayland
   ];
 
   services.blueman-applet.enable = true;

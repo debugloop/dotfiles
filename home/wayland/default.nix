@@ -1,10 +1,31 @@
-{ config, ... }:
+{ pkgs, config, lib, ... }:
 
 {
+  imports = [
+    ./avizo.nix
+    ./clipman.nix
+    ./kanshi.nix
+    ./mako.nix
+    ./swayidle.nix
+    ./swaylock.nix
+    ./waybar.nix
+  ];
+
+  # wayland specifics
+  home.packages = with pkgs; [
+    wev
+    grim
+    slurp
+    playerctl
+    wdisplays
+    wofi
+  ];
+
   xdg.configFile."electron25-flags.conf".text = ''
     --enable-features=WaylandWindowDecorations
     --ozone-platform-hint=auto
   '';
+
   wayland.windowManager.hyprland = {
     enable = true;
     settings = {
@@ -198,4 +219,10 @@
       submap=reset
     '';
   };
+  # TODO: assign to workspace for different windows
+  # TODO: send workspace to output 
+  # TODO: figure out how to focus from floating windows to tiled windows
+  # TODO: try out master layout
+  # TODO: exec ${pkgs.clipman}/bin/clipman clear --all on startup
+  # TODO: make "Mod4+Ctrl+v" = "exec ${pkgs.clipman}/bin/clipman pick -t wofi"; or similar
 }
