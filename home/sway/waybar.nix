@@ -24,7 +24,7 @@
         ];
         "modules-right" = [
           "pulseaudio"
-          #"idle_inhibitor"
+          "idle_inhibitor"
           "tray"
           "temperature"
           "cpu"
@@ -158,8 +158,9 @@
           };
         };
         "temperature" = {
-          "hwmon-path" = "/sys/class/hwmon/hwmon4/temp1_input";
-          "critical-threshold" = 80;
+          #"hwmon-path" = "/sys/class/hwmon/hwmon4/temp1_input";
+          "hwmon-path" = "/sys/class/hwmon/hwmon6/temp1_input";
+          "critical-threshold" = 99;
           "interval" = 5;
           "format" = "{icon} {temperatureC}°C";
           "format-icons" = [
@@ -263,7 +264,7 @@
         background-color: #${config.colors.red};
         padding: 0px 8px;
       }
-      #mode {
+      #submap {
         background: #${config.colors.purple};
         color: #${config.colors.background};
       }

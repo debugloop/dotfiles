@@ -12,8 +12,6 @@
         disable_autoreload = true;
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
-        vrr = 1;
-        key_press_enables_dpms = true;
         background_color = "rgb(${config.colors.dark_bg})";
         groupbar_gradients = false;
         render_titles_in_groupbar = false;
@@ -72,7 +70,9 @@
       };
       bind = [
       "SUPER, return, exec, kitty"
+      "SUPER, backslash, exec, swaylock"
       "SUPER, backspace, killactive,"
+
       "SUPER, v, togglefloating,"
       "SUPER, q, pin,"
       "SUPER, f, fullscreen,1"
@@ -172,6 +172,30 @@
     };
     extraConfig = ''
       env = QT_WAYLAND_DISABLE_WINDOWDECORATION,1
+      bind=SUPER,c,submap,close
+      submap=close
+      bind=SUPER,c,killactive
+      bind=,c,killactive
+      bind=SUPER,c,submap,reset
+      bind=,c,submap,reset
+      bind=,q,submap,reset
+      bind=,escape,submap,reset
+      submap=reset
+
+      bind=CTRL_SUPER,backslash,submap,suspend
+      submap=suspend
+      bind=CTRL_SUPER,backslash,exec,systemctl suspend
+      bind=CTRL_SUPER,backslash,submap,reset
+      bind=,backslash,exec,systemctl suspend
+      bind=,backslash,submap,reset
+      bind=,q,submap,reset
+      bind=,escape,submap,reset
+      submap=reset
+
+      bind=SUPER,escape,submap,escape
+      submap=escape
+      bind=,escape,submap,reset
+      submap=reset
     '';
   };
 }

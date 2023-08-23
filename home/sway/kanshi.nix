@@ -19,7 +19,7 @@
           }
         ];
         exec = [
-          "systemctl --user stop swayidle.service"
+          #"systemctl --user stop swayidle.service"
         ];
       };
       other = {

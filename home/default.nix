@@ -107,6 +107,7 @@
       hicolor-icon-theme
       inkscape
       kanshi
+      libnotify.out
       libreoffice
       mako
       pinentry-emacs.gnome3
