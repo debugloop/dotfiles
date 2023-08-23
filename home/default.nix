@@ -50,36 +50,12 @@
 
     packages = with pkgs; [
       # nix
+      age
       comma
       deadnix
       inputs.agenix.packages.x86_64-linux.default
       nil
       nvd
-      # crypto
-      age
-      # cli utils
-      ast-grep
-      bmon
-      dogdns
-      dstat
-      du-dust
-      entr
-      fd
-      ijq
-      miniserve
-      nmap
-      renameutils
-      ripgrep
-      sshfs
-      tokei
-      zk
-      # apis
-      curl
-      gping
-      grpcurl
-      jq
-      jwt-cli
-      yq
       # basics
       getopt
       lsof
@@ -91,45 +67,34 @@
       watch
       wget
       whois
-      # fun
-      nms
-      # graphical
-      arc-theme
-      cinnamon.nemo
-      filezilla
-      gimp
-      gnome.eog
-      gnome.evince
-      gnome-icon-theme
-      google-chrome
-      grim
-      hicolor-icon-theme
-      inkscape
-      kanshi
-      libnotify.out
-      libreoffice
-      mako
-      pinentry-emacs.gnome3
-      playerctl
-      python311Packages.managesieve
-      slack
-      slurp
-      spotify
-      teamspeak_client
-      virt-manager
-      vlc
-      wofi
-      xdg-utils
-      # cli image tools
+      # apis
+      curl
+      grpcurl
+      jq
+      jwt-cli
+      yq
+      # cli utils
+      ast-grep
+      bmon
+      dogdns
+      dstat
+      du-dust
+      entr
+      fd
+      ijq
+      gping
+      miniserve
+      nmap
+      renameutils
+      ripgrep
+      sshfs
+      tokei
+      zk
+      # cli for graphics
       ghostscript_headless
       graphviz
       imagemagick
       pdftk
-      # hardware
-      easyeffects
-      pavucontrol
-      powertop
-      pulseaudio
       # dev
       awscli2
       cargo
@@ -164,28 +129,25 @@
       stylua
       tcpdump
       vale
-      wireshark
       yamllint
+      # fun
+      nms
+      # hardware (TODO: are those installed system-wide?)
+      powertop
+      pulseaudio
     ];
   };
 
   programs = {
-    btop.enable = true;
     dircolors.enable = true;
     fzf.enable = true;
-    firefox.enable = true;
     gh.enable = true;
     go.enable = true;
     gpg.enable = true;
     home-manager.enable = true;
     htop.enable = true;
     less.enable = true;
-    mpv.enable = true;
-    nix-index.enable = true;
-    obs-studio.enable = true;
-    qutebrowser.enable = true;
     rbw.enable = true;
-    rofi.enable = true;
     tealdeer.enable = true;
     tmate.enable = true;
     zoxide.enable = true;
@@ -193,24 +155,11 @@
       enable = true;
       config.theme = "ansi";
     };
-    broot = {
+    btop = {
       enable = true;
       settings = {
-        modal = true;
-        verbs = [
-          {
-            key = "enter";
-            execution = ":open_leave";
-          }
-          {
-            key = "ctrl-enter";
-            execution = ":open_stay";
-          }
-          {
-            key = "ctrl-e";
-            execution = "$EDITOR {file}";
-          }
-        ];
+        color_theme = "TTY";
+        theme_background = false;
       };
     };
     direnv = {
@@ -221,27 +170,6 @@
       enable = true;
       enableAliases = true;
     };
-    lf = {
-      enable = true;
-      settings = {
-        drawbox = true;
-      };
-      keybindings = {
-        D = "delete";
-      };
-      previewer.source = pkgs.writeShellScript "pv.sh" ''
-        #!/bin/sh
-
-        case "$1" in
-            *.tar*) tar tf "$1";;
-            *.zip) unzip -l "$1";;
-            *.rar) unrar l "$1";;
-            *.7z) 7z l "$1";;
-            *.pdf) pdftotext "$1" -;;
-            *) highlight -O ansi "$1" || cat "$1";;
-        esac
-      '';
-    };
     ssh = {
       enable = true;
       extraConfig = '' 
@@ -249,12 +177,5 @@
       LocalCommand ${pkgs.libnotify}/bin/notify-send "%r@%h" "Connected to %h."
       '';
     };
-  };
-
-  xdg.mimeApps.defaultApplications = {
-    "text/html" = "org.firefox.firefox.desktop";
-    "x-scheme-handler/http" = "org.firefox.firefox.desktop";
-    "x-scheme-handler/https" = "org.firefox.firefox.desktop";
-    "x-scheme-handler/unknown" = "org.firefox.firefox.desktop";
   };
 }

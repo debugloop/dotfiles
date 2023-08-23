@@ -11,13 +11,13 @@
     supportedLocales = [ "en_US.UTF-8/UTF-8" "en_GB.UTF-8/UTF-8" ];
   };
 
-  security.sudo.extraRules= [
+  security.sudo.extraRules = [
     {
       groups = [ "wheel" ];
       commands = [
         {
-          command = "${pkgs.ddcutil}/bin/ddcutil" ;
-          options= [ "NOPASSWD" ];
+          command = "${pkgs.ddcutil}/bin/ddcutil";
+          options = [ "NOPASSWD" ];
         }
       ];
     }
