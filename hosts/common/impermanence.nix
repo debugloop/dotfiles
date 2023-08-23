@@ -49,6 +49,7 @@
         ".cache" # cache between boots, save that memory
         "go" # go libs
         ".undo" # nvim undo
+        ".local/state/wireplumber" # volume settings
         # history for shells
         ".local/share/zoxide"
         ".local/share/fish"
