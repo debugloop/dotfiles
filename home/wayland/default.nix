@@ -21,11 +21,14 @@
     qutebrowser.enable = true;
   };
 
-  xdg.mimeApps.defaultApplications = {
-    "text/html" = "org.firefox.firefox.desktop";
-    "x-scheme-handler/http" = "org.firefox.firefox.desktop";
-    "x-scheme-handler/https" = "org.firefox.firefox.desktop";
-    "x-scheme-handler/unknown" = "org.firefox.firefox.desktop";
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "text/html" = "org.firefox.firefox.desktop";
+      "x-scheme-handler/http" = "org.firefox.firefox.desktop";
+      "x-scheme-handler/https" = "org.firefox.firefox.desktop";
+      "x-scheme-handler/unknown" = "org.firefox.firefox.desktop";
+    };
   };
 
   home.packages = with pkgs; [
