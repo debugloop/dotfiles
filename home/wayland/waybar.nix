@@ -7,7 +7,6 @@
   systemd.user.services.waybar.Service.Environment = "PATH=/run/wrappers/bin:${pkgs.hyprland}/bin";
   programs.waybar = {
     enable = true;
-    package = pkgs.waybar-hyprland;
     systemd = {
       enable = true;
       target = "graphical-session.target";
@@ -15,7 +14,7 @@
     settings = [
       {
         "modules-left" = [
-          "wlr/workspaces"
+          "hyprland/workspaces"
           "hyprland/submap"
           "hyprland/window"
         ];
@@ -135,10 +134,9 @@
             "fish (.*)" = " $1";
           };
         };
-        "wlr/workspaces" = {
+        "hyprland/workspaces" = {
           "all-outputs" = false;
           "sort-by-number" = true;
-          "on-click" = "activate";
           "format" = "{icon}";
           "format-icons" = {
             "1" = " web";
@@ -151,7 +149,6 @@
             "8" = " 8:code";
             "9" = " 9:code";
             "10" = " 10:code";
-            "code" = "";
             "urgent" = "";
             "focused" = "";
             "default" = "";
@@ -159,7 +156,7 @@
         };
         "temperature" = {
           #"hwmon-path" = "/sys/class/hwmon/hwmon4/temp1_input";
-          "hwmon-path" = "/sys/class/hwmon/hwmon6/temp1_input";
+          "hwmon-path" = "/sys/class/hwmon/hwmon7/temp1_input";
           "critical-threshold" = 99;
           "interval" = 5;
           "format" = "{icon} {temperatureC}°C";
