@@ -567,7 +567,7 @@ return {
     opts = {},
   }),
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.clue",
     name = "mini.clue",
@@ -622,14 +622,16 @@ return {
           { mode = 'x', keys = '<leader>mk', postkeys = '<leader>m' },
           { mode = 'x', keys = '<leader>ml', postkeys = '<leader>m' },
           -- maps that don't quit debug mode
-          -- { mode = 'n', keys = "<leader>dt", postkeys = '<leader>d' }, -- start
-          -- { mode = 'n', keys = "<leader>dT", postkeys = '<leader>d' }, -- start
-          -- { mode = 'n', keys = "<leader>dc", postkeys = '<leader>d' }, -- continue
-          -- { mode = 'n', keys = "<leader>ds", postkeys = '<leader>d' }, -- step over
-          -- { mode = 'n', keys = "<leader>di", postkeys = '<leader>d' }, -- step into
-          -- { mode = 'n', keys = "<leader>do", postkeys = '<leader>d' }, -- step out
-          -- { mode = 'n', keys = "<leader>dd", postkeys = '<leader>d' }, -- frame down
-          -- { mode = 'n', keys = "<leader>du", postkeys = '<leader>d' }, -- frame up
+          { mode = 'n', keys = "<leader>dt", postkeys = '<leader>d' }, -- start
+          { mode = 'n', keys = "<leader>dT", postkeys = '<leader>d' }, -- start
+          { mode = 'n', keys = "<leader>dc", postkeys = '<leader>d' }, -- continue
+          { mode = 'n', keys = "<leader>ds", postkeys = '<leader>d' }, -- step over
+          { mode = 'n', keys = "<leader>dS", postkeys = '<leader>d' }, -- step back
+          { mode = 'n', keys = "<leader>di", postkeys = '<leader>d' }, -- step into
+          { mode = 'n', keys = "<leader>do", postkeys = '<leader>d' }, -- step out
+          { mode = 'n', keys = "<leader>dd", postkeys = '<leader>d' }, -- frame down
+          { mode = 'n', keys = "<leader>dr", postkeys = '<leader>d' }, -- restart
+          { mode = 'n', keys = "<leader>du", postkeys = '<leader>d' }, -- frame up
           -- maps that don't quit option mode (all of them)
           { mode = 'n', keys = "<leader>ob", postkeys = '<leader>o' }, -- background
           { mode = 'n', keys = "<leader>oc", postkeys = '<leader>o' }, -- conceal
@@ -654,7 +656,7 @@ return {
         }
       })
     end,
-  }),
+  },
 
   from_nixpkgs({
     "echasnovski/mini.nvim",
@@ -992,15 +994,6 @@ return {
         desc = "launch (last) test",
       },
       {
-        "<F7>",
-        function()
-          if not require("dap-go").debug_last_test() then
-            require("dap-go").debug_test()
-          end
-        end,
-        desc = "launch (last) test",
-      },
-      {
         "<leader>dT",
         function()
           require("dap-go").debug_test()
@@ -1008,14 +1001,14 @@ return {
         desc = "launch test",
       },
       {
-        "<leader>dc",
+        "<leader>dr",
         function()
-          require("dap").continue()
+          require("dap").restart()
         end,
-        desc = "continue",
+        desc = "restart",
       },
       {
-        "<F9>",
+        "<leader>dc",
         function()
           require("dap").continue()
         end,
@@ -1029,11 +1022,11 @@ return {
         desc = "step",
       },
       {
-        "<F8>",
+        "<leader>dS",
         function()
-          require("dap").step_over()
+          require("dap").step_back()
         end,
-        desc = "step",
+        desc = "step back",
       },
       {
         "<leader>di",
@@ -1043,21 +1036,7 @@ return {
         desc = "step into",
       },
       {
-        "<F12>",
-        function()
-          require("dap").step_into()
-        end,
-        desc = "step into",
-      },
-      {
         "<leader>do",
-        function()
-          require("dap").step_out()
-        end,
-        desc = "step out",
-      },
-      {
-        "<F11>",
         function()
           require("dap").step_out()
         end,
@@ -1117,7 +1096,7 @@ return {
         desc = "toggle breakpoint",
       },
       {
-        "<leader>dr",
+        "<leader>dR",
         function()
           require("dap").repl.toggle()
           vim.cmd("wincmd j")
