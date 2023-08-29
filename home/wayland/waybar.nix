@@ -156,7 +156,7 @@
         };
         "temperature" = {
           #"hwmon-path" = "/sys/class/hwmon/hwmon4/temp1_input";
-          "hwmon-path" = "/sys/class/hwmon/hwmon7/temp1_input";
+          "hwmon-path" = "/sys/class/hwmon/hwmon5/temp1_input";
           "critical-threshold" = 99;
           "interval" = 5;
           "format" = "{icon} {temperatureC}°C";

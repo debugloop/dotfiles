@@ -34,7 +34,7 @@
       d = "diff -w";
       ds = "-c delta.side-by-side=true d";
       l = "log --pretty=format:'%C(yellow)%h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative -32";
-      lg = "l --graph --boundary --cherry-mark";
+      lg = "l --graph --boundary --left-right --cherry-mark";
       lp = "-c delta.side-by-side=true log --pretty=format:'%C(yellow)commit %h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative -16 -p -- :^vendor :^go.mod :^go.sum"; # include "commit " for delta `n` navigation
       new = "l @{u}..";
       p = "pull --prune --all --autostash";
