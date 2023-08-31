@@ -16,7 +16,10 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    gridx.url = "git+ssh://git@github.com/debugloop/gridx";
+    gridx = {
+      url = "git+ssh://git@github.com/debugloop/gridx";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ nixpkgs, ... }: {
@@ -24,7 +27,6 @@
       x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
     };
     nixosConfigurations = {
-
       simmons = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {

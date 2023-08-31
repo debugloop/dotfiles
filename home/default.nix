@@ -107,7 +107,6 @@
       gitlint
       glibc
       gnumake
-      go
       golangci-lint
       gopls
       gotags
@@ -128,6 +127,7 @@
       sqlite
       stylua
       tcpdump
+      tree-sitter
       vale
       yamllint
       # fun
@@ -142,7 +142,6 @@
     dircolors.enable = true;
     fzf.enable = true;
     gh.enable = true;
-    go.enable = true;
     gpg.enable = true;
     home-manager.enable = true;
     htop.enable = true;
@@ -169,6 +168,10 @@
     exa = {
       enable = true;
       enableAliases = true;
+    };
+    go = {
+      enable = true;
+      package = pkgs.go_1_21;
     };
     ssh = {
       enable = true;
