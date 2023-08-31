@@ -2,7 +2,8 @@
 {
   imports =
     [
-      ./backup.nix
+      #./backup.nix
       ./boot.nix
+      ./steam.nix
     ];
 }
