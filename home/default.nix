@@ -104,6 +104,7 @@
       docker-compose
       git
       gitAndTools.git-absorb
+      gitAndTools.git-trim
       gitlint
       glibc
       gnumake
