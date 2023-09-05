@@ -12,6 +12,7 @@
 
   environment = {
     sessionVariables = {
+      NIXOS_OZONE_WL = "1";
       EDITOR = "nvim";
       VISUAL = "nvim";
       GTK_THEME = "Arc-Darker";
