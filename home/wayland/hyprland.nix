@@ -2,12 +2,14 @@
 
 {
   # TODO: figure out how to focus from floating windows to tiled windows
-  # TODO: try out master layout
   # TODO: exec ${pkgs.clipman}/bin/clipman clear --all on startup
   # TODO: make "Mod4+Ctrl+v" = "exec ${pkgs.clipman}/bin/clipman pick -t wofi"; or similar
   wayland.windowManager.hyprland = {
     enable = true;
     settings = {
+      monitor = [
+        "eDP-1,1920x1080@60,0x0,1"
+      ];
       misc = {
         disable_autoreload = true;
         disable_hyprland_logo = true;

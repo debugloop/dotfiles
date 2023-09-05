@@ -2,7 +2,7 @@
 
 {
   services.kanshi = {
-    enable = true;
+    enable = false;
     systemdTarget = "graphical-session.target";
     profiles = {
       home = {
