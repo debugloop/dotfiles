@@ -59,6 +59,7 @@
       # basics
       getopt
       lsof
+      moreutils
       netcat-gnu
       openssh
       pcre
