@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   imports = [
@@ -19,6 +19,39 @@
     mpv.enable = true;
     obs-studio.enable = true;
     qutebrowser.enable = true;
+    wofi = {
+      enable = true;
+      settings = {
+        run-always_parse_args = true;
+      };
+      style = ''
+        window {
+          border: 0px;
+          border-radius: 10px;
+          font-family: monospace;
+          font-size: 15px;
+        }
+
+        #outer-box {
+          margin: 0px;
+          color: #${config.colors.foreground};
+          background-color: #${config.colors.background};
+        }
+
+        #input {
+          border:  0px;
+          margin: 0px;
+          border-radius: 10px 10px 0px 0px;
+          padding: 10px;
+          font-size: 22px;
+          background-color: #${config.colors.light_bg};
+        }
+
+        #text {
+          padding: 2px 2px 2px 10px;
+        }
+      '';
+    };
   };
 
   xdg.mimeApps = {
@@ -61,7 +94,6 @@
     wdisplays
     wev
     wireshark
-    wofi
     xdg-utils
   ];
 

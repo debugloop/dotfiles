@@ -80,7 +80,7 @@
         # launch stuff
         "SUPER, return, exec, kitty"
         "SUPER, backslash, exec, swaylock"
-        "SUPER, d, exec, wofi -G -S run,"
+        "SUPER, d, exec, wofi -G -p '' -S run,"
         "SUPER, n, exec, makoctl dismiss"
         "SUPER_SHIFT, n, exec, makoctl dismiss -a"
         ", Print, exec, fish -c \"grim -g (slurp)\""
