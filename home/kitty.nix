@@ -9,6 +9,7 @@
     };
     settings = {
       # basics
+      close_on_child_death = "yes";
       focus_follows_mouse = "no";
       enable_audio_bell = "no";
       confirm_os_window_close = 0;
