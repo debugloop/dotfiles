@@ -17,6 +17,7 @@
   xdg.dataFile = {
     "nvim/nixpkgs/nvim-treesitter-parsers" = {
       source = "${pkgs.symlinkJoin { name = "treesitter-parsers"; paths = pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies; }}";
+      #source = "${pkgs.symlinkJoin { name = "treesitter-parsers"; paths = (builtins.filter (x: ((builtins.parseDrvName x.name).name) != "lua-grammar") pkgs.vimPlugins.nvim-treesitter.allGrammars); }}";
     };
   }
   //

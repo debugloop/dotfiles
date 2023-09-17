@@ -68,6 +68,7 @@
       watch
       wget
       whois
+      zip
       # apis
       curl
       grpcurl

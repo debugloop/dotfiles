@@ -155,7 +155,7 @@ vim.keymap.set("n", "<leader>oI",
   end, { desc = "set illuminate" })
 vim.keymap.set("n", "<leader>ol", function() vim.o.list = not vim.o.list end, { desc = "set list" })
 vim.keymap.set("n", "<leader>oL",
-  function() if vim.diagnostic.is_disabled() then vim.diagnostic.enable(0) else vim.diagnostic.enable(0) end end,
+  function() if vim.diagnostic.is_disabled() then vim.diagnostic.enable(0) else vim.diagnostic.disable(0) end end,
   { desc = "set lsp diagnostics" })
 vim.keymap.set("n", "<leader>on", function() vim.o.number = not vim.o.number end, { desc = "set number" })
 vim.keymap.set("n", "<leader>or", function() vim.o.relativenumber = not vim.o.relativenumber end,

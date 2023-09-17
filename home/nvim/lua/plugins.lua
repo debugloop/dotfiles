@@ -589,6 +589,8 @@ return {
           { mode = 'x', keys = "<leader>d" },
           { mode = 'n', keys = "<leader>g" },
           { mode = 'x', keys = "<leader>g" },
+          { mode = 'n', keys = "<leader>o" },
+          { mode = 'x', keys = "<leader>o" },
           -- mini.bracketed
           { mode = 'n', keys = ']' },
           { mode = 'n', keys = '[' },
@@ -969,8 +971,7 @@ return {
         },
         enabled = function()
           local context = require("cmp.config.context")
-          return vim.api.nvim_get_mode().mode ~= "c" and
-              not (context.in_treesitter_capture("comment") or context.in_syntax_group("Comment"))
+          return vim.api.nvim_get_mode().mode ~= "c" and not (context.in_treesitter_capture("comment") or context.in_syntax_group("Comment"))
         end,
       }
     end,

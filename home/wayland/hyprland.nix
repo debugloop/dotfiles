@@ -24,6 +24,7 @@
         kb_model = "pc105";
         kb_options = "compose:rctrl,lv3:caps_switch";
         follow_mouse = 1;
+        mouse_refocus = false;
         touchpad = {
           natural_scroll = false;
           scroll_factor = 0.3;
