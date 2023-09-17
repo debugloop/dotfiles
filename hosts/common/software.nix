@@ -12,11 +12,8 @@
 
   environment = {
     sessionVariables = {
-      NIXOS_OZONE_WL = "1";
       EDITOR = "nvim";
       VISUAL = "nvim";
-      GTK_THEME = "Arc-Darker";
-      MOZ_ENABLE_WAYLAND = "1";
     };
     systemPackages = with pkgs; [
       # root stuff

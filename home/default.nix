@@ -24,15 +24,19 @@
       "$HOME/go/bin"
     ];
     sessionVariables = {
-      EDITOR = "${pkgs.neovim}/bin/nvim";
-      PAGER = "less -R --use-color -Dd+r -Du+b";
-      HIGHLIGHT_STYLE = "base16/grayscale-dark";
       DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
+      EDITOR = "${pkgs.neovim}/bin/nvim";
+      FLAKE = "/etc/nixos";
+      GRIM_DEFAULT_DIR = "/home/danieln/pictures";
+      GTK_THEME = "Arc-Darker";
+      HIGHLIGHT_STYLE = "base16/grayscale-dark";
+      MOZ_ENABLE_WAYLAND = "1";
+      NIXOS_OZONE_WL = "1";
+      PAGER = "less -R --use-color -Dd+r -Du+b";
       XDG_DESKTOP_DIR = "/home/danieln";
+      XDG_DOCUMENTS_DIR = "/home/danieln/documents";
       XDG_DOWNLOAD_DIR = "/home/danieln/downloads";
       XDG_PICTURES_DIR = "/home/danieln/pictures";
-      GRIM_DEFAULT_DIR = "/home/danieln/pictures";
-      XDG_DOCUMENTS_DIR = "/home/danieln/documents";
       ZK_NOTEBOOK_DIR = "/home/danieln/documents/notes";
     };
 
@@ -54,6 +58,7 @@
       comma
       deadnix
       inputs.agenix.packages.x86_64-linux.default
+      inputs.nh.packages.x86_64-linux.default
       nil
       nvd
       # basics

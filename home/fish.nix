@@ -34,9 +34,6 @@
           set -x (echo $env_var | string split "=")
         end
       end
-
-      # filter crap from git diffs using `-- clean`
-      abbr -a clean --position anywhere -- :^vendor :^go.mod :^go.sum
     '';
     loginShellInit = ''
       # start sway on tty1
