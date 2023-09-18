@@ -107,7 +107,7 @@
         # wm operations
         "SUPER, backspace, killactive,"
 
-        "SUPER, minus, movetoworkspace, special" 
+        "SUPER, minus, movetoworkspace, special"
         "SUPER_SHIFT, minus, movetoworkspace, +0" # unspecial at current workspace
         "SUPER, space, togglespecialworkspace,"
 
@@ -194,7 +194,8 @@
         "SUPER, mouse:272, movewindow"
         "SUPER, mouse:273, resizewindow"
       ];
-      bindl = [ # lock screen binds
+      bindl = [
+        # lock screen binds
         ", XF86MonBrightnessUp, exec, lightctl up 5"
         ", XF86MonBrightnessDown, exec, lightctl down 5"
         "SHIFT, XF86MonBrightnessUp, exec, sudo ddcutil -d 1 setvcp 10 + 20"

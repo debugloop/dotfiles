@@ -15,8 +15,8 @@
 
   nix.settings = {
     experimental-features = "nix-command flakes";
-    extra-substituters = ["https://viperml.cachix.org"];
-    extra-trusted-public-keys = ["viperml.cachix.org-1:qZhKBMTfmcLL+OG6fj/hzsMEedgKvZVFRRAhq7j8Vh8="];
+    extra-substituters = [ "https://viperml.cachix.org" ];
+    extra-trusted-public-keys = [ "viperml.cachix.org-1:qZhKBMTfmcLL+OG6fj/hzsMEedgKvZVFRRAhq7j8Vh8=" ];
   };
 
   nixpkgs = {
