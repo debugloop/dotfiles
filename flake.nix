@@ -26,10 +26,35 @@
     };
   };
 
-  outputs = inputs@{ nixpkgs, ... }: {
+  outputs = inputs@{ nixpkgs, home-manager, ... }: {
     formatter = {
       x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
     };
+    homeConfigurations =
+      let
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      in
+      {
+        "danieln@clarke" = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [
+            ./home
+            inputs.gridx.home-module
+          ];
+          extraSpecialArgs = {
+            inherit inputs;
+          };
+        };
+        danieln = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [
+            ./home
+          ];
+          extraSpecialArgs = {
+            inherit inputs;
+          };
+        };
+      };
     nixosConfigurations = {
       simmons = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -47,7 +72,6 @@
               users.danieln = import ./home;
               extraSpecialArgs = {
                 inherit inputs;
-                hostname = "clarke";
               };
             };
           })
