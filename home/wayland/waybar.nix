@@ -4,7 +4,15 @@
   home.packages = with pkgs; [
     playerctl
   ];
-  systemd.user.services.waybar.Service.Environment = "PATH=/run/wrappers/bin:${pkgs.hyprland}/bin";
+  systemd.user = {
+    services.waybar.Service.Environment = "PATH=/run/wrappers/bin:${pkgs.hyprland}/bin";
+    targets.tray = {
+      Unit = {
+        Description = "Waybar System Tray";
+        Requires = [ "graphical-session-pre.target" ];
+      };
+    };
+  };
   programs.waybar = {
     enable = true;
     systemd = {
@@ -194,6 +202,12 @@
       #workspaces button:hover {
         background-color: #${config.colors.background};
         border-top: 1px solid #${config.colors.cyan};
+      }
+      button:hover {
+        box-shadow: none; /* Remove predefined box-shadow */
+        text-shadow: none; /* Remove predefined text-shadow */
+        background: none; /* Remove predefined background color (white) */
+        transition: none; /* Disable predefined animations */
       }
       #workspaces button.active {
         color: #${config.colors.foreground};
