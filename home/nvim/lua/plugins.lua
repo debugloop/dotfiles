@@ -1205,7 +1205,6 @@ return {
       },
     },
     config = function(_, opts)
-      vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/nixpkgs/nvim-treesitter-parsers/")
       require("nvim-treesitter.configs").setup(opts)
     end,
   }),
