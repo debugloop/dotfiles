@@ -64,6 +64,7 @@
         };
         modules = [
           ./hosts/common
+          ./hosts/common/laptops.nix
           ./hosts/simmons
           ({ system, ... }: {
             home-manager = {
@@ -86,6 +87,7 @@
         };
         modules = [
           ./hosts/common
+          ./hosts/common/laptops.nix
           ./hosts/clarke
           ({ system, ... }: {
             home-manager = {

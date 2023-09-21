@@ -2,41 +2,22 @@
 {
   imports =
     [
-      ./base.nix
+      ./nix.nix
       ./impermanence.nix
       ./software.nix
-      inputs.home-manager.nixosModules.home-manager
-      inputs.agenix.nixosModules.default
     ];
 
-  system = {
-    stateVersion = "22.11";
+  networking.hostName = hostname;
+
+  time = {
+    timeZone = "Europe/Berlin";
   };
 
-  nix.settings = {
-    experimental-features = "nix-command flakes";
-    extra-substituters = [ "https://viperml.cachix.org" ];
-    extra-trusted-public-keys = [ "viperml.cachix.org-1:qZhKBMTfmcLL+OG6fj/hzsMEedgKvZVFRRAhq7j8Vh8=" ];
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = { LC_TIME = "en_GB.UTF-8"; };
+    supportedLocales = [ "en_US.UTF-8/UTF-8" "en_GB.UTF-8/UTF-8" ];
   };
-
-  nixpkgs = {
-    hostPlatform = "x86_64-linux";
-    config.allowUnfree = true;
-  };
-
-  age = {
-    identityPaths = [ "/nix/persist/etc/ssh/ssh_host_ed25519_key" ];
-    secrets = {
-      password.file = ../../secrets/password.age;
-    };
-  };
-
-  networking = {
-    hostName = hostname;
-    networkmanager.enable = true;
-  };
-
-  hardware.bluetooth.enable = true;
 
   users = {
     mutableUsers = false;
