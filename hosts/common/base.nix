@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   time = {
@@ -16,7 +16,7 @@
       groups = [ "wheel" ];
       commands = [
         {
-          command = "${pkgs.ddcutil}/bin/ddcutil";
+          command = "/run/current-system/sw/bin/ddcutil";
           options = [ "NOPASSWD" ];
         }
       ];
