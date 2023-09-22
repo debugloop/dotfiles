@@ -24,8 +24,8 @@
 
   boot = {
     initrd = {
-      availableKernelModules = [ "nvme" "xhci_pci" "usb_storage" "sd_mod" "i2c-dev" ];
-      kernelModules = [ "usb_storage" ];
+      availableKernelModules = [ "nvme" "xhci_pci" "usb_storage" "sd_mod" ];
+      kernelModules = [ "usb_storage" "i2c-dev" ];
       luks.devices.crypt = {
         device = "/dev/disk/by-uuid/8be92b1e-0907-4ae0-a000-eb8cc250fe8d";
         allowDiscards = true;
