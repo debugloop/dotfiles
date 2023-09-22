@@ -66,6 +66,7 @@
       dpr = "!f() { git ds $(git main)...; }; f";
       lpr = "!f() { git lg $(git main)...; }; f";
 
+      rekt = "!f() { git a -u; git amend; git puf }; f";
     };
     ignores = [
       "*~"
