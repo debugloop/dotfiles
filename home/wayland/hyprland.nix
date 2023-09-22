@@ -214,6 +214,7 @@
       ];
       windowrulev2 = [
         "float, title:^(Firefox — Sharing Indicator)$"
+        "float, title:^(Picture-in-Picture)$"
       ];
     };
     extraConfig = ''
