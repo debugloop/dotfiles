@@ -19,18 +19,21 @@
     };
   };
 
-  security.sudo.extraRules = [
-    {
-      # needed for setting external monitor brightness
-      groups = [ "wheel" ];
-      commands = [
-        {
-          command = "/run/current-system/sw/bin/ddcutil";
-          options = [ "NOPASSWD" ];
-        }
-      ];
-    }
-  ];
+  security = {
+    pam.services.swaylock = {};
+    sudo.extraRules = [
+      {
+        # needed for setting external monitor brightness
+        groups = [ "wheel" ];
+        commands = [
+          {
+            command = "/run/current-system/sw/bin/ddcutil";
+            options = [ "NOPASSWD" ];
+          }
+        ];
+      }
+    ];
+  };
 
   environment.systemPackages = with pkgs; [
     ddcutil # see above sudo rule
