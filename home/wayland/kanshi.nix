@@ -2,10 +2,10 @@
 
 {
   services.kanshi = {
-    enable = false;
+    enable = true;
     systemdTarget = "graphical-session.target";
     profiles = {
-      home = {
+      home_initial = {
         outputs = [
           {
             criteria = "LG Electronics LG ULTRAWIDE 208NTKF4V093";
@@ -18,8 +18,26 @@
             status = "disable";
           }
         ];
+      };
+      home = {
+        outputs = [
+          {
+            criteria = "LG Electronics LG ULTRAWIDE 208NTKF4V093";
+            mode = "3440x1440@60Hz";
+            position = "0,0";
+            status = "enable";
+          }
+        ];
+      };
+      solo = {
+        outputs = [
+          {
+            criteria = "eDP-1";
+            status = "enable";
+          }
+        ];
         exec = [
-          #"systemctl --user stop swayidle.service"
+          "systemctl --user start swayidle.service"
         ];
       };
       other = {
