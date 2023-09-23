@@ -3,7 +3,6 @@
   imports =
     [
       ./nix.nix
-      ./impermanence.nix
       ./software.nix
     ];
 
