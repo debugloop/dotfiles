@@ -110,26 +110,36 @@
         ];
       };
 
-      testvm = nixpkgs.lib.nixosSystem {
-        # TODO: fix issues introduced with agenix and impermanence
+      hyperion = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
+          hostname = "hyperion";
         };
         modules = [
           "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
-          ./hosts/simmons
+          ./hosts/common
+          ./hosts/common/servers.nix
+          ./hosts/hyperion
+          ({ system, ... }: {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.danieln = import ./home/headless.nix;
+              extraSpecialArgs = {
+                inherit inputs;
+              };
+            };
+          })
           # extra settings that only apply for the testvm
           ({ lib, ... }:
             {
               # empty password for myself
+              age = lib.mkForce {};
+              users.users.danieln.passwordFile = lib.mkForce null;
               users.users.danieln.initialHashedPassword = "";
               # launch in a useable and graphical window
-              virtualisation.qemu.options = [ "-vga none -device virtio-vga-gl -display gtk,gl=on -full-screen" ];
-              # fix mouse cursor
-              environment.sessionVariables.WLR_NO_HARDWARE_CURSORS = "1";
-              # fix waybar not showing because its waiting on xdg portal which is delayed in VMs...
-              xdg.portal.enable = lib.mkForce false;
+              virtualisation.qemu.options = [ "-vga none -device virtio-vga-gl -display gtk,gl=on" ]; # -full-screen
             })
         ];
       };
