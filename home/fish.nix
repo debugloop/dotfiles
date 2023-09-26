@@ -36,10 +36,10 @@
       end
     '';
     loginShellInit = ''
-      # start sway on tty1
-      #if test (tty) = /dev/tty1
-      #  sway
-      #end
+      # start hyprland on tty1
+      if test (tty) = /dev/tty1
+        Hyprland
+      end
     '';
     shellAbbrs = {
       g = "git";
