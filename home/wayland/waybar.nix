@@ -21,6 +21,7 @@
     };
     settings = [
       {
+        "layer" = "top";
         "modules-left" = [
           "hyprland/workspaces"
           "hyprland/submap"
@@ -109,7 +110,7 @@
           "interval" = 5;
           "format" = " {percentage}%";
           "states" = {
-            "warning" = 70;
+            "warning" = 85;
             "critical" = 90;
           };
         };
