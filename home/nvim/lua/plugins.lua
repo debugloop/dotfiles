@@ -567,7 +567,7 @@ return {
     opts = {},
   }),
 
-  {
+  from_nixpkgs({
     "echasnovski/mini.nvim",
     main = "mini.clue",
     name = "mini.clue",
@@ -658,7 +658,7 @@ return {
         }
       })
     end,
-  },
+  }),
 
   from_nixpkgs({
     "echasnovski/mini.nvim",
@@ -713,7 +713,6 @@ return {
     },
     config = function(_, opts)
       require("mini.indentscope").setup(opts)
-
       vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("indentscope_python", {}),
         pattern = "python",
@@ -746,7 +745,7 @@ return {
     },
   }),
 
-  {
+  from_nixpkgs({
     "echasnovski/mini.nvim",
     main = "mini.operators",
     name = "mini.operators",
@@ -769,7 +768,7 @@ return {
         prefix = 'gs',
       }
     },
-  },
+  }),
 
   from_nixpkgs({
     "echasnovski/mini.nvim",
@@ -1840,8 +1839,10 @@ return {
                     t = "TERMINAL",
                   },
                 },
-                condition = conditions.is_active,
                 provider = function(self)
+                  if not conditions.is_active() then
+                    return "INACTIVE"
+                  end
                   local name = self.mode_names[self.mode]
                   if name == "" or name == nil then
                     name = self.fn.mode(true)
