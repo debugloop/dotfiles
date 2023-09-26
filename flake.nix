@@ -104,7 +104,6 @@
               );
               extraSpecialArgs = {
                 inherit inputs;
-                hostname = "clarke";
               };
             };
           })
