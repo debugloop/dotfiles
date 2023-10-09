@@ -135,7 +135,7 @@
           ({ lib, ... }:
             {
               # empty password for myself
-              age = lib.mkForce {};
+              age = lib.mkForce { };
               users.users.danieln.passwordFile = lib.mkForce null;
               users.users.danieln.initialHashedPassword = "";
               # launch in a useable and graphical window

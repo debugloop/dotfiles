@@ -20,7 +20,7 @@
   };
 
   security = {
-    pam.services.swaylock = {};
+    pam.services.swaylock = { };
     sudo.extraRules = [
       {
         # needed for setting external monitor brightness

@@ -35,9 +35,6 @@ require("lazy").setup({
   state = vim.fn.stdpath("data") .. "/lazy-state.json",
   performance = {
     rtp = {
-      paths = {
-	vim.fn.stdpath("data") .. "/nixpkgs/nvim-treesitter-parsers/"
-      },
       disabled_plugins = {
         "gzip",
         "matchit",
