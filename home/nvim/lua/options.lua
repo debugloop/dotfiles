@@ -43,7 +43,7 @@ vim.opt.signcolumn = "yes" -- always show signcolumn
 vim.opt.splitbelow = true -- open horizontal splits below the current window
 vim.opt.splitright = true -- open vertical splits to the right of the current window
 
-vim.opt.scrolloff = 5 -- always show this many lines of context at the edges
+vim.opt.scrolloff = 16 -- always show this many lines of context at the edges
 vim.opt.sidescrolloff = 20 -- always show this many columns of context at the edges
 
 vim.opt.shortmess:append({ W = true, I = true, c = true })

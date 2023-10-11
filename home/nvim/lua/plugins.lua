@@ -818,7 +818,6 @@ return {
 
   from_nixpkgs({
     "folke/noice.nvim",
-    enabled = true,
     event = "VeryLazy",
     keys = {
       {
@@ -897,6 +896,7 @@ return {
       from_nixpkgs({ "windwp/nvim-autopairs" }),
       from_nixpkgs({ "dcampos/nvim-snippy" }),
       from_nixpkgs({ "dcampos/cmp-snippy" }),
+      from_nixpkgs({ "echasnovski/mini.animate" }),
     },
     opts = function()
       require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -937,24 +937,18 @@ return {
           ["<cr>"] = cmp.mapping({
             i = function(fallback)
               if cmp.visible() and cmp.get_active_entry() then
-                cmp.confirm({
-                  behavior = cmp.ConfirmBehavior.Replace,
-                  select = false,
-                })
+                cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
               else
                 fallback()
               end
             end,
             s = cmp.mapping.confirm({ select = true }),
-            c = cmp.mapping.confirm({
-              behavior = cmp.ConfirmBehavior.Replace,
-              select = true,
-            }),
+            c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
           }),
         },
         sources = cmp.config.sources({
-          { name = "nvim_lsp" },
           { name = "snippy" },
+          { name = "nvim_lsp" },
           { -- fallback
             { name = "buffer" },
           },
@@ -970,13 +964,23 @@ return {
         },
         enabled = function()
           local context = require("cmp.config.context")
-          return vim.api.nvim_get_mode().mode ~= "c" and not (context.in_treesitter_capture("comment") or context.in_syntax_group("Comment"))
+          return vim.api.nvim_get_mode().mode ~= "c" and
+              not (context.in_treesitter_capture("comment") or context.in_syntax_group("Comment"))
         end,
       }
     end,
     config = function(_, opts)
       require("cmp").setup(opts)
       require("cmp").event:on("confirm_done", require("nvim-autopairs.completion.cmp").on_confirm_done())
+      require("cmp").event:on("confirm_done", function()
+        vim.g.minianimate_disable = false
+      end)
+      require("cmp").event:on("menu_closed", function()
+        vim.g.minianimate_disable = false
+      end)
+      require("cmp").event:on("menu_opened", function()
+        vim.g.minianimate_disable = true
+      end)
     end,
   }),
 
@@ -1837,6 +1841,7 @@ return {
                     R = "REPLACE",
                     c = "COMMAND",
                     t = "TERMINAL",
+                    s = "SNIPPET",
                   },
                 },
                 provider = function(self)
@@ -1845,7 +1850,7 @@ return {
                   end
                   local name = self.mode_names[self.mode]
                   if name == "" or name == nil then
-                    name = self.fn.mode(true)
+                    name = vim.fn.mode(true)
                   end
                   return " " .. name .. " "
                 end,

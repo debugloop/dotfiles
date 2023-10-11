@@ -56,3 +56,8 @@
       { name = "nvim/nixpkgs/${name}"; value = { source = builtins.getAttr "${name}" pkgs.vimPlugins; }; }
     ));
 }
+
+# TODO: ability to turn off ts context
+# TODO: mini.files open files properly
+# TODO: implement time travel debugging for go
+
