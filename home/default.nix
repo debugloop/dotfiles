@@ -132,7 +132,7 @@
       lua-language-server
       marksman
       nodePackages_latest.yaml-language-server
-      postman
+      #postman
       proselint
       python3
       python3Packages.ipython
