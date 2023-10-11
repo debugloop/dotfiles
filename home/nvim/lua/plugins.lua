@@ -644,6 +644,7 @@ return {
           { mode = 'n', keys = "<leader>on", postkeys = '<leader>o' }, -- number
           { mode = 'n', keys = "<leader>or", postkeys = '<leader>o' }, -- relativenumber
           { mode = 'n', keys = "<leader>os", postkeys = '<leader>o' }, -- spell
+          { mode = 'n', keys = "<leader>ot", postkeys = '<leader>o' }, -- treesitter context
           { mode = 'n', keys = "<leader>ov", postkeys = '<leader>o' }, -- virtualedit
           { mode = 'n', keys = "<leader>ow", postkeys = '<leader>o' }, -- wrap
           { mode = 'n', keys = "<leader>ox", postkeys = '<leader>o' }, -- cursorcolumn
@@ -1216,7 +1217,9 @@ return {
     "nvim-treesitter/nvim-treesitter-context",
     dependencies = from_nixpkgs({ "nvim-treesitter/nvim-treesitter" }),
     event = "VeryLazy",
-    opts = {},
+    opts = {
+      mode = 'topline',
+    },
   }),
 
   from_nixpkgs({

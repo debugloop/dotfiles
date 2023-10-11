@@ -161,6 +161,7 @@ vim.keymap.set("n", "<leader>on", function() vim.o.number = not vim.o.number end
 vim.keymap.set("n", "<leader>or", function() vim.o.relativenumber = not vim.o.relativenumber end,
   { desc = "set relativenumber" })
 vim.keymap.set("n", "<leader>os", function() vim.o.spell = not vim.o.spell end, { desc = "set spell" })
+vim.keymap.set("n", "<leader>ot", function() vim.cmd("TSContextToggle") end, { desc = "set treesitter context" })
 vim.keymap.set("n", "<leader>ov", function() vim.o.virtualedit = vim.o.virtualedit == "all" and "block" or "all" end,
   { desc = "set virtualedit" })
 vim.keymap.set("n", "<leader>ow", function() vim.o.wrap = not vim.o.wrap end, { desc = "set wrap" })

@@ -57,7 +57,6 @@
     ));
 }
 
-# TODO: ability to turn off ts context
 # TODO: mini.files open files properly
 # TODO: implement time travel debugging for go
 
