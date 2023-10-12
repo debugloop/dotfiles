@@ -970,7 +970,6 @@ return {
               end
             end,
             s = cmp.mapping.confirm({ select = true }),
-            c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
           }),
         },
         sources = cmp.config.sources({
