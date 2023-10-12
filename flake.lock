@@ -89,11 +89,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1695017606,
-        "narHash": "sha256-scxDexdiVf0oQ9O73+50ZUNAQnhIlbIKaBdkpQgBorM=",
+        "lastModified": 1697093157,
+        "narHash": "sha256-X4ucHc1OtsCoHjBBTUONeVkw01Dj4DSBzfCVWiYj6rw=",
         "ref": "refs/heads/master",
-        "rev": "4c4595d831f45b010f6b0fc26de3677ef8d1bba3",
-        "revCount": 5,
+        "rev": "f0878e3a631d54a0a24e6d1c02deb8e5809d80e5",
+        "revCount": 6,
         "type": "git",
         "url": "ssh://git@github.com/debugloop/gridx"
       },
