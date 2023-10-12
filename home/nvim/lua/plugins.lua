@@ -1519,6 +1519,11 @@ return {
         "<cmd>Telescope jumplist<cr>",
         desc = "find in jumplist"
       },
+      {
+        "<leader>gL",
+        "<cmd>Telescope git_bcommits<cr>",
+        desc = "find in git log"
+      },
     },
     dependencies = {
       from_nixpkgs({ "nvim-lua/plenary.nvim" }),
