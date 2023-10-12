@@ -690,6 +690,32 @@ return {
       },
     },
     opts = {},
+    config = function(opts)
+      local MiniFiles = require("mini.files")
+      MiniFiles.setup(opts)
+
+      local go_in_edit = function(close)
+        local fs_entry = MiniFiles.get_fs_entry()
+        if fs_entry.fs_type ~= 'file' then
+          return MiniFiles.go_in()
+        else
+          vim.fn.win_execute(MiniFiles.get_target_window(), 'edit ' .. vim.fn.fnameescape(fs_entry.path))
+        end
+        if close then
+          MiniFiles.close()
+        end
+      end
+
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'MiniFilesBufferCreate',
+        callback = function(args)
+          vim.keymap.set('n', 'l', function() go_in_edit(false) end,
+            { buffer = args.data.buf_id, desc = 'Go in with edit' })
+          vim.keymap.set('n', 'L', function() go_in_edit(true) end,
+            { buffer = args.data.buf_id, desc = 'Go in and close with edit' })
+        end,
+      })
+    end,
   }),
 
   from_nixpkgs({

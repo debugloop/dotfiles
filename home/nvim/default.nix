@@ -57,6 +57,4 @@
     ));
 }
 
-# TODO: mini.files open files properly
 # TODO: implement time travel debugging for go
-
