@@ -1,27 +1,27 @@
 -- general behavior
-vim.opt.clipboard = "unnamedplus"                                              -- sync yank with system clipboard
-vim.opt.swapfile = false                                                       -- disable swap files
+vim.opt.clipboard = "unnamedplus" -- sync yank with system clipboard
+vim.opt.swapfile = false -- disable swap files
 
-vim.opt.formatoptions = "jcroqlnt"                                             -- default: tcqj
-vim.opt.undofile = true                                                        -- enable persistent undo
-vim.opt.undodir = vim.fn.expand("~/.undo")                                     -- set undo location
-vim.opt.backup = true                                                          -- enable backup files
-vim.opt.backupdir = vim.fn.expand("~/.backup")                                 -- set backup location
-vim.opt.backupext = ".bak"                                                     -- disable suffix, we're in a backup dir
+vim.opt.formatoptions = "jcroqlnt" -- default: tcqj
+vim.opt.undofile = true -- enable persistent undo
+vim.opt.undodir = vim.fn.expand("~/.undo") -- set undo location
+vim.opt.backup = true -- enable backup files
+vim.opt.backupdir = vim.fn.expand("~/.backup") -- set backup location
+vim.opt.backupext = ".bak" -- disable suffix, we're in a backup dir
 
-vim.opt.title = true                                                           -- use custom title
+vim.opt.title = true -- use custom title
 vim.opt.titlestring = [[vim %{substitute(getcwd(), '/home/danieln', '~', 0)}]] -- show cwd only
 
 -- editing
-vim.opt.foldenable = false                   -- no folding unless I close one myself
-vim.opt.foldmethod = "indent"                -- use below expression for folding
+vim.opt.foldenable = false -- no folding unless I close one myself
+vim.opt.foldmethod = "indent" -- use below expression for folding
 
 vim.opt.spelloptions = "camel,noplainbuffer" -- set some spell options for when I enable
 
 -- finding stuff
-vim.opt.gdefault = true   -- show multiple matches per line without specifying global
+vim.opt.gdefault = true -- show multiple matches per line without specifying global
 vim.opt.ignorecase = true -- search case-insensitive
-vim.opt.smartcase = true  -- search case-sensitive when capital letters are searched
+vim.opt.smartcase = true -- search case-sensitive when capital letters are searched
 
 vim.opt.grepformat = "%f:%l:%c:%m"
 vim.opt.grepprg = "rg --vimgrep" -- use fast grep
@@ -55,7 +55,7 @@ vim.opt.shada:append({ "%" }) -- reopen buffers if no args
 vim.opt.diffopt:append({ "linematch:60" })
 vim.opt.fillchars:append({ diff = "╱" })
 
-vim.opt.textwidth = 120              -- text width, format comments to this
+vim.opt.textwidth = 120 -- text width, format comments to this
 
 vim.g.markdown_recommended_style = 0 -- this make markdown indent ok
 
@@ -132,7 +132,7 @@ vim.api.nvim_create_autocmd({ "InsertEnter" }, {
   group = vim.api.nvim_create_augroup("on_insert_enter", { clear = true }),
   pattern = "*",
   callback = function()
-    vim.opt.relativenumber = false       -- don't show relative line numbers
+    vim.opt.relativenumber = false -- don't show relative line numbers
     vim.g.miniindentscope_disable = true -- disable plugin drawn guides, if present
   end,
 })
@@ -146,7 +146,7 @@ vim.api.nvim_create_autocmd({ "InsertLeave" }, {
       vim.opt.relativenumber = false
       return
     end
-    vim.opt.relativenumber = true         -- show relative line numbers
+    vim.opt.relativenumber = true -- show relative line numbers
     vim.g.miniindentscope_disable = false -- re-enable plugin drawn guides, if present
   end,
 })
@@ -194,9 +194,9 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
   group = vim.api.nvim_create_augroup("persist_on_vim_open", { clear = true }),
   callback = function()
     for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-      vim.fn.setbufvar(bufnr, 'bufpersist', 1)
+      vim.fn.setbufvar(bufnr, "bufpersist", 1)
     end
-  end
+  end,
 })
 
 -- tag edited buffers as persistent
@@ -208,8 +208,8 @@ vim.api.nvim_create_autocmd({ "BufRead" }, {
       buffer = 0,
       once = true,
       callback = function()
-        vim.fn.setbufvar(vim.api.nvim_get_current_buf(), 'bufpersist', 1)
-      end
+        vim.fn.setbufvar(vim.api.nvim_get_current_buf(), "bufpersist", 1)
+      end,
     })
-  end
+  end,
 })

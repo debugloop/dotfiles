@@ -74,21 +74,25 @@ vim.keymap.set({ "n", "t" }, "<s-left>", "<cmd>vertical resize -2<cr>", { desc =
 vim.keymap.set({ "n", "t" }, "<s-right>", "<cmd>vertical resize +2<cr>", { desc = "resize width positive" })
 
 -- movement between buffers
-vim.keymap.set("n", "<tab>", function() vim.cmd("bn") end, { silent = true, desc = "go to next buffer" })
-vim.keymap.set("n", "<s-tab>", function() vim.cmd("bp") end, { silent = true, desc = "go to previous buffer" })
+vim.keymap.set("n", "<tab>", function()
+  vim.cmd("bn")
+end, { silent = true, desc = "go to next buffer" })
+vim.keymap.set("n", "<s-tab>", function()
+  vim.cmd("bp")
+end, { silent = true, desc = "go to previous buffer" })
 vim.keymap.set("n", "<leader><s-tab>", "<cmd>tabclose<cr>", { desc = "close tab" })
 vim.keymap.set("n", "<leader>x", function()
   vim.print("Clearing buffers...")
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.bo[bufnr].buflisted and bufnr ~= vim.api.nvim_get_current_buf() and (vim.fn.getbufvar(bufnr, 'bufpersist') ~= 1) then
-      vim.cmd('bd ' .. tostring(bufnr))
+    if
+      vim.bo[bufnr].buflisted
+      and bufnr ~= vim.api.nvim_get_current_buf()
+      and (vim.fn.getbufvar(bufnr, "bufpersist") ~= 1)
+    then
+      vim.cmd("bd " .. tostring(bufnr))
     end
   end
   pcall(vim.cmd, "NvimTreeRefresh")
-  local status, plugin = pcall(require, 'lualine')
-  if status then
-    plugin.refresh({ place = { "tabline", "winbar" } })
-  end
 end, { desc = "close buffers not marked as persistent" })
 
 -- banish ex mode
@@ -142,34 +146,53 @@ vim.keymap.set("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "prev se
 
 -- quick settings
 vim.keymap.set("n", "<leader>o", "<nop>", { desc = "+options" })
-vim.keymap.set("n", "<leader>ob", function() vim.o.bg = vim.o.bg == "dark" and "light" or "dark" end,
-  { desc = "set background" })
-vim.keymap.set("n", "<leader>oc", function() vim.o.conceallevel = vim.o.conceallevel == 2 and 0 or 2 end,
-  { desc = "set conceal" })
-vim.keymap.set("n", "<leader>oi", function() vim.g.miniindentscope_disable = not vim.g.miniindentscope_disable end,
-  { desc = "set indentscope" })
-vim.keymap.set("n", "<leader>oI",
-  function()
-    require("illuminate").toggle()
-    vim.g.illuminate_disable = not vim.g.illuminate_disable
-  end, { desc = "set illuminate" })
-vim.keymap.set("n", "<leader>ol", function() vim.o.list = not vim.o.list end, { desc = "set list" })
-vim.keymap.set("n", "<leader>oL",
-  function() if vim.diagnostic.is_disabled() then vim.diagnostic.enable(0) else vim.diagnostic.disable(0) end end,
-  { desc = "set lsp diagnostics" })
-vim.keymap.set("n", "<leader>on", function() vim.o.number = not vim.o.number end, { desc = "set number" })
-vim.keymap.set("n", "<leader>or", function() vim.o.relativenumber = not vim.o.relativenumber end,
-  { desc = "set relativenumber" })
-vim.keymap.set("n", "<leader>os", function() vim.o.spell = not vim.o.spell end, { desc = "set spell" })
-vim.keymap.set("n", "<leader>ot", function() vim.cmd("TSContextToggle") end, { desc = "set treesitter context" })
-vim.keymap.set("n", "<leader>ov", function() vim.o.virtualedit = vim.o.virtualedit == "all" and "block" or "all" end,
-  { desc = "set virtualedit" })
-vim.keymap.set("n", "<leader>ow", function() vim.o.wrap = not vim.o.wrap end, { desc = "set wrap" })
-vim.keymap.set("n", "<leader>ox", function() vim.o.cursorcolumn = not vim.o.cursorcolumn end,
-  { desc = "draw cursorcolumn" })
+vim.keymap.set("n", "<leader>ob", function()
+  vim.o.bg = vim.o.bg == "dark" and "light" or "dark"
+end, { desc = "set background" })
+vim.keymap.set("n", "<leader>oc", function()
+  vim.o.conceallevel = vim.o.conceallevel == 2 and 0 or 2
+end, { desc = "set conceal" })
+vim.keymap.set("n", "<leader>oi", function()
+  vim.g.miniindentscope_disable = not vim.g.miniindentscope_disable
+end, { desc = "set indentscope" })
+vim.keymap.set("n", "<leader>oI", function()
+  require("illuminate").toggle()
+  vim.g.illuminate_disable = not vim.g.illuminate_disable
+end, { desc = "set illuminate" })
+vim.keymap.set("n", "<leader>ol", function()
+  vim.o.list = not vim.o.list
+end, { desc = "set list" })
+vim.keymap.set("n", "<leader>oL", function()
+  if vim.diagnostic.is_disabled() then
+    vim.diagnostic.enable(0)
+  else
+    vim.diagnostic.disable(0)
+  end
+end, { desc = "set lsp diagnostics" })
+vim.keymap.set("n", "<leader>on", function()
+  vim.o.number = not vim.o.number
+end, { desc = "set number" })
+vim.keymap.set("n", "<leader>or", function()
+  vim.o.relativenumber = not vim.o.relativenumber
+end, { desc = "set relativenumber" })
+vim.keymap.set("n", "<leader>os", function()
+  vim.o.spell = not vim.o.spell
+end, { desc = "set spell" })
+vim.keymap.set("n", "<leader>ot", function()
+  vim.cmd("TSContextToggle")
+end, { desc = "set treesitter context" })
+vim.keymap.set("n", "<leader>ov", function()
+  vim.o.virtualedit = vim.o.virtualedit == "all" and "block" or "all"
+end, { desc = "set virtualedit" })
+vim.keymap.set("n", "<leader>ow", function()
+  vim.o.wrap = not vim.o.wrap
+end, { desc = "set wrap" })
+vim.keymap.set("n", "<leader>ox", function()
+  vim.o.cursorcolumn = not vim.o.cursorcolumn
+end, { desc = "draw cursorcolumn" })
 
-vim.api.nvim_create_autocmd('LspAttach', {
-  group = vim.api.nvim_create_augroup('lsp_user_bindings', {}),
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("lsp_user_bindings", {}),
   callback = function(event)
     -- commands
     vim.api.nvim_buf_create_user_command(event.buf, "FormatLSP", function(_)
@@ -187,15 +210,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.lsp.buf.definition()
     end, { buffer = event.buf, desc = "lsp: show definition in new split" })
     vim.keymap.set("n", "gD", vim.lsp.buf.type_definition, { buffer = event.buf, desc = "lsp: show type definition" })
-    vim.keymap.set("n", "gr", function() vim.lsp.buf.references({ includeDeclaration = false }) end,
-      { buffer = event.buf, desc = "lsp: show refs" })
+    vim.keymap.set("n", "gr", function()
+      vim.lsp.buf.references({ includeDeclaration = false })
+    end, { buffer = event.buf, desc = "lsp: show refs" })
     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = event.buf, desc = "lsp: show implementations" })
     vim.keymap.set("n", "go", vim.lsp.buf.document_symbol, { buffer = event.buf, desc = "lsp: outline symbols" })
     vim.keymap.set("n", "gC", vim.lsp.buf.incoming_calls, { buffer = event.buf, desc = "lsp: list incoming calls" })
     vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = event.buf, desc = "lsp: show help" })
     vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = event.buf, desc = "lsp: rename symbol" })
     vim.keymap.set("n", "<leader>?", vim.lsp.buf.code_action, { buffer = event.buf, desc = "lsp: run code action" })
-    vim.keymap.set('n', '<cr>', vim.diagnostic.open_float, { buffer = event.buf, desc = "lsp: open diagnostic" })
+    vim.keymap.set("n", "<cr>", vim.diagnostic.open_float, { buffer = event.buf, desc = "lsp: open diagnostic" })
 
     -- autocmds
     vim.api.nvim_create_autocmd("BufWritePre", {

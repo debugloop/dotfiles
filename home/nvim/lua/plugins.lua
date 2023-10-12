@@ -23,7 +23,12 @@ return {
   from_nixpkgs({
     "folke/flash.nvim",
     keys = {
-      "f", "F", "t", "T", ";", ",",
+      "f",
+      "F",
+      "t",
+      "T",
+      ";",
+      ",",
       {
         "S",
         mode = { "n", "x", "o" },
@@ -54,8 +59,8 @@ return {
             opts.autohide = vim.fn.mode(true):find("no")
           end,
           multi_line = false,
-          highlight = { backdrop = false, },
-        }
+          highlight = { backdrop = false },
+        },
       },
       label = {
         uppercase = false,
@@ -83,8 +88,12 @@ return {
     },
     opts = {
       on_attach = function(bufnr)
-        vim.keymap.set("n", "<CR>", require("nvim-tree.api").node.open.edit,
-          { desc = "nvim-tree: open", buffer = bufnr, noremap = true, silent = true, nowait = true, })
+        vim.keymap.set(
+          "n",
+          "<CR>",
+          require("nvim-tree.api").node.open.edit,
+          { desc = "nvim-tree: open", buffer = bufnr, noremap = true, silent = true, nowait = true }
+        )
       end,
       hijack_netrw = false,
       root_dirs = { "~", "/" },
@@ -158,7 +167,10 @@ return {
         -- expand all folders
         api.tree.expand_all()
         -- hide bufferbar
-        -- require("lualine").hide({ place = { "tabline" } })
+        HIDE_BUFFERS = true
+        vim.schedule(function()
+          vim.cmd.doautocmd("BufWinEnter")
+        end)
         -- remap tab
         vim.keymap.set("n", "<tab>", function()
           buffers_only()
@@ -190,12 +202,19 @@ return {
       end)
       api.events.subscribe(api.events.Event.TreeClose, function(data)
         -- show bufferbar
-        -- require("lualine").hide({ place = { "tabline" }, unhide = true })
+        HIDE_BUFFERS = false
+        vim.schedule(function()
+          vim.cmd.doautocmd("BufWinEnter")
+        end)
         -- delete update aucmd
         vim.api.nvim_del_augroup_by_name("update_tree")
         -- remap tab to their regular mappings
-        vim.keymap.set("n", "<tab>", function() vim.cmd("bn") end, { silent = true, desc = "go to next buffer" })
-        vim.keymap.set("n", "<s-tab>", function() vim.cmd("bp") end, { silent = true, desc = "go to previous buffer" })
+        vim.keymap.set("n", "<tab>", function()
+          vim.cmd("bn")
+        end, { silent = true, desc = "go to next buffer" })
+        vim.keymap.set("n", "<s-tab>", function()
+          vim.cmd("bp")
+        end, { silent = true, desc = "go to previous buffer" })
       end)
       -- close buffer tree if we're the last window around
       vim.api.nvim_create_autocmd({ "QuitPre" }, {
@@ -221,7 +240,7 @@ return {
 
   from_nixpkgs({
     "sindrets/diffview.nvim",
-    cmd = { "PRDiff", "PRLog", },
+    cmd = { "PRDiff", "PRLog" },
     keys = {
       {
         "<leader>D",
@@ -261,7 +280,7 @@ return {
   }),
 
   from_nixpkgs({
-    'ruifm/gitlinker.nvim',
+    "ruifm/gitlinker.nvim",
     keys = {
       {
         "gy",
@@ -338,7 +357,7 @@ return {
         function()
           require("gitsigns").stage_buffer()
         end,
-        desc = "stage buffer"
+        desc = "stage buffer",
       },
       {
         "<leader>gu",
@@ -352,14 +371,14 @@ return {
         function()
           require("gitsigns").reset_buffer_index()
         end,
-        desc = "unstage buffer"
+        desc = "unstage buffer",
       },
       {
         "<leader>gd",
         function()
           require("gitsigns").toggle_deleted()
         end,
-        desc = "toggle display of deleted lines"
+        desc = "toggle display of deleted lines",
       },
       {
         "<leader>gG",
@@ -371,7 +390,7 @@ return {
           require("gitsigns").toggle_word_diff(true)
           require("gitsigns").refresh()
         end,
-        desc = "turn on all git stuff"
+        desc = "turn on all git stuff",
       },
       {
         "<leader>gg",
@@ -382,49 +401,49 @@ return {
           require("gitsigns").toggle_current_line_blame(false)
           require("gitsigns").refresh()
         end,
-        desc = "turn off all git stuff, default"
+        desc = "turn off all git stuff, default",
       },
       {
         "<leader>gl",
         function()
           require("gitsigns").toggle_linehl()
         end,
-        desc = "toggle line highlight"
+        desc = "toggle line highlight",
       },
       {
         "<leader>gw",
         function()
           require("gitsigns").toggle_word_diff()
         end,
-        desc = "toggle word diff"
+        desc = "toggle word diff",
       },
       {
         "<leader>gb",
         function()
           require("gitsigns").toggle_current_line_blame()
         end,
-        desc = "toggle blame line"
+        desc = "toggle blame line",
       },
       {
         "<leader>gc",
         function()
           require("gitsigns").change_base(vim.fn.input("Ref: "), true)
         end,
-        desc = "change base"
+        desc = "change base",
       },
       {
         "<leader>go",
         function()
           require("gitsigns").show(vim.fn.input("Ref: "))
         end,
-        desc = "open file at ref"
+        desc = "open file at ref",
       },
       {
         "<leader>gD",
         function()
           require("gitsigns").diffthis(vim.fn.input("Ref: "))
         end,
-        desc = "diff file against ref"
+        desc = "diff file against ref",
       },
     },
     opts = {
@@ -503,18 +522,18 @@ return {
     config = function(_, opts)
       require("mini.ai").setup({
         mappings = {
-          around_last = '',
-          inside_last = '',
+          around_last = "",
+          inside_last = "",
         },
         custom_textobjects = {
-          a = require("mini.ai").gen_spec.treesitter({ a = "@parameter.outer", i = "@parameter.inner", }),
+          a = require("mini.ai").gen_spec.treesitter({ a = "@parameter.outer", i = "@parameter.inner" }),
           c = require("mini.ai").gen_spec.treesitter({ a = "@call.outer", i = "@call.inner" }),
-          C = require("mini.ai").gen_spec.treesitter({ a = "@comment.outer", i = "@comment.inner", }),
-          f = require("mini.ai").gen_spec.treesitter({ a = "@function.outer", i = "@function.inner", }),
+          C = require("mini.ai").gen_spec.treesitter({ a = "@comment.outer", i = "@comment.inner" }),
+          f = require("mini.ai").gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
           i = require("mini.ai").gen_spec.treesitter({ a = "@conditional.outer", i = "@conditional.inner" }),
           l = require("mini.ai").gen_spec.treesitter({ a = "@loop.outer", i = "@loop.inner" }),
-          s = require("mini.ai").gen_spec.treesitter({ a = "@block.outer", i = "@block.inner", }),
-          t = require("mini.ai").gen_spec.treesitter({ a = "@customtype.outer", i = "@customtype.inner", }),
+          s = require("mini.ai").gen_spec.treesitter({ a = "@block.outer", i = "@block.inner" }),
+          t = require("mini.ai").gen_spec.treesitter({ a = "@customtype.outer", i = "@customtype.inner" }),
         },
       })
     end,
@@ -532,7 +551,7 @@ return {
     "echasnovski/mini.nvim",
     main = "mini.bracketed",
     name = "mini.bracketed",
-    keys = { "]", "[", },
+    keys = { "]", "[" },
     opts = {
       buffer = { suffix = "", options = {} },
       comment = { suffix = "", options = {} },
@@ -573,81 +592,81 @@ return {
     name = "mini.clue",
     event = "VeryLazy",
     config = function(_, _)
-      local miniclue = require('mini.clue')
-      require('mini.clue').setup({
+      local miniclue = require("mini.clue")
+      require("mini.clue").setup({
         window = {
           delay = 200,
           config = {
-            width = 'auto',
+            width = "auto",
           },
         },
         triggers = {
           -- custom modes
-          { mode = 'n', keys = "<leader>m" },
-          { mode = 'x', keys = "<leader>m" },
-          { mode = 'n', keys = "<leader>d" },
-          { mode = 'x', keys = "<leader>d" },
-          { mode = 'n', keys = "<leader>g" },
-          { mode = 'x', keys = "<leader>g" },
-          { mode = 'n', keys = "<leader>o" },
-          { mode = 'x', keys = "<leader>o" },
+          { mode = "n", keys = "<leader>m" },
+          { mode = "x", keys = "<leader>m" },
+          { mode = "n", keys = "<leader>d" },
+          { mode = "x", keys = "<leader>d" },
+          { mode = "n", keys = "<leader>g" },
+          { mode = "x", keys = "<leader>g" },
+          { mode = "n", keys = "<leader>o" },
+          { mode = "x", keys = "<leader>o" },
           -- mini.bracketed
-          { mode = 'n', keys = ']' },
-          { mode = 'n', keys = '[' },
-          { mode = 'x', keys = ']' },
-          { mode = 'x', keys = '[' },
+          { mode = "n", keys = "]" },
+          { mode = "n", keys = "[" },
+          { mode = "x", keys = "]" },
+          { mode = "x", keys = "[" },
           -- builtin
-          { mode = 'n', keys = '<leader>' },
-          { mode = 'x', keys = '<leader>' },
-          { mode = 'n', keys = 'g' },
-          { mode = 'x', keys = 'g' },
-          { mode = 'n', keys = "'" },
-          { mode = 'n', keys = '`' },
-          { mode = 'n', keys = '"' },
-          { mode = 'x', keys = "'" },
-          { mode = 'x', keys = '`' },
-          { mode = 'x', keys = '"' },
-          { mode = 'i', keys = '<C-r>' },
-          { mode = 'c', keys = '<C-r>' },
-          { mode = 'n', keys = '<C-w>' },
-          { mode = 'n', keys = 'z' },
-          { mode = 'x', keys = 'z' },
+          { mode = "n", keys = "<leader>" },
+          { mode = "x", keys = "<leader>" },
+          { mode = "n", keys = "g" },
+          { mode = "x", keys = "g" },
+          { mode = "n", keys = "'" },
+          { mode = "n", keys = "`" },
+          { mode = "n", keys = '"' },
+          { mode = "x", keys = "'" },
+          { mode = "x", keys = "`" },
+          { mode = "x", keys = '"' },
+          { mode = "i", keys = "<C-r>" },
+          { mode = "c", keys = "<C-r>" },
+          { mode = "n", keys = "<C-w>" },
+          { mode = "n", keys = "z" },
+          { mode = "x", keys = "z" },
         },
         clues = {
           -- maps that don't quit move mode
-          { mode = 'n', keys = '<leader>mh', postkeys = '<leader>m' },
-          { mode = 'n', keys = '<leader>mj', postkeys = '<leader>m' },
-          { mode = 'n', keys = '<leader>mk', postkeys = '<leader>m' },
-          { mode = 'n', keys = '<leader>ml', postkeys = '<leader>m' },
-          { mode = 'x', keys = '<leader>mh', postkeys = '<leader>m' },
-          { mode = 'x', keys = '<leader>mj', postkeys = '<leader>m' },
-          { mode = 'x', keys = '<leader>mk', postkeys = '<leader>m' },
-          { mode = 'x', keys = '<leader>ml', postkeys = '<leader>m' },
+          { mode = "n", keys = "<leader>mh", postkeys = "<leader>m" },
+          { mode = "n", keys = "<leader>mj", postkeys = "<leader>m" },
+          { mode = "n", keys = "<leader>mk", postkeys = "<leader>m" },
+          { mode = "n", keys = "<leader>ml", postkeys = "<leader>m" },
+          { mode = "x", keys = "<leader>mh", postkeys = "<leader>m" },
+          { mode = "x", keys = "<leader>mj", postkeys = "<leader>m" },
+          { mode = "x", keys = "<leader>mk", postkeys = "<leader>m" },
+          { mode = "x", keys = "<leader>ml", postkeys = "<leader>m" },
           -- maps that don't quit debug mode
-          { mode = 'n', keys = "<leader>dt", postkeys = '<leader>d' }, -- start
-          { mode = 'n', keys = "<leader>dT", postkeys = '<leader>d' }, -- start
-          { mode = 'n', keys = "<leader>dc", postkeys = '<leader>d' }, -- continue
-          { mode = 'n', keys = "<leader>ds", postkeys = '<leader>d' }, -- step over
-          { mode = 'n', keys = "<leader>dS", postkeys = '<leader>d' }, -- step back
-          { mode = 'n', keys = "<leader>di", postkeys = '<leader>d' }, -- step into
-          { mode = 'n', keys = "<leader>do", postkeys = '<leader>d' }, -- step out
-          { mode = 'n', keys = "<leader>dd", postkeys = '<leader>d' }, -- frame down
-          { mode = 'n', keys = "<leader>dr", postkeys = '<leader>d' }, -- restart
-          { mode = 'n', keys = "<leader>du", postkeys = '<leader>d' }, -- frame up
+          { mode = "n", keys = "<leader>dt", postkeys = "<leader>d" }, -- start
+          { mode = "n", keys = "<leader>dT", postkeys = "<leader>d" }, -- start
+          { mode = "n", keys = "<leader>dc", postkeys = "<leader>d" }, -- continue
+          { mode = "n", keys = "<leader>ds", postkeys = "<leader>d" }, -- step over
+          { mode = "n", keys = "<leader>dS", postkeys = "<leader>d" }, -- step back
+          { mode = "n", keys = "<leader>di", postkeys = "<leader>d" }, -- step into
+          { mode = "n", keys = "<leader>do", postkeys = "<leader>d" }, -- step out
+          { mode = "n", keys = "<leader>dd", postkeys = "<leader>d" }, -- frame down
+          { mode = "n", keys = "<leader>dr", postkeys = "<leader>d" }, -- restart
+          { mode = "n", keys = "<leader>du", postkeys = "<leader>d" }, -- frame up
           -- maps that don't quit option mode (all of them)
-          { mode = 'n', keys = "<leader>ob", postkeys = '<leader>o' }, -- background
-          { mode = 'n', keys = "<leader>oc", postkeys = '<leader>o' }, -- conceal
-          { mode = 'n', keys = "<leader>oi", postkeys = '<leader>o' }, -- illuminate
-          { mode = 'n', keys = "<leader>oI", postkeys = '<leader>o' }, -- indentscope
-          { mode = 'n', keys = "<leader>ol", postkeys = '<leader>o' }, -- list
-          { mode = 'n', keys = "<leader>oL", postkeys = '<leader>o' }, -- LSP
-          { mode = 'n', keys = "<leader>on", postkeys = '<leader>o' }, -- number
-          { mode = 'n', keys = "<leader>or", postkeys = '<leader>o' }, -- relativenumber
-          { mode = 'n', keys = "<leader>os", postkeys = '<leader>o' }, -- spell
-          { mode = 'n', keys = "<leader>ot", postkeys = '<leader>o' }, -- treesitter context
-          { mode = 'n', keys = "<leader>ov", postkeys = '<leader>o' }, -- virtualedit
-          { mode = 'n', keys = "<leader>ow", postkeys = '<leader>o' }, -- wrap
-          { mode = 'n', keys = "<leader>ox", postkeys = '<leader>o' }, -- cursorcolumn
+          { mode = "n", keys = "<leader>ob", postkeys = "<leader>o" }, -- background
+          { mode = "n", keys = "<leader>oc", postkeys = "<leader>o" }, -- conceal
+          { mode = "n", keys = "<leader>oi", postkeys = "<leader>o" }, -- illuminate
+          { mode = "n", keys = "<leader>oI", postkeys = "<leader>o" }, -- indentscope
+          { mode = "n", keys = "<leader>ol", postkeys = "<leader>o" }, -- list
+          { mode = "n", keys = "<leader>oL", postkeys = "<leader>o" }, -- LSP
+          { mode = "n", keys = "<leader>on", postkeys = "<leader>o" }, -- number
+          { mode = "n", keys = "<leader>or", postkeys = "<leader>o" }, -- relativenumber
+          { mode = "n", keys = "<leader>os", postkeys = "<leader>o" }, -- spell
+          { mode = "n", keys = "<leader>ot", postkeys = "<leader>o" }, -- treesitter context
+          { mode = "n", keys = "<leader>ov", postkeys = "<leader>o" }, -- virtualedit
+          { mode = "n", keys = "<leader>ow", postkeys = "<leader>o" }, -- wrap
+          { mode = "n", keys = "<leader>ox", postkeys = "<leader>o" }, -- cursorcolumn
           -- builtin
           miniclue.gen_clues.g(),
           miniclue.gen_clues.marks(),
@@ -656,7 +675,7 @@ return {
             submode_resize = true,
           }),
           miniclue.gen_clues.z(),
-        }
+        },
       })
     end,
   }),
@@ -670,8 +689,8 @@ return {
       {
         "gcc",
         "gcl",
-        desc = "comment current line"
-      }
+        desc = "comment current line",
+      },
     },
     opts = {},
   }),
@@ -693,26 +712,26 @@ return {
     config = function(opts)
       local MiniFiles = require("mini.files")
       MiniFiles.setup(opts)
-
       local go_in_edit = function(close)
         local fs_entry = MiniFiles.get_fs_entry()
-        if fs_entry.fs_type ~= 'file' then
+        if fs_entry.fs_type ~= "file" then
           return MiniFiles.go_in()
         else
-          vim.fn.win_execute(MiniFiles.get_target_window(), 'edit ' .. vim.fn.fnameescape(fs_entry.path))
+          vim.fn.win_execute(MiniFiles.get_target_window(), "edit " .. vim.fn.fnameescape(fs_entry.path))
         end
         if close then
           MiniFiles.close()
         end
       end
-
-      vim.api.nvim_create_autocmd('User', {
-        pattern = 'MiniFilesBufferCreate',
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "MiniFilesBufferCreate",
         callback = function(args)
-          vim.keymap.set('n', 'l', function() go_in_edit(false) end,
-            { buffer = args.data.buf_id, desc = 'Go in with edit' })
-          vim.keymap.set('n', 'L', function() go_in_edit(true) end,
-            { buffer = args.data.buf_id, desc = 'Go in and close with edit' })
+          vim.keymap.set("n", "l", function()
+            go_in_edit(false)
+          end, { buffer = args.data.buf_id, desc = "Go in with edit" })
+          vim.keymap.set("n", "L", function()
+            go_in_edit(true)
+          end, { buffer = args.data.buf_id, desc = "Go in and close with edit" })
         end,
       })
     end,
@@ -725,17 +744,19 @@ return {
     event = "VeryLazy",
     opts = {
       draw = {
-        animation = function() return 0 end,
+        animation = function()
+          return 0
+        end,
       },
       symbol = "·",
       options = {
         try_as_border = true,
       },
       mappings = {
-        object_scope = 'iI',
-        object_scope_with_border = 'aI',
-        goto_top = '[I',
-        goto_bottom = ']I',
+        object_scope = "iI",
+        object_scope_with_border = "aI",
+        goto_top = "[I",
+        goto_bottom = "]I",
       },
     },
     config = function(_, opts)
@@ -760,14 +781,14 @@ return {
     },
     opts = {
       mappings = {
-        left       = '<leader>mh',
-        right      = '<leader>ml',
-        down       = '<leader>mj',
-        up         = '<leader>mk',
-        line_left  = '<leader>mh',
-        line_right = '<leader>ml',
-        line_down  = '<leader>mj',
-        line_up    = '<leader>mk',
+        left = "<leader>mh",
+        right = "<leader>ml",
+        down = "<leader>mj",
+        up = "<leader>mk",
+        line_left = "<leader>mh",
+        line_right = "<leader>ml",
+        line_down = "<leader>mj",
+        line_up = "<leader>mk",
       },
     },
   }),
@@ -779,21 +800,21 @@ return {
     event = "InsertEnter",
     opts = {
       replace = {
-        prefix = '', -- disable
+        prefix = "", -- disable
       },
       -- defaults:
       evaluate = {
-        prefix = 'g=',
+        prefix = "g=",
       },
       exchange = {
-        prefix = 'gx',
+        prefix = "gx",
       },
       multiply = {
-        prefix = 'gm',
+        prefix = "gm",
       },
       sort = {
-        prefix = 'gs',
-      }
+        prefix = "gs",
+      },
     },
   }),
 
@@ -805,12 +826,20 @@ return {
     opts = {
       split = {
         hooks_post = {
-          function() require("mini.splitjoin").gen_hook.add_trailing_separator({ brackets = { "%b()", "%b[]", "%b{}" } }) end
-        }
+          function()
+            require("mini.splitjoin").gen_hook.add_trailing_separator({
+              brackets = { "%b()", "%b[]", "%b{}" },
+            })
+          end,
+        },
       },
       join = {
         hooks_post = {
-          function() require("mini.splitjoin").gen_hook.del_trailing_separator({ brackets = { "%b()", "%b[]", "%b{}" } }) end
+          function()
+            require("mini.splitjoin").gen_hook.del_trailing_separator({
+              brackets = { "%b()", "%b[]", "%b{}" },
+            })
+          end,
         },
       },
     },
@@ -881,17 +910,17 @@ return {
   }),
 
   from_nixpkgs({
-    'mfussenegger/nvim-lint',
+    "mfussenegger/nvim-lint",
     event = "BufWritePre",
     opts = {
-      bash = { 'shellcheck' },
-      go = { 'golangcilint', 'codespell' },
+      bash = { "shellcheck" },
+      go = { "golangcilint", "codespell" },
       -- markdown = { 'vale', 'languagetool', },
-      nix = { 'nix' },
-      yaml = { 'yamllint' },
+      nix = { "nix" },
+      yaml = { "yamllint" },
     },
     config = function(_, opts)
-      require('lint').linters_by_ft = opts
+      require("lint").linters_by_ft = opts
       vim.api.nvim_create_autocmd({ "BufWritePost" }, {
         callback = function()
           require("lint").try_lint()
@@ -990,8 +1019,8 @@ return {
         },
         enabled = function()
           local context = require("cmp.config.context")
-          return vim.api.nvim_get_mode().mode ~= "c" and
-              not (context.in_treesitter_capture("comment") or context.in_syntax_group("Comment"))
+          return vim.api.nvim_get_mode().mode ~= "c"
+            and not (context.in_treesitter_capture("comment") or context.in_syntax_group("Comment"))
         end,
       }
     end,
@@ -1089,7 +1118,7 @@ return {
       {
         "<leader>dK",
         function()
-          require("dap.ui.widgets").hover(nil, { border = 'rounded' })
+          require("dap.ui.widgets").hover(nil, { border = "rounded" })
         end,
         desc = "value under cursor",
       },
@@ -1186,7 +1215,7 @@ return {
             request = "attach",
             connect = {
               host = "127.0.0.1",
-              port = "8181"
+              port = "8181",
             },
             buildFlags = "-tags=unit,integration,e2e",
           },
@@ -1243,7 +1272,7 @@ return {
     dependencies = from_nixpkgs({ "nvim-treesitter/nvim-treesitter" }),
     event = "VeryLazy",
     opts = {
-      mode = 'topline',
+      mode = "topline",
     },
   }),
 
@@ -1372,7 +1401,7 @@ return {
     },
     config = function(_, opts)
       require("lspconfig").gopls.setup(opts)
-    end
+    end,
   }),
 
   from_nixpkgs({
@@ -1389,7 +1418,7 @@ return {
           Lua = {
             runtime = {
               version = "LuaJIT",
-              path = runtime_path
+              path = runtime_path,
             },
             diagnostics = {
               globals = { "vim" },
@@ -1401,7 +1430,7 @@ return {
     end,
     config = function(_, opts)
       require("lspconfig").lua_ls.setup(opts)
-    end
+    end,
   }),
 
   from_nixpkgs({
@@ -1411,7 +1440,7 @@ return {
     opts = {},
     config = function(_, opts)
       require("lspconfig").nil_ls.setup(opts)
-    end
+    end,
   }),
 
   from_nixpkgs({
@@ -1430,7 +1459,7 @@ return {
     },
     config = function(_, opts)
       require("lspconfig").yamlls.setup(opts)
-    end
+    end,
   }),
 
   from_nixpkgs({
@@ -1442,7 +1471,7 @@ return {
       playground = {
         enable = true,
         disable = {},
-        updatetime = 25,        -- Debounced time for highlighting nodes in the playground from source code
+        updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
         persist_queries = true, -- Whether the query persists across vim sessions
         keybindings = {
           toggle_query_editor = "o",
@@ -1466,23 +1495,23 @@ return {
       {
         "<leader>f",
         "<cmd>Telescope find_files<cr>",
-        desc = "find files"
+        desc = "find files",
       },
       {
         "<leader>/",
         "<cmd>Telescope current_buffer_fuzzy_find<cr>",
-        desc = "find matches"
+        desc = "find matches",
       },
       {
         "<leader>s",
         "<cmd>Telescope live_grep<cr>",
-        desc = "grep project"
+        desc = "grep project",
       },
       {
         "<leader>*",
         "<cmd>Telescope grep_string<cr>",
         desc = "grep string in project",
-        mode = "v"
+        mode = "v",
       },
       {
         "<leader>*",
@@ -1492,37 +1521,37 @@ return {
       {
         "<leader><leader>",
         "<cmd>Telescope resume<cr>",
-        desc = "resume last telescope"
+        desc = "resume last telescope",
       },
       {
         "<leader>q",
         "<cmd>Telescope quickfix<cr>",
-        desc = "resume from quickfix"
+        desc = "resume from quickfix",
       },
       {
         "<leader><s-q>",
         "<cmd>Telescope quickfixhistory<cr>",
-        desc = "resume from older quickfix"
+        desc = "resume from older quickfix",
       },
       {
         "<leader>b",
         "<cmd>Telescope buffers<cr>",
-        desc = "find buffers"
+        desc = "find buffers",
       },
       {
         "gq",
         "<cmd>Telescope diagnostics<cr>",
-        desc = "show diagnostics"
+        desc = "show diagnostics",
       },
       {
         "<leader>j",
         "<cmd>Telescope jumplist<cr>",
-        desc = "find in jumplist"
+        desc = "find in jumplist",
       },
       {
         "<leader>gL",
         "<cmd>Telescope git_bcommits<cr>",
-        desc = "find in git log"
+        desc = "find in git log",
       },
     },
     dependencies = {
@@ -1567,18 +1596,22 @@ return {
           ["H"] = false,
           ["M"] = false,
           ["L"] = false,
-          ["<s-cr>"] = function() vim.cmd("startinsert!") end,
+          ["<s-cr>"] = function()
+            vim.cmd("startinsert!")
+          end,
         },
         i = {
           ["<c-j>"] = require("telescope.actions").move_selection_next,
           ["<c-k>"] = require("telescope.actions").move_selection_previous,
           ["<c-q>"] = require("telescope.actions").smart_send_to_qflist,
           ["<c-cr>"] = require("telescope.actions").to_fuzzy_refine,
-          ["<s-cr>"] = function() vim.cmd("stopinsert") end,
+          ["<s-cr>"] = function()
+            vim.cmd("stopinsert")
+          end,
         },
       }
       require("telescope").setup(opts)
-      require('telescope').load_extension('fzf')
+      require("telescope").load_extension("fzf")
       require("telescope").load_extension("ui-select")
       vim.api.nvim_create_autocmd("User", {
         group = vim.api.nvim_create_augroup("on_telescope_preview", { clear = true }),
@@ -1593,7 +1626,7 @@ return {
   from_nixpkgs({
     "gbrlsnchs/telescope-lsp-handlers.nvim",
     dependencies = {
-      from_nixpkgs({ "nvim-telescope/telescope.nvim", }),
+      from_nixpkgs({ "nvim-telescope/telescope.nvim" }),
     },
     event = "LspAttach",
     opts = {
@@ -1629,21 +1662,21 @@ return {
     },
     config = function(_, opts)
       require("telescope").setup(opts)
-      require("telescope").load_extension('lsp_handlers')
+      require("telescope").load_extension("lsp_handlers")
     end,
   }),
 
   from_nixpkgs({
     "debugloop/telescope-undo.nvim",
     dependencies = {
-      from_nixpkgs({ "nvim-telescope/telescope.nvim", }),
+      from_nixpkgs({ "nvim-telescope/telescope.nvim" }),
     },
     dev = false,
     keys = {
       {
         "<leader>u",
         "<cmd>Telescope undo<cr>",
-        desc = "undo history"
+        desc = "undo history",
       },
     },
     opts = {
@@ -1659,7 +1692,7 @@ return {
     },
     config = function(_, opts)
       require("telescope").setup(opts)
-      require("telescope").load_extension('undo')
+      require("telescope").load_extension("undo")
     end,
   }),
 
@@ -1783,12 +1816,16 @@ return {
     keys = {
       {
         "<leader>zo",
-        function() require("zk").edit() end,
+        function()
+          require("zk").edit()
+        end,
         desc = "open note",
       },
       {
         "<leader>zn",
-        function() require("zk").new() end,
+        function()
+          require("zk").new()
+        end,
         desc = "new note",
       },
     },
@@ -1820,12 +1857,12 @@ return {
     event = "UIEnter",
     dependencies = { from_nixpkgs({ "rebelot/kanagawa.nvim" }) },
     config = function()
-      vim.opt.showtabline = 0           -- no tabline ever
-      vim.opt.laststatus = 2            -- windowed statusline
-      vim.opt.showcmdloc = 'statusline' -- enable partial command printing segment
-      local conditions = require('heirline.conditions')
-      local utils = require('heirline.utils')
-      local colors = require('kanagawa.colors').setup()
+      vim.opt.showtabline = 0 -- no tabline ever
+      vim.opt.laststatus = 2 -- windowed statusline
+      vim.opt.showcmdloc = "statusline" -- enable partial command printing segment
+      local conditions = require("heirline.conditions")
+      local utils = require("heirline.utils")
+      local colors = require("kanagawa.colors").setup()
       require("heirline").load_colors(colors)
       require("heirline").setup({
         tabline = {},
@@ -1897,8 +1934,9 @@ return {
                 condition = conditions.is_git_repo,
                 init = function(self)
                   self.status_dict = vim.b.gitsigns_status_dict
-                  self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or
-                      self.status_dict.changed ~= 0
+                  self.has_changes = self.status_dict.added ~= 0
+                    or self.status_dict.removed ~= 0
+                    or self.status_dict.changed ~= 0
                 end,
                 {
                   flexible = 20,
@@ -1919,7 +1957,7 @@ return {
                     condition = function(self)
                       return self.has_changes
                     end,
-                    provider = " "
+                    provider = " ",
                   },
                   {
                     provider = function(self)
@@ -1942,7 +1980,7 @@ return {
                     end,
                     hl = { fg = colors.theme.vcs.removed },
                   },
-                }
+                },
               },
               { -- lsp
                 condition = function()
@@ -1985,7 +2023,7 @@ return {
               },
             },
             { -- truncate marker
-              provider = "%<"
+              provider = "%<",
             },
             { -- middle section c
               hl = function(self)
@@ -2015,7 +2053,7 @@ return {
                 },
               },
               { -- fill middle
-                provider = "%="
+                provider = "%=",
               },
               { -- right section c
                 flexible = 10,
@@ -2038,7 +2076,7 @@ return {
                     update = {
                       "RecordingEnter",
                       "RecordingLeave",
-                    }
+                    },
                   },
                   {
                     provider = function()
@@ -2047,15 +2085,15 @@ return {
                   },
                   {
                     provider = function()
-                      local enc = (vim.bo.fenc ~= '' and vim.bo.fenc) or vim.o.enc
-                      return enc ~= 'utf-8' and enc .. " "
-                    end
+                      local enc = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc
+                      return enc ~= "utf-8" and enc .. " "
+                    end,
                   },
                   {
                     provider = function()
                       local fmt = vim.bo.fileformat
-                      return fmt ~= 'unix' and fmt .. " "
-                    end
+                      return fmt ~= "unix" and fmt .. " "
+                    end,
                   },
                 },
                 {},
@@ -2123,7 +2161,10 @@ return {
                   provider = function(self)
                     if vim.api.nvim_buf_get_option(self.bufnr, "modified") then
                       return " ●"
-                    elseif not vim.api.nvim_buf_get_option(self.bufnr, "modifiable") or vim.api.nvim_buf_get_option(self.bufnr, "readonly") then
+                    elseif
+                      not vim.api.nvim_buf_get_option(self.bufnr, "modifiable")
+                      or vim.api.nvim_buf_get_option(self.bufnr, "readonly")
+                    then
                       return " "
                     end
                   end,
@@ -2148,11 +2189,12 @@ return {
         },
         opts = {
           disable_winbar_cb = function(args)
-            return conditions.buffer_matches({
-              buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
-              filetype = { "^git.*", "noice" },
-            }, args.buf)
-          end
+            return HIDE_BUFFERS
+              or conditions.buffer_matches({
+                buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
+                filetype = { "^git.*", "noice" },
+              }, args.buf)
+          end,
         },
       })
     end,
