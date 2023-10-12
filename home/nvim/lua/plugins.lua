@@ -1020,7 +1020,7 @@ return {
         enabled = function()
           local context = require("cmp.config.context")
           return vim.api.nvim_get_mode().mode ~= "c"
-            and not (context.in_treesitter_capture("comment") or context.in_syntax_group("Comment"))
+              and not (context.in_treesitter_capture("comment") or context.in_syntax_group("Comment"))
         end,
       }
     end,
@@ -1471,7 +1471,7 @@ return {
       playground = {
         enable = true,
         disable = {},
-        updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+        updatetime = 25,        -- Debounced time for highlighting nodes in the playground from source code
         persist_queries = true, -- Whether the query persists across vim sessions
         keybindings = {
           toggle_query_editor = "o",
@@ -1857,8 +1857,8 @@ return {
     event = "UIEnter",
     dependencies = { from_nixpkgs({ "rebelot/kanagawa.nvim" }) },
     config = function()
-      vim.opt.showtabline = 0 -- no tabline ever
-      vim.opt.laststatus = 2 -- windowed statusline
+      vim.opt.showtabline = 0           -- no tabline ever
+      vim.opt.laststatus = 2            -- windowed statusline
       vim.opt.showcmdloc = "statusline" -- enable partial command printing segment
       local conditions = require("heirline.conditions")
       local utils = require("heirline.utils")
@@ -1935,8 +1935,8 @@ return {
                 init = function(self)
                   self.status_dict = vim.b.gitsigns_status_dict
                   self.has_changes = self.status_dict.added ~= 0
-                    or self.status_dict.removed ~= 0
-                    or self.status_dict.changed ~= 0
+                      or self.status_dict.removed ~= 0
+                      or self.status_dict.changed ~= 0
                 end,
                 {
                   flexible = 20,
@@ -2162,8 +2162,8 @@ return {
                     if vim.api.nvim_buf_get_option(self.bufnr, "modified") then
                       return " ●"
                     elseif
-                      not vim.api.nvim_buf_get_option(self.bufnr, "modifiable")
-                      or vim.api.nvim_buf_get_option(self.bufnr, "readonly")
+                        not vim.api.nvim_buf_get_option(self.bufnr, "modifiable")
+                        or vim.api.nvim_buf_get_option(self.bufnr, "readonly")
                     then
                       return " "
                     end
@@ -2190,10 +2190,10 @@ return {
         opts = {
           disable_winbar_cb = function(args)
             return HIDE_BUFFERS
-              or conditions.buffer_matches({
-                buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
-                filetype = { "^git.*", "noice" },
-              }, args.buf)
+                or conditions.buffer_matches({
+                  buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
+                  filetype = { "^git.*", "noice" },
+                }, args.buf)
           end,
         },
       })

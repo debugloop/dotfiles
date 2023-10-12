@@ -1,63 +1,65 @@
 -- general behavior
-vim.opt.clipboard = "unnamedplus" -- sync yank with system clipboard
-vim.opt.swapfile = false -- disable swap files
+vim.opt.clipboard = "unnamedplus"                          -- sync yank with system clipboard
+vim.opt.termguicolors = true                               -- assume a modern terminal and use 24bit RGB
+vim.opt.shada:append({ "%" })                              -- reopen buffers if no args
+vim.opt.shortmess:append({ W = true, I = true, c = true }) -- suppress some messages
 
-vim.opt.formatoptions = "jcroqlnt" -- default: tcqj
-vim.opt.undofile = true -- enable persistent undo
-vim.opt.undodir = vim.fn.expand("~/.undo") -- set undo location
-vim.opt.backup = true -- enable backup files
+-- backups
+vim.opt.backup = true                          -- enable backup files
 vim.opt.backupdir = vim.fn.expand("~/.backup") -- set backup location
-vim.opt.backupext = ".bak" -- disable suffix, we're in a backup dir
+vim.opt.backupext = ".bak"                     -- disable suffix, we're in a backup dir
+vim.opt.swapfile = false                       -- disable swap files
+vim.opt.undodir = vim.fn.expand("~/.undo")     -- set undo location
+vim.opt.undofile = true                        -- enable persistent undo
 
-vim.opt.title = true -- use custom title
+-- window title
+vim.opt.title = true                                                           -- use custom title
 vim.opt.titlestring = [[vim %{substitute(getcwd(), '/home/danieln', '~', 0)}]] -- show cwd only
 
 -- editing
-vim.opt.foldenable = false -- no folding unless I close one myself
-vim.opt.foldmethod = "indent" -- use below expression for folding
-
+vim.opt.foldenable = false                   -- no folding unless I close one myself
+vim.opt.foldmethod = "indent"                -- use indent for folding
+vim.opt.jumpoptions = "stack"                -- discard jumps when diverging from an earlier position
 vim.opt.spelloptions = "camel,noplainbuffer" -- set some spell options for when I enable
+vim.opt.textwidth = 120                      -- text width, format comments to this
 
 -- finding stuff
-vim.opt.gdefault = true -- show multiple matches per line without specifying global
-vim.opt.ignorecase = true -- search case-insensitive
-vim.opt.smartcase = true -- search case-sensitive when capital letters are searched
+vim.opt.gdefault = true            -- show multiple matches per line without specifying global
+vim.opt.grepformat = "%f:%l:%c:%m" -- grep result format
+vim.opt.grepprg = "rg --vimgrep"   -- use fast grep
+vim.opt.ignorecase = true          -- search case-insensitive
+vim.opt.smartcase = true           -- search case-sensitive when capital letters are searched
 
-vim.opt.grepformat = "%f:%l:%c:%m"
-vim.opt.grepprg = "rg --vimgrep" -- use fast grep
-
--- visuals
-vim.opt.termguicolors = true -- assume a modern terminal and use 24bit RGB
-vim.opt.cursorline = true -- show line highlight
-vim.opt.breakindent = true -- indent wrapped lines
-vim.opt.showbreak = "↪" -- virtual text for wrapped lines
-vim.opt.number = true -- enable line numbers
-vim.opt.relativenumber = true -- enable relative line numbers
-vim.opt.listchars = "eol:¬,tab:»·,trail:~,space:·" -- list these chars if enabled
-
-vim.opt.cmdheight = 0 -- more space on the bottom
-vim.opt.laststatus = 0 -- no builtin statusline
-vim.opt.showmode = false -- no mode show
+-- bars
+vim.opt.cmdheight = 0      -- more space on the bottom
+vim.opt.laststatus = 0     -- no builtin statusline
+vim.opt.showmode = false   -- no mode show
 vim.opt.signcolumn = "yes" -- always show signcolumn
 
+-- virtual text
+vim.opt.breakindent = true -- indent wrapped lines
+vim.opt.listchars = "eol:¬,tab:»·,trail:~,space:·" -- list these chars if enabled
+vim.opt.showbreak = "↪" -- virtual text for wrapped lines
+
+-- lines
+vim.opt.cursorline = true     -- show line highlight
+vim.opt.number = true         -- enable line numbers
+vim.opt.relativenumber = true -- enable relative line numbers
+
+-- view
+vim.opt.scrolloff = 16     -- always show this many lines of context at the edges
+vim.opt.sidescrolloff = 20 -- always show this many columns of context at the edges
+
+-- splits
 vim.opt.splitbelow = true -- open horizontal splits below the current window
 vim.opt.splitright = true -- open vertical splits to the right of the current window
 
-vim.opt.scrolloff = 16 -- always show this many lines of context at the edges
-vim.opt.sidescrolloff = 20 -- always show this many columns of context at the edges
+-- diff
+vim.opt.diffopt:append({ "linematch:60" }) -- better diff algorithm
+vim.opt.fillchars:append({ diff = "╱" }) -- blank indicator
 
-vim.opt.shortmess:append({ W = true, I = true, c = true })
-vim.opt.jumpoptions = "stack"
-
-vim.opt.shada:append({ "%" }) -- reopen buffers if no args
-
--- have a nice diff
-vim.opt.diffopt:append({ "linematch:60" })
-vim.opt.fillchars:append({ diff = "╱" })
-
-vim.opt.textwidth = 120 -- text width, format comments to this
-
-vim.g.markdown_recommended_style = 0 -- this make markdown indent ok
+-- other
+vim.g.markdown_recommended_style = 0 -- this makes markdown indent ok
 
 -- display help in a vertical split
 vim.api.nvim_create_autocmd("BufWinEnter", {
@@ -132,7 +134,7 @@ vim.api.nvim_create_autocmd({ "InsertEnter" }, {
   group = vim.api.nvim_create_augroup("on_insert_enter", { clear = true }),
   pattern = "*",
   callback = function()
-    vim.opt.relativenumber = false -- don't show relative line numbers
+    vim.opt.relativenumber = false       -- don't show relative line numbers
     vim.g.miniindentscope_disable = true -- disable plugin drawn guides, if present
   end,
 })
@@ -146,7 +148,7 @@ vim.api.nvim_create_autocmd({ "InsertLeave" }, {
       vim.opt.relativenumber = false
       return
     end
-    vim.opt.relativenumber = true -- show relative line numbers
+    vim.opt.relativenumber = true         -- show relative line numbers
     vim.g.miniindentscope_disable = false -- re-enable plugin drawn guides, if present
   end,
 })
@@ -176,16 +178,6 @@ vim.api.nvim_create_autocmd("BufReadPost", {
     if mark[1] > 0 and mark[1] <= lcount then
       pcall(vim.api.nvim_win_set_cursor, 0, mark)
     end
-  end,
-})
-
--- special settings for thunderbird
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = "external_editor_revived_*.eml",
-  callback = function()
-    vim.cmd(vim.api.nvim_replace_termcodes("normal /^$", true, true, true))
-    vim.cmd("normal 2n")
-    -- vim.cmd('startinsert')
   end,
 })
 
