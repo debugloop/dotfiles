@@ -15,9 +15,6 @@ end, { desc = "go to start of line" })
 vim.keymap.set({ "o", "v" }, "H", "^", { desc = "go to start of line" })
 vim.keymap.set({ "n", "o", "v" }, "L", "$", { desc = "go to end of line" })
 
--- quickfix window
-vim.keymap.set("n", "gl", vim.cmd.copen, { desc = "open quickfix" })
-
 -- better paste
 vim.keymap.set("n", "<leader>p", function()
   vim.fn.setreg("+", vim.fn.getreg("+"), "V")

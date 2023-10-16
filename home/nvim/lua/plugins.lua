@@ -1027,6 +1027,7 @@ return {
     config = function(_, opts)
       require("cmp").setup(opts)
       require("cmp").event:on("confirm_done", require("nvim-autopairs.completion.cmp").on_confirm_done())
+      -- this makes the snippet mode not break when at the bottom of the screen:
       require("cmp").event:on("confirm_done", function()
         vim.g.minianimate_disable = false
       end)
