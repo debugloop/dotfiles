@@ -40,7 +40,6 @@
     "nvim-treesitter"
     "nvim-treesitter-context"
     "nvim-treesitter-textobjects"
-    "playground"
     "plenary-nvim"
     "telescope-fzf-native-nvim"
     "telescope-lsp-handlers-nvim"
