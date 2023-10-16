@@ -544,7 +544,20 @@ return {
     main = "mini.animate",
     name = "mini.animate",
     event = "VeryLazy",
-    opts = {},
+    opts = {
+      cursor = {
+        enable = false,
+      },
+      resize = {
+        enable = false,
+      },
+      open = {
+        enable = false,
+      },
+      close = {
+        enable = false,
+      },
+    },
   }),
 
   from_nixpkgs({
