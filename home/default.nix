@@ -110,10 +110,10 @@
       # dev
       awscli2
       cargo
-      clang
       codespell
       delve
       docker-compose
+      gcc
       git
       gitAndTools.git-absorb
       gitAndTools.git-trim
