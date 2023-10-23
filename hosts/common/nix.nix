@@ -13,9 +13,16 @@
 
   nix.settings = {
     experimental-features = "nix-command flakes";
-    extra-substituters = [ "https://viperml.cachix.org" ];
-    extra-trusted-public-keys = [ "viperml.cachix.org-1:qZhKBMTfmcLL+OG6fj/hzsMEedgKvZVFRRAhq7j8Vh8=" ];
-    trustedUsers = [ "root" "@wheel" ];
+    substituters = [
+      "https://viperml.cachix.org"
+      "https://nix-community.cachix.org"
+      "https://cache.nixos.org/"
+    ];
+    trusted-public-keys = [
+      "viperml.cachix.org-1:qZhKBMTfmcLL+OG6fj/hzsMEedgKvZVFRRAhq7j8Vh8="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
+    trusted-users = [ "root" "@wheel" ];
   };
 
   nixpkgs = {

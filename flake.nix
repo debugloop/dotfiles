@@ -20,6 +20,7 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     gridx = {
       url = "git+ssh://git@github.com/debugloop/gridx";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -67,6 +68,9 @@
           ./hosts/common/laptops.nix
           ./hosts/simmons
           ({ system, ... }: {
+            nixpkgs.overlays = [
+              inputs.neovim-nightly-overlay.overlay
+            ];
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
@@ -90,6 +94,9 @@
           ./hosts/common/laptops.nix
           ./hosts/clarke
           ({ system, ... }: {
+            nixpkgs.overlays = [
+              inputs.neovim-nightly-overlay.overlay
+            ];
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
