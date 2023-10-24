@@ -15,11 +15,6 @@ local function from_nixpkgs(spec)
 end
 
 return {
-  -- {
-  --   'Bekaboo/dropbar.nvim',
-  --   event = "VeryLazy",
-  -- },
-
   from_nixpkgs({
     "folke/flash.nvim",
     keys = {
