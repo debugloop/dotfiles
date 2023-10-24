@@ -15,11 +15,6 @@ local function from_nixpkgs(spec)
 end
 
 return {
-  -- {
-  --   'Bekaboo/dropbar.nvim',
-  --   event = "VeryLazy",
-  -- },
-
   from_nixpkgs({
     "folke/flash.nvim",
     keys = {
@@ -714,7 +709,7 @@ return {
     name = "mini.files",
     keys = {
       {
-        "_",
+        "<c-->",
         function()
           require("mini.files").open(vim.api.nvim_buf_get_name(0))
         end,
@@ -1282,15 +1277,6 @@ return {
   }),
 
   from_nixpkgs({
-    "nvim-treesitter/nvim-treesitter-context",
-    dependencies = from_nixpkgs({ "nvim-treesitter/nvim-treesitter" }),
-    event = "VeryLazy",
-    opts = {
-      mode = "topline",
-    },
-  }),
-
-  from_nixpkgs({
     "nvim-treesitter/nvim-treesitter-textobjects",
     main = "nvim-treesitter.configs",
     dependencies = from_nixpkgs({ "nvim-treesitter/nvim-treesitter" }),
@@ -1505,11 +1491,11 @@ return {
         "<cmd>Telescope grep_string<cr>",
         desc = "grep string in project",
       },
-      {
-        "<leader><leader>",
-        "<cmd>Telescope resume<cr>",
-        desc = "resume last telescope",
-      },
+      -- {
+      --   "<leader><leader>",
+      --   "<cmd>Telescope resume<cr>",
+      --   desc = "resume last telescope",
+      -- },
       {
         "<leader>q",
         "<cmd>Telescope quickfix<cr>",
@@ -1521,7 +1507,7 @@ return {
         desc = "resume from older quickfix",
       },
       {
-        "<leader>b",
+        "<leader><leader>",
         "<cmd>Telescope buffers<cr>",
         desc = "find buffers",
       },
@@ -1844,15 +1830,29 @@ return {
     event = "UIEnter",
     dependencies = { from_nixpkgs({ "rebelot/kanagawa.nvim" }) },
     config = function()
-      vim.opt.showtabline = 0           -- no tabline ever
       vim.opt.laststatus = 2            -- windowed statusline
       vim.opt.showcmdloc = "statusline" -- enable partial command printing segment
       local conditions = require("heirline.conditions")
       local utils = require("heirline.utils")
       local colors = require("kanagawa.colors").setup()
       require("heirline").load_colors(colors)
+      vim.api.nvim_create_autocmd({ "VimEnter", "UIEnter", "BufAdd", "BufDelete" }, {
+        callback = function()
+          vim.schedule(function()
+            local get_bufs = function()
+              return vim.tbl_filter(function(bufnr)
+                return vim.api.nvim_buf_get_option(bufnr, "buflisted")
+              end, vim.api.nvim_list_bufs())
+            end
+            if #get_bufs() > 1 then
+              vim.o.showtabline = 2
+            else
+              vim.o.showtabline = 0
+            end
+          end)
+        end,
+      })
       require("heirline").setup({
-        tabline = {},
         statusline = {
           -- TODO: get a tab view in here
           static = {
@@ -2115,8 +2115,20 @@ return {
             },
           },
         },
-        winbar = {
+        tabline = {
           {
+            condition = function()
+              local get_bufs = function()
+                return vim.tbl_filter(function(bufnr)
+                  return vim.api.nvim_buf_get_option(bufnr, "buflisted")
+                end, vim.api.nvim_list_bufs())
+              end
+              if #get_bufs() > 1 then
+                return true
+              else
+                return false
+              end
+            end,
             init = function(self)
               self.active = vim.api.nvim_buf_get_number(0)
             end,
@@ -2174,16 +2186,66 @@ return {
             }),
           },
         },
-        opts = {
-          disable_winbar_cb = function(args)
-            return HIDE_BUFFERS
-                or conditions.buffer_matches({
-                  buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
-                  filetype = { "^git.*", "noice" },
-                }, args.buf)
-          end,
-        },
       })
     end,
+  }),
+
+  from_nixpkgs({
+    "Bekaboo/dropbar.nvim",
+    event = "UIEnter",
+    keys = {
+      {
+        "_",
+        function()
+          require('dropbar.api').pick()
+        end,
+        desc = "dropbar pick",
+      },
+    },
+    opts = {
+      menu = {
+        keymaps = {
+          ["q"] = function()
+            require('dropbar.utils').menu.exec('close')
+          end,
+          ["_"] = function()
+            require('dropbar.utils').menu.exec('close')
+            require('dropbar.api').pick()
+          end,
+          ["<esc>"] = function()
+            require('dropbar.utils').menu.exec('close')
+          end,
+          ["h"] = "<C-w>c",
+          ["l"] = function()
+            local menu = require("dropbar.api").get_current_dropbar_menu()
+            if not menu then
+              return
+            end
+            local cursor = vim.api.nvim_win_get_cursor(menu.win)
+            local component = menu.entries[cursor[1]]:first_clickable(cursor[2])
+            if component then
+              menu:click_on(component, nil, 1, "l")
+            end
+          end,
+          ["L"] = function()
+            local menu = require("dropbar.api").get_current_dropbar_menu()
+            if not menu then
+              return
+            end
+            local cursor = vim.api.nvim_win_get_cursor(menu.win)
+            local entry = menu.entries[cursor[1]]
+            local component = entry:first_clickable(entry.padding.left + entry.components[1]:bytewidth())
+            if component then
+              menu:click_on(component, nil, 1, "l")
+            end
+          end,
+        },
+      },
+      bar = {
+        pick = {
+          pivots = "ghjkl;asdf1234567890",
+        },
+      },
+    },
   }),
 }
