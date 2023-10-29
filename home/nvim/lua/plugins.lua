@@ -584,7 +584,7 @@ return {
     name = "mini.bufremove",
     keys = {
       {
-        "<leader><tab>",
+        "<c-tab>",
         function()
           require("mini.bufremove").delete(0, false)
         end,
@@ -1532,7 +1532,7 @@ return {
         desc = "resume from older quickfix",
       },
       {
-        "<leader>b",
+        "<leader><tab>",
         "<cmd>Telescope buffers<cr>",
         desc = "find buffers",
       },
