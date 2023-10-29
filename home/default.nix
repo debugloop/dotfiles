@@ -6,7 +6,7 @@
     ./colors.nix
     ./fish.nix
     ./git.nix
-    #./helix.nix
+    ./helix.nix
     ./kitty.nix
     ./nvim
     #./ranger.nix
