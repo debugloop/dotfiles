@@ -32,8 +32,6 @@
     "nvim-autopairs"
     "nvim-cmp"
     "nvim-dap"
-    "nvim-dap-go"
-    "nvim-dap-virtual-text"
     "nvim-lint"
     "nvim-lspconfig"
     "nvim-snippy"

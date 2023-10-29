@@ -650,17 +650,6 @@ return {
           { mode = "x", keys = "<leader>mj", postkeys = "<leader>m" },
           { mode = "x", keys = "<leader>mk", postkeys = "<leader>m" },
           { mode = "x", keys = "<leader>ml", postkeys = "<leader>m" },
-          -- maps that don't quit debug mode
-          { mode = "n", keys = "<leader>dt", postkeys = "<leader>d" }, -- start
-          { mode = "n", keys = "<leader>dT", postkeys = "<leader>d" }, -- start
-          { mode = "n", keys = "<leader>dc", postkeys = "<leader>d" }, -- continue
-          { mode = "n", keys = "<leader>ds", postkeys = "<leader>d" }, -- step over
-          { mode = "n", keys = "<leader>dS", postkeys = "<leader>d" }, -- step back
-          { mode = "n", keys = "<leader>di", postkeys = "<leader>d" }, -- step into
-          { mode = "n", keys = "<leader>do", postkeys = "<leader>d" }, -- step out
-          { mode = "n", keys = "<leader>dd", postkeys = "<leader>d" }, -- frame down
-          { mode = "n", keys = "<leader>dr", postkeys = "<leader>d" }, -- restart
-          { mode = "n", keys = "<leader>du", postkeys = "<leader>d" }, -- frame up
           -- maps that don't quit option mode (all of them)
           { mode = "n", keys = "<leader>ob", postkeys = "<leader>o" }, -- background
           { mode = "n", keys = "<leader>oc", postkeys = "<leader>o" }, -- conceal
@@ -1051,154 +1040,148 @@ return {
   from_nixpkgs({
     "mfussenegger/nvim-dap",
     keys = {
-      { "<leader>d", "<nop>", { desc = "+debug" } },
       {
-        "<leader>dt",
+        "<leader>d",
         function()
-          if not require("dap-go").debug_last_test() then
-            require("dap-go").debug_test()
+          local dap = require("dap")
+          -- set breakpoint if there is none
+          if #require('dap.breakpoints').to_qf_list(require('dap.breakpoints').get()) == 0 then
+            dap.toggle_breakpoint()
           end
+          -- if we're in a test file, run in test mode
+          if vim.fn.expand("%:t"):sub(- #"_test.go", -1) == "_test.go" then
+            -- see if we can find a specific test to run
+            local cursor = vim.api.nvim_win_get_cursor(0)
+            local lsp_response, lsp_err = vim.lsp.buf_request_sync(0, 'textDocument/documentSymbol',
+              { textDocument = vim.lsp.util.make_text_document_params() }, 1000)
+            if lsp_err == nil then
+              for _, symbol in pairs(lsp_response[1].result) do
+                if
+                    symbol.detail:sub(1, 4) == "func" and
+                    symbol.name:sub(1, 4) == "Test" and
+                    cursor[1] > symbol.range.start.line and
+                    cursor[1] < symbol.range["end"].line
+                then
+                  dap.run({
+                    type = "go",
+                    name = symbol.name,
+                    request = "launch",
+                    mode = "test",
+                    program = "./" .. vim.fn.fnamemodify(vim.fn.expand("%:.:h"), ":r"),
+                    args = { "-test.run", "^" .. symbol.name .. "$" },
+                    buildFlags = "-tags=unit,integration,e2e",
+                  })
+                  return
+                end
+              end
+            end
+            -- if we can't find a specific one we could run the whole test file:
+            -- dap.run(dap.configurations.go[1])
+            -- return
+          end
+          -- try to restart a session
+          dap.run_last()
+          if dap.session() ~= nil then
+            return
+          end
+          -- lastly, just ask
+          dap.continue()
         end,
-        desc = "launch (last) test",
+        desc = "auto launch (preference: test function > last > ask)",
       },
       {
-        "<leader>dT",
-        function()
-          require("dap-go").debug_test()
-        end,
-        desc = "launch test",
-      },
-      {
-        "<leader>dr",
-        function()
-          require("dap").restart()
-        end,
-        desc = "restart",
-      },
-      {
-        "<leader>dc",
+        "<leader>D",
         function()
           require("dap").continue()
         end,
-        desc = "continue",
+        desc = "continue or start fresh session",
       },
       {
-        "<leader>ds",
-        function()
-          require("dap").step_over()
-        end,
-        desc = "step",
-      },
-      {
-        "<leader>dS",
-        function()
-          require("dap").step_back()
-        end,
-        desc = "step back",
-      },
-      {
-        "<leader>di",
-        function()
-          require("dap").step_into()
-        end,
-        desc = "step into",
-      },
-      {
-        "<leader>do",
-        function()
-          require("dap").step_out()
-        end,
-        desc = "step out",
-      },
-      {
-        "<leader>dd",
-        function()
-          require("dap").down()
-        end,
-        desc = "frame down",
-      },
-      {
-        "<leader>du",
-        function()
-          require("dap").up()
-        end,
-        desc = "frame up",
-      },
-      {
-        "<leader>dK",
-        function()
-          require("dap.ui.widgets").hover(nil, { border = "rounded" })
-        end,
-        desc = "value under cursor",
-      },
-      {
-        "<leader>de",
-        function()
-          require("dap.ui.widgets").preview(vim.fn.input("Expression: "))
-          vim.keymap.set("n", "q", function()
-            vim.cmd("pclose")
-            vim.cmd("unmap q")
-          end, { desc = "close preview" })
-        end,
-        desc = "evaluate",
-      },
-      {
-        "<leader>db",
+        "<leader>b",
         function()
           require("dap").toggle_breakpoint()
         end,
         desc = "toggle breakpoint",
       },
       {
-        "<leader>dB",
+        "<leader>B",
         function()
-          local cond = vim.fn.input("Breakpoint condition or count: ")
-          if tonumber(cond) ~= nil then
-            vim.print("Breakpoint at visit #" .. cond)
-            require("dap").set_breakpoint(nil, cond, nil)
-          else
-            vim.print("Breakpoint `if " .. cond .. "`")
-            require("dap").set_breakpoint(cond, nil, nil)
-          end
-        end,
-        desc = "toggle breakpoint",
-      },
-      {
-        "<leader>dR",
-        function()
-          require("dap").repl.toggle()
-          vim.cmd("wincmd j")
-        end,
-        desc = "toggle repl",
-      },
-      {
-        "<leader>dq",
-        function()
-          require("dap").repl.close()
-          require("dap").terminate()
-        end,
-        desc = "quit",
-      },
-      {
-        "<leader>dQ",
-        function()
-          require("dap").repl.close()
-          require("dap").terminate()
           require("dap").clear_breakpoints()
         end,
-        desc = "quit",
+        desc = "clear all breakpoints",
       },
     },
-    dependencies = {
-      from_nixpkgs({
-        "theHamsta/nvim-dap-virtual-text",
-        dependencies = from_nixpkgs({ "mfussenegger/nvim-dap" }),
-        opts = {
-          commented = true,
+    opts = {
+      adapters = {
+        go = {
+          type = "server",
+          port = 2345,
+          executable = {
+            command = "dlv",
+            args = { "dap", "-l", "127.0.0.1:2345" },
+          },
+          options = {
+            initialize_timeout_sec = 20,
+          },
         },
-      }),
+      },
+      configurations = {
+        go = {
+          {
+            type = "go",
+            name = "tests",
+            request = "launch",
+            mode = "test",
+            program = "./${relativeFileDirname}",
+            buildFlags = "-tags=unit,integration,e2e",
+          },
+          {
+            type = "go",
+            name = "main",
+            request = "launch",
+            program = "${fileDirname}",
+          },
+          {
+            type = "go",
+            name = "main (with args)",
+            request = "launch",
+            program = "${fileDirname}",
+            args = function()
+              local args = {}
+              vim.ui.input({ prompt = "args: " }, function(input)
+                args = vim.split(input or "", " ")
+              end)
+              return args
+            end,
+          },
+          {
+            type = "go",
+            name = "attach",
+            mode = "local",
+            request = "attach",
+            processId = function()
+              return require("dap.utils").pick_process()
+            end,
+          },
+          {
+            type = "go",
+            name = "remote",
+            mode = "remote",
+            request = "attach",
+            connect = {
+              host = "127.0.0.1",
+              port = "2345",
+            },
+          },
+        }
+      }
     },
-    config = function()
+    config = function(_, opts)
+      local dap = require("dap")
+      dap.adapters = opts.adapters
+      dap.configurations = opts.configurations
+      vim.fn.sign_define('DapBreakpoint', { text = '', texthl = '', linehl = '', numhl = '' })
+      vim.fn.sign_define('DapBreakpointCondition', { text = '', texthl = '', linehl = '', numhl = '' })
       vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("on_dap_repl", { clear = true }),
         pattern = "dap-repl",
@@ -1206,47 +1189,80 @@ return {
           vim.cmd("startinsert")
         end,
       })
-    end,
-  }),
-
-  from_nixpkgs({
-    "leoluz/nvim-dap-go",
-    ft = "go",
-    dependencies = from_nixpkgs({ "mfussenegger/nvim-dap" }),
-    opts = {},
-    config = function()
-      require("dap-go").setup({
-        dap_configurations = {
-          {
-            type = "go",
-            name = "Remote",
-            mode = "remote",
-            request = "attach",
-            connect = {
-              host = "127.0.0.1",
-              port = "8181",
-            },
-            buildFlags = "-tags=unit,integration,e2e",
-          },
-          {
-            type = "go",
-            name = "Debug Package (Arguments)",
-            request = "launch",
-            program = "${fileDirname}",
-            args = function()
-              local args = {}
-              vim.ui.input({ prompt = "Args: " }, function(input)
-                args = vim.split(input or "", " ")
-              end)
-              return args
-            end,
-            buildFlags = "-tags=unit,integration,e2e",
-          },
-        },
-        delve = {
-          build_flags = "-tags=unit,integration,e2e",
-        },
-      })
+      dap.listeners.after.event_initialized["custom_maps"] = function()
+        vim.keymap.set("n", "e", function()
+          local exp = vim.fn.input("Expression: ")
+          if exp == "" then
+            vim.fn.expand("<cexpr>")
+          end
+          local prefix = exp:sub(-1) == ")" and "call " or ""
+          require("dap.ui.widgets").preview(prefix .. exp)
+          dap.listeners.after.event_stopped["refresh_expr"] = function()
+            require("dap.ui.widgets").preview(prefix .. exp)
+          end
+        end, { desc = "debug: auto evaluate expression" })
+        vim.keymap.set("n", "E", function()
+          dap.listeners.after.event_stopped["refresh_expr"] = nil
+          vim.cmd("pclose")
+        end, { desc = "debug: clear auto evaluate" })
+        vim.keymap.set("n", "s", function() dap.step_over() end, { desc = "debug: step forward", remap = true })
+        vim.keymap.set("n", "c", function() dap.continue() end, { desc = "debug: continue" })
+        vim.keymap.set("n", "i", function() dap.step_into() end, { desc = "debug: step into" })
+        vim.keymap.set("n", "o", function() dap.step_out() end, { desc = "debug: step out" })
+        vim.keymap.set("n", "J", function()
+          require("dap").session():evaluate(vim.fn.expand("<cexpr>"), function(err, resp)
+            if err then
+              vim.print("Could not evaluate expression at cursor.")
+            else
+              vim.lsp.util.open_floating_preview({ resp.result }, "go", { focus_id = "dap-float" })
+            end
+          end)
+        end, { desc = "debug: hover value" })
+        vim.keymap.set("n", "u", function() dap.up() end, { desc = "debug: frame up" })
+        vim.keymap.set("n", "d", function() dap.down() end, { desc = "debug: frame down" })
+        local function quit()
+          dap.listeners.after.event_stopped["refresh_expr"] = nil
+          vim.cmd("pclose")
+          dap.terminate()
+          dap.repl.close()
+        end
+        vim.keymap.set("n", "q", quit, { desc = "debug: quit" })
+        vim.keymap.set("n", "Q", function()
+          quit()
+          dap.clear_breakpoints()
+        end, { desc = "debug: quit" })
+        vim.keymap.set("n", "b", function() dap.toggle_breakpoint() end, { desc = "debug: toggle breakpoint" })
+        vim.keymap.set("n", "B", function()
+          local cond = vim.fn.input("Breakpoint condition or count: ")
+          if tonumber(cond) ~= nil then
+            vim.print("Breakpoint at visit #" .. cond)
+            dap.set_breakpoint(nil, cond, nil)
+          else
+            vim.print("Breakpoint `if " .. cond .. "`")
+            dap.set_breakpoint(cond, nil, nil)
+          end
+        end, { desc = "debug: set conditional breakpoint" })
+        vim.keymap.set("n", "r", function() dap.restart() end, { desc = "debug: restart" })
+      end
+      local function cleanup()
+        vim.o.readonly = false
+        vim.keymap.del("n", "e")
+        vim.keymap.del("n", "E")
+        vim.keymap.del("n", "s")
+        vim.keymap.del("n", "c")
+        vim.keymap.del("n", "i")
+        vim.keymap.del("n", "o")
+        vim.keymap.del("n", "J")
+        vim.keymap.del("n", "u")
+        vim.keymap.del("n", "d")
+        vim.keymap.del("n", "q")
+        vim.keymap.del("n", "Q")
+        vim.keymap.del("n", "b")
+        vim.keymap.del("n", "B")
+        vim.keymap.del("n", "r")
+      end
+      dap.listeners.before.event_terminated["custom_maps"] = cleanup
+      dap.listeners.before.event_exited["custom_maps"] = cleanup
     end,
   }),
 
@@ -2168,6 +2184,20 @@ return {
               },
             }),
           },
+          { -- fill middle
+            provider = "%=",
+          },
+          {
+            condition = function()
+              local session = require("dap").session()
+              return session ~= nil
+            end,
+            provider = function()
+              return " " .. require("dap").status()
+            end,
+            hl = "Debug"
+            -- see Click-it! section for clickable actions
+          }
         },
         opts = {
           disable_winbar_cb = function(args)
