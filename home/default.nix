@@ -124,6 +124,7 @@
       gopls
       gotags
       gotest
+      gotestsum
       gotools
       highlight
       insomnia
@@ -134,9 +135,13 @@
       nodePackages_latest.yaml-language-server
       #postman
       proselint
+      protobuf
+      protoc-gen-go
+      protoc-gen-go-grpc
       python3
       python3Packages.ipython
       redis
+      rr
       sqlite
       stylua
       tcpdump
