@@ -32,7 +32,7 @@ end, { desc = "paste as lines" })
 -- jump back to last position
 vim.keymap.set("n", "<bs>", "<c-o>", { desc = "jump backwards" })
 vim.keymap.set("n", "<s-bs>", "<c-i>", { desc = "jump forwards" })
-vim.keymap.set("n", "gb", "<c-t>", { desc = "goto to last tag" })
+vim.keymap.set("n", "gl", "`.", { desc = "goto to last inster" })
 
 -- open fold
 vim.keymap.set("n", "zi", "zA", { desc = "toggle fold" })
@@ -77,7 +77,6 @@ end, { silent = true, desc = "go to next buffer" })
 vim.keymap.set("n", "<s-tab>", function()
   vim.cmd("bp")
 end, { silent = true, desc = "go to previous buffer" })
-vim.keymap.set("n", "<leader><s-tab>", "<cmd>tabclose<cr>", { desc = "close tab" })
 vim.keymap.set("n", "<leader>x", function()
   vim.print("Clearing buffers...")
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
