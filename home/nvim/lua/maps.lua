@@ -194,7 +194,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.lsp.buf.format()
     end, { desc = "Format current buffer with LSP" })
     vim.api.nvim_buf_create_user_command(event.buf, "RestartLSP", function(_)
-      vim.lsp.stop_client(vim.lsp.get_active_clients())
+      vim.lsp.stop_client(vim.lsp.get_clients())
       vim.cmd("edit")
     end, { desc = "Restart all active LSP clients" })
 
@@ -215,14 +215,5 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = event.buf, desc = "lsp: rename symbol" })
     vim.keymap.set("n", "<leader>?", vim.lsp.buf.code_action, { buffer = event.buf, desc = "lsp: run code action" })
     vim.keymap.set("n", "<cr>", vim.diagnostic.open_float, { buffer = event.buf, desc = "lsp: open diagnostic" })
-
-    -- autocmds
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false }), -- dont clear, there is one autocmd per buffer in this group
-      buffer = event.buf,
-      callback = function()
-        vim.lsp.buf.format()
-      end,
-    })
   end,
 })

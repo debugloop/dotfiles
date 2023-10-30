@@ -30,7 +30,7 @@
     ];
     sessionVariables = {
       DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
-      EDITOR = "${pkgs.neovim}/bin/nvim";
+      EDITOR = "${pkgs.neovim-nightly}/bin/nvim";
       FLAKE = "/etc/nixos";
       GRIM_DEFAULT_DIR = "/home/danieln/pictures";
       GTK_THEME = "Arc-Darker";
@@ -120,6 +120,8 @@
       gitlint
       glibc
       gnumake
+      gofumpt
+      goimports-reviser
       golangci-lint
       gopls
       gotags
@@ -193,7 +195,7 @@
     };
     ssh = {
       enable = true;
-      # extraConfig = '' 
+      # extraConfig = ''
       # PermitLocalCommand yes
       # LocalCommand ${pkgs.libnotify}/bin/notify-send "%r@%h" "Connected to %h."
       # '';
