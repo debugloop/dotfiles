@@ -6,12 +6,6 @@
   ];
   systemd.user = {
     services.waybar.Service.Environment = "PATH=/run/wrappers/bin:${pkgs.hyprland}/bin";
-    targets.tray = {
-      Unit = {
-        Description = "Waybar System Tray";
-        Requires = [ "graphical-session-pre.target" ];
-      };
-    };
   };
   programs.waybar = {
     enable = true;

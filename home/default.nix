@@ -30,7 +30,7 @@
     ];
     sessionVariables = {
       DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
-      EDITOR = "${pkgs.neovim-nightly}/bin/nvim";
+      EDITOR = "${pkgs.neovim}/bin/nvim";
       FLAKE = "/etc/nixos";
       GRIM_DEFAULT_DIR = "/home/danieln/pictures";
       GTK_THEME = "Arc-Darker";

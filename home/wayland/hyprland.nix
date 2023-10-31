@@ -15,8 +15,6 @@
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
         background_color = "rgb(${config.colors.dark_bg})";
-        groupbar_gradients = false;
-        render_titles_in_groupbar = false;
       };
       input = {
         kb_layout = "us";
@@ -37,9 +35,7 @@
         gaps_out = 2;
         border_size = 2;
         "col.active_border" = "rgb(${config.colors.blue}) rgb(${config.colors.light_bg}) 50deg";
-        "col.group_border_active" = "rgb(${config.colors.blue}) rgb(${config.colors.light_bg}) 50deg";
         "col.inactive_border" = "rgb(${config.colors.light_bg}) rgb(${config.colors.background}) 50deg";
-        "col.group_border" = "rgb(${config.colors.light_bg}) rgb(${config.colors.background}) 50deg";
         cursor_inactive_timeout = 3;
         no_cursor_warps = true;
         no_focus_fallback = true;
