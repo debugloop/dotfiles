@@ -15,7 +15,7 @@ local function from_nixpkgs(spec)
 end
 
 return {
-  {
+  from_nixpkgs({
     "stevearc/conform.nvim",
     event = "BufWritePre",
     cmd = { "ConformInfo" },
@@ -26,12 +26,16 @@ return {
         nix = { "nixpkgs_fmt" },
         ["_"] = { "trim_whitespace" },
       },
-      format_after_save = {}, -- needs to be defined
+      log_level = vim.log.levels.DEBUG,
+      format_on_save = {
+        lsp_fallback = true,
+        timeout_ms = 5000,
+      },
     },
     init = function()
       vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
     end,
-  },
+  }),
 
   from_nixpkgs({
     "sindrets/diffview.nvim",

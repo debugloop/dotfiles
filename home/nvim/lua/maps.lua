@@ -80,9 +80,10 @@ end, { silent = true, desc = "go to previous buffer" })
 vim.keymap.set("n", "<leader>x", function()
   vim.print("Clearing buffers...")
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.bo[bufnr].buflisted
-        and bufnr ~= vim.api.nvim_get_current_buf()
-        and (vim.fn.getbufvar(bufnr, "bufpersist") ~= 1)
+    if
+      vim.bo[bufnr].buflisted
+      and bufnr ~= vim.api.nvim_get_current_buf()
+      and (vim.fn.getbufvar(bufnr, "bufpersist") ~= 1)
     then
       vim.cmd("bd " .. tostring(bufnr))
     end

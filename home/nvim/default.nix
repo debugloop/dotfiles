@@ -17,6 +17,7 @@
   };
 
   xdg.dataFile = builtins.listToAttrs (lib.lists.forEach [
+    "conform-nvim"
     "cmp-nvim-lsp"
     "cmp-snippy"
     "diffview-nvim"
