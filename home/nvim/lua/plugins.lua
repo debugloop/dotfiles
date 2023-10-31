@@ -307,26 +307,37 @@ return {
       vim.opt.showcmdloc = "statusline" -- enable partial command printing segment
       local conditions = require("heirline.conditions")
       local utils = require("heirline.utils")
-      local colors = require("kanagawa.colors").setup()
-      require("heirline").load_colors(colors)
+      local colors = require("heirline.highlights")
+      local function setup_colors()
+        local kanagawa_colors = require("kanagawa.colors").setup()
+        kanagawa_colors.mode_colors_map = {
+          n = require("lualine.themes.kanagawa").normal,
+          i = require("lualine.themes.kanagawa").insert,
+          v = require("lualine.themes.kanagawa").visual,
+          ["\22"] = require("lualine.themes.kanagawa").visual,
+          c = require("lualine.themes.kanagawa").command,
+          s = require("lualine.themes.kanagawa").visual,
+          r = require("lualine.themes.kanagawa").replace,
+          t = require("lualine.themes.kanagawa").insert,
+        }
+        return kanagawa_colors
+      end
+      require("heirline").load_colors(setup_colors)
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        group = vim.api.nvim_create_augroup("Heirline", { clear = true }),
+        callback = function()
+          utils.on_colorscheme(setup_colors)
+        end,
+      })
       require("heirline").setup({
         tabline = {},
+        -- TODO: get a tab view in here
+        -- TODO: fix colors after toggling background
         statusline = {
-          -- TODO: get a tab view in here
           static = {
-            mode_colors_map = {
-              n = require("lualine.themes.kanagawa").normal,
-              i = require("lualine.themes.kanagawa").insert,
-              v = require("lualine.themes.kanagawa").visual,
-              ["\22"] = require("lualine.themes.kanagawa").visual,
-              c = require("lualine.themes.kanagawa").command,
-              s = require("lualine.themes.kanagawa").visual,
-              r = require("lualine.themes.kanagawa").replace,
-              t = require("lualine.themes.kanagawa").insert,
-            },
             mode_color = function(self)
               if conditions.is_active() then
-                return self.mode_colors_map[self.mode:lower()]
+                return colors.get_loaded_colors().mode_colors_map[self.mode:lower()]
               else
                 return {
                   a = "StatusLineNC",
@@ -409,21 +420,21 @@ return {
                       local count = self.status_dict.added or 0
                       return count > 0 and ("+" .. count .. " ")
                     end,
-                    hl = { fg = colors.theme.vcs.added },
+                    hl = { fg = colors.get_loaded_colors().theme.vcs.added },
                   },
                   {
                     provider = function(self)
                       local count = self.status_dict.changed or 0
                       return count > 0 and ("~" .. count .. " ")
                     end,
-                    hl = { fg = colors.theme.vcs.changed },
+                    hl = { fg = colors.get_loaded_colors().theme.vcs.changed },
                   },
                   {
                     provider = function(self)
                       local count = self.status_dict.removed or 0
                       return count > 0 and ("-" .. count .. " ")
                     end,
-                    hl = { fg = colors.theme.vcs.removed },
+                    hl = { fg = colors.get_loaded_colors().theme.vcs.removed },
                   },
                 },
               },
@@ -453,25 +464,25 @@ return {
                   provider = function(self)
                     return self.errors > 0 and ("E:" .. self.errors .. " ")
                   end,
-                  hl = { fg = colors.theme.diag.error },
+                  hl = { fg = colors.get_loaded_colors().theme.diag.error },
                 },
                 {
                   provider = function(self)
                     return self.warnings > 0 and ("W:" .. self.warnings .. " ")
                   end,
-                  hl = { fg = colors.theme.diag.warn },
+                  hl = { fg = colors.get_loaded_colors().theme.diag.warn },
                 },
                 {
                   provider = function(self)
                     return self.info > 0 and ("I:" .. self.info .. " ")
                   end,
-                  hl = { fg = colors.theme.diag.info },
+                  hl = { fg = colors.get_loaded_colors().theme.diag.info },
                 },
                 {
                   provider = function(self)
                     return self.hints > 0 and ("H:" .. self.hints .. " ")
                   end,
-                  hl = { fg = colors.theme.diag.hint },
+                  hl = { fg = colors.get_loaded_colors().theme.diag.hint },
                 },
               },
             },
