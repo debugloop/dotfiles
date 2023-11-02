@@ -307,20 +307,25 @@ return {
       vim.opt.showcmdloc = "statusline" -- enable partial command printing segment
       local conditions = require("heirline.conditions")
       local utils = require("heirline.utils")
-      local colors = require("heirline.highlights")
       local function setup_colors()
-        local kanagawa_colors = require("kanagawa.colors").setup()
-        kanagawa_colors.mode_colors_map = {
-          n = require("lualine.themes.kanagawa").normal,
-          i = require("lualine.themes.kanagawa").insert,
-          v = require("lualine.themes.kanagawa").visual,
-          ["\22"] = require("lualine.themes.kanagawa").visual,
-          c = require("lualine.themes.kanagawa").command,
-          s = require("lualine.themes.kanagawa").visual,
-          r = require("lualine.themes.kanagawa").replace,
-          t = require("lualine.themes.kanagawa").insert,
+        return {
+          bg = utils.get_highlight("StatusLine").bg,
+          fg = utils.get_highlight("StatusLine").fg,
+          bright_bg = utils.get_highlight("Folded").bg,
+          bright_fg = utils.get_highlight("Folded").fg,
+          red = utils.get_highlight("DiagnosticError").fg,
+          green = utils.get_highlight("String").fg,
+          blue = utils.get_highlight("Function").fg,
+          orange = utils.get_highlight("Constant").fg,
+          purple = utils.get_highlight("Statement").fg,
+          diag_warn = utils.get_highlight("DiagnosticWarn").fg,
+          diag_error = utils.get_highlight("DiagnosticError").fg,
+          diag_hint = utils.get_highlight("DiagnosticHint").fg,
+          diag_info = utils.get_highlight("DiagnosticInfo").fg,
+          git_del = utils.get_highlight("diffDeleted").fg,
+          git_add = utils.get_highlight("diffAdded").fg,
+          git_change = utils.get_highlight("diffChanged").fg,
         }
-        return kanagawa_colors
       end
       require("heirline").load_colors(setup_colors)
       vim.api.nvim_create_autocmd("ColorScheme", {
@@ -335,15 +340,28 @@ return {
         -- TODO: fix colors after toggling background
         statusline = {
           static = {
-            mode_color = function(self)
+            mode_colors = {
+              n = "blue",
+              i = "green",
+              v = "purple",
+              ["\22"] = "purple",
+              c = "orange",
+              s = "purple",
+              r = "git_del",
+              t = "green",
+            },
+            make_sections = function(_, color)
+              return {
+                a = { fg = "bg", bg = color },
+                b = { fg = color },
+                c = "StatusLine",
+              }
+            end,
+            get_mode_color = function(self)
               if conditions.is_active() then
-                return colors.get_loaded_colors().mode_colors_map[self.mode:lower()]
+                return self:make_sections(self.mode_colors[self.mode:lower()])
               else
-                return {
-                  a = "StatusLineNC",
-                  b = "StatusLineNC",
-                  c = "StatusLineNC",
-                }
+                return { a = "StatusLineNC", b = "StatusLineNC", c = "StatusLineNC" }
               end
             end,
           },
@@ -354,7 +372,7 @@ return {
             end,
             { -- left section a
               hl = function(self)
-                return self:mode_color().a
+                return self:get_mode_color().a
               end,
               {
                 static = {
@@ -384,7 +402,7 @@ return {
             },
             { -- left section b
               hl = function(self)
-                return self:mode_color().b
+                return self:get_mode_color().b
               end,
               { -- git
                 condition = conditions.is_git_repo,
@@ -420,21 +438,21 @@ return {
                       local count = self.status_dict.added or 0
                       return count > 0 and ("+" .. count .. " ")
                     end,
-                    hl = { fg = colors.get_loaded_colors().theme.vcs.added },
+                    hl = { fg = "git_add" },
                   },
                   {
                     provider = function(self)
                       local count = self.status_dict.changed or 0
                       return count > 0 and ("~" .. count .. " ")
                     end,
-                    hl = { fg = colors.get_loaded_colors().theme.vcs.changed },
+                    hl = { fg = "git_change" },
                   },
                   {
                     provider = function(self)
                       local count = self.status_dict.removed or 0
                       return count > 0 and ("-" .. count .. " ")
                     end,
-                    hl = { fg = colors.get_loaded_colors().theme.vcs.removed },
+                    hl = { fg = "git_del" },
                   },
                 },
               },
@@ -464,25 +482,25 @@ return {
                   provider = function(self)
                     return self.errors > 0 and ("E:" .. self.errors .. " ")
                   end,
-                  hl = { fg = colors.get_loaded_colors().theme.diag.error },
+                  hl = { fg = "diag_error" },
                 },
                 {
                   provider = function(self)
                     return self.warnings > 0 and ("W:" .. self.warnings .. " ")
                   end,
-                  hl = { fg = colors.get_loaded_colors().theme.diag.warn },
+                  hl = { fg = "diag_warn" },
                 },
                 {
                   provider = function(self)
                     return self.info > 0 and ("I:" .. self.info .. " ")
                   end,
-                  hl = { fg = colors.get_loaded_colors().theme.diag.info },
+                  hl = { fg = "diag_info" },
                 },
                 {
                   provider = function(self)
                     return self.hints > 0 and ("H:" .. self.hints .. " ")
                   end,
-                  hl = { fg = colors.get_loaded_colors().theme.diag.hint },
+                  hl = { fg = "diag_hint" },
                 },
               },
             },
@@ -491,7 +509,7 @@ return {
             },
             { -- middle section c
               hl = function(self)
-                return self:mode_color().c
+                return self:get_mode_color().c
               end,
               { -- left section c
                 flexible = 50,
@@ -565,7 +583,7 @@ return {
             },
             { -- right section b
               hl = function(self)
-                return self:mode_color().b
+                return self:get_mode_color().b
               end,
               {
                 provider = " %p%%/%L ",
@@ -573,7 +591,7 @@ return {
             },
             { -- right section a
               hl = function(self)
-                return self:mode_color().a
+                return self:get_mode_color().a
               end,
               {
                 provider = " %l:%v ",
@@ -607,7 +625,7 @@ return {
                 if conditions.is_active() then
                   -- if this is the active buffer in this window
                   if self.is_active then
-                    return "Search"
+                    return { bg = "blue", fg = "bg" }
                   else
                     return "StatusLine"
                   end
