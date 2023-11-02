@@ -132,6 +132,7 @@
       insomnia
       k6
       kubectl
+      luajit
       lua-language-server
       marksman
       nodePackages_latest.yaml-language-server

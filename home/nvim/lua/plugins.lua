@@ -24,7 +24,7 @@ return {
         go = { "gofumpt", "goimports-reviser" },
         lua = { "stylua" },
         nix = { "nixpkgs_fmt" },
-        ["_"] = { "trim_whitespace" },
+        -- ["_"] = { "trim_whitespace" },
       },
       log_level = vim.log.levels.DEBUG,
       format_on_save = {
@@ -681,6 +681,7 @@ return {
   from_nixpkgs({
     "rebelot/kanagawa.nvim",
     event = "UIEnter",
+    priority = 100,
     config = function(_, opts)
       require("kanagawa").setup(opts)
       require("kanagawa").load("wave")
@@ -688,7 +689,6 @@ return {
     opts = {
       theme = "wave",
       dimInactive = true,
-      globalStatus = true,
       commentStyle = { italic = false },
       keywordStyle = { italic = false },
       variablebuiltinStyle = { italic = false },
@@ -2150,50 +2150,6 @@ return {
     config = function(_, opts)
       require("telescope").setup(opts)
       require("telescope").load_extension("undo")
-    end,
-  }),
-
-  from_nixpkgs({
-    "akinsho/toggleterm.nvim",
-    keys = {
-      {
-        "<c-bs>",
-        "<cmd>exe v:count1 . 'ToggleTerm direction=horizontal'<cr>",
-        desc = "launch terminal",
-        mode = { "n", "t" },
-      },
-      {
-        "<c-cr>",
-        "<cmd>exe v:count1 . 'ToggleTerm direction=vertical'<cr>",
-        desc = "launch terminal vertical",
-        mode = { "n", "t" },
-      },
-    },
-    opts = {
-      size = function(term)
-        if term.direction == "horizontal" then
-          return 15
-        elseif term.direction == "vertical" then
-          return vim.o.columns * 0.4
-        end
-      end,
-      shade_terminals = false,
-      hide_numbers = false,
-    },
-    config = function(_, opts)
-      require("toggleterm").setup(opts)
-      vim.api.nvim_create_autocmd("TermOpen", {
-        group = vim.api.nvim_create_augroup("on_term", { clear = true }),
-        pattern = "*",
-        callback = function(event)
-          vim.keymap.set("t", "<c-n>", [[<C-\><C-n>]], { buffer = event.buf })
-          vim.keymap.set("t", "<C-h>", [[<Cmd>wincmd h<CR>]], { buffer = event.buf })
-          vim.keymap.set("t", "<C-j>", [[<Cmd>wincmd j<CR>]], { buffer = event.buf })
-          vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]], { buffer = event.buf })
-          vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], { buffer = event.buf })
-          vim.opt.relativenumber = false
-        end,
-      })
     end,
   }),
 

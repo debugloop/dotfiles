@@ -46,7 +46,6 @@
     "telescope-nvim"
     "telescope-ui-select-nvim"
     "telescope-undo-nvim"
-    "toggleterm-nvim"
     "vim-illuminate"
     "vim-sleuth"
     "zk-nvim"
