@@ -1,12 +1,3 @@
-local function override_highlight(callback)
-  callback()
-  vim.api.nvim_create_autocmd("ColorScheme", {
-    group = vim.api.nvim_create_augroup("highlight_overrides", { clear = false }),
-    pattern = "*",
-    callback = callback,
-  })
-end
-
 local function from_nixpkgs(spec)
   local name = spec[1]
   local plugin_name = name:match("[^/]+$")
@@ -841,7 +832,7 @@ return {
     name = "mini.bufremove",
     keys = {
       {
-        "<c-tab>",
+        "<leader><tab>",
         function()
           require("mini.bufremove").delete(0, false)
         end,
@@ -2042,11 +2033,6 @@ return {
         "<leader><s-q>",
         "<cmd>Telescope quickfixhistory<cr>",
         desc = "resume from older quickfix",
-      },
-      {
-        "<leader><tab>",
-        "<cmd>Telescope buffers<cr>",
-        desc = "find buffers",
       },
       {
         "gq",
