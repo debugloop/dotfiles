@@ -25,6 +25,13 @@ return {
     },
     init = function()
       vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+
+      -- HACK: This shifty 1ms delay prevents a libuv error and nvim exiting with code 134 on `:wq`.
+      vim.api.nvim_create_autocmd({ "VimLeave" }, {
+        callback = function()
+          vim.cmd("sleep 1m")
+        end,
+      })
     end,
   }),
 
