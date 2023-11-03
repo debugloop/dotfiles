@@ -39,6 +39,7 @@
     "nvim-tree-lua"
     "nvim-treesitter"
     "nvim-treesitter-context"
+    "nvim-treesitter-refactor"
     "nvim-treesitter-textobjects"
     "plenary-nvim"
     "telescope-fzf-native-nvim"
@@ -46,9 +47,7 @@
     "telescope-nvim"
     "telescope-ui-select-nvim"
     "telescope-undo-nvim"
-    "vim-illuminate"
     "vim-sleuth"
-    "zk-nvim"
   ]
     (name:
       { name = "nvim/nixpkgs/${name}"; value = { source = builtins.getAttr "${name}" pkgs.vimPlugins; }; }

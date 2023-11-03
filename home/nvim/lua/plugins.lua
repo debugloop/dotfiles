@@ -336,8 +336,6 @@ return {
       })
       require("heirline").setup({
         tabline = {},
-        -- TODO: get a tab view in here
-        -- TODO: fix colors after toggling background
         statusline = {
           static = {
             mode_colors = {
@@ -752,53 +750,49 @@ return {
     main = "mini.ai",
     name = "mini.ai",
     event = "VeryLazy",
-    dependencies = {
-      from_nixpkgs({
-        "nvim-treesitter/nvim-treesitter-textobjects",
-        dependencies = from_nixpkgs({ "nvim-treesitter/nvim-treesitter" }),
-      }),
+    opts = {
+      mappings = {
+        around_last = "aN",
+        inside_last = "iN",
+      },
+      custom_textobjects = {
+        -- handled by treesitter
+        a = false,
+        f = false,
+        -- change b from closing (with whitespace) to opening (without) braces
+        b = { { "%b()", "%b[]", "%b{}" }, "^.%s*().-()%s*.$" },
+        -- defaults include
+        -- (, ), [, ], {, }, <, >, ", ', `, q, ?, t, <space>
+      },
     },
-    opts = {},
     config = function(_, opts)
-      require("mini.ai").setup({
-        mappings = {
-          around_last = "",
-          inside_last = "",
-        },
-        custom_textobjects = {
-          a = require("mini.ai").gen_spec.treesitter({
-            a = "@parameter.outer",
-            i = "@parameter.inner",
-          }),
-          c = require("mini.ai").gen_spec.treesitter({ a = "@call.outer", i = "@call.inner" }),
-          C = require("mini.ai").gen_spec.treesitter({
-            a = "@comment.outer",
-            i = "@comment.inner",
-          }),
-          f = require("mini.ai").gen_spec.treesitter({
-            a = "@function.outer",
-            i = "@function.inner",
-          }),
-          i = require("mini.ai").gen_spec.treesitter({
-            a = "@conditional.outer",
-            i = "@conditional.inner",
-          }),
-          l = require("mini.ai").gen_spec.treesitter({ a = "@loop.outer", i = "@loop.inner" }),
-          s = require("mini.ai").gen_spec.treesitter({
-            a = "@block.outer",
-            i = "@block.inner",
-          }),
-          t = require("mini.ai").gen_spec.treesitter({
-            a = "@customtype.outer",
-            i = "@customtype.inner",
-          }),
-        },
-      })
+      require("mini.ai").setup(opts)
+      for _, op in pairs({ "b", "q", "(", ")", "[", "]", "{", "}", "<", ">", '"', "'", "`", "t", "<space>" }) do
+        vim.keymap.set("n", "]" .. op, function()
+          require("mini.ai").move_cursor("left", "i", op, { search_method = "next" })
+        end, { desc = "Goto next start i" .. op .. " textobject" })
+        vim.keymap.set("n", "[" .. op, function()
+          require("mini.ai").move_cursor("left", "i", op, { search_method = "prev" })
+        end, { desc = "Goto previous start i" .. op .. " textobject" })
+      end
+      vim.keymap.set("n", "]B", function()
+        require("mini.ai").move_cursor("right", "i", "b", { search_method = "next" })
+      end, { desc = "Goto next end ib textobject" })
+      vim.keymap.set("n", "[B", function()
+        require("mini.ai").move_cursor("right", "i", "b", { search_method = "prev" })
+      end, { desc = "Goto previous end ib textobject" })
+      vim.keymap.set("n", "]Q", function()
+        require("mini.ai").move_cursor("right", "i", "q", { search_method = "next" })
+      end, { desc = "Goto next end iq textobject" })
+      vim.keymap.set("n", "[Q", function()
+        require("mini.ai").move_cursor("right", "i", "q", { search_method = "prev" })
+      end, { desc = "Goto previous end iq textobject" })
     end,
   }),
 
   from_nixpkgs({
     "echasnovski/mini.nvim",
+    enabled = false,
     main = "mini.animate",
     name = "mini.animate",
     event = "VeryLazy",
@@ -916,7 +910,6 @@ return {
           -- maps that don't quit option mode (all of them)
           { mode = "n", keys = "<leader>ob", postkeys = "<leader>o" }, -- background
           { mode = "n", keys = "<leader>oc", postkeys = "<leader>o" }, -- conceal
-          { mode = "n", keys = "<leader>oi", postkeys = "<leader>o" }, -- illuminate
           { mode = "n", keys = "<leader>oI", postkeys = "<leader>o" }, -- indentscope
           { mode = "n", keys = "<leader>ol", postkeys = "<leader>o" }, -- list
           { mode = "n", keys = "<leader>oL", postkeys = "<leader>o" }, -- LSP
@@ -924,6 +917,8 @@ return {
           { mode = "n", keys = "<leader>or", postkeys = "<leader>o" }, -- relativenumber
           { mode = "n", keys = "<leader>os", postkeys = "<leader>o" }, -- spell
           { mode = "n", keys = "<leader>ot", postkeys = "<leader>o" }, -- treesitter context
+          { mode = "n", keys = "<leader>oi", postkeys = "<leader>o" }, -- treesitter illumination
+          { mode = "n", keys = "<leader>oS", postkeys = "<leader>o" }, -- treesitter scope display
           { mode = "n", keys = "<leader>ov", postkeys = "<leader>o" }, -- virtualedit
           { mode = "n", keys = "<leader>ow", postkeys = "<leader>o" }, -- wrap
           { mode = "n", keys = "<leader>ox", postkeys = "<leader>o" }, -- cursorcolumn
@@ -986,10 +981,10 @@ return {
         try_as_border = true,
       },
       mappings = {
-        object_scope = "iI",
-        object_scope_with_border = "aI",
-        goto_top = "[I",
-        goto_bottom = "]I",
+        object_scope = "i<tab>",
+        object_scope_with_border = "a<tab>",
+        goto_top = "[<tab>",
+        goto_bottom = "]<tab>",
       },
     },
     config = function(_, opts)
@@ -1882,6 +1877,47 @@ return {
   }),
 
   from_nixpkgs({
+    "nvim-treesitter/nvim-treesitter-refactor",
+    main = "nvim-treesitter.configs",
+    dependencies = from_nixpkgs({ "nvim-treesitter/nvim-treesitter" }),
+    event = "VeryLazy",
+    opts = {
+      refactor = {
+        highlight_definitions = {
+          enable = true,
+        },
+        highlight_current_scope = {
+          enable = false,
+        },
+        smart_rename = {
+          enable = false,
+        },
+        navigation = {
+          enable = true,
+          keymaps = {
+            goto_definition = false,
+            list_definitions = false,
+            list_definitions_toc = false,
+            goto_next_usage = "]]",
+            goto_previous_usage = "[[",
+          },
+        },
+      },
+    },
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+      vim.api.nvim_set_hl(0, "TSDefinition", { link = "IncSearch" })
+      vim.api.nvim_set_hl(0, "TSDefinitionUsage", { link = "CurSearch" })
+      vim.keymap.set("n", "<leader>oi", function()
+        vim.cmd("TSBufToggle refactor.highlight_definitions")
+      end, { desc = "set treesitter illumination" })
+      vim.keymap.set("n", "<leader>oS", function()
+        vim.cmd("TSBufToggle refactor.highlight_current_scope")
+      end, { desc = "set treesitter scope" })
+    end,
+  }),
+
+  from_nixpkgs({
     "nvim-treesitter/nvim-treesitter-textobjects",
     main = "nvim-treesitter.configs",
     dependencies = from_nixpkgs({ "nvim-treesitter/nvim-treesitter" }),
@@ -1895,48 +1931,69 @@ return {
             ["gT"] = "@class.outer",
           },
         },
+        swap = {
+          enable = false,
+        },
+        select = {
+          enable = true,
+          lookahead = true,
+          include_surrounding_whitespace = false,
+          keymaps = {
+            ["ia"] = { query = "@parameter.inner", desc = "select parameter" },
+            ["aa"] = { query = "@parameter.outer", desc = "select parameter with delimiters" },
+            ["ic"] = { query = "@call.inner", desc = "select call arguments" },
+            ["ac"] = { query = "@call.outer", desc = "select call" },
+            ["if"] = { query = "@function.inner", desc = "select function body" },
+            ["af"] = { query = "@function.outer", desc = "select function" },
+            ["ii"] = { query = "@customconditional.inner", desc = "select conditional body" },
+            ["ai"] = { query = "@conditional.outer", desc = "select conditional" },
+            ["il"] = { query = "@customloop.inner", desc = "select loop body" },
+            ["al"] = { query = "@loop.outer", desc = "select loop" },
+            ["is"] = { query = "@customblock.inner", desc = "select scope body" },
+            ["as"] = { query = "@block.outer", desc = "select scope" },
+            ["it"] = { query = "@customtype.inner", desc = "select type body" },
+            ["at"] = { query = "@customtype.outer", desc = "select type" },
+          },
+        },
         move = {
           enable = true,
           set_jumps = true,
           goto_next_start = {
             ["]a"] = "@parameter.inner",
             ["]c"] = "@call.outer",
-            ["]C"] = "@comment.outer",
             ["]f"] = "@function.outer",
             ["]i"] = "@conditional.outer",
             ["]l"] = "@loop.outer",
-            ["]s"] = "@block.inner",
-            ["]T"] = "@class.outer",
+            ["]s"] = "@customblock.inner",
             ["]t"] = "@customtype.outer",
           },
           goto_next_end = {
             ["]A"] = "@parameter.inner",
+            ["]C"] = "@call.outer",
             ["]F"] = "@function.outer",
             ["]L"] = "@loop.outer",
             ["]M"] = "@call.outer",
-            ["]S"] = "@block.inner",
+            ["]S"] = "@customblock.inner",
+            ["]T"] = "@customtype.outer",
           },
           goto_previous_start = {
             ["[a"] = "@parameter.inner",
             ["[c"] = "@call.outer",
-            ["[C"] = "@comment.outer",
             ["[f"] = "@function.outer",
             ["[i"] = "@conditional.outer",
             ["[l"] = "@loop.outer",
-            ["[s"] = "@block.inner",
-            ["[T"] = "@class.outer",
+            ["[s"] = "@customblock.inner",
             ["[t"] = "@customtype.outer",
           },
           goto_previous_end = {
             ["[A"] = "@parameter.inner",
+            ["[C"] = "@call.outer",
             ["[F"] = "@function.outer",
             ["[L"] = "@loop.outer",
             ["[M"] = "@call.outer",
-            ["[S"] = "@block.inner",
+            ["[S"] = "@customblock.inner",
+            ["[T"] = "@customtype.outer",
           },
-        },
-        select = {
-          enable = false,
         },
       },
     },
@@ -2168,71 +2225,6 @@ return {
     config = function(_, opts)
       require("telescope").setup(opts)
       require("telescope").load_extension("undo")
-    end,
-  }),
-
-  from_nixpkgs({
-    "RRethy/vim-illuminate",
-    event = "VeryLazy",
-    keys = {
-      {
-        "<leader>i",
-        function()
-          require("illuminate").toggle()
-        end,
-        desc = "illuminate: toggle",
-      },
-      {
-        "]]",
-        function()
-          for _ = 1, vim.v.count1 do
-            require("illuminate").goto_next_reference()
-          end
-        end,
-        desc = "illuminate: jump to next reference",
-      },
-      {
-        "[[",
-        function()
-          for _ = 1, vim.v.count1 do
-            require("illuminate").goto_prev_reference()
-          end
-        end,
-        desc = "illuminate: jump to prev reference",
-      },
-    },
-    opts = {
-      providers = {
-        "treesitter",
-        "lsp", -- decreased priority, gopls does not differenciate reads and writes to refs
-        "regex",
-      },
-      large_file_cutoff = 1000,
-      large_file_overrides = {
-        providers = {
-          -- no "treesitter" here, it's to slow on large files
-          "lsp", -- use lsp instead
-          "regex",
-        },
-      },
-      modes_allowlist = { "n" },
-      filetypes_denylist = {
-        "terminal",
-        "dap-float",
-        "dap-preview",
-        "lspinfo",
-        "minifiles",
-        "man",
-        "qf",
-      },
-    },
-    config = function(_, opts)
-      require("illuminate").configure(opts)
-      override_highlight(function()
-        vim.api.nvim_set_hl(0, "IlluminatedWordRead", { link = "Visual" })
-        vim.api.nvim_set_hl(0, "IlluminatedWordText", { link = "Visual" })
-        vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { fg = "orange" })
-      end)
     end,
   }),
 

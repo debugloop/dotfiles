@@ -1,6 +1,26 @@
 ;; extends
-(type_declaration
-    (type_spec (type_identifier) (struct_type (field_declaration_list (_)?) @customtype.inner))) @customtype.outer
 
+; custom blocks without curlies
+(_
+  (block . "{" . (_) @_start (_)? @_end . "}" (#make-range! "customblock.inner" @_start @_end)))
+
+(if_statement
+  (block . "{" . (_) @_start (_)? @_end . "}" (#make-range! "customconditional.inner" @_start @_end)))
+
+(for_statement
+  (block . "{" . (_) @_start (_)? @_end . "}" (#make-range! "customloop.inner" @_start @_end)))
+
+; custom go type (@class includes literals?!)
+(type_declaration) @customtype.outer
+
+; custom go type bodies without curlies
 (type_declaration
-  (type_spec (type_identifier) (interface_type) @customtype.inner)) @customtype.outer
+  (type_spec 
+    name: (type_identifier)
+    type: [
+    	(struct_type (field_declaration_list . "{" . (_) @_start @_end (_)? @_end . "}"))
+        (interface_type . "{" . (_) @_start @_end (_)? @_end . "}")
+    ]
+    (#make-range! "customtype.inner" @_start @_end)
+  )
+)
