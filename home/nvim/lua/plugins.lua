@@ -815,7 +815,7 @@ return {
       diagnostic = { suffix = "d", options = {} },
       file = { suffix = "", options = {} },
       indent = { suffix = "", options = {} },
-      jump = { suffix = "", options = {} },
+      jump = { suffix = "j", options = {} },
       location = { suffix = "", options = {} },
       oldfile = { suffix = "", options = {} },
       quickfix = { suffix = "q", options = {} },
@@ -1019,7 +1019,7 @@ return {
     event = "InsertEnter",
     opts = {
       replace = {
-        prefix = "", -- disable
+        prefix = "gR",
       },
       -- defaults:
       evaluate = {
