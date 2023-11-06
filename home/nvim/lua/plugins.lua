@@ -1,15 +1,18 @@
 local function from_nixpkgs(spec)
   local name = spec[1]
   local plugin_name = name:match("[^/]+$")
-  spec["dir"] = vim.fn.stdpath("data") .. "/nixpkgs/" .. plugin_name:gsub("%.", "-")
+  if spec["dir"] == nil then
+    spec["dir"] = vim.fn.stdpath("data") .. "/nixpkgs/" .. plugin_name:gsub("%.", "-")
+  end
   return spec
 end
 
 return {
-  from_nixpkgs({
+  {
     "stevearc/conform.nvim",
     event = "BufWritePre",
     cmd = { "ConformInfo" },
+    commit = "4ecb4b07e2eca6f53dcc348d8c7120961abcbce9", -- TODO: revert to nixpkgs once https://github.com/stevearc/conform.nvim/pull/176 is in
     opts = {
       formatters_by_ft = {
         go = { "gofumpt", "goimports-reviser" },
@@ -25,15 +28,8 @@ return {
     },
     init = function()
       vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-
-      -- HACK: This shifty 1ms delay prevents a libuv error and nvim exiting with code 134 on `:wq`.
-      vim.api.nvim_create_autocmd({ "VimLeave" }, {
-        callback = function()
-          vim.cmd("sleep 1m")
-        end,
-      })
     end,
-  }),
+  },
 
   from_nixpkgs({
     "sindrets/diffview.nvim",
@@ -720,15 +716,6 @@ return {
           -- nvim-tree
           NvimTreeGitDirty = { fg = theme.term[5], bg = "none" },
           NvimTreeGitStaged = { fg = theme.term[4], bg = "none" },
-          -- telescope
-          TelescopeTitle = { fg = theme.ui.special, bold = true },
-          TelescopePromptNormal = { bg = theme.ui.bg_p1 },
-          TelescopePromptCounter = { bg = theme.ui.bg_p1, fg = theme.ui.fg },
-          TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
-          TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
-          TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
-          TelescopePreviewNormal = { bg = theme.ui.bg },
-          TelescopePreviewBorder = { bg = theme.ui.bg, fg = theme.ui.bg },
         }
       end,
       colors = {
@@ -765,7 +752,8 @@ return {
     },
     config = function(_, opts)
       require("mini.ai").setup(opts)
-      for _, op in pairs({ "b", "q", "(", ")", "[", "]", "{", "}", "<", ">", '"', "'", "`", "t", "<space>" }) do
+      for _, op in pairs({ "b", "(", ")", "[", "]", "{", "}", "<", ">", '"', "'", "`", "t", "<space>" }) do
+        -- q is not in this list, it's for quickfix and only used as a textobject
         vim.keymap.set("n", "]" .. op, function()
           require("mini.ai").move_cursor("left", "i", op, { search_method = "next" })
         end, { desc = "Goto next start i" .. op .. " textobject" })
@@ -779,35 +767,7 @@ return {
       vim.keymap.set("n", "[B", function()
         require("mini.ai").move_cursor("right", "i", "b", { search_method = "prev" })
       end, { desc = "Goto previous end ib textobject" })
-      vim.keymap.set("n", "]Q", function()
-        require("mini.ai").move_cursor("right", "i", "q", { search_method = "next" })
-      end, { desc = "Goto next end iq textobject" })
-      vim.keymap.set("n", "[Q", function()
-        require("mini.ai").move_cursor("right", "i", "q", { search_method = "prev" })
-      end, { desc = "Goto previous end iq textobject" })
     end,
-  }),
-
-  from_nixpkgs({
-    "echasnovski/mini.nvim",
-    enabled = false,
-    main = "mini.animate",
-    name = "mini.animate",
-    event = "VeryLazy",
-    opts = {
-      cursor = {
-        enable = false,
-      },
-      resize = {
-        enable = false,
-      },
-      open = {
-        enable = false,
-      },
-      close = {
-        enable = false,
-      },
-    },
   }),
 
   from_nixpkgs({
@@ -1046,6 +1006,35 @@ return {
 
   from_nixpkgs({
     "echasnovski/mini.nvim",
+    main = "mini.pairs",
+    name = "mini.pairs",
+    event = "InsertEnter",
+    opts = {},
+  }),
+
+  from_nixpkgs({
+    "echasnovski/mini.nvim",
+    main = "mini.pick",
+    name = "mini.pick",
+    event = "VeryLazy",
+    keys = {
+      {
+        "<leader>f",
+        function()
+          require("mini.pick").builtin.files()
+        end,
+        desc = "find files",
+      },
+    },
+    opts = {},
+    config = function(_, opts)
+      require("mini.pick").setup(opts)
+      vim.ui.select = require("mini.pick").ui_select
+    end,
+  }),
+
+  from_nixpkgs({
+    "echasnovski/mini.nvim",
     main = "mini.splitjoin",
     name = "mini.splitjoin",
     keys = { "gS" },
@@ -1136,12 +1125,58 @@ return {
   }),
 
   from_nixpkgs({
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    opts = {},
-    config = function(_, opts)
-      require("nvim-autopairs").setup(opts)
-    end,
+    "kevinhwang91/nvim-bqf",
+    ft = "qf",
+    dependencies = {
+      from_nixpkgs({
+        "junegunn/fzf",
+        dir = vim.fn.stdpath("data") .. "/nixpkgs/fzf",
+        name = "fzf",
+        build = "./install --all",
+      }),
+    },
+    opts = {
+      func_map = {
+        open = "o",
+        openc = "<cr>",
+        drop = "",
+        split = "<C-x>",
+        vsplit = "<C-v>",
+        tab = "",
+        tabb = "",
+        tabc = "",
+        tabdrop = "",
+        ptogglemode = "<tab>",
+        ptoggleitem = "",
+        ptoggleauto = "",
+        pscrollup = "<C-u>",
+        pscrolldown = "<C-d>",
+        pscrollorig = "zz",
+        prevfile = "K",
+        nextfile = "J",
+        prevhist = "<",
+        nexthist = ">",
+        lastleave = "",
+        stoggleup = "",
+        stoggledown = "",
+        stogglevm = "",
+        stogglebuf = "",
+        sclear = "",
+        filter = "",
+        filterr = "",
+        fzffilter = "f",
+      },
+      filter = {
+        fzf = {
+          action_for = {},
+          extra_opts = { "--multi", "--bind", "enter:toggle-all+accept" },
+        },
+      },
+      preview = {
+        winblend = 0,
+        border = "single",
+      },
+    },
   }),
 
   from_nixpkgs({
@@ -1149,10 +1184,8 @@ return {
     event = "InsertEnter",
     dependencies = {
       from_nixpkgs({ "hrsh7th/cmp-nvim-lsp" }),
-      from_nixpkgs({ "windwp/nvim-autopairs" }),
       from_nixpkgs({ "dcampos/nvim-snippy" }),
       from_nixpkgs({ "dcampos/cmp-snippy" }),
-      from_nixpkgs({ "echasnovski/mini.animate" }),
     },
     opts = function()
       require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -1256,20 +1289,6 @@ return {
           }),
         },
       }
-    end,
-    config = function(_, opts)
-      require("cmp").setup(opts)
-      require("cmp").event:on("confirm_done", require("nvim-autopairs.completion.cmp").on_confirm_done())
-      -- this makes the snippet mode not break when at the bottom of the screen:
-      require("cmp").event:on("confirm_done", function()
-        vim.g.minianimate_disable = false
-      end)
-      require("cmp").event:on("menu_closed", function()
-        vim.g.minianimate_disable = false
-      end)
-      require("cmp").event:on("menu_opened", function()
-        vim.g.minianimate_disable = true
-      end)
     end,
   }),
 
@@ -1998,203 +2017,14 @@ return {
   }),
 
   from_nixpkgs({
-    "nvim-telescope/telescope.nvim",
-    keys = {
-      {
-        "<leader>f",
-        "<cmd>Telescope find_files<cr>",
-        desc = "find files",
-      },
-      {
-        "<leader>/",
-        "<cmd>Telescope current_buffer_fuzzy_find<cr>",
-        desc = "find matches",
-      },
-      {
-        "<leader>s",
-        "<cmd>Telescope live_grep<cr>",
-        desc = "grep project",
-      },
-      {
-        "<leader>*",
-        "<cmd>Telescope grep_string<cr>",
-        desc = "grep string in project",
-        mode = "v",
-      },
-      {
-        "<leader>*",
-        "<cmd>Telescope grep_string<cr>",
-        desc = "grep string in project",
-      },
-      {
-        "<leader><leader>",
-        "<cmd>Telescope resume<cr>",
-        desc = "resume last telescope",
-      },
-      {
-        "<leader>q",
-        "<cmd>Telescope quickfix<cr>",
-        desc = "resume from quickfix",
-      },
-      {
-        "<leader><s-q>",
-        "<cmd>Telescope quickfixhistory<cr>",
-        desc = "resume from older quickfix",
-      },
-      {
-        "gq",
-        "<cmd>Telescope diagnostics<cr>",
-        desc = "show diagnostics",
-      },
-      {
-        "<leader>j",
-        "<cmd>Telescope jumplist<cr>",
-        desc = "find in jumplist",
-      },
-      {
-        "<leader>gL",
-        "<cmd>Telescope git_bcommits<cr>",
-        desc = "find in git log",
-      },
-    },
-    dependencies = {
-      from_nixpkgs({ "nvim-lua/plenary.nvim" }),
-      from_nixpkgs({ "nvim-telescope/telescope-fzf-native.nvim" }),
-    },
-    opts = {
-      defaults = {
-        sorting_strategy = "ascending",
-        layout_strategy = "flex",
-        layout_config = {
-          prompt_position = "top",
-        },
-        dynamic_preview_title = true,
-        prompt_title = false,
-      },
-      pickers = {
-        buffers = {
-          preview = {
-            hide_on_startup = true,
-          },
-          theme = "dropdown",
-        },
-        diagnostics = {
-          initial_mode = "normal",
-        },
-        lsp_references = {
-          include_declaration = false,
-          include_current_line = true,
-        },
-      },
-    },
-    config = function(_, opts)
-      opts.defaults.mappings = {
-        n = {
-          ["<M-q>"] = false,
-          ["q"] = require("telescope.actions").close,
-          ["<esc>"] = require("telescope.actions").close,
-          ["<c-q>"] = require("telescope.actions").smart_send_to_qflist,
-          ["Q"] = require("telescope.actions").smart_send_to_qflist,
-          ["H"] = false,
-          ["M"] = false,
-          ["L"] = false,
-          ["<s-cr>"] = function()
-            vim.cmd("startinsert!")
-          end,
-        },
-        i = {
-          ["<c-j>"] = require("telescope.actions").move_selection_next,
-          ["<c-k>"] = require("telescope.actions").move_selection_previous,
-          ["<c-q>"] = require("telescope.actions").smart_send_to_qflist,
-          ["<c-cr>"] = require("telescope.actions").to_fuzzy_refine,
-          ["<s-cr>"] = function()
-            vim.cmd("stopinsert")
-          end,
-        },
-      }
-      require("telescope").setup(opts)
-      vim.api.nvim_create_autocmd("User", {
-        group = vim.api.nvim_create_augroup("on_telescope_preview", { clear = true }),
-        pattern = "TelescopePreviewerLoaded",
-        callback = function(event)
-          vim.opt_local.number = true
-        end,
-      })
-    end,
-  }),
-
-  from_nixpkgs({
-    "nvim-telescope/telescope-fzf-native.nvim",
-    opts = {},
-    dependencies = {
-      from_nixpkgs({ "nvim-telescope/telescope.nvim" }),
-    },
-    config = function(_, opts)
-      require("telescope").setup(opts)
-      require("telescope").load_extension("fzf")
-    end,
-  }),
-
-  from_nixpkgs({
-    "gbrlsnchs/telescope-lsp-handlers.nvim",
-    dependencies = {
-      from_nixpkgs({ "nvim-telescope/telescope.nvim" }),
-    },
-    event = "LspAttach",
-    opts = {
-      extensions = {
-        lsp_handlers = {
-          symbol = {
-            telescope = {
-              initial_mode = "normal",
-            },
-          },
-          call_hierarchy = {
-            telescope = {
-              initial_mode = "normal",
-            },
-          },
-          code_action = {
-            telescope = {
-              initial_mode = "normal",
-            },
-          },
-          location = {
-            telescope = {
-              initial_mode = "normal",
-              prompt_position = "bottom",
-              fname_width = 64,
-              path_display = {
-                "truncate",
-              },
-            },
-          },
-        },
-      },
-    },
-    config = function(_, opts)
-      require("telescope").setup(opts)
-      require("telescope").load_extension("lsp_handlers")
-    end,
-  }),
-
-  from_nixpkgs({
-    "nvim-telescope/telescope-ui-select.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      from_nixpkgs({ "nvim-telescope/telescope.nvim" }),
-    },
-    opts = {},
-    config = function(_, opts)
-      require("telescope").setup(opts)
-      require("telescope").load_extension("ui-select")
-    end,
-  }),
-
-  from_nixpkgs({
     "debugloop/telescope-undo.nvim",
     dependencies = {
-      from_nixpkgs({ "nvim-telescope/telescope.nvim" }),
+      from_nixpkgs({
+        "nvim-telescope/telescope.nvim",
+        dependencies = {
+          from_nixpkgs({ "nvim-lua/plenary.nvim" }),
+        },
+      }),
     },
     dev = false,
     keys = {
@@ -2216,13 +2046,18 @@ return {
       },
     },
     config = function(_, opts)
+      opts.defaults.mappings = {
+        n = {
+          ["q"] = require("telescope.actions").close,
+          ["<esc>"] = require("telescope.actions").close,
+        },
+        i = {
+          ["<c-j>"] = require("telescope.actions").move_selection_next,
+          ["<c-k>"] = require("telescope.actions").move_selection_previous,
+        },
+      }
       require("telescope").setup(opts)
       require("telescope").load_extension("undo")
     end,
-  }),
-
-  from_nixpkgs({
-    "tpope/vim-sleuth",
-    event = "BufReadPre",
   }),
 }

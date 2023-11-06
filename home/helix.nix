@@ -26,20 +26,20 @@
         {
           name = "go";
           config = {
-          "build.buildFlags" = ["-tags=unit"];
+            "build.buildFlags" = [ "-tags=unit" ];
           };
         }
       ];
       debugger = [
-      {
-        name = "go";
-        transport = "tcp";
-        command = "dlv";
-        args = [
-          "dap"
-        ];
-        port-arg = "--build-flags='-tags=unit' -l 127.0.0.1:{}";
-      }
+        {
+          name = "go";
+          transport = "tcp";
+          command = "dlv";
+          args = [
+            "dap"
+          ];
+          port-arg = "--build-flags='-tags=unit' -l 127.0.0.1:{}";
+        }
       ];
     };
   };

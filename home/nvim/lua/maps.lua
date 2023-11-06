@@ -22,12 +22,31 @@ vim.keymap.set("n", "<leader>p", function()
 end, { desc = "paste as lines" })
 
 -- live grep
--- vim.keymap.set(
---   "n",
---   "<leader>/",
---   ":silent grep! '' | copen<home><s-right><s-right><right><right>",
---   { desc = "grep in project" }
--- )
+vim.keymap.set("v", "<leader>*", function()
+  local a_orig = vim.fn.getreg("a")
+  local mode = vim.fn.mode()
+  if mode ~= "v" and mode ~= "V" then
+    vim.cmd([[normal! gv]])
+  end
+  vim.cmd([[silent! normal! "aygv]])
+  local input = vim.fn.getreg("a")
+  vim.fn.setreg("a", a_orig)
+  if #input > 0 and not string.find(input, "\n") then
+    vim.cmd('silent! grep! "' .. input .. '" | copen')
+  end
+end, { desc = "grep visual selecttion in project" })
+vim.keymap.set("n", "<leader>*", function()
+  local input = vim.fn.expand("<cword>")
+  if #input > 0 then
+    vim.cmd('silent! grep! "' .. input .. '" | copen')
+  end
+end, { desc = "grep cursor word in project" })
+vim.keymap.set("n", "<leader>/", function()
+  local input = vim.fn.input("grep: ")
+  if #input > 0 then
+    vim.cmd('silent! grep! "' .. input .. '" | copen')
+  end
+end, { desc = "grep in project" })
 
 -- jump back to last position
 vim.keymap.set("n", "<bs>", "<c-o>", { desc = "jump backwards" })

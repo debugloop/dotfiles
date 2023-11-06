@@ -5,6 +5,11 @@ vim.opt.shada:append({ "%" }) -- reopen buffers if no args
 vim.opt.shortmess:append({ W = true, I = true, c = true }) -- suppress some messages
 vim.opt.updatetime = 500 -- faster cursor hold
 
+-- tabs and spaces
+vim.opt.shiftwidth = 0 -- look at tabstop, no sense in two settings
+vim.opt.tabstop = 4 -- sane default for most things
+vim.opt.expandtab = true -- use spaces instead of tabs
+
 -- backups
 vim.opt.backup = true -- enable backup files
 vim.opt.backupdir = vim.fn.expand("~/.backup") -- set backup location

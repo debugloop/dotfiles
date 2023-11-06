@@ -18,7 +18,6 @@ require("lazy").setup({
   },
   dev = {
     path = "~/code",
-    patterns = { "debugloop" },
   },
   diff = {
     cmd = "terminal_git",
