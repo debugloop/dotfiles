@@ -13,6 +13,9 @@
 ; custom go type (@class includes literals?!)
 (type_declaration) @customtype.outer
 
+; peeking should show the body of functions and types
+[ (type_declaration) (function_declaration) (method_declaration) ] @peek
+
 ; custom go type bodies without curlies
 (type_declaration
   (type_spec 

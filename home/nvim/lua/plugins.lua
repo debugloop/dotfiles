@@ -1944,6 +1944,7 @@ return {
         lsp_interop = {
           enable = true,
           peek_definition_code = {
+            ["gz"] = "@peek", -- replaces both from below
             ["gF"] = "@function.outer",
             ["gT"] = "@class.outer",
           },
