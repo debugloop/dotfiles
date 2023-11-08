@@ -1605,7 +1605,7 @@ return {
           analyses = {
             fieldalignment = false,
             nilness = true,
-            shadow = true,
+            shadow = false, -- useful but to spammy with `err`
             unusedparams = true,
             unusedwrite = true,
             useany = true,
