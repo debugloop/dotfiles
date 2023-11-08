@@ -51,7 +51,7 @@ end, { desc = "grep in project" })
 -- jump back to last position
 vim.keymap.set("n", "<bs>", "<c-o>", { desc = "jump backwards" })
 vim.keymap.set("n", "<s-bs>", "<c-i>", { desc = "jump forwards" })
-vim.keymap.set("n", "gl", "`.", { desc = "goto to last inster" })
+vim.keymap.set("n", "gl", "`.", { desc = "goto to last change" })
 
 -- open fold
 vim.keymap.set("n", "zi", "zA", { desc = "toggle fold" })
@@ -110,8 +110,8 @@ vim.keymap.set("n", "<leader>x", function()
   pcall(vim.cmd, "NvimTreeRefresh")
 end, { desc = "close buffers not marked as persistent" })
 
--- banish ex mode
-vim.keymap.set("n", "gQ", "<nop>")
+-- banish weird mappings
+vim.keymap.set("n", "gQ", "<nop>") -- ex mode
 
 -- indent on insert in empty lines
 vim.keymap.set("n", "i", function()
