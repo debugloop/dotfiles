@@ -21,26 +21,5 @@
         "S-tab" = "goto_previous_buffer";
       };
     };
-    languages = {
-      language = [
-        {
-          name = "go";
-          config = {
-            "build.buildFlags" = [ "-tags=unit" ];
-          };
-        }
-      ];
-      debugger = [
-        {
-          name = "go";
-          transport = "tcp";
-          command = "dlv";
-          args = [
-            "dap"
-          ];
-          port-arg = "--build-flags='-tags=unit' -l 127.0.0.1:{}";
-        }
-      ];
-    };
   };
 }
