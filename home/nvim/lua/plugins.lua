@@ -1550,8 +1550,10 @@ return {
           quit_debugging()
           dap.clear_breakpoints()
         end, { desc = "debug: quit" })
+        -- exit debug mode on insert so we have <esc> available to go back to normal
         vim.api.nvim_create_autocmd("ModeChanged", {
           group = vim.api.nvim_create_augroup("on_debug_mode_exit", { clear = true }),
+          pattern = "*:i",
           callback = function()
             ExitDebugMode()
           end,
