@@ -341,6 +341,7 @@ return {
               s = "purple",
               r = "git_del",
               t = "green",
+              debug_mode = "git_del",
             },
             make_sections = function(_, color)
               return {
@@ -361,6 +362,9 @@ return {
             init = function(self)
               self.mode = vim.fn.mode()
               self.filename = vim.api.nvim_buf_get_name(0)
+              if DEBUG_MODE then
+                self.mode = "DEBUG_MODE"
+              end
             end,
             { -- left section a
               hl = function(self)
@@ -382,7 +386,10 @@ return {
                 },
                 provider = function(self)
                   if not conditions.is_active() then
-                    return "INACTIVE"
+                    return " INACTIVE "
+                  end
+                  if DEBUG_MODE then
+                    return " DEBUG "
                   end
                   local name = self.mode_names[self.mode]
                   if name == "" or name == nil then
@@ -665,8 +672,7 @@ return {
           },
           {
             condition = function()
-              local session = require("dap").session()
-              return session ~= nil
+              return require("dap").session() ~= nil
             end,
             provider = function()
               return " " .. require("dap").status()
@@ -1299,6 +1305,10 @@ return {
         "<leader>d",
         function()
           local dap = require("dap")
+          if dap.session() ~= nil then
+            EnterDebugMode()
+            return
+          end
           -- set breakpoint if there is none
           if #require("dap.breakpoints").to_qf_list(require("dap.breakpoints").get()) == 0 then
             dap.toggle_breakpoint()
@@ -1436,11 +1446,14 @@ return {
       },
     },
     config = function(_, opts)
+      -- do the actual setup
       local dap = require("dap")
       dap.adapters = opts.adapters
       dap.configurations = opts.configurations
+      -- ui tweaks
       vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "", linehl = "", numhl = "" })
       vim.fn.sign_define("DapBreakpointCondition", { text = "", texthl = "", linehl = "", numhl = "" })
+      -- treat dap-repl as a terminal
       vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("on_dap_repl", { clear = true }),
         pattern = "dap-repl",
@@ -1448,8 +1461,17 @@ return {
           vim.cmd("startinsert")
         end,
       })
-      dap.listeners.after.event_initialized["custom_maps"] = function()
-        -- TODO: make window local
+      -- utility functions
+      local function quit_debugging()
+        dap.listeners.after.event_stopped["refresh_expr"] = nil
+        vim.cmd("pclose")
+        dap.terminate()
+        dap.repl.close()
+      end
+      -- debug mode entry and exit
+      function EnterDebugMode()
+        DEBUG_MODE = true
+        -- evaluate expression continuously
         vim.keymap.set("n", "e", function()
           local exp = vim.fn.input("Expression: ")
           if exp == "" then
@@ -1461,22 +1483,28 @@ return {
             require("dap.ui.widgets").preview(prefix .. exp)
           end
         end, { desc = "debug: auto evaluate expression" })
+        -- clear evaluation watch
         vim.keymap.set("n", "E", function()
           dap.listeners.after.event_stopped["refresh_expr"] = nil
           vim.cmd("pclose")
         end, { desc = "debug: clear auto evaluate" })
+        -- step over/next
         vim.keymap.set("n", "s", function()
           dap.step_over()
         end, { desc = "debug: step forward", remap = true })
+        -- continue
         vim.keymap.set("n", "c", function()
           dap.continue()
         end, { desc = "debug: continue" })
+        -- step into
         vim.keymap.set("n", "i", function()
           dap.step_into()
         end, { desc = "debug: step into" })
+        -- step out of
         vim.keymap.set("n", "o", function()
           dap.step_out()
         end, { desc = "debug: step out" })
+        -- hover with value
         vim.keymap.set("n", "J", function()
           require("dap").session():evaluate(vim.fn.expand("<cexpr>"), function(err, resp)
             if err then
@@ -1486,26 +1514,19 @@ return {
             end
           end)
         end, { desc = "debug: hover value" })
+        -- up one frame
         vim.keymap.set("n", "u", function()
           dap.up()
         end, { desc = "debug: frame up" })
+        -- down one frame
         vim.keymap.set("n", "d", function()
           dap.down()
         end, { desc = "debug: frame down" })
-        local function quit()
-          dap.listeners.after.event_stopped["refresh_expr"] = nil
-          vim.cmd("pclose")
-          dap.terminate()
-          dap.repl.close()
-        end
-        vim.keymap.set("n", "q", quit, { desc = "debug: quit" })
-        vim.keymap.set("n", "Q", function()
-          quit()
-          dap.clear_breakpoints()
-        end, { desc = "debug: quit" })
+        -- toggle breakpoint
         vim.keymap.set("n", "b", function()
           dap.toggle_breakpoint()
         end, { desc = "debug: toggle breakpoint" })
+        -- set conditional breakpoint
         vim.keymap.set("n", "B", function()
           local cond = vim.fn.input("Breakpoint condition or count: ")
           if tonumber(cond) ~= nil then
@@ -1516,29 +1537,48 @@ return {
             dap.set_breakpoint(cond, nil, nil)
           end
         end, { desc = "debug: set conditional breakpoint" })
+        -- restart
         vim.keymap.set("n", "r", function()
           dap.restart()
         end, { desc = "debug: restart" })
+        -- exit debug mode
+        vim.keymap.set("n", "<esc>", ExitDebugMode, { desc = "debug: exit debug mode" })
+        -- quit
+        vim.keymap.set("n", "q", quit_debugging, { desc = "debug: quit" })
+        -- quit and clear breakpoints
+        vim.keymap.set("n", "Q", function()
+          quit_debugging()
+          dap.clear_breakpoints()
+        end, { desc = "debug: quit" })
+        vim.api.nvim_create_autocmd("ModeChanged", {
+          group = vim.api.nvim_create_augroup("on_debug_mode_exit", { clear = true }),
+          callback = function()
+            ExitDebugMode()
+          end,
+        })
       end
-      local function cleanup()
-        vim.o.readonly = false
-        vim.keymap.del("n", "e")
-        vim.keymap.del("n", "E")
-        vim.keymap.del("n", "s")
-        vim.keymap.del("n", "c")
-        vim.keymap.del("n", "i")
-        vim.keymap.del("n", "o")
-        vim.keymap.del("n", "J")
-        vim.keymap.del("n", "u")
-        vim.keymap.del("n", "d")
-        vim.keymap.del("n", "q")
-        vim.keymap.del("n", "Q")
-        vim.keymap.del("n", "b")
-        vim.keymap.del("n", "B")
-        vim.keymap.del("n", "r")
+      function ExitDebugMode()
+        vim.api.nvim_del_augroup_by_name("on_debug_mode_exit")
+        DEBUG_MODE = false
+        vim.keymap.del("n", "b") -- toggle breakpoint
+        vim.keymap.del("n", "B") -- set conditional breakpoint
+        vim.keymap.del("n", "c") -- continue
+        vim.keymap.del("n", "d") -- down one frame
+        vim.keymap.del("n", "e") -- evaluate expression continuously
+        vim.keymap.del("n", "E") -- clear evaluation watch
+        vim.keymap.del("n", "<esc>") -- exit debug mode
+        vim.keymap.del("n", "i") -- step into
+        vim.keymap.del("n", "J") -- hover with value
+        vim.keymap.del("n", "o") -- step out of
+        vim.keymap.del("n", "q") -- quit
+        vim.keymap.del("n", "Q") -- quit and clear breakpoints
+        vim.keymap.del("n", "r") -- restart
+        vim.keymap.del("n", "s") -- step over/next
+        vim.keymap.del("n", "u") -- up one frame
       end
-      dap.listeners.before.event_terminated["custom_maps"] = cleanup
-      dap.listeners.before.event_exited["custom_maps"] = cleanup
+      dap.listeners.after.event_initialized["custom_maps"] = EnterDebugMode
+      dap.listeners.before.event_terminated["custom_maps"] = ExitDebugMode
+      dap.listeners.before.event_exited["custom_maps"] = ExitDebugMode
     end,
   }),
 
