@@ -73,23 +73,18 @@
       "*.swp"
     ];
     extraConfig = {
-      core = {
-        excludesfile = "~/.gitignore";
-      };
-      gpg.format = "ssh";
       commit.gpgsign = true;
-      user.signingkey = "~/.ssh/id_ed25519";
+      core.excludesfile = "~/.gitignore";
+      gpg.format = "ssh";
+      pull.rebase = true;
       push = {
         default = "current";
         autoSetupRemote = true;
       };
-      pull = {
-        rebase = true;
-      };
-      rebase = {
-        autosquash = true;
-      };
+      rebase.autosquash = true;
+      rerere.enabled = true;
       url."ssh://git@github.com/".insteadOf = "https://github.com/";
+      user.signingkey = "~/.ssh/id_ed25519";
     };
   };
 }
