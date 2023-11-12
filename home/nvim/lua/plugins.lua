@@ -1449,6 +1449,7 @@ return {
         end,
       })
       dap.listeners.after.event_initialized["custom_maps"] = function()
+        -- TODO: make window local
         vim.keymap.set("n", "e", function()
           local exp = vim.fn.input("Expression: ")
           if exp == "" then
@@ -2036,6 +2037,26 @@ return {
       },
     },
     opts = {
+      defaults = {
+        mappings = {
+          n = {
+            ["q"] = function(bufnr)
+              return require("telescope.actions").close(bufnr)
+            end,
+            ["<esc>"] = function(bufnr)
+              return require("telescope.actions").close(bufnr)
+            end,
+          },
+          i = {
+            ["<c-j>"] = function(bufnr)
+              return require("telescope.actions").move_selection_next(bufnr)
+            end,
+            ["<c-k>"] = function(bufnr)
+              return require("telescope.actions").move_selection_previous(bufnr)
+            end,
+          },
+        },
+      },
       extensions = {
         undo = {
           side_by_side = true,
@@ -2047,16 +2068,6 @@ return {
       },
     },
     config = function(_, opts)
-      opts.defaults.mappings = {
-        n = {
-          ["q"] = require("telescope.actions").close,
-          ["<esc>"] = require("telescope.actions").close,
-        },
-        i = {
-          ["<c-j>"] = require("telescope.actions").move_selection_next,
-          ["<c-k>"] = require("telescope.actions").move_selection_previous,
-        },
-      }
       require("telescope").setup(opts)
       require("telescope").load_extension("undo")
     end,
