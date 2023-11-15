@@ -70,6 +70,10 @@
     };
     printing.enable = true;
     tlp.enable = true;
+    udev.extraRules = ''
+      # generic stm32 keyboard flashing
+      SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE:="0666"
+    '';
   };
 
   programs = {

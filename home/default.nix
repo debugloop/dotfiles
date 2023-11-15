@@ -156,6 +156,10 @@
       # hardware (TODO: are those installed system-wide?)
       powertop
       pulseaudio
+      # keyboard
+      dfu-util
+      gcc-arm-embedded
+      qmk
     ];
   };
 
