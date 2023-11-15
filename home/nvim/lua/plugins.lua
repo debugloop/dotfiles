@@ -415,7 +415,7 @@ return {
                   flexible = 20,
                   {
                     provider = function(self)
-                      return "  " .. self.status_dict.head
+                      return "  " .. self.status_dict.head .. " "
                     end,
                   },
                   {
@@ -1558,6 +1558,7 @@ return {
             ExitDebugMode()
           end,
         })
+        vim.cmd("redrawstatus")
       end
       function ExitDebugMode()
         vim.api.nvim_del_augroup_by_name("on_debug_mode_exit")
@@ -1577,6 +1578,7 @@ return {
         vim.keymap.del("n", "r") -- restart
         vim.keymap.del("n", "s") -- step over/next
         vim.keymap.del("n", "u") -- up one frame
+        vim.cmd("redrawstatus")
       end
       dap.listeners.after.event_initialized["custom_maps"] = EnterDebugMode
       dap.listeners.before.event_terminated["custom_maps"] = ExitDebugMode
