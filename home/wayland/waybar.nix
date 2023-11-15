@@ -142,6 +142,7 @@
           "sort-by-number" = true;
           "format" = "{icon}";
           "format-icons" = {
+            # TODO: since workspaces have no names to ensure they're sorted, we assign names here -> refactor some time
             "1" = " web";
             "2" = " com";
             "3" = " music";
@@ -152,9 +153,9 @@
             "8" = " 8:code";
             "9" = " 9:code";
             "10" = " 10:code";
-            "urgent" = "";
-            "focused" = "";
-            "default" = "";
+            #"urgent" = "";
+            #"focused" = "";
+            #"default" = "";
           };
         };
         "temperature" = {
