@@ -32,19 +32,19 @@ vim.keymap.set("v", "<leader>*", function()
   local input = vim.fn.getreg("a")
   vim.fn.setreg("a", a_orig)
   if #input > 0 and not string.find(input, "\n") then
-    vim.cmd('silent! grep! "' .. input .. '" | copen')
+    vim.cmd('silent! grep! "' .. input .. '" | cwindow')
   end
 end, { desc = "grep visual selecttion in project" })
 vim.keymap.set("n", "<leader>*", function()
   local input = vim.fn.expand("<cword>")
   if #input > 0 then
-    vim.cmd('silent! grep! "' .. input .. '" | copen')
+    vim.cmd('silent! grep! "' .. input .. '" | cwindow')
   end
 end, { desc = "grep cursor word in project" })
 vim.keymap.set("n", "<leader>/", function()
   local input = vim.fn.input("grep: ")
   if #input > 0 then
-    vim.cmd('silent! grep! "' .. input .. '" | copen')
+    vim.cmd('silent! grep! "' .. input .. '" | cwindow')
   end
 end, { desc = "grep in project" })
 
@@ -148,6 +148,23 @@ vim.keymap.set("n", "g.", function()
   end
 end)
 
+vim.keymap.set("n", "<leader>qj", function()
+  local jumplist, _ = unpack(vim.fn.getjumplist())
+  local qf_list = {}
+  for _, v in pairs(jumplist) do
+    if vim.fn.bufloaded(v.bufnr) == 1 then
+      table.insert(qf_list, {
+        bufnr = v.bufnr,
+        lnum = v.lnum,
+        col = v.col,
+        text = vim.api.nvim_buf_get_lines(v.bufnr, v.lnum - 1, v.lnum, false)[1],
+      })
+    end
+  end
+  vim.fn.setqflist(qf_list, " ")
+  vim.cmd("copen")
+end)
+
 -- add undo state when inserting a newline
 vim.keymap.set("i", "<cr>", "<cr><c-g>u")
 
@@ -231,7 +248,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = event.buf, desc = "lsp: show implementations" })
     vim.keymap.set("n", "go", vim.lsp.buf.document_symbol, { buffer = event.buf, desc = "lsp: outline symbols" })
     vim.keymap.set("n", "gq", vim.diagnostic.setqflist, { buffer = event.buf, desc = "lsp: list diagnostics" })
+    vim.keymap.set("n", "<leader>qd", vim.diagnostic.setqflist, { buffer = event.buf, desc = "lsp: list diagnostics" })
     vim.keymap.set("n", "gQ", function()
+      vim.diagnostic.setqflist({ severity = vim.diagnostic.severity.ERROR })
+    end, { buffer = event.buf, desc = "lsp: list serious diagnostics" })
+    vim.keymap.set("n", "<leader>qD", function()
       vim.diagnostic.setqflist({ severity = vim.diagnostic.severity.ERROR })
     end, { buffer = event.buf, desc = "lsp: list serious diagnostics" })
     vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = event.buf, desc = "lsp: show help" })

@@ -1441,6 +1441,14 @@ return {
         desc = "continue or start fresh session",
       },
       {
+        "<leader>qb",
+        function()
+          require("dap").list_breakpoints()
+          vim.cmd.cwindow()
+        end,
+        desc = "list breakpoints",
+      },
+      {
         "<leader>b",
         function()
           require("dap").toggle_breakpoint()
