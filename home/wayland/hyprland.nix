@@ -70,7 +70,7 @@
       };
       master = {
         new_is_master = false;
-        orientation = "center";
+        orientation = "left";
         mfact = 0.7;
       };
       bind = [
@@ -114,8 +114,11 @@
         "SUPER_SHIFT, f, fullscreen,1"
         "SUPER_CTRL, f, fakefullscreen,"
 
+        # resizing
         "SUPER, XF86AudioRaiseVolume, resizeactive, 20 0"
         "SUPER, XF86AudioLowerVolume, resizeactive, -20 0"
+        "SUPER, mouse_down, resizeactive, 20 0"
+        "SUPER, mouse_up, resizeactive, -20 0"
 
         "SUPER, w, togglegroup,"
         "SUPER_SHIFT, w, lockactivegroup, toggle"
@@ -142,8 +145,6 @@
         "SUPER_SHIFT, j, movewindow, d"
 
         # workspace focus
-        "SUPER, mouse_down, workspace, e-1"
-        "SUPER, mouse_up, workspace, e+1"
         "CTRL_SUPER, j, workspace, e-1"
         "CTRL_SUPER, k, workspace, e+1"
         "CTRL_SUPER, XF86AudioLowerVolume, workspace, e-1"

@@ -1,0 +1,61 @@
+---
+name: "Update dependencies and create a PR with necessary Build check"
+on:
+  schedule:
+    - cron: "0 5 */1 * *"
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.create-pr.pull-request-head-sha }}
+      check_id: ${{ steps.create-check.outputs.check_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v20
+      - name: Update dependency versions in flake.lock
+        run: |
+          nix flake update nixpkgs
+          nix flake update home-manager
+          nix flake update nh
+          nix flake update impermanence
+          nix flake update agenix
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        id: create-pr
+        with:
+          title: Update flake.lock
+          add-paths: flake.lock
+          commit-message: "chore: update flake.lock"
+          body: |
+            Automatically created by [this](https://github.com/debugloop/dotfiles/actions/runs/${{ github.run_id }}) run.
+          delete-branch: true
+          draft: false
+      - name: Annotate SHA with check
+        id: create-check
+        uses: LouisBrunner/checks-action@v1.6.1
+        if: ${{ steps.create-pr.outputs.pull-request-head-sha }}
+        with:
+          name: Build System Flake
+          token: ${{ secrets.GITHUB_TOKEN }}
+          sha: ${{ steps.create-pr.outputs.pull-request-head-sha }}
+          details_url: https://github.com/debugloop/dotfiles/actions/runs/${{ github.run_id }}
+          output: '{ "summary": "https://github.com/debugloop/dotfiles/actions/runs/${{ github.run_id }}" }'
+          status: in_progress
+  run-check:
+    needs: update
+    uses: debugloop/dotfiles/.github/workflows/build.yml@main
+    with:
+      sha: ${{ needs.update.outputs.sha }}
+  set-check-result:
+    needs:
+      - update
+      - run-check
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update check status
+        uses: LouisBrunner/checks-action@v1.6.1
+        with:
+          check_id: ${{ needs.update.outputs.check_id }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          conclusion: ${{ needs.run-check.result }}
