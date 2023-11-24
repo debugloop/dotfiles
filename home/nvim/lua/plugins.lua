@@ -741,38 +741,117 @@ return {
     main = "mini.ai",
     name = "mini.ai",
     event = "VeryLazy",
+    keys = function(_, _)
+      local maps = {}
+      for _, op in pairs({
+        "b",
+        "(",
+        ")",
+        "[",
+        "]",
+        "{",
+        "}",
+        "<",
+        ">",
+        '"',
+        "'",
+        "`",
+        "t",
+        "a",
+        "c",
+        "f",
+        "i",
+        "l",
+        "t",
+      }) do
+        table.insert(maps, {
+          "]" .. op,
+          function()
+            require("mini.ai").move_cursor("left", "i", op, { search_method = "next" })
+          end,
+          desc = "Goto next start of i" .. op .. " textobject",
+        })
+        table.insert(maps, {
+          "[" .. op,
+          function()
+            require("mini.ai").move_cursor("left", "i", op, { search_method = "prev" })
+          end,
+          desc = "Goto previous start of i" .. op .. " textobject",
+        })
+      end
+      for _, op in pairs({ "B", "A", "C", "F", "I", "L", "T" }) do
+        table.insert(maps, {
+          "]" .. op,
+          function()
+            require("mini.ai").move_cursor("right", "i", op, { search_method = "next" })
+          end,
+          desc = "Goto next end of i" .. op .. " textobject",
+        })
+        table.insert(maps, {
+          "[" .. op,
+          function()
+            require("mini.ai").move_cursor("right", "i", op, { search_method = "prev" })
+          end,
+          desc = "Goto previous end of i" .. op .. " textobject",
+        })
+      end
+      table.insert(maps, {
+        "]s",
+        function()
+          require("mini.ai").move_cursor("left", "i", "q", { search_method = "next" })
+        end,
+        desc = "Goto next start of iq textobject",
+      })
+      table.insert(maps, {
+        "[s",
+        function()
+          require("mini.ai").move_cursor("left", "i", "q", { search_method = "prev" })
+        end,
+        desc = "Goto previous start of iq textobject",
+      })
+      table.insert(maps, {
+        "]S",
+        function()
+          require("mini.ai").move_cursor("right", "i", "q", { search_method = "next" })
+        end,
+        desc = "Goto next end of iQ textobject",
+      })
+      table.insert(maps, {
+        "[S",
+        function()
+          require("mini.ai").move_cursor("right", "i", "q", { search_method = "prev" })
+        end,
+        desc = "Goto previous end of iQ textobject",
+      })
+      return maps
+    end,
     opts = {
       mappings = {
         around_last = "aN",
         inside_last = "iN",
       },
-      custom_textobjects = {
-        -- handled by treesitter
-        a = false,
-        f = false,
-        -- change b from closing (with whitespace) to opening (without) braces
-        b = { { "%b()", "%b[]", "%b{}" }, "^.%s*().-()%s*.$" },
-        -- defaults include
-        -- (, ), [, ], {, }, <, >, ", ', `, q, ?, t, <space>
-      },
+      n_lines = 200,
     },
     config = function(_, opts)
+      opts.custom_textobjects = {
+        a = require("mini.ai").gen_spec.treesitter({ a = "@parameter.outer", i = "@parameter.inner" }),
+        b = require("mini.ai").gen_spec.treesitter({ a = "@block.outer", i = { "@customblock.inner", "@block.inner" } }),
+        c = require("mini.ai").gen_spec.treesitter({ a = "@call.outer", i = "@call.inner" }),
+        f = require("mini.ai").gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
+        i = require("mini.ai").gen_spec.treesitter({
+          a = "@conditional.outer",
+          i = { "@customconditional.inner", "@conditional.inner" },
+        }),
+        l = require("mini.ai").gen_spec.treesitter({ a = "@loop.outer", i = { "@customloop.inner", "@loop.inner" } }),
+        s = require("mini.ai").gen_spec.treesitter({ a = "@string.outer", i = "@string.inner" }),
+        t = require("mini.ai").gen_spec.treesitter({
+          a = { "@customtype.outer", "@type.outer" },
+          i = { "@customtype.inner", "@type.inner" },
+        }),
+        -- defaults include
+        -- (, ), [, ], {, }, <, >, ", ', `, q, ?, t, <space>
+      }
       require("mini.ai").setup(opts)
-      for _, op in pairs({ "b", "(", ")", "[", "]", "{", "}", "<", ">", '"', "'", "`", "t", "<space>" }) do
-        -- q is not in this list, it's for quickfix and only used as a textobject
-        vim.keymap.set("n", "]" .. op, function()
-          require("mini.ai").move_cursor("left", "i", op, { search_method = "next" })
-        end, { desc = "Goto next start i" .. op .. " textobject" })
-        vim.keymap.set("n", "[" .. op, function()
-          require("mini.ai").move_cursor("left", "i", op, { search_method = "prev" })
-        end, { desc = "Goto previous start i" .. op .. " textobject" })
-      end
-      vim.keymap.set("n", "]B", function()
-        require("mini.ai").move_cursor("right", "i", "b", { search_method = "next" })
-      end, { desc = "Goto next end ib textobject" })
-      vim.keymap.set("n", "[B", function()
-        require("mini.ai").move_cursor("right", "i", "b", { search_method = "prev" })
-      end, { desc = "Goto previous end ib textobject" })
     end,
   }),
 
@@ -839,6 +918,8 @@ return {
           { mode = "x", keys = "<leader>g" },
           { mode = "n", keys = "<leader>o" },
           { mode = "x", keys = "<leader>o" },
+          { mode = "n", keys = "<leader>q" },
+          { mode = "x", keys = "<leader>q" },
           -- mini.bracketed
           { mode = "n", keys = "]" },
           { mode = "n", keys = "[" },
@@ -1008,14 +1089,6 @@ return {
         prefix = "gs",
       },
     },
-  }),
-
-  from_nixpkgs({
-    "echasnovski/mini.nvim",
-    main = "mini.pairs",
-    name = "mini.pairs",
-    event = "InsertEnter",
-    opts = {},
   }),
 
   from_nixpkgs({
@@ -1301,6 +1374,8 @@ return {
   from_nixpkgs({
     "mfussenegger/nvim-dap",
     keys = {
+      -- TODO: force debug mode when client can't reattach
+      -- alternatively, quit and clear state mapping
       {
         "<leader>d",
         function()
@@ -1998,7 +2073,7 @@ return {
           enable = false,
         },
         select = {
-          enable = true,
+          enable = false,
           lookahead = true,
           include_surrounding_whitespace = false,
           keymaps = {
@@ -2019,7 +2094,7 @@ return {
           },
         },
         move = {
-          enable = true,
+          enable = false,
           set_jumps = true,
           goto_next_start = {
             ["]a"] = "@parameter.inner",
