@@ -1,6 +1,7 @@
 ---
 name: "Update dependencies and create a PR with necessary Build check"
 on:
+  push:
   schedule:
     - cron: "0 5 */1 * *"
 jobs:
@@ -19,43 +20,22 @@ jobs:
           nix flake update nh
           nix flake update impermanence
           nix flake update agenix
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        id: create-pr
-        with:
-          title: Update flake.lock
-          add-paths: flake.lock
-          commit-message: "chore: update flake.lock"
-          body: |
-            Automatically created by [this](https://github.com/debugloop/dotfiles/actions/runs/${{ github.run_id }}) run.
-          delete-branch: true
-          draft: false
-      - name: Annotate SHA with check
-        id: create-check
-        uses: LouisBrunner/checks-action@v1.6.1
-        if: ${{ steps.create-pr.outputs.pull-request-head-sha }}
-        with:
-          name: Build System Flake
-          token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ steps.create-pr.outputs.pull-request-head-sha }}
-          details_url: https://github.com/debugloop/dotfiles/actions/runs/${{ github.run_id }}
-          output: '{ "summary": "https://github.com/debugloop/dotfiles/actions/runs/${{ github.run_id }}" }'
-          status: in_progress
-  run-check:
-    needs: update
-    uses: debugloop/dotfiles/.github/workflows/build.yml@main
-    with:
-      sha: ${{ needs.update.outputs.sha }}
-  set-check-result:
-    needs:
-      - update
-      - run-check
-    if: ${{ always() }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Update check status
-        uses: LouisBrunner/checks-action@v1.6.1
-        with:
-          check_id: ${{ needs.update.outputs.check_id }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          conclusion: ${{ needs.run-check.result }}
+      - name: Commit changes
+        id: commit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH=auto_update_flake_$(date -I)
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          git pull origin main
+          git switch -c $BRANCH
+          git add flake.lock
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git commit -m "chore(automated): update flake.lock"
+            git push origin $BRANCH
+            gh pr create --title "Auto Update Flake Dependencies $(date -I)" --body "This is an automated PR to update Flake dependencies."
+            gh pr merge --auto --delete-branch --squash "$BRANCH"
+          else
+            echo "No updates available today."
+          fi

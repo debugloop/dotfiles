@@ -1,15 +1,16 @@
 ---
 name: Build and check all targets
 on:
+  pull_request:
   push:
     paths:
       - '**.nix'
-  workflow_dispatch: {}
-  workflow_call:
-    inputs:
-      sha:
-        required: true
-        type: string
+  # workflow_dispatch: {}
+  # workflow_call:
+  #   inputs:
+  #     sha:
+  #       required: true
+  #       type: string
 jobs:
   build:
     runs-on: ubuntu-latest
