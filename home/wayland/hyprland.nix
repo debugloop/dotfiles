@@ -145,10 +145,10 @@
         "SUPER_SHIFT, j, movewindow, d"
 
         # workspace focus
-        "CTRL_SUPER, j, workspace, e-1"
-        "CTRL_SUPER, k, workspace, e+1"
-        "CTRL_SUPER, XF86AudioLowerVolume, workspace, e-1"
-        "CTRL_SUPER, XF86AudioRaiseVolume, workspace, e+1"
+        "CTRL_SUPER, j, workspace, m-1"
+        "CTRL_SUPER, k, workspace, m+1"
+        "CTRL_SUPER, XF86AudioLowerVolume, workspace, m-1"
+        "CTRL_SUPER, XF86AudioRaiseVolume, workspace, m+1"
 
         "SUPER, 1, workspace, 1"
         "SUPER, 2, workspace, 2"
