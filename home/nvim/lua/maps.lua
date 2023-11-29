@@ -148,6 +148,7 @@ vim.keymap.set("n", "g.", function()
   end
 end)
 
+-- open jumplist
 vim.keymap.set("n", "<leader>qj", function()
   local jumplist, _ = unpack(vim.fn.getjumplist())
   local qf_list = {}
@@ -162,8 +163,13 @@ vim.keymap.set("n", "<leader>qj", function()
     end
   end
   vim.fn.setqflist(qf_list, " ")
-  vim.cmd("copen")
-end)
+  vim.cmd.cwindow()
+end, { desc = "list jumplist" })
+
+-- toggle quickfix
+vim.keymap.set("n", "<leader><leader>", function()
+  vim.cmd.cwindow()
+end, { desc = "open quickfix" })
 
 -- add undo state when inserting a newline
 vim.keymap.set("i", "<cr>", "<cr><c-g>u")
