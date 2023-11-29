@@ -43,7 +43,6 @@ vim.opt.showmode = false -- no mode show
 vim.opt.signcolumn = "yes" -- always show signcolumn
 
 -- virtual text
-vim.opt.breakindent = true -- indent wrapped lines
 vim.opt.listchars = "eol:¬,tab:»·,trail:~,space:·" -- list these chars if enabled
 vim.opt.showbreak = "↪" -- virtual text for wrapped lines
 

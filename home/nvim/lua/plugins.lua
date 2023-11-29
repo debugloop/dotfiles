@@ -843,7 +843,7 @@ return {
           i = { "@customconditional.inner", "@conditional.inner" },
         }),
         l = require("mini.ai").gen_spec.treesitter({ a = "@loop.outer", i = { "@customloop.inner", "@loop.inner" } }),
-        s = require("mini.ai").gen_spec.treesitter({ a = "@string.outer", i = "@string.inner" }),
+        ["s"] = { { "%b''", '%b""', "%b``" }, "^.().*().$" },
         t = require("mini.ai").gen_spec.treesitter({
           a = { "@customtype.outer", "@type.outer" },
           i = { "@customtype.inner", "@type.inner" },
