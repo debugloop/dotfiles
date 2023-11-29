@@ -40,7 +40,7 @@ jobs:
         uses: LouisBrunner/checks-action@v1.6.1
         if: ${{ steps.create-pr.outputs.pull-request-head-sha }}
         with:
-          name: Build Flake
+          name: Build System Flake
           token: ${{ secrets.GITHUB_TOKEN }}
           sha: ${{ steps.create-pr.outputs.pull-request-head-sha }}
           details_url: https://github.com/debugloop/dotfiles/actions/runs/${{ github.run_id }}
