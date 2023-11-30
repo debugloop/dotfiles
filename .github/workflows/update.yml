@@ -47,6 +47,7 @@ jobs:
           output: '{ "summary": "https://github.com/debugloop/dotfiles/actions/runs/${{ github.run_id }}" }'
           status: in_progress
       - run: gh pr merge --auto --rebase --delete-branch ${{ steps.create-pr.outputs.pull-request-number }}
+        if: ${{ steps.create-pr.outputs.pull-request-head-sha }}
         env:
           GH_TOKEN: ${{ github.token }}
   run-check:
