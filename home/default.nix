@@ -120,7 +120,6 @@
       git
       gitAndTools.git-absorb
       gitAndTools.git-trim
-      gitlint
       glibc
       gnumake
       gofumpt

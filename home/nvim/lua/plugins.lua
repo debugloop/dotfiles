@@ -8,19 +8,17 @@ local function from_nixpkgs(spec)
 end
 
 return {
-  {
+  from_nixpkgs({
     "stevearc/conform.nvim",
     event = "BufWritePre",
     cmd = { "ConformInfo" },
-    commit = "4ecb4b07e2eca6f53dcc348d8c7120961abcbce9", -- TODO: revert to nixpkgs once https://github.com/stevearc/conform.nvim/pull/176 is in
     opts = {
       formatters_by_ft = {
         go = { "gofumpt", "goimports-reviser" },
         lua = { "stylua" },
         nix = { "nixpkgs_fmt" },
-        -- ["_"] = { "trim_whitespace" },
+        ["_"] = { "trim_whitespace" },
       },
-      log_level = vim.log.levels.DEBUG,
       format_on_save = {
         lsp_fallback = true,
         timeout_ms = 5000,
@@ -29,7 +27,7 @@ return {
     init = function()
       vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
     end,
-  },
+  }),
 
   from_nixpkgs({
     "sindrets/diffview.nvim",
@@ -1165,23 +1163,6 @@ return {
   }),
 
   from_nixpkgs({
-    "echasnovski/mini.nvim",
-    main = "mini.trailspace",
-    name = "mini.trailspace",
-    event = "InsertEnter",
-    keys = {
-      {
-        "<leader>w",
-        function()
-          require("mini.trailspace").trim()
-        end,
-        desc = "trim trailing whitespace",
-      },
-    },
-    opts = {},
-  }),
-
-  from_nixpkgs({
     "folke/noice.nvim",
     event = "VeryLazy",
     keys = {
@@ -2170,7 +2151,6 @@ return {
         },
       }),
     },
-    dev = false,
     keys = {
       {
         "<leader>u",
