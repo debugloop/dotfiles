@@ -38,7 +38,6 @@
   environment.systemPackages = with pkgs; [
     ddcutil # see above sudo rule
     networkmanagerapplet # required system-wide for icons
-    pinentry-emacs.gnome3 # required for gnupg agent
   ];
 
   fonts.packages = with pkgs; [
@@ -77,10 +76,6 @@
   };
 
   programs = {
-    gnupg.agent = {
-      enable = true;
-      pinentryFlavor = "gnome3";
-    };
     light.enable = true;
     nm-applet.enable = true;
     hyprland = {
