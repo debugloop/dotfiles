@@ -87,7 +87,7 @@
       grpcurl
       jq
       jwt-cli
-      yq
+      yq-go
       # cli utils
       ast-grep
       bmon
@@ -177,6 +177,20 @@
     rbw.enable = true;
     tealdeer.enable = true;
     tmate.enable = true;
+    wezterm = {
+      enable = true;
+      extraConfig = ''
+      local wezterm = require 'wezterm'
+      local config = {}
+      if wezterm.config_builder then
+        config = wezterm.config_builder()
+      end
+      config.color_scheme = 'AdventureTime'
+      config.enable_wayland = false
+      config.color_scheme = 'kanagawabones'
+      return config
+      '';
+    };
     zoxide.enable = true;
     bat = {
       enable = true;
