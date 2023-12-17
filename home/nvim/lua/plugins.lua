@@ -1108,6 +1108,13 @@ return {
     "echasnovski/mini.nvim",
     main = "mini.pick",
     name = "mini.pick",
+    dependencies = {
+      from_nixpkgs({
+        "echasnovski/mini.nvim",
+        main = "mini.extra",
+        name = "mini.extra",
+      }),
+    },
     event = "VeryLazy",
     keys = {
       {
@@ -1116,6 +1123,13 @@ return {
           require("mini.pick").builtin.files()
         end,
         desc = "find files",
+      },
+      {
+        "<leader>t",
+        function()
+          require("mini.extra").pickers.treesitter()
+        end,
+        desc = "find in treesitter",
       },
     },
     opts = {},
