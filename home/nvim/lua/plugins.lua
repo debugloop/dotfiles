@@ -743,6 +743,22 @@ return {
     event = "VeryLazy",
     keys = function(_, _)
       local maps = {}
+      for _, op in pairs({ "f" }) do
+        table.insert(maps, {
+          "]" .. op,
+          function()
+            require("mini.ai").move_cursor("left", "a", op, { search_method = "next" })
+          end,
+          desc = "Goto next start of a" .. op .. " textobject",
+        })
+        table.insert(maps, {
+          "[" .. op,
+          function()
+            require("mini.ai").move_cursor("left", "a", op, { search_method = "prev" })
+          end,
+          desc = "Goto previous start of a" .. op .. " textobject",
+        })
+      end
       for _, op in pairs({
         "b",
         "(",
@@ -759,7 +775,6 @@ return {
         "t",
         "a",
         "c",
-        "f",
         "i",
         "l",
         "t",
