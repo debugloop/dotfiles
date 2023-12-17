@@ -75,6 +75,7 @@
     extraConfig = {
       commit.gpgsign = true;
       core.excludesfile = "~/.gitignore";
+      diff.algorithm = "histogram";
       gpg.format = "ssh";
       pull.rebase = true;
       push = {
