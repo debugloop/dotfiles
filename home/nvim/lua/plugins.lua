@@ -2208,4 +2208,12 @@ return {
       require("telescope").load_extension("undo")
     end,
   }),
+
+  {
+    "danobi/prr",
+    lazy = false,
+    config = function(plugin)
+      vim.opt.rtp:append(plugin.dir .. "/vim")
+    end,
+  },
 }

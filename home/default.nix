@@ -162,6 +162,19 @@
       dfu-util
       gcc-arm-embedded
       qmk
+      (rustPlatform.buildRustPackage rec {
+        pname = "prr";
+        version = "0.8.1";
+        src = fetchCrate {
+          inherit pname version;
+          hash = "sha256-dnCZ37YKD1Yn/ZJqFBzDp085DMElWQrHKVeEX1y6A/c=";
+        };
+        nativeBuildInputs = [ pkg-config ];
+        buildInputs = [ openssl openssl.dev ];
+        cargoLock = {
+            lockFile = "${src}/Cargo.lock";
+        };
+      })
     ];
   };
 
