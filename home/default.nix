@@ -168,7 +168,6 @@
   programs = {
     dircolors.enable = true;
     fzf.enable = true;
-    gh.enable = true;
     gpg.enable = true;
     home-manager.enable = true;
     htop.enable = true;
@@ -184,9 +183,11 @@
       if wezterm.config_builder then
         config = wezterm.config_builder()
       end
-      config.color_scheme = 'AdventureTime'
+      config.font = wezterm.font('FiraCode Nerd Font')
+      config.font_size = 11.0
       config.enable_wayland = false
       config.color_scheme = 'kanagawabones'
+      config.enable_tab_bar = false
       return config
       '';
     };
@@ -209,6 +210,13 @@
     eza = {
       enable = true;
       enableAliases = true;
+    };
+    gh = {
+      enable = true;
+      settings = {
+        version = 1;
+        git_protocol = "ssh";
+      };
     };
     go = {
       enable = true;

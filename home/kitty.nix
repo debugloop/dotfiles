@@ -77,6 +77,9 @@
       tab_bar_margin_color = "#${config.colors.background}";
       url_color = "#${config.colors.bright-blue}";
     };
+    extraConfig = ''
+        mouse_map left click ungrabbed mouse_handle_click selection link prompt
+    '';
     keybindings = {
       # os windows
       "ctrl+shift+n" = "launch --type=os-window --cwd=current";
@@ -106,7 +109,7 @@
 
       # kitty goodies
       "ctrl+shift+e" = "open_url_with_hints";
-      "ctrl+shift+w" = "kitten hints --type word --program -";
+      "ctrl+shift+space" = "kitten hints --type word --program -";
       "ctrl+shift+u" = "kitten unicode_input";
       "ctrl+shift+escape" = "kitty_shell window";
       "ctrl+shift+delete" = "clear_terminal reset active";
