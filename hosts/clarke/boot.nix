@@ -38,8 +38,9 @@
       };
     };
     kernelPackages = pkgs.linuxPackages_latest;
-    kernelModules = [ "kvm-intel" ];
-    extraModulePackages = [ ];
+    kernelModules = [ "kvm-intel" "v4l2loopback" ];
+    extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback.out ];
+
     tmp.useTmpfs = true;
   };
 

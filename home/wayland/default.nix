@@ -17,7 +17,13 @@
   programs = {
     firefox.enable = true;
     mpv.enable = true;
-    obs-studio.enable = true;
+    obs-studio = {
+      enable = true;
+      plugins = with pkgs.obs-studio-plugins; [
+        obs-backgroundremoval
+        wlrobs
+      ];
+    };
     qutebrowser.enable = true;
     wofi = {
       enable = true;
