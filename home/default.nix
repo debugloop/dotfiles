@@ -15,8 +15,8 @@
   ];
 
   services = {
-      blueman-applet.enable = true;
-      gnome-keyring.enable = true;
+    blueman-applet.enable = true;
+    gnome-keyring.enable = true;
   };
 
   nixpkgs.config = {
@@ -178,17 +178,17 @@
     wezterm = {
       enable = true;
       extraConfig = ''
-      local wezterm = require 'wezterm'
-      local config = {}
-      if wezterm.config_builder then
-        config = wezterm.config_builder()
-      end
-      config.font = wezterm.font('FiraCode Nerd Font')
-      config.font_size = 11.0
-      config.enable_wayland = false
-      config.color_scheme = 'kanagawabones'
-      config.enable_tab_bar = false
-      return config
+        local wezterm = require 'wezterm'
+        local config = {}
+        if wezterm.config_builder then
+          config = wezterm.config_builder()
+        end
+        config.font = wezterm.font('FiraCode Nerd Font')
+        config.font_size = 11.0
+        config.enable_wayland = false
+        config.color_scheme = 'kanagawabones'
+        config.enable_tab_bar = false
+        return config
       '';
     };
     zoxide.enable = true;

@@ -78,7 +78,7 @@
       url_color = "#${config.colors.bright-blue}";
     };
     extraConfig = ''
-        mouse_map left click ungrabbed mouse_handle_click selection link prompt
+      mouse_map left click ungrabbed mouse_handle_click selection link prompt
     '';
     keybindings = {
       # os windows
@@ -193,3 +193,4 @@
     };
   };
 }
+
