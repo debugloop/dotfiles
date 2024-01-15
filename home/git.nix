@@ -33,6 +33,8 @@
       ch = "cherry -v";
       d = "diff -w";
       ds = "-c delta.side-by-side=true d";
+      fixup = "commit --fixup";
+      fi = "commit --fixup";
       l = "log --pretty=format:'%C(yellow)%h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative -32";
       lg = "l --graph --boundary --cherry-mark";
       lp = "-c delta.side-by-side=true log --pretty=format:'%C(yellow)commit %h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative -16 -p -- :^vendor :^go.mod :^go.sum"; # include "commit " for delta `n` navigation
@@ -53,20 +55,14 @@
       # files from commits
       f = "show -m --pretty=tformat: --name-only";
 
-      # fancy branch switch
-      go = "!f() { git branch | fzf | head -n1 | cut -c 3- | xargs git switch;}; f";
-
       # repo main/master disambiguation
-      main = "symbolic-ref refs/remotes/origin/HEAD --short";
-      rbmi = "!f() { git rb -i $(git main); }; f";
-      rbm = "!f() { git rb $(git main); }; f";
-      main-alias = "!git symbolic-ref refs/heads/main refs/heads/master && git symbolic-ref refs/remotes/origin/main refs/remotes/origin/master";
+      main = "!f() { git symbolic-ref refs/remotes/origin/HEAD --short | cut -d/ -f2; }; f";
 
-      # PR visualization: `gh pr checkout XXX`
-      dpr = "!f() { git ds $(git main)...; }; f";
-      lpr = "!f() { git lg $(git main)...; }; f";
-
-      rekt = "!f() { git a -u; git amend; git puf; }; f";
+      # fast ops
+      pm = "!f() { git fetch origin $(git main):$(git main); }; f"; # pull main
+      rbmi = "!f() { git pm; git rb -i $(git main); }; f"; # rebase interactively on main
+      rbm = "!f() { git pm; git rb $(git main); }; f"; # rebase on main
+      rekt = "!f() { git a -u; git amend; git puf; }; f"; # add updates to amend commit and force push
     };
     ignores = [
       "*~"
