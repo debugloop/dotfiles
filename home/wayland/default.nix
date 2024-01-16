@@ -20,8 +20,7 @@
     obs-studio = {
       enable = true;
       plugins = with pkgs.obs-studio-plugins; [
-        obs-backgroundremoval
-        wlrobs
+        #obs-backgroundremoval
       ];
     };
     qutebrowser.enable = true;
