@@ -1411,7 +1411,8 @@ return {
             if lsp_err == nil then
               for _, symbol in pairs(lsp_response[1].result) do
                 if
-                  symbol.detail:sub(1, 4) == "func"
+                  symbol["detail"] ~= nil
+                  and symbol.detail:sub(1, 4) == "func"
                   and symbol.name:sub(1, 4) == "Test"
                   and cursor[1] > symbol.range.start.line
                   and cursor[1] < symbol.range["end"].line
