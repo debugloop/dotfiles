@@ -1,9 +1,7 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
   # TODO: figure out how to focus from floating windows to tiled windows
-  # TODO: exec ${pkgs.clipman}/bin/clipman clear --all on startup
-  # TODO: make "Mod4+Ctrl+v" = "exec ${pkgs.clipman}/bin/clipman pick -t wofi"; or similar
   wayland.windowManager.hyprland = {
     enable = true;
     settings = {
@@ -53,7 +51,7 @@
         };
       };
       animations = {
-        enabled = true;
+        enabled = false;
       };
       animation = {
         bezier = [
@@ -70,7 +68,7 @@
       };
       master = {
         new_is_master = false;
-        orientation = "left";
+        orientation = "right";
         mfact = 0.7;
       };
       bind = [
@@ -78,6 +76,7 @@
         "SUPER, return, exec, kitty"
         "SUPER, backslash, exec, swaylock"
         "SUPER, d, exec, wofi -G -p '' -S run,"
+        "SUPER_CTRL, v, exec, ${pkgs.clipman}/bin/clipman pick -t wofi"
         "SUPER, n, exec, makoctl dismiss"
         "SUPER_SHIFT, n, exec, makoctl dismiss -a"
         ", Print, exec, fish -c \"grim -g (slurp)\""
@@ -109,46 +108,37 @@
 
         "SUPER, v, togglefloating,"
         "SUPER, q, pin,"
+        "SUPER, p, pin,"
 
         "SUPER, f, fullscreen,0"
         "SUPER_SHIFT, f, fullscreen,1"
         "SUPER_CTRL, f, fakefullscreen,"
 
+
         # resizing
         "SUPER, XF86AudioRaiseVolume, resizeactive, 20 0"
         "SUPER, XF86AudioLowerVolume, resizeactive, -20 0"
-        "SUPER, mouse_down, resizeactive, 20 0"
-        "SUPER, mouse_up, resizeactive, -20 0"
-
-        "SUPER, w, togglegroup,"
-        "SUPER_SHIFT, w, lockactivegroup, toggle"
-        "SUPER, tab, changegroupactive, f"
-        "SUPER_SHIFT, tab, changegroupactive, b"
+        "SUPER_SHIFT, XF86AudioRaiseVolume, resizeactive, 0 20"
+        "SUPER_SHIFT, XF86AudioLowerVolume, resizeactive, 0 -20"
 
         # window focus
-        "SUPER, tab, cyclenext," # useful for getting to floats
+        "SUPER, tab, cyclenext, tiled"
         "SUPER, tab, bringactivetotop"
-        "SUPER_SHIFT, tab, cyclenext, prev"
+        "SUPER_SHIFT, tab, cyclenext, floating"
         "SUPER, h, movefocus, l"
         "SUPER, l, movefocus, r"
         "SUPER, k, movefocus, u"
         "SUPER, j, movefocus, d"
 
         # window moving
-        "SUPER_SHIFT, h, moveintogroup, l"
         "SUPER_SHIFT, h, movewindow, l"
-        "SUPER_SHIFT, l, moveintogroup, r"
         "SUPER_SHIFT, l, movewindow, r"
-        "SUPER_SHIFT, k, moveintogroup, u"
         "SUPER_SHIFT, k, movewindow, u"
-        "SUPER_SHIFT, j, moveintogroup, d"
         "SUPER_SHIFT, j, movewindow, d"
 
         # workspace focus
         "CTRL_SUPER, j, workspace, m-1"
         "CTRL_SUPER, k, workspace, m+1"
-        "CTRL_SUPER, XF86AudioLowerVolume, workspace, m-1"
-        "CTRL_SUPER, XF86AudioRaiseVolume, workspace, m+1"
 
         "SUPER, 1, workspace, 1"
         "SUPER, 2, workspace, 2"
@@ -204,10 +194,15 @@
         ", XF86AudioLowerVolume, exec, volumectl down 1 && pkill -SIGRTMIN+4 waybar"
         "SHIFT, XF86AudioRaiseVolume, exec, volumectl up 5 && pkill -SIGRTMIN+4 waybar"
         "SHIFT, XF86AudioLowerVolume, exec, volumectl down 5 && pkill -SIGRTMIN+4 waybar"
+        "CTRL, XF86AudioRaiseVolume, exec, sudo ddcutil -d 1 setvcp 10 + 20"
+        "CTRL, XF86AudioLowerVolume, exec, sudo ddcutil -d 1 setvcp 10 - 20"
 
         ", XF86AudioPlay, exec, playerctl -p spotify play-pause"
         ", XF86AudioNext, exec, playerctl -p spotify next"
         ", XF86AudioPrev, exec, playerctl -p spotify previous"
+      ];
+      workspace = [
+        "special, gapsout:40, gapsin:10"
       ];
       windowrulev2 = [
         "float, title:^(Firefox — Sharing Indicator)$"
