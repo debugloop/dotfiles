@@ -77,7 +77,6 @@
         };
         "custom/weather" = {
           "exec" = "${pkgs.curl}/bin/curl 'https://wttr.in/?format=1'";
-          "on-click" = "${pkgs.firefox}/bin/firefox https://wttr.in/";
           "interval" = 3600;
         };
         "cpu" = {
@@ -91,7 +90,7 @@
         "disk" = {
           "interval" = 60;
           "format" = "󰋊 {percentage_used}%";
-          "path" = "/persist";
+          "path" = "/nix";
         };
         "idle_inhibitor" = {
           "format" = "{icon}";
