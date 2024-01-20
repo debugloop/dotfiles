@@ -4,6 +4,7 @@
   home = {
     packages = with pkgs; [
       git
+      tig
     ];
     file.".gitignore".text = ''
       .session.nvim
