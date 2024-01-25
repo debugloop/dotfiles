@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   programs.kitty = {
     enable = true;
@@ -21,6 +21,7 @@
       scrollback_lines = "4000";
       scrollback_pager_history_size = "50";
       scrollback_fill_enlarged_window = "yes";
+      scrollback_pager = ''bash -c "exec nvim 63<&0 0</dev/null -c 'autocmd TermEnter * stopinsert' -c 'autocmd TermClose * call cursor(max([0,INPUT_LINE_NUMBER-1])+CURSOR_LINE, CURSOR_COLUMN)' -c 'terminal sed </dev/fd/63 -e \"s/'$'\x1b''\'']8;file:[^\]*[\]//g\" && sleep 0.01 && printf \"'$'\x1b''\'']2;\"' -c 'set modifiable'"'';
 
       # selection
       strip_trailing_spaces = "smart";
@@ -67,9 +68,9 @@
       inactive_tab_foreground = "#${config.colors.bright-black}";
       mark1_background = "#${config.colors.bright-red}";
       mark1_foreground = "#${config.colors.background}";
-      mark2_background = "#${config.colors.bright-green}";
+      mark2_background = "#${config.colors.bright-yellow}";
       mark2_foreground = "#${config.colors.background}";
-      mark3_background = "#${config.colors.bright-blue}";
+      mark3_background = "#${config.colors.bright-green}";
       mark3_foreground = "#${config.colors.background}";
       selection_background = "#${config.colors.bright-black}";
       selection_foreground = "#${config.colors.white}";
@@ -81,6 +82,9 @@
       mouse_map left click ungrabbed mouse_handle_click selection link prompt
     '';
     keybindings = {
+      "f1" = "toggle_marker iregex 1 \\\\berr(or)?\\\\b 2 \\\\bwarn(ing)?\\\\b 3 \\\\b(info|debug|trace)\\\\b";
+      "f2" = "toggle_marker regex 1 \\\\bOOMKilled\\\\b 2 \\\\bTerminated\\\\b 3 \\\\bRunning\\\\b";
+
       # os windows
       "ctrl+shift+n" = "launch --type=os-window --cwd=current";
 
@@ -97,22 +101,26 @@
       "ctrl+shift+]" = "scroll_to_prompt +1";
 
       # dump output to vim
-      "scrollback_pager" = ''bash -c "exec nvim 63<&0 0</dev/null -c 'autocmd TermEnter * stopinsert' -c 'autocmd TermClose * call cursor(max([0,INPUT_LINE_NUMBER-1])+CURSOR_LINE, CURSOR_COLUMN)' -c 'terminal sed </dev/fd/63 -e \"s/'$'\x1b''\'']8;
-      ;file:[^\]*[\]//g\" && sleep 0.01 && printf \"'$'\x1b''\'']2;\"' -c 'set modifiable'"'';
       "ctrl+shift+h" = "show_scrollback";
       "ctrl+shift+g" = "show_last_command_output";
 
       # font size
-      "ctrl+shift+equal" = "change_font_size all +2.0";
-      "ctrl+shift+minus" = "change_font_size all -2.0";
-      "ctrl+shift+0" = "change_font_size all 0";
+      "ctrl+shift+equal" = "change_font_size current +2.0";
+      "ctrl+shift+minus" = "change_font_size current -2.0";
+      "ctrl+shift+0" = "change_font_size current 0";
 
-      # kitty goodies
-      "ctrl+shift+e" = "open_url_with_hints";
-      "ctrl+shift+space" = "kitten hints --type word --program -";
+      # paste things
+      "ctrl+shift+p>h" = "kitten hints --type hash --program -";
+      "ctrl+shift+p>w" = "kitten hints --type word --program -";
+      "ctrl+shift+p>l" = "kitten hints --type line --program -";
+      "ctrl+shift+p>p" = "kitten hints --type path --program -";
+
+      # quick actions
       "ctrl+shift+u" = "kitten unicode_input";
-      "ctrl+shift+escape" = "kitty_shell window";
-      "ctrl+shift+delete" = "clear_terminal reset active";
+      "ctrl+shift+e" = "open_url_with_hints";
+      "ctrl+shift+o" = "kitten hints --type linenum";
+
+      # markers
       "ctrl+shift+m" = "create_marker";
       "ctrl+shift+," = "remove_marker";
 
