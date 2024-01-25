@@ -59,11 +59,15 @@
       # repo main/master disambiguation
       main = "!f() { git symbolic-ref refs/remotes/origin/HEAD --short | cut -d/ -f2; }; f";
 
-      # fast ops
-      pm = "!f() { git fetch origin $(git main):$(git main); }; f"; # pull main
-      rbmi = "!f() { git pm; git rb -i $(git main); }; f"; # rebase interactively on main
-      rbm = "!f() { git pm; git rb $(git main); }; f"; # rebase on main
+      # fast ops on main/master
+      pm = "!f() { test $(git rev-parse --abbrev-ref HEAD) != $(git main) && git fetch origin $(git main):$(git main) || git p; }; f"; # pull main
+      bd = "!f() { git pm && git branch -d $(git branch --merged $(git main) --no-contains $(git main) --format='%(refname:short)'); }; f"; # delete branches merged to main
+      rbmi = "!f() { git pm && git rb -i $(git main); }; f"; # rebase interactively on main
+      rbm = "!f() { git pm && git rb $(git main); }; f"; # rebase on main
+
+      # update PR with unstaged
       rekt = "!f() { git a -u; git amend; git puf; }; f"; # add updates to amend commit and force push
+
     };
     ignores = [
       "*~"
