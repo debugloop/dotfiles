@@ -173,7 +173,6 @@
     htop.enable = true;
     less.enable = true;
     rbw.enable = true;
-    tealdeer.enable = true;
     tmate.enable = true;
     wezterm = {
       enable = true;
