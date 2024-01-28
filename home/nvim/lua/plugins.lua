@@ -105,16 +105,17 @@ return {
         char = {
           enabled = true,
           keys = { "f", "F", "t", "T", ",", ";" },
-          config = function(opts)
-            opts.autohide = vim.fn.mode(true):find("no")
+          char_actions = function(motion)
+            return {
+              [";"] = "right",
+              [","] = "left",
+              [motion:lower()] = "right",
+              [motion:upper()] = "left",
+            }
           end,
-          multi_line = false,
+          -- multi_line = false,
           highlight = { backdrop = false },
         },
-      },
-      label = {
-        uppercase = false,
-        current = false,
       },
     },
   }),
