@@ -14,10 +14,6 @@
       ];
       right_format = "$memory_usage$battery";
 
-      cmd_duration = {
-        show_notifications = true;
-      };
-
       custom.persistent = {
         when = ''not persistent'';
         format = "[󱙄](bold) ";
