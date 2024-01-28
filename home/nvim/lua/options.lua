@@ -18,10 +18,6 @@ vim.opt.swapfile = false -- disable swap files
 vim.opt.undodir = vim.fn.expand("~/.undo") -- set undo location
 vim.opt.undofile = true -- enable persistent undo
 
--- window title
-vim.opt.title = true -- use custom title
-vim.opt.titlestring = [[vim %{substitute(getcwd(), '/home/danieln', '~', 0)}]] -- show cwd only
-
 -- editing
 vim.opt.foldenable = false -- no folding unless I close one myself
 vim.opt.foldmethod = "indent" -- use indent for folding

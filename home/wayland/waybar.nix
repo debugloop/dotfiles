@@ -128,13 +128,6 @@
         "hyprland/window" = {
           "format" = "{}";
           "max-length" = 160;
-          "rewrite" = {
-            "(.*) — Mozilla Firefox" = " $1";
-            "(.*) - Slack" = "󰒱 $1";
-            "(.*) - Google Chrome" = " $1";
-            "vim (.*)" = " vim $1";
-            "fish (.*)" = " $1";
-          };
         };
         "hyprland/workspaces" = {
           "all-outputs" = false;
