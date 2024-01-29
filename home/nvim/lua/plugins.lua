@@ -1026,6 +1026,25 @@ return {
 
   from_nixpkgs({
     "echasnovski/mini.nvim",
+    main = "mini.hipatterns",
+    name = "mini.hipatterns",
+    event = "VeryLazy",
+    opts = {
+      highlighters = {
+        fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "@text.warning" },
+        hack = { pattern = "%f[%w]()HACK()%f[%W]", group = "@text.danger" },
+        todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "@text.todo" },
+        note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "@text.note" },
+      },
+    },
+    config = function(_, opts)
+      opts.highlighters.hex_color = require("mini.hipatterns").gen_highlighter.hex_color()
+      require("mini.hipatterns").setup(opts)
+    end,
+  }),
+
+  from_nixpkgs({
+    "echasnovski/mini.nvim",
     main = "mini.indentscope",
     name = "mini.indentscope",
     event = "VeryLazy",
