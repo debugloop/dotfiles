@@ -228,3 +228,50 @@ vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "TermOpen" }, {
     end
   end,
 })
+
+-- highlight definitions (adapted from nvim-treesitter-refactor
+-- local highlight_defs_augroup = vim.api.nvim_create_augroup("highlight_defs", { clear = true })
+-- local highlight_defs = vim.api.nvim_create_namespace("nvim-treesitter-usages")
+-- vim.api.nvim_create_autocmd({ "CursorHold" }, {
+--   group = highlight_defs_augroup,
+--   callback = function(event)
+--     local ts_utils = require("nvim-treesitter.ts_utils")
+--     local locals = require("nvim-treesitter.locals")
+--     local last_nodes = {}
+--     local node_at_point = ts_utils.get_node_at_cursor()
+--     -- Don't calculate usages again if we are on the same node.
+--     if
+--       node_at_point
+--       and node_at_point == last_nodes[event.buf]
+--       and #vim.api.nvim_buf_get_extmarks(event.buf, highlight_defs, 0, -1, {}) > 0
+--     then
+--       return
+--     else
+--       last_nodes[event.buf] = node_at_point
+--     end
+--
+--     vim.api.nvim_buf_clear_namespace(event.buf, highlight_defs, 0, -1)
+--     if not node_at_point then
+--       return
+--     end
+--
+--     local def_node, scope = locals.find_definition(node_at_point, event.buf)
+--     local usages = locals.find_usages(def_node, scope, event.buf)
+--
+--     for _, usage_node in ipairs(usages) do
+--       if usage_node ~= node_at_point then
+--         ts_utils.highlight_node(usage_node, event.buf, highlight_defs, "CurSearch")
+--       end
+--     end
+--
+--     if def_node ~= node_at_point then
+--       ts_utils.highlight_node(def_node, event.buf, highlight_defs, "IncSearch")
+--     end
+--   end,
+-- })
+-- vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter" }, {
+--   group = highlight_defs_augroup,
+--   callback = function(event)
+--     vim.api.nvim_buf_clear_namespace(event.buf, highlight_defs, 0, -1)
+--   end,
+-- })
