@@ -193,10 +193,6 @@ end, { desc = "set conceal" })
 vim.keymap.set("n", "<leader>oi", function()
   vim.g.miniindentscope_disable = not vim.g.miniindentscope_disable
 end, { desc = "set indentscope" })
-vim.keymap.set("n", "<leader>oI", function()
-  require("illuminate").toggle()
-  vim.g.illuminate_disable = not vim.g.illuminate_disable
-end, { desc = "set illuminate" })
 vim.keymap.set("n", "<leader>ol", function()
   vim.o.list = not vim.o.list
 end, { desc = "set list" })
