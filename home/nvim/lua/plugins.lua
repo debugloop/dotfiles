@@ -2021,7 +2021,7 @@ return {
     end,
   }),
 
-  from_nixpkgs({
+  {
     "nvim-treesitter/nvim-treesitter",
     event = "BufReadPost",
     opts = {
@@ -2045,18 +2045,18 @@ return {
     config = function(_, opts)
       require("nvim-treesitter.configs").setup(opts)
     end,
-  }),
+  },
 
   from_nixpkgs({
     "nvim-treesitter/nvim-treesitter-context",
-    dependencies = from_nixpkgs({ "nvim-treesitter/nvim-treesitter" }),
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     event = "VeryLazy",
   }),
 
   from_nixpkgs({
     "nvim-treesitter/nvim-treesitter-refactor",
     main = "nvim-treesitter.configs",
-    dependencies = from_nixpkgs({ "nvim-treesitter/nvim-treesitter" }),
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     event = "VeryLazy",
     opts = {
       refactor = {
@@ -2097,7 +2097,7 @@ return {
   from_nixpkgs({
     "nvim-treesitter/nvim-treesitter-textobjects",
     main = "nvim-treesitter.configs",
-    dependencies = from_nixpkgs({ "nvim-treesitter/nvim-treesitter" }),
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     event = "VeryLazy",
     opts = {
       textobjects = {
