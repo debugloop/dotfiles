@@ -1033,6 +1033,7 @@ return {
       highlighters = {
         fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "@text.warning" },
         hack = { pattern = "%f[%w]()HACK()%f[%W]", group = "@text.danger" },
+        bug = { pattern = "%f[%w]()BUG()%f[%W]", group = "@text.danger" },
         todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "@text.todo" },
         note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "@text.note" },
       },
