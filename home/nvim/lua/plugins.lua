@@ -1165,26 +1165,24 @@ return {
     main = "mini.splitjoin",
     name = "mini.splitjoin",
     keys = { "gS" },
-    opts = {
-      split = {
-        hooks_post = {
-          function()
+    config = function(_, _)
+      require("mini.splitjoin").setup({
+        split = {
+          hooks_post = {
             require("mini.splitjoin").gen_hook.add_trailing_separator({
               brackets = { "%b()", "%b[]", "%b{}" },
-            })
-          end,
+            }),
+          },
         },
-      },
-      join = {
-        hooks_post = {
-          function()
+        join = {
+          hooks_post = {
             require("mini.splitjoin").gen_hook.del_trailing_separator({
               brackets = { "%b()", "%b[]", "%b{}" },
-            })
-          end,
+            }),
+          },
         },
-      },
-    },
+      })
+    end,
   }),
 
   from_nixpkgs({
