@@ -1152,8 +1152,20 @@ return {
         end,
         desc = "find in treesitter",
       },
+      {
+        "z=",
+        function()
+          require("mini.extra").pickers.spellsuggest()
+        end,
+        desc = "spell suggest",
+      },
     },
-    opts = {},
+    opts = {
+      mappings = {
+        move_up = "<c-k>",
+        move_down = "<c-j>",
+      },
+    },
     config = function(_, opts)
       require("mini.pick").setup(opts)
       vim.ui.select = require("mini.pick").ui_select
