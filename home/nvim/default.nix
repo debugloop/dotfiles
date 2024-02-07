@@ -14,7 +14,9 @@
     "nvim/ftplugin".source = ./ftplugin;
     "nvim/after/queries/go/textobjects.scm".source = ./go-textobjects.scm;
     "nvim/snippets/go.snippets".source = ./go.snippets;
-    "nvim/parser".source = "${pkgs.symlinkJoin { name = "treesitter-parsers"; paths = pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies; }}/parser";
+    #"nvim/parser".source = "${pkgs.symlinkJoin { name = "treesitter-parsers"; paths = pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies; }}/parser";
+    "nvim/parser".source = "${pkgs.symlinkJoin { name = "treesitter-parsers"; paths = builtins.filter (x: ((builtins.parseDrvName x.name).name) != "vimplugin-treesitter-grammar-javascript") pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies; }}/parser";
+    
   };
 
   xdg.dataFile = builtins.listToAttrs (

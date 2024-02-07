@@ -2023,7 +2023,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     event = "BufReadPost",
     opts = {
-      ensure_installed = {}, -- we get this from nix
+      ensure_installed = { "javascript" }, -- we get this from nix
       highlight = {
         enable = true,
       },
