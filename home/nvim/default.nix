@@ -41,6 +41,7 @@
       "nvim-dap"
       "nvim-lint"
       "nvim-lspconfig"
+      "nvim-notify"
       "nvim-snippy"
       "nvim-tree-lua"
       "nvim-treesitter"

@@ -1207,7 +1207,10 @@ return {
         desc = "show message history",
       },
     },
-    dependencies = { from_nixpkgs({ "MunifTanjim/nui.nvim" }) },
+    dependencies = {
+      from_nixpkgs({ "MunifTanjim/nui.nvim" }),
+      from_nixpkgs({ "rcarriga/nvim-notify" }),
+    },
     opts = {
       presets = {
         bottom_search = true,
@@ -1220,6 +1223,10 @@ return {
           ["vim.lsp.util.stylize_markdown"] = true,
           ["cmp.entry.get_documentation"] = true,
         },
+      },
+      messages = {
+        enabled = true,
+        view = "mini",
       },
       views = {
         mini = {
