@@ -942,8 +942,8 @@ return inject_all({
         },
         triggers = {
           -- custom modes
-          { mode = "n", keys = "<leader>m" },
-          { mode = "x", keys = "<leader>m" },
+          { mode = "n", keys = "<leader>M" },
+          { mode = "x", keys = "<leader>M" },
           { mode = "n", keys = "<leader>d" },
           { mode = "x", keys = "<leader>d" },
           { mode = "n", keys = "<leader>g" },
@@ -976,14 +976,14 @@ return inject_all({
         },
         clues = {
           -- maps that don't quit move mode
-          { mode = "n", keys = "<leader>mh", postkeys = "<leader>m" },
-          { mode = "n", keys = "<leader>mj", postkeys = "<leader>m" },
-          { mode = "n", keys = "<leader>mk", postkeys = "<leader>m" },
-          { mode = "n", keys = "<leader>ml", postkeys = "<leader>m" },
-          { mode = "x", keys = "<leader>mh", postkeys = "<leader>m" },
-          { mode = "x", keys = "<leader>mj", postkeys = "<leader>m" },
-          { mode = "x", keys = "<leader>mk", postkeys = "<leader>m" },
-          { mode = "x", keys = "<leader>ml", postkeys = "<leader>m" },
+          { mode = "n", keys = "<leader>Mh", postkeys = "<leader>M" },
+          { mode = "n", keys = "<leader>Mj", postkeys = "<leader>M" },
+          { mode = "n", keys = "<leader>Mk", postkeys = "<leader>M" },
+          { mode = "n", keys = "<leader>Ml", postkeys = "<leader>M" },
+          { mode = "x", keys = "<leader>Mh", postkeys = "<leader>M" },
+          { mode = "x", keys = "<leader>Mj", postkeys = "<leader>M" },
+          { mode = "x", keys = "<leader>Mk", postkeys = "<leader>M" },
+          { mode = "x", keys = "<leader>Ml", postkeys = "<leader>M" },
           -- maps that don't quit option mode (all of them)
           { mode = "n", keys = "<leader>ob", postkeys = "<leader>o" }, -- background
           { mode = "n", keys = "<leader>oc", postkeys = "<leader>o" }, -- conceal
@@ -1102,18 +1102,18 @@ return inject_all({
     name = "mini.move",
     event = "VeryLazy", -- load on event for clue to work correctly
     keys = {
-      { "<leader>m", "<nop>", { desc = "+move" } },
+      { "<leader>M", "<nop>", { desc = "+move" } },
     },
     opts = {
       mappings = {
-        left = "<leader>mh",
-        right = "<leader>ml",
-        down = "<leader>mj",
-        up = "<leader>mk",
-        line_left = "<leader>mh",
-        line_right = "<leader>ml",
-        line_down = "<leader>mj",
-        line_up = "<leader>mk",
+        left = "<leader>Mh",
+        right = "<leader>Ml",
+        down = "<leader>Mj",
+        up = "<leader>Mk",
+        line_left = "<leader>Mh",
+        line_right = "<leader>Ml",
+        line_down = "<leader>Mj",
+        line_up = "<leader>Mk",
       },
     },
   },
@@ -1164,11 +1164,32 @@ return inject_all({
         desc = "find files",
       },
       {
+        "<leader>F",
+        function()
+          require("mini.extra").pickers.visit_paths()
+        end,
+        desc = "find in visits",
+      },
+      {
+        "<leader>m",
+        function()
+          require("mini.extra").pickers.marks({ scope = "global" }, {})
+        end,
+        desc = "find in marks",
+      },
+      {
         "<leader>t",
         function()
           require("mini.extra").pickers.treesitter()
         end,
         desc = "find in treesitter",
+      },
+      {
+        "<leader>T",
+        function()
+          require("mini.extra").pickers.hipatterns()
+        end,
+        desc = "find in TODOs",
       },
       {
         "z=",
@@ -1226,6 +1247,14 @@ return inject_all({
   },
 
   {
+    "echasnovski/mini.nvim",
+    main = "mini.visits",
+    name = "mini.visits",
+    event = "VeryLazy",
+    opts = {},
+  },
+
+  {
     "folke/noice.nvim",
     event = "VeryLazy",
     keys = {
@@ -1267,6 +1296,12 @@ return inject_all({
     config = function(_, opts)
       require("noice").setup(opts)
     end,
+  },
+
+  {
+    "yorickpeterse/nvim-pqf",
+    event = "VeryLazy",
+    opts = {},
   },
 
   {

@@ -42,6 +42,7 @@
       "nvim-lint"
       "nvim-lspconfig"
       "nvim-notify"
+      "nvim-pqf"
       "nvim-snippy"
       "nvim-tree-lua"
       "nvim-treesitter"
