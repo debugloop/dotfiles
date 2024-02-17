@@ -1440,8 +1440,6 @@ return inject_all({
   {
     "mfussenegger/nvim-dap",
     keys = {
-      -- TODO: force debug mode when client can't reattach
-      -- alternatively, quit and clear state mapping
       {
         "<leader>d",
         function()
@@ -1487,8 +1485,8 @@ return inject_all({
               end
             end
             -- if we can't find a specific one we could run the whole test file:
-            -- dap.run(dap.configurations.go[1])
-            -- return
+            dap.run(dap.configurations.go[1])
+            return
           end
           -- try to restart a session
           dap.run_last()
@@ -2095,7 +2093,7 @@ return inject_all({
     main = "nvim-treesitter.configs",
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
-    }, -- TODO: why can't this dependency be a subtable?
+    },
     event = "VeryLazy",
     opts = {
       refactor = {
