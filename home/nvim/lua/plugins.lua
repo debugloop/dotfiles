@@ -1,14 +1,31 @@
-local function from_nixpkgs(spec)
-  local name = spec[1]
-  local plugin_name = name:match("[^/]+$")
+local function inject(spec)
+  if type(spec) ~= "table" then
+    vim.notify("Encountered bad plugin spec. Must use a table, not string. Check config.", vim.log.levels.ERROR)
+    return spec
+  end
+
   if spec["dir"] == nil then
-    spec["dir"] = vim.fn.stdpath("data") .. "/nixpkgs/" .. plugin_name:gsub("%.", "-")
+    local plugin_name = spec[1]:match("[^/]+$")
+    local nixpkgs_dir = vim.fn.stdpath("data") .. "/nixpkgs/" .. plugin_name:gsub("%.", "-")
+    if vim.fn.isdirectory(nixpkgs_dir) == 1 then
+      spec["dir"] = nixpkgs_dir
+    end
   end
   return spec
 end
 
-return {
-  from_nixpkgs({
+local function inject_all(specs)
+  for _, spec in ipairs(specs) do
+    spec = inject(spec)
+    if spec.dependencies ~= nil then
+      spec.dependencies = inject_all(spec.dependencies)
+    end
+  end
+  return specs
+end
+
+return inject_all({
+  {
     "stevearc/conform.nvim",
     event = "BufWritePre",
     cmd = { "ConformInfo" },
@@ -27,9 +44,9 @@ return {
     init = function()
       vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "sindrets/diffview.nvim",
     cmd = { "PRDiff", "PRLog" },
     keys = {
@@ -45,7 +62,7 @@ return {
       },
     },
     dependencies = {
-      from_nixpkgs({ "nvim-lua/plenary.nvim" }),
+      { "nvim-lua/plenary.nvim" },
     },
     opts = {
       default_args = {
@@ -68,9 +85,9 @@ return {
         vim.cmd("DiffviewFileHistory --range=origin/main...HEAD --right-only --no-merges")
       end, { desc = "open diffview for current PR" })
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "folke/flash.nvim",
     keys = {
       "f",
@@ -118,9 +135,9 @@ return {
         },
       },
     },
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "ruifm/gitlinker.nvim",
     keys = function()
       local keys = {}
@@ -137,9 +154,9 @@ return {
       return keys
     end,
     opts = {},
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "lewis6991/gitsigns.nvim",
     event = "UIEnter",
     keys = {
@@ -288,12 +305,14 @@ return {
         delay = 300,
       },
     },
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "rebelot/heirline.nvim",
     event = "UIEnter",
-    dependencies = { from_nixpkgs({ "rebelot/kanagawa.nvim" }) },
+    dependencies = {
+      { "rebelot/kanagawa.nvim" },
+    },
     config = function()
       vim.opt.showtabline = 0 -- no tabline ever
       vim.opt.laststatus = 2 -- windowed statusline
@@ -691,12 +710,11 @@ return {
         },
       })
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "rebelot/kanagawa.nvim",
     event = "UIEnter",
-    priority = 100,
     config = function(_, opts)
       require("kanagawa").setup(opts)
       require("kanagawa").load("wave")
@@ -733,9 +751,9 @@ return {
         },
       },
     },
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.ai",
     name = "mini.ai",
@@ -867,9 +885,9 @@ return {
       }
       require("mini.ai").setup(opts)
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.bracketed",
     name = "mini.bracketed",
@@ -890,9 +908,9 @@ return {
       window = { suffix = "", options = {} },
       yank = { suffix = "y", options = {} },
     },
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.bufremove",
     name = "mini.bufremove",
@@ -906,9 +924,9 @@ return {
       },
     },
     opts = {},
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.clue",
     name = "mini.clue",
@@ -992,13 +1010,13 @@ return {
         },
       })
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.comment",
     name = "mini.comment",
-    event = "VeryLazy", -- event based, so the text object is also available from the start
+    event = "VeryLazy", -- event based, so the text object is also available the start
     keys = {
       {
         "gcc",
@@ -1007,9 +1025,9 @@ return {
       },
     },
     opts = {},
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.files",
     name = "mini.files",
@@ -1022,9 +1040,9 @@ return {
         desc = "browse files",
       },
     },
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.hipatterns",
     name = "mini.hipatterns",
@@ -1042,9 +1060,9 @@ return {
       opts.highlighters.hex_color = require("mini.hipatterns").gen_highlighter.hex_color()
       require("mini.hipatterns").setup(opts)
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.indentscope",
     name = "mini.indentscope",
@@ -1076,9 +1094,9 @@ return {
         end,
       })
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.move",
     name = "mini.move",
@@ -1098,9 +1116,9 @@ return {
         line_up = "<leader>mk",
       },
     },
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.operators",
     name = "mini.operators",
@@ -1123,18 +1141,18 @@ return {
         prefix = "gs",
       },
     },
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.pick",
     name = "mini.pick",
     dependencies = {
-      from_nixpkgs({
+      {
         "echasnovski/mini.nvim",
         main = "mini.extra",
         name = "mini.extra",
-      }),
+      },
     },
     event = "VeryLazy",
     keys = {
@@ -1170,9 +1188,9 @@ return {
       require("mini.pick").setup(opts)
       vim.ui.select = require("mini.pick").ui_select
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.splitjoin",
     name = "mini.splitjoin",
@@ -1195,9 +1213,9 @@ return {
         },
       })
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "echasnovski/mini.nvim",
     main = "mini.surround",
     name = "mini.surround",
@@ -1205,9 +1223,9 @@ return {
     opts = {
       search_method = "cover_or_next",
     },
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "folke/noice.nvim",
     event = "VeryLazy",
     keys = {
@@ -1220,8 +1238,8 @@ return {
       },
     },
     dependencies = {
-      from_nixpkgs({ "MunifTanjim/nui.nvim" }),
-      from_nixpkgs({ "rcarriga/nvim-notify" }),
+      { "MunifTanjim/nui.nvim" },
+      { "rcarriga/nvim-notify" },
     },
     opts = {
       presets = {
@@ -1249,18 +1267,18 @@ return {
     config = function(_, opts)
       require("noice").setup(opts)
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "kevinhwang91/nvim-bqf",
     ft = "qf",
     dependencies = {
-      from_nixpkgs({
+      {
         "junegunn/fzf",
         dir = vim.fn.stdpath("data") .. "/nixpkgs/fzf",
         name = "fzf",
         build = "./install --all",
-      }),
+      },
     },
     opts = {
       func_map = {
@@ -1304,15 +1322,15 @@ return {
         border = "single",
       },
     },
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     dependencies = {
-      from_nixpkgs({ "hrsh7th/cmp-nvim-lsp" }),
-      from_nixpkgs({ "dcampos/nvim-snippy" }),
-      from_nixpkgs({ "dcampos/cmp-snippy" }),
+      { "hrsh7th/cmp-nvim-lsp" },
+      { "dcampos/nvim-snippy" },
+      { "dcampos/cmp-snippy" },
     },
     opts = function()
       require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -1417,9 +1435,9 @@ return {
         },
       }
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "mfussenegger/nvim-dap",
     keys = {
       -- TODO: force debug mode when client can't reattach
@@ -1716,9 +1734,9 @@ return {
       dap.listeners.before.event_terminated["custom_maps"] = ExitDebugMode
       dap.listeners.before.event_exited["custom_maps"] = ExitDebugMode
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "mfussenegger/nvim-lint",
     event = "BufWritePre",
     opts = {
@@ -1736,9 +1754,9 @@ return {
         end,
       })
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "neovim/nvim-lspconfig",
     name = "lspconfig.gopls",
     ft = { "go", "gomod" },
@@ -1805,9 +1823,9 @@ return {
     config = function(_, opts)
       require("lspconfig").gopls.setup(opts)
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "neovim/nvim-lspconfig",
     name = "lspconfig.lua_ls",
     ft = { "lua" },
@@ -1837,9 +1855,9 @@ return {
     config = function(_, opts)
       require("lspconfig").lua_ls.setup(opts)
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "neovim/nvim-lspconfig",
     name = "lspconfig.nil_ls",
     ft = { "nix" },
@@ -1847,9 +1865,9 @@ return {
     config = function(_, opts)
       require("lspconfig").nil_ls.setup(opts)
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "neovim/nvim-lspconfig",
     name = "lspconfig.yamlls",
     ft = { "yaml" },
@@ -1866,9 +1884,9 @@ return {
     config = function(_, opts)
       require("lspconfig").yamlls.setup(opts)
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "nvim-tree/nvim-tree.lua",
     keys = {
       {
@@ -2036,13 +2054,13 @@ return {
       -- finally, setup
       require("nvim-tree").setup(opts)
     end,
-  }),
+  },
 
   {
     "nvim-treesitter/nvim-treesitter",
     event = "BufReadPost",
     opts = {
-      ensure_installed = { "javascript" }, -- we get this from nix
+      ensure_installed = {}, -- we get this from nix
       highlight = {
         enable = true,
       },
@@ -2064,16 +2082,20 @@ return {
     end,
   },
 
-  from_nixpkgs({
+  {
     "nvim-treesitter/nvim-treesitter-context",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter" },
+    },
     event = "VeryLazy",
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "nvim-treesitter/nvim-treesitter-refactor",
     main = "nvim-treesitter.configs",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter" },
+    }, -- TODO: why can't this dependency be a subtable?
     event = "VeryLazy",
     opts = {
       refactor = {
@@ -2109,19 +2131,21 @@ return {
         vim.cmd("TSBufToggle refactor.highlight_current_scope")
       end, { desc = "set treesitter scope" })
     end,
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "nvim-treesitter/nvim-treesitter-textobjects",
     main = "nvim-treesitter.configs",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter" },
+    },
     event = "VeryLazy",
     opts = {
       textobjects = {
         lsp_interop = {
           enable = true,
           peek_definition_code = {
-            ["gz"] = "@peek", -- replaces both from below
+            ["gz"] = "@peek", -- replaces both below
             ["gF"] = "@function.outer",
             ["gT"] = "@class.outer",
           },
@@ -2192,17 +2216,17 @@ return {
         },
       },
     },
-  }),
+  },
 
-  from_nixpkgs({
+  {
     "debugloop/telescope-undo.nvim",
     dependencies = {
-      from_nixpkgs({
+      {
         "nvim-telescope/telescope.nvim",
         dependencies = {
-          from_nixpkgs({ "nvim-lua/plenary.nvim" }),
+          { "nvim-lua/plenary.nvim" },
         },
-      }),
+      },
     },
     keys = {
       {
@@ -2246,5 +2270,5 @@ return {
       require("telescope").setup(opts)
       require("telescope").load_extension("undo")
     end,
-  }),
-}
+  },
+})
