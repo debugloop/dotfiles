@@ -69,7 +69,7 @@ return inject_all({
         DiffviewOpen = { "--imply-local" },
       },
       hooks = {
-        diff_buf_read = function(bufnr)
+        diff_buf_read = function(_)
           vim.opt_local.wrap = false
           vim.opt_local.relativenumber = false
           vim.opt_local.cursorline = false
@@ -1145,6 +1145,14 @@ return inject_all({
 
   {
     "echasnovski/mini.nvim",
+    main = "mini.pairs",
+    name = "mini.pairs",
+    event = "InsertEnter",
+    opts = {},
+  },
+
+  {
+    "echasnovski/mini.nvim",
     main = "mini.pick",
     name = "mini.pick",
     dependencies = {
@@ -1794,7 +1802,7 @@ return inject_all({
     name = "lspconfig.gopls",
     ft = { "go", "gomod" },
     opts = {
-      on_attach = function(client, bufnr)
+      on_attach = function(_, bufnr)
         -- display code lenses
         vim.keymap.set("n", "<leader>G", function()
           vim.lsp.buf_request_sync(0, "workspace/executeCommand", {
@@ -1985,13 +1993,6 @@ return inject_all({
     },
     config = function(_, opts)
       local api = require("nvim-tree.api")
-      -- utils used in below config
-      local function buffers_only()
-        if not require("nvim-tree.explorer.filters").config.filter_no_buffer then
-          require("nvim-tree.explorer.filters").config.filter_no_buffer = true
-          require("nvim-tree.actions.reloaders.reloaders").reload_explorer()
-        end
-      end
       local function get_buffers()
         local current_buffer = require("nvim-tree.api").tree.get_node_under_cursor().absolute_path
         local pos = 0
@@ -2012,9 +2013,7 @@ return inject_all({
         return bufferlist, pos
       end
       -- conditional setup based on whether tree is showing
-      api.events.subscribe(api.events.Event.TreeOpen, function(data)
-        -- reset no_buffer filter
-        buffers_only()
+      api.events.subscribe(api.events.Event.TreeOpen, function(_)
         -- expand all folders
         api.tree.expand_all()
         -- hide bufferbar
@@ -2024,7 +2023,6 @@ return inject_all({
         end)
         -- remap tab
         vim.keymap.set("n", "<tab>", function()
-          buffers_only()
           api.tree.expand_all()
           local bufferlist, pos = get_buffers()
           if pos == #bufferlist then
@@ -2034,7 +2032,6 @@ return inject_all({
           end
         end, { silent = true, desc = "go to next buffer" })
         vim.keymap.set("n", "<s-tab>", function()
-          buffers_only()
           api.tree.expand_all()
           local bufferlist, pos = get_buffers()
           if pos == 1 then
@@ -2043,22 +2040,13 @@ return inject_all({
             vim.cmd("buffer " .. bufferlist[pos - 1])
           end
         end, { silent = true, desc = "go to previous buffer" })
-        -- keep tree live whatever
-        vim.api.nvim_create_autocmd({ "BufReadPost", "BufNew" }, {
-          group = vim.api.nvim_create_augroup("update_tree", { clear = true }),
-          callback = function(ev)
-            require("nvim-tree.actions.reloaders.reloaders").reload_explorer()
-          end,
-        })
       end)
-      api.events.subscribe(api.events.Event.TreeClose, function(data)
+      api.events.subscribe(api.events.Event.TreeClose, function(_)
         -- show bufferbar
         HIDE_BUFFERS = false
         vim.schedule(function()
           vim.cmd.doautocmd("BufWinEnter")
         end)
-        -- delete update aucmd
-        vim.api.nvim_del_augroup_by_name("update_tree")
         -- remap tab to their regular mappings
         vim.keymap.set("n", "<tab>", function()
           vim.cmd("bn")
@@ -2073,7 +2061,7 @@ return inject_all({
         callback = function()
           local wins = vim.api.nvim_list_wins()
           local realwins = #wins - 1 -- the one being closed has to be subtracted
-          for i, w in ipairs(wins) do
+          for _, w in ipairs(wins) do
             local bufname = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(w))
             if bufname == "" or bufname:match("NvimTree_") ~= nil then
               realwins = realwins - 1
