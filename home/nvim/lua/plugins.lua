@@ -1435,6 +1435,11 @@ return inject_all({
             return vim_item
           end,
         },
+        experimental = {
+          ghost_text = {
+            hl_group = "@comment",
+          },
+        },
         snippet = {
           expand = function(args)
             require("snippy").expand_snippet(args.body)
@@ -2108,7 +2113,7 @@ return inject_all({
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
     },
-    event = "VeryLazy",
+    event = "BufReadPost",
   },
 
   {
@@ -2117,7 +2122,7 @@ return inject_all({
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
     },
-    event = "VeryLazy",
+    event = "BufReadPost",
     opts = {
       refactor = {
         highlight_definitions = {
@@ -2160,7 +2165,7 @@ return inject_all({
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
     },
-    event = "VeryLazy",
+    event = "BufReadPost",
     opts = {
       textobjects = {
         lsp_interop = {
