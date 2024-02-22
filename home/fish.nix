@@ -45,6 +45,7 @@
     '';
     shellAbbrs = {
       g = "git";
+      d = "dlv --headless -l 'localhost:2345'";
     };
     functions = {
       fish_title = {
