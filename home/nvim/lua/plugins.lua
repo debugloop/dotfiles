@@ -48,19 +48,7 @@ return inject_all({
 
   {
     "sindrets/diffview.nvim",
-    cmd = { "PRDiff", "PRLog" },
-    keys = {
-      {
-        "<leader>D",
-        ":DiffviewOpen ",
-        desc = "diffview: open",
-      },
-      {
-        "<leader>L",
-        ":DiffviewFileHistory ",
-        desc = "diffview: history",
-      },
-    },
+    cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewPR", "DiffviewPRLog" },
     dependencies = {
       { "nvim-lua/plenary.nvim" },
     },
@@ -79,10 +67,10 @@ return inject_all({
     config = function(_, opts)
       require("diffview").setup(opts)
       vim.api.nvim_create_user_command("PRDiff", function()
-        vim.cmd("DiffviewOpen origin/main...HEAD")
+        vim.cmd("DiffviewOpen origin/HEAD...HEAD --untracked-files=no --imply-local")
       end, { desc = "open diffview for current PR" })
       vim.api.nvim_create_user_command("PRLog", function()
-        vim.cmd("DiffviewFileHistory --range=origin/main...HEAD --right-only --no-merges")
+        vim.cmd("DiffviewFileHistory --range=origin/HEAD...HEAD --base=LOCAL --right-only --no-merges")
       end, { desc = "open diffview for current PR" })
     end,
   },
@@ -318,30 +306,19 @@ return inject_all({
       { "rebelot/kanagawa.nvim" },
     },
     config = function()
+      -- override some settings
       vim.opt.showtabline = 0 -- no tabline ever
-      vim.opt.laststatus = 2 -- windowed statusline
+      vim.opt.laststatus = 3 -- global statusline
       vim.opt.showcmdloc = "statusline" -- enable partial command printing segment
+      -- import required things
       local conditions = require("heirline.conditions")
       local utils = require("heirline.utils")
+      local statusline = require("statusline")
+      local components = statusline.components
+      local static = statusline.static
+      -- setup color based on the current colorscheme
       local function setup_colors()
-        return {
-          bg = utils.get_highlight("StatusLine").bg,
-          fg = utils.get_highlight("StatusLine").fg,
-          bright_bg = utils.get_highlight("Folded").bg,
-          bright_fg = utils.get_highlight("Folded").fg,
-          red = utils.get_highlight("DiagnosticError").fg,
-          green = utils.get_highlight("String").fg,
-          blue = utils.get_highlight("Function").fg,
-          orange = utils.get_highlight("Constant").fg,
-          purple = utils.get_highlight("Statement").fg,
-          diag_warn = utils.get_highlight("DiagnosticWarn").fg,
-          diag_error = utils.get_highlight("DiagnosticError").fg,
-          diag_hint = utils.get_highlight("DiagnosticHint").fg,
-          diag_info = utils.get_highlight("DiagnosticInfo").fg,
-          git_del = utils.get_highlight("diffDeleted").fg,
-          git_add = utils.get_highlight("diffAdded").fg,
-          git_change = utils.get_highlight("diffChanged").fg,
-        }
+        return statusline.colors
       end
       require("heirline").load_colors(setup_colors)
       vim.api.nvim_create_autocmd("ColorScheme", {
@@ -350,357 +327,88 @@ return inject_all({
           utils.on_colorscheme(setup_colors)
         end,
       })
+      -- declare
       require("heirline").setup({
-        tabline = {},
         statusline = {
-          static = {
-            mode_colors = {
-              n = "blue",
-              i = "green",
-              v = "purple",
-              ["\22"] = "purple",
-              c = "orange",
-              s = "purple",
-              r = "git_del",
-              t = "green",
-              debug_mode = "git_del",
-            },
-            make_sections = function(_, color)
-              return {
-                a = { fg = "bg", bg = color },
-                b = { fg = color },
-                c = "StatusLine",
-              }
-            end,
-            get_mode_color = function(self)
-              if conditions.is_active() then
-                return self:make_sections(self.mode_colors[self.mode:lower()])
-              else
-                return { a = "StatusLineNC", b = "StatusLineNC", c = "StatusLineNC" }
-              end
-            end,
-          },
+          static = static,
           {
             init = function(self)
-              self.mode = vim.fn.mode()
               self.filename = vim.api.nvim_buf_get_name(0)
-              if DEBUG_MODE then
-                self.mode = "DEBUG_MODE"
-              end
+              self:find_mode()
             end,
-            { -- left section a
-              hl = function(self)
-                return self:get_mode_color().a
-              end,
-              {
-                static = {
-                  mode_names = {
-                    n = "NORMAL",
-                    v = "VISUAL",
-                    V = "V-LINE",
-                    ["\22"] = "V-BLOCK",
-                    i = "INSERT",
-                    R = "REPLACE",
-                    c = "COMMAND",
-                    t = "TERMINAL",
-                    s = "SNIPPET",
-                  },
-                },
-                provider = function(self)
-                  if not conditions.is_active() then
-                    return " INACTIVE "
-                  end
-                  if DEBUG_MODE then
-                    return " DEBUG "
-                  end
-                  local name = self.mode_names[self.mode]
-                  if name == "" or name == nil then
-                    name = vim.fn.mode(true)
-                  end
-                  return " " .. name .. " "
-                end,
-              },
+            { -- left section a, inverted bright color
+              hl = static.color_a,
+              components.mode,
             },
-            { -- left section b
-              hl = function(self)
-                return self:get_mode_color().b
-              end,
-              { -- git
-                condition = conditions.is_git_repo,
-                init = function(self)
-                  self.status_dict = vim.b.gitsigns_status_dict
-                  self.has_changes = self.status_dict.added ~= 0
-                    or self.status_dict.removed ~= 0
-                    or self.status_dict.changed ~= 0
-                end,
-                {
-                  flexible = 20,
-                  {
-                    provider = function(self)
-                      return "  " .. self.status_dict.head .. " "
-                    end,
-                  },
-                  {
-                    provider = function(self)
-                      return " " .. self.status_dict.head
-                    end,
-                  },
-                },
-                {
-                  condition = conditions.is_active,
-                  {
-                    condition = function(self)
-                      return self.has_changes
-                    end,
-                    provider = " ",
-                  },
-                  {
-                    provider = function(self)
-                      local count = self.status_dict.added or 0
-                      return count > 0 and ("+" .. count .. " ")
-                    end,
-                    hl = { fg = "git_add" },
-                  },
-                  {
-                    provider = function(self)
-                      local count = self.status_dict.changed or 0
-                      return count > 0 and ("~" .. count .. " ")
-                    end,
-                    hl = { fg = "git_change" },
-                  },
-                  {
-                    provider = function(self)
-                      local count = self.status_dict.removed or 0
-                      return count > 0 and ("-" .. count .. " ")
-                    end,
-                    hl = { fg = "git_del" },
-                  },
-                },
-              },
-              { -- lsp
-                condition = function()
-                  return conditions.is_active() and conditions.has_diagnostics()
-                end,
-                init = function(self)
-                  self.errors = #vim.diagnostic.get(0, {
-                    severity = vim.diagnostic.severity.ERROR,
-                  })
-                  self.warnings = #vim.diagnostic.get(0, {
-                    severity = vim.diagnostic.severity.WARN,
-                  })
-                  self.hints = #vim.diagnostic.get(0, {
-                    severity = vim.diagnostic.severity.HINT,
-                  })
-                  self.info = #vim.diagnostic.get(0, {
-                    severity = vim.diagnostic.severity.INFO,
-                  })
-                end,
-                update = { "DiagnosticChanged", "BufEnter" },
-                {
-                  provider = " ",
-                },
-                {
-                  provider = function(self)
-                    return self.errors > 0 and ("E:" .. self.errors .. " ")
-                  end,
-                  hl = { fg = "diag_error" },
-                },
-                {
-                  provider = function(self)
-                    return self.warnings > 0 and ("W:" .. self.warnings .. " ")
-                  end,
-                  hl = { fg = "diag_warn" },
-                },
-                {
-                  provider = function(self)
-                    return self.info > 0 and ("I:" .. self.info .. " ")
-                  end,
-                  hl = { fg = "diag_info" },
-                },
-                {
-                  provider = function(self)
-                    return self.hints > 0 and ("H:" .. self.hints .. " ")
-                  end,
-                  hl = { fg = "diag_hint" },
-                },
-              },
+            { -- left section b, bright color
+              hl = static.color_b,
+              components.git,
+              components.lsp,
             },
-            { -- truncate marker
-              provider = "%<",
-            },
-            { -- middle section c
-              hl = function(self)
-                return self:get_mode_color().c
-              end,
-              { -- left section c
-                flexible = 50,
-                {
-                  provider = function(self)
-                    local fqn = vim.fn.fnamemodify(self.filename, ":.")
-                    if fqn:sub(1, 1) ~= "/" then
-                      return " ./" .. fqn
-                    else
-                      return " " .. fqn
-                    end
-                  end,
-                },
-                {
-                  provider = function(self)
-                    return " " .. vim.fn.fnamemodify(self.filename, ":.")
-                  end,
-                },
-                {
-                  provider = function(self)
-                    return " " .. vim.fn.pathshorten(vim.fn.fnamemodify(self.filename, ":."))
-                  end,
-                },
+            { -- middle section c, plain color
+              hl = static.color_c,
+              { -- left aligned
+                components.space,
+                components.filename,
               },
-              { -- fill middle
-                provider = "%=",
-              },
-              { -- right section c
+              components.truncate,
+              components.fill,
+              { -- right aligned
                 flexible = 10,
                 {
-                  -- {
-                  --   condition = function()
-                  --     return vim.o.cmdheight == 0
-                  --   end,
-                  --   provider = "%3.5(%S%) ",
-                  --   hl = { fg = "grey" },
-                  -- },
-                  {
-                    hl = { fg = "orange" },
-                    condition = function()
-                      return conditions.is_active() and vim.fn.reg_recording() ~= "" and vim.o.cmdheight == 0
-                    end,
-                    provider = function()
-                      return " @" .. vim.fn.reg_recording()
-                    end,
-                    update = {
-                      "RecordingEnter",
-                      "RecordingLeave",
-                    },
-                  },
-                  {
-                    provider = function()
-                      return " " .. vim.bo.filetype .. " "
-                    end,
-                  },
-                  {
-                    provider = function()
-                      local enc = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc
-                      return enc ~= "utf-8" and enc .. " "
-                    end,
-                  },
-                  {
-                    provider = function()
-                      local fmt = vim.bo.fileformat
-                      return fmt ~= "unix" and fmt .. " "
-                    end,
-                  },
+                  components.macro,
+                  components.filetype,
+                  components.encoding,
+                  components.fileformat,
                 },
-                {},
               },
             },
-            { -- right section b
-              hl = function(self)
-                return self:get_mode_color().b
-              end,
-              {
-                provider = " %p%%/%L ",
-              },
+            { -- right section b, bright color
+              hl = static.color_b,
+              components.ruler,
             },
-            { -- right section a
-              hl = function(self)
-                return self:get_mode_color().a
-              end,
-              {
-                provider = " %l:%v ",
-              },
-              -- {
-              --   static = {
-              --     sbar = { '🭶', '🭷', '🭸', '🭹', '🭺', '🭻' },
-              --   },
-              --   provider = function(self)
-              --     local curr_line = vim.api.nvim_win_get_cursor(0)[1]
-              --     local lines = vim.api.nvim_buf_line_count(0)
-              --     local i = math.floor((curr_line - 1) / lines * #self.sbar) + 1
-              --     return self.sbar[i]
-              --   end,
-              -- },
+            { -- right section a, inverted bright color
+              hl = static.color_a,
+              components.linecol,
             },
           },
         },
         winbar = {
           {
+            static = static,
             init = function(self)
-              self.active = vim.api.nvim_buf_get_number(0)
+              self.focused_bufnr = vim.api.nvim_buf_get_number(0)
+              self:find_mode()
             end,
             utils.make_buflist({
               init = function(self)
                 self.filename = vim.api.nvim_buf_get_name(self.bufnr)
-                self.is_active = self.bufnr == self.active
+                self.is_displayed = self.bufnr == self.focused_bufnr
               end,
               hl = function(self)
-                -- if this window is active (has focus)
-                if conditions.is_active() then
-                  -- if this is the active buffer in this window
-                  if self.is_active then
-                    return { bg = "blue", fg = "bg" }
-                  else
+                if conditions.is_active() then -- if this window has focus...
+                  if self.is_displayed then -- ...and this is the displayed buffer
+                    return self:color_a()
+                  else -- ...and this is another buffer
                     return "StatusLine"
                   end
-                else
-                  -- if this is the active buffer in this window
-                  if self.is_active then
+                else -- if this window is visible but unfocused...
+                  if self.is_displayed then -- ...and this is the displayed buffer
                     return "Folded"
-                  else
+                  else -- ...and this is another buffer
                     return "StatusLineNC"
                   end
                 end
               end,
               {
-                { -- marker
-                  provider = function(self)
-                    if vim.api.nvim_buf_get_option(self.bufnr, "modified") then
-                      return " ●"
-                    elseif
-                      not vim.api.nvim_buf_get_option(self.bufnr, "modifiable")
-                      or vim.api.nvim_buf_get_option(self.bufnr, "readonly")
-                    then
-                      return " "
-                    end
-                  end,
-                },
-                { -- filename
-                  provider = function(self)
-                    local filename = self.filename
-                    if filename == "" then
-                      filename = " [No Name]"
-                    else
-                      filename = " " .. vim.fn.fnamemodify(filename, ":t")
-                    end
-                    return filename
-                  end,
-                },
-              },
-              { -- pad right
-                provider = " ",
+                components.space,
+                components.bufmark,
+                components.bufname,
+                components.space,
               },
             }),
-          },
-          { -- fill middle
-            provider = "%=",
-          },
-          {
-            condition = function()
-              return require("dap").session() ~= nil
-            end,
-            provider = function()
-              return " " .. require("dap").status()
-            end,
-            hl = "Debug",
-            -- see Click-it! section for clickable actions
+            components.fill,
+            components.dap,
           },
         },
         opts = {
@@ -708,7 +416,7 @@ return inject_all({
             return HIDE_BUFFERS
               or conditions.buffer_matches({
                 buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
-                filetype = { "^git.*", "noice" },
+                filetype = { "^git.*", "noice", "NvimTree" },
               }, args.buf)
           end,
         },
@@ -737,12 +445,14 @@ return inject_all({
           PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
           PmenuSbar = { bg = theme.ui.bg_m1 },
           PmenuThumb = { bg = theme.ui.bg_p2 },
-          -- window separator
+          -- invisible window separator
           WinSeparator = { fg = theme.ui.bg_dim, bg = theme.ui.bg_dim },
-          NvimTreeNormal = { bg = theme.ui.bg_dim },
           -- nvim-tree
+          NvimTreeNormal = { bg = theme.ui.bg_dim },
           NvimTreeGitDirty = { fg = theme.term[5], bg = "none" },
           NvimTreeGitStaged = { fg = theme.term[4], bg = "none" },
+          -- incline
+          InclineNormal = { fg = theme.ui.bg, bg = theme.syn.fun },
         }
       end,
       colors = {
@@ -784,14 +494,14 @@ return inject_all({
         table.insert(maps, {
           "]" .. op:upper(),
           function()
-            require("mini.ai").move_cursor("right", ai, op, { search_method = "next" })
+            require("mini.ai").move_cursor("right", ai, op, { search_method = "cover_or_next" })
           end,
           desc = "Goto next end of " .. ai .. op .. " textobject",
         })
         table.insert(maps, {
           "[" .. op:upper(),
           function()
-            require("mini.ai").move_cursor("right", ai, op, { search_method = "cover_or_prev" })
+            require("mini.ai").move_cursor("right", ai, op, { search_method = "prev" })
           end,
           desc = "Goto previous end of " .. ai .. op .. " textobject",
         })
@@ -1130,6 +840,13 @@ return inject_all({
     event = "VeryLazy",
     keys = {
       {
+        "<Bslash>",
+        function()
+          require("mini.pick").builtin.buffers()
+        end,
+        desc = "find buffers",
+      },
+      {
         "<leader>f",
         function()
           require("mini.pick").builtin.files()
@@ -1229,6 +946,7 @@ return inject_all({
 
   {
     "folke/noice.nvim",
+    main = "noice",
     event = "VeryLazy",
     keys = {
       {
@@ -1266,9 +984,6 @@ return inject_all({
         },
       },
     },
-    config = function(_, opts)
-      require("noice").setup(opts)
-    end,
   },
 
   {
@@ -1903,13 +1618,7 @@ return inject_all({
       {
         "-",
         function()
-          local api = require("nvim-tree.api")
-          if api.tree.is_visible() then
-            api.tree.close()
-          else
-            api.tree.open()
-            vim.cmd("wincmd p") -- no focus
-          end
+          vim.cmd("NvimTreeToggle focus=false")
         end,
         desc = "toggle buffer tree",
       },
@@ -1941,6 +1650,7 @@ return inject_all({
         custom = { "^.git$" },
       },
       renderer = {
+        root_folder_label = ":~:s?$?",
         group_empty = true,
         indent_markers = {
           enable = true,
@@ -1988,6 +1698,7 @@ return inject_all({
         api.tree.expand_all()
         -- hide bufferbar
         HIDE_BUFFERS = true
+        vim.cmd("windo do VimEnter")
         vim.schedule(function()
           vim.cmd.doautocmd("BufWinEnter")
         end)
@@ -2014,6 +1725,7 @@ return inject_all({
       api.events.subscribe(api.events.Event.TreeClose, function(_)
         -- show bufferbar
         HIDE_BUFFERS = false
+        vim.cmd("windo do VimEnter")
         vim.schedule(function()
           vim.cmd.doautocmd("BufWinEnter")
         end)

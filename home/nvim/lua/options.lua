@@ -1,8 +1,7 @@
 -- general behavior
 vim.opt.clipboard = "unnamedplus" -- sync yank with system clipboard
 vim.opt.termguicolors = true -- assume a modern terminal and use 24bit RGB
-vim.opt.shada:append({ "%" }) -- reopen buffers if no args
-vim.opt.shortmess:append({ W = true, I = true, c = true }) -- suppress some messages
+vim.opt.shortmess:append({ W = true, I = true, c = true, s = true }) -- suppress some messages
 vim.opt.updatetime = 500 -- faster cursor hold
 
 -- tabs and spaces
