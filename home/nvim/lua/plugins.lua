@@ -114,6 +114,12 @@ return inject_all({
       },
     },
     opts = {
+      search = {
+        multi_window = false,
+      },
+      jump = {
+        autojump = true,
+      },
       modes = {
         search = {
           enabled = false,
@@ -130,8 +136,6 @@ return inject_all({
               [motion:upper()] = "left",
             }
           end,
-          -- multi_line = false,
-          highlight = { backdrop = false },
         },
       },
     },
@@ -760,101 +764,50 @@ return inject_all({
     event = "VeryLazy",
     keys = function(_, _)
       local maps = {}
-      for _, op in pairs({ "f" }) do
+      local map_start = function(op, ai)
         table.insert(maps, {
           "]" .. op,
           function()
-            require("mini.ai").move_cursor("left", "a", op, { search_method = "next" })
+            require("mini.ai").move_cursor("left", ai, op, { search_method = "next" })
           end,
-          desc = "Goto next start of a" .. op .. " textobject",
+          desc = "Goto next start of " .. ai .. op .. " textobject",
         })
         table.insert(maps, {
           "[" .. op,
           function()
-            require("mini.ai").move_cursor("left", "a", op, { search_method = "prev" })
+            require("mini.ai").move_cursor("left", ai, op, { search_method = "cover_or_prev" })
           end,
-          desc = "Goto previous start of a" .. op .. " textobject",
+          desc = "Goto previous start of " .. ai .. op .. " textobject",
         })
       end
-      for _, op in pairs({
-        "b",
-        "(",
-        ")",
-        "[",
-        "]",
-        "{",
-        "}",
-        "<",
-        ">",
-        '"',
-        "'",
-        "`",
-        "t",
-        "a",
-        "c",
-        "i",
-        "l",
-        "t",
-      }) do
+      local map_end = function(op, ai)
         table.insert(maps, {
-          "]" .. op,
+          "]" .. op:upper(),
           function()
-            require("mini.ai").move_cursor("left", "i", op, { search_method = "next" })
+            require("mini.ai").move_cursor("right", ai, op, { search_method = "next" })
           end,
-          desc = "Goto next start of i" .. op .. " textobject",
+          desc = "Goto next end of " .. ai .. op .. " textobject",
         })
         table.insert(maps, {
-          "[" .. op,
+          "[" .. op:upper(),
           function()
-            require("mini.ai").move_cursor("left", "i", op, { search_method = "prev" })
+            require("mini.ai").move_cursor("right", ai, op, { search_method = "cover_or_prev" })
           end,
-          desc = "Goto previous start of i" .. op .. " textobject",
+          desc = "Goto previous end of " .. ai .. op .. " textobject",
         })
       end
-      for _, op in pairs({ "B", "A", "C", "F", "I", "L", "T" }) do
-        table.insert(maps, {
-          "]" .. op,
-          function()
-            require("mini.ai").move_cursor("right", "i", op, { search_method = "next" })
-          end,
-          desc = "Goto next end of i" .. op .. " textobject",
-        })
-        table.insert(maps, {
-          "[" .. op,
-          function()
-            require("mini.ai").move_cursor("right", "i", op, { search_method = "prev" })
-          end,
-          desc = "Goto previous end of i" .. op .. " textobject",
-        })
+      -- do actual mapping
+      for _, op in pairs({ "f", "c", "i", "l", "t" }) do
+        map_start(op, "a")
+        map_end(op, "a")
       end
-      table.insert(maps, {
-        "]s",
-        function()
-          require("mini.ai").move_cursor("left", "i", "q", { search_method = "next" })
-        end,
-        desc = "Goto next start of iq textobject",
-      })
-      table.insert(maps, {
-        "[s",
-        function()
-          require("mini.ai").move_cursor("left", "i", "q", { search_method = "prev" })
-        end,
-        desc = "Goto previous start of iq textobject",
-      })
-      table.insert(maps, {
-        "]S",
-        function()
-          require("mini.ai").move_cursor("right", "i", "q", { search_method = "next" })
-        end,
-        desc = "Goto next end of iQ textobject",
-      })
-      table.insert(maps, {
-        "[S",
-        function()
-          require("mini.ai").move_cursor("right", "i", "q", { search_method = "prev" })
-        end,
-        desc = "Goto previous end of iQ textobject",
-      })
+      for _, op in pairs({ "a", "s" }) do
+        map_start(op, "i")
+        map_end(op, "i")
+      end
+      for _, op in pairs({ "b", "B", "<", ">", '"', "'", "`" }) do
+        map_start(op, "i")
+      end
       return maps
     end,
     opts = {
@@ -866,22 +819,34 @@ return inject_all({
     },
     config = function(_, opts)
       opts.custom_textobjects = {
+        -- arg
         a = require("mini.ai").gen_spec.treesitter({ a = "@parameter.outer", i = "@parameter.inner" }),
-        b = require("mini.ai").gen_spec.treesitter({ a = "@block.outer", i = { "@customblock.inner", "@block.inner" } }),
+        -- braces
+        b = { { "%b()", "%b[]", "%b{}" }, "^.().*().$" },
+        -- block
+        B = require("mini.ai").gen_spec.treesitter({ a = "@block.outer", i = { "@customblock.inner", "@block.inner" } }),
+        -- call
         c = require("mini.ai").gen_spec.treesitter({ a = "@call.outer", i = "@call.inner" }),
+        -- function / method
         f = require("mini.ai").gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
+        -- if
         i = require("mini.ai").gen_spec.treesitter({
           a = "@conditional.outer",
           i = { "@customconditional.inner", "@conditional.inner" },
         }),
+        -- loop
         l = require("mini.ai").gen_spec.treesitter({ a = "@loop.outer", i = { "@customloop.inner", "@loop.inner" } }),
-        ["s"] = { { "%b''", '%b""', "%b``" }, "^.().*().$" },
+        -- disable quote, I use string
+        q = false,
+        -- string
+        s = { { "%b''", '%b""', "%b``" }, "^.().*().$" },
+        -- type
         t = require("mini.ai").gen_spec.treesitter({
           a = { "@customtype.outer", "@type.outer" },
           i = { "@customtype.inner", "@type.inner" },
         }),
         -- defaults include
-        -- (, ), [, ], {, }, <, >, ", ', `, q, ?, t, <space>
+        -- (, ), [, ], {, }, <, >, ", ', `, ?, t, <space>
       }
       require("mini.ai").setup(opts)
     end,
