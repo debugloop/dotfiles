@@ -19,6 +19,11 @@
         format = "[󱙄](bold) ";
       };
 
+      custom.nix = {
+        when = ''echo $PATH | cut -d" " -f1 | grep -v kitty'';
+        format = "[](bold)  ";
+      };
+
       directory = {
         format = "[$path]($style)[$read_only]($read_only_style) ";
         repo_root_format = "[$before_root_path]($before_repo_root_style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) ";
