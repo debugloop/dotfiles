@@ -34,10 +34,13 @@
       ch = "cherry -v";
       d = "diff -w";
       ds = "-c delta.side-by-side=true d";
+      dc = "d -- :^vendor :^go.mod :^go.sum";
+      dsc = "-c delta.side-by-side=true dc";
       fixup = "commit --fixup";
       fi = "commit --fixup";
       l = "log --pretty=format:'%C(yellow)%h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative -32";
       lg = "l --graph --boundary --cherry-mark";
+      ld = "log --cherry --pretty=format:'%m\ %C(yellow)%h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative -32";
       lp = "-c delta.side-by-side=true log --pretty=format:'%C(yellow)commit %h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative -16 -p -- :^vendor :^go.mod :^go.sum"; # include "commit " for delta `n` navigation
       new = "l @{u}..";
       p = "pull --prune --all --autostash";
@@ -61,7 +64,20 @@
 
       # fast ops on main/master
       pm = "!f() { test $(git rev-parse --abbrev-ref HEAD) != $(git main) && git fetch origin $(git main):$(git main) || git p; }; f"; # pull main
-      bd = "!f() { git pm && git branch -d $(git branch --merged $(git main) --no-contains $(git main) --format='%(refname:short)'); }; f"; # delete branches merged to main
+      bd = "!f() {
+        git pm || return;
+        for branch in $(git for-each-ref --format '%(refname:short)' refs/heads | grep -vE '^main$|^master$')
+        do
+          echo;
+          if git log --cherry --pretty=format:'%m\ %C(yellow)%h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative $(git main)...$branch | grep --silent -E '^>';
+          then
+            echo \"$branch is unmerged:\";
+            git log --cherry --pretty=format:'%m\ %C(yellow)%h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative $(git main)...$branch;
+          else
+            git branch -D $branch;
+          fi
+        done
+      }; f";
       rbmi = "!f() { git pm && git rb -i $(git main); }; f"; # rebase interactively on main
       rbm = "!f() { git pm && git rb $(git main); }; f"; # rebase on main
 
@@ -74,17 +90,24 @@
       "*.swp"
     ];
     extraConfig = {
+      branch.sort = "-committerdate";
       commit.gpgsign = true;
       core.excludesfile = "~/.gitignore";
       diff.algorithm = "histogram";
       gpg.format = "ssh";
+      init.defaultBranch = "main";
+      log.date = "local";
       pull.rebase = true;
       push = {
         default = "current";
         autoSetupRemote = true;
       };
-      rebase.autosquash = true;
+      rebase = {
+        autosquash = true;
+        updateRefs = true;
+      };
       rerere.enabled = true;
+      tag.sort = "version:refname";
       url."ssh://git@github.com/".insteadOf = "https://github.com/";
       user.signingkey = "~/.ssh/id_ed25519";
     };
