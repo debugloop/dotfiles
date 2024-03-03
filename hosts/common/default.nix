@@ -22,7 +22,7 @@
     mutableUsers = false;
     users.danieln = {
       isNormalUser = true;
-      extraGroups = [ "wheel" "video" "docker" "libvirtd" ];
+      extraGroups = [ "wheel" "video" "docker" "libvirtd" "dialout" ];
       shell = pkgs.fish;
       passwordFile = config.age.secrets.password.path;
     };
