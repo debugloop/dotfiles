@@ -234,7 +234,6 @@
     };
     eza = {
       enable = true;
-      enableAliases = true;
     };
     gh = {
       enable = true;
