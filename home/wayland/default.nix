@@ -87,7 +87,7 @@
     libreoffice
     mako
     pavucontrol
-    pinentry-emacs.gnome3
+    pinentry-gnome3
     playerctl
     python311Packages.managesieve
     slack
