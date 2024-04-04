@@ -24,17 +24,16 @@
     allowUnfreePredicate = (_: true);
   };
 
-  gtk = {
-    enable = true;
-    cursorTheme = {
-      package = "${pkgs.numix-cursor-theme}";
-      name = "Numix-Cursor";
-    };
-  };
+  gtk.enable = true; # applies generated configs
 
   home = {
     username = "danieln";
     homeDirectory = "/home/danieln";
+    pointerCursor = {
+      package = "${pkgs.numix-cursor-theme}";
+      name = "Numix-Cursor";
+      gtk.enable = true; # generates gtk cursor config
+    };
     stateVersion = "22.11";
     sessionPath = [
       "$HOME/go/bin"
