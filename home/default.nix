@@ -24,6 +24,14 @@
     allowUnfreePredicate = (_: true);
   };
 
+  gtk = {
+    enable = true;
+    cursorTheme = {
+      package = "${pkgs.numix-cursor-theme}";
+      name = "Numix-Cursor";
+    };
+  };
+
   home = {
     username = "danieln";
     homeDirectory = "/home/danieln";
@@ -133,6 +141,8 @@
       highlight
       insomnia
       k6
+      kontemplate
+      kubeconform
       kubectl
       luajit
       lua-language-server
@@ -244,7 +254,7 @@
     };
     go = {
       enable = true;
-      package = pkgs.go_1_21;
+      package = pkgs.go_1_22;
     };
     ssh = {
       enable = true;
