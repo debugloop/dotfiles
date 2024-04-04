@@ -110,8 +110,8 @@
         "SUPER, q, pin,"
         "SUPER, p, pin,"
 
-        "SUPER, f, fullscreen,0"
-        "SUPER_SHIFT, f, fullscreen,1"
+        "SUPER, f, fullscreen,1"
+        "SUPER_SHIFT, f, fullscreen,0"
         "SUPER_CTRL, f, fakefullscreen,"
 
 

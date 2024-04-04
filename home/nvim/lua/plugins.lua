@@ -77,8 +77,38 @@ return inject_all({
 
   {
     "folke/flash.nvim",
+    event = "VeryLazy",
     keys = {
-      "f",
+      {
+        "f",
+        mode = { "n", "x", "o" },
+        function()
+          -- TODO: make eyeliner like work:
+          -- https://github.com/willothy/nvim-config/blob/b3c2f3701373070a511ee8b0fb1d386257d93f7c/lua/plugins/navigation/flash.lua#L83
+          local Char = require("flash.plugins.char")
+          local Config = require("flash.config")
+          local Repeat = require("flash.repeat")
+          Repeat.setup()
+          Char.jumping = true
+          local autohide = Config.get("char").autohide
+          if Repeat.is_repeat then
+            Char.jump_labels = false
+            Char.state:jump({ count = vim.v.count1 })
+            Char.state:show()
+          else
+            Char.jump("f")
+          end
+          vim.schedule(function()
+            Char.jumping = false
+            if Char.state and autohide then
+              Char.state:hide()
+            end
+          end)
+        end,
+        {
+          silent = true,
+        },
+      },
       "F",
       "t",
       "T",
@@ -115,7 +145,7 @@ return inject_all({
         },
         char = {
           enabled = true,
-          keys = { "f", "F", "t", "T", ",", ";" },
+          keys = { "F", "t", "T", ",", ";" },
           char_actions = function(motion)
             return {
               [";"] = "right",
@@ -823,7 +853,17 @@ return inject_all({
     main = "mini.pairs",
     name = "mini.pairs",
     event = "InsertEnter",
-    opts = {},
+    opts = {
+      mappings = {
+        ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\][%s%)%]}]" },
+        ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\][%s%)%]}]" },
+        ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\][%s%)%]}]" },
+        -- we use the default close actions
+        ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\][%s%)%]}]", register = { cr = false } },
+        ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\][%s%)%]}]", register = { cr = false } },
+        ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\][%s%)%]}]", register = { cr = false } },
+      },
+    },
   },
 
   {
@@ -934,6 +974,10 @@ return inject_all({
     opts = {
       search_method = "cover_or_next",
     },
+    config = function(opts)
+      vim.keymap.set({ "n", "v" }, "s", "<nop>")
+      require("mini.surround").setup(opts)
+    end,
   },
 
   {
