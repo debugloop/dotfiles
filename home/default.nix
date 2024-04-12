@@ -227,10 +227,10 @@
     };
     ssh = {
       enable = true;
-      # extraConfig = ''
-      # PermitLocalCommand yes
-      # LocalCommand ${pkgs.libnotify}/bin/notify-send "%r@%h" "Connected to %h."
-      # '';
+      extraConfig = ''
+      PermitLocalCommand yes
+      LocalCommand ${pkgs.libnotify}/bin/notify-send "%r@%h" "Connected to %h."
+      '';
     };
     wezterm = {
       enable = true;
