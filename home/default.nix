@@ -184,6 +184,18 @@
     rbw.enable = true;
     tmate.enable = true;
     zoxide.enable = true;
+    atuin = {
+      enable = true;
+      flags = [
+        "--disable-up-arrow"
+      ];
+      settings = {
+        secrets_filter = false;
+        sync_frequency = "5m";
+        enter_accept = false;
+        keymap_mode = "vim-normal";
+      };
+    };
     bat = {
       enable = true;
       config.theme = "ansi";

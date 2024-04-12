@@ -53,6 +53,7 @@
         # history for shells
         ".local/share/zoxide"
         ".local/share/fish"
+        ".local/share/atuin"
         ".local/share/nix"
         # secrets
         { directory = ".aws"; mode = "0700"; }
