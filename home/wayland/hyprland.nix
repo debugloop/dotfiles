@@ -27,6 +27,16 @@
         };
         sensitivity = 0;
       };
+      device = [
+        {
+          name = "syna8007:00-06cb:cd8c-touchpad";
+          enabled = false;
+        }
+        {
+          name = "tpps/2-elan-trackpoint";
+          sensitivity = "+0.5";
+        }
+      ];
       general = {
         layout = "master";
         gaps_in = 3;
@@ -82,6 +92,10 @@
         ", Print, exec, fish -c \"grim -g (slurp)\""
         "SHIFT, Print, exec, grim"
         ", XF86Display, exec, wdisplays"
+        ", XF86Messenger, exec, makoctl dismiss"
+        ", XF86Go, exec, wofi -G -p '' -S run,"
+        ", Cancel, exec, swaylock"
+        ", XF86Favorites, fullscreen,0"
 
         # layout change
         "SUPER, m, exec, hyprctl keyword general:layout 'master'"
