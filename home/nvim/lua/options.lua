@@ -3,6 +3,7 @@ vim.opt.clipboard = "unnamedplus" -- sync yank with system clipboard
 vim.opt.termguicolors = true -- assume a modern terminal and use 24bit RGB
 vim.opt.shortmess:append({ W = true, I = true, c = true, s = true }) -- suppress some messages
 vim.opt.updatetime = 500 -- faster cursor hold
+vim.opt.mouse = "" -- no mouse
 
 -- tabs and spaces
 vim.opt.shiftwidth = 0 -- look at tabstop, no sense in two settings

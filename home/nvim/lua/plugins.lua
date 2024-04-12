@@ -1031,12 +1031,6 @@ return inject_all({
   },
 
   {
-    "yorickpeterse/nvim-pqf",
-    event = "VeryLazy",
-    opts = {},
-  },
-
-  {
     "kevinhwang91/nvim-bqf",
     ft = "qf",
     dependencies = {
@@ -1514,7 +1508,7 @@ return inject_all({
       go = { "golangcilint", "codespell" },
       -- markdown = { 'vale', 'languagetool', },
       nix = { "nix" },
-      yaml = { "yamllint" },
+      -- yaml = { "yamllint" },
     },
     config = function(_, opts)
       require("lint").linters_by_ft = opts
@@ -1637,23 +1631,29 @@ return inject_all({
     end,
   },
 
+  -- {
+  --   "neovim/nvim-lspconfig",
+  --   name = "lspconfig.yamlls",
+  --   ft = { "yaml" },
+  --   opts = {
+  --     settings = {
+  --       yaml = {
+  --         schemaStore = {
+  --           enable = true,
+  --           url = "https://www.schemastore.org/api/json/catalog.json",
+  --         },
+  --       },
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require("lspconfig").yamlls.setup(opts)
+  --   end,
+  -- },
+
   {
-    "neovim/nvim-lspconfig",
-    name = "lspconfig.yamlls",
-    ft = { "yaml" },
-    opts = {
-      settings = {
-        yaml = {
-          schemaStore = {
-            enable = true,
-            url = "https://www.schemastore.org/api/json/catalog.json",
-          },
-        },
-      },
-    },
-    config = function(_, opts)
-      require("lspconfig").yamlls.setup(opts)
-    end,
+    "yorickpeterse/nvim-pqf",
+    event = "VeryLazy",
+    opts = {},
   },
 
   {
