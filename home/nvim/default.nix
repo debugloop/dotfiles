@@ -13,6 +13,7 @@
     "nvim/lua".source = ./lua;
     "nvim/ftplugin".source = ./ftplugin;
     "nvim/after/queries/go/textobjects.scm".source = ./go-textobjects.scm;
+    "nvim/after/queries/gotmpl/injections.scm".source = ./gotmpl-injections.scm;
     "nvim/snippets/go.snippets".source = ./go.snippets;
     #"nvim/parser".source = "${pkgs.symlinkJoin { name = "treesitter-parsers"; paths = pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies; }}/parser";
     "nvim/parser".source = "${pkgs.symlinkJoin { name = "treesitter-parsers"; paths = builtins.filter (x: ((builtins.parseDrvName x.name).name) != "vimplugin-treesitter-grammar-javascript") pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies; }}/parser";

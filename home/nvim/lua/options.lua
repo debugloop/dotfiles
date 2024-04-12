@@ -227,3 +227,11 @@ vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "TermOpen" }, {
     end
   end,
 })
+
+-- detect filetypes
+vim.filetype.add({
+  pattern = {
+    [".*deploy.*%.yaml"] = "gotmpl",
+    [".*deploy.*%.yml"] = "gotmpl",
+  },
+})
