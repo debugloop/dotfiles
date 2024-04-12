@@ -183,48 +183,6 @@
     less.enable = true;
     rbw.enable = true;
     tmate.enable = true;
-    wezterm = {
-      enable = true;
-      extraConfig = ''
-        local wezterm = require 'wezterm'
-        local config = {}
-        if wezterm.config_builder then
-          config = wezterm.config_builder()
-        end
-
-        -- under the hood
-        config.enable_wayland = true
-
-        -- fonts
-        config.font = wezterm.font('FiraCode Nerd Font')
-        config.font_size = 11.0
-
-        -- visuals
-        config.enable_tab_bar = false
-
-        -- color
-        config.force_reverse_video_cursor = true,
-        config.colors = {
-            foreground = "#dcd7ba",
-            background = "#1f1f28",
-
-            cursor_bg = "#c8c093",
-            cursor_fg = "#c8c093",
-            cursor_border = "#c8c093",
-
-            selection_fg = "#c8c093",
-            selection_bg = "#2d4f67",
-
-            scrollbar_thumb = "#16161d",
-            split = "#16161d",
-
-            ansi = { "#090618", "#c34043", "#76946a", "#c0a36e", "#7e9cd8", "#957fb8", "#6a9589", "#c8c093" },
-            brights = { "#727169", "#e82424", "#98bb6c", "#e6c384", "#7fb4ca", "#938aa9", "#7aa89f", "#dcd7ba" },
-            indexed = { [16] = "#ffa066", [17] = "#ff5d62" },
-        },
-        return config
-      '';
-    };
     zoxide.enable = true;
     bat = {
       enable = true;
@@ -261,6 +219,48 @@
       # PermitLocalCommand yes
       # LocalCommand ${pkgs.libnotify}/bin/notify-send "%r@%h" "Connected to %h."
       # '';
+    };
+    wezterm = {
+      enable = true;
+      extraConfig = ''
+        local wezterm = require 'wezterm'
+        local config = {}
+        if wezterm.config_builder then
+          config = wezterm.config_builder()
+        end
+
+        -- under the hood
+        config.enable_wayland = true
+
+        -- fonts
+        config.font = wezterm.font('FiraCode Nerd Font')
+        config.font_size = 11.0
+
+        -- visuals
+        config.enable_tab_bar = false
+
+        -- color
+        config.force_reverse_video_cursor = true
+        config.colors = {
+            foreground = "#dcd7ba",
+            background = "#1f1f28",
+
+            cursor_bg = "#c8c093",
+            cursor_fg = "#c8c093",
+            cursor_border = "#c8c093",
+
+            selection_fg = "#c8c093",
+            selection_bg = "#2d4f67",
+
+            scrollbar_thumb = "#16161d",
+            split = "#16161d",
+
+            ansi = { "#090618", "#c34043", "#76946a", "#c0a36e", "#7e9cd8", "#957fb8", "#6a9589", "#c8c093" },
+            brights = { "#727169", "#e82424", "#98bb6c", "#e6c384", "#7fb4ca", "#938aa9", "#7aa89f", "#dcd7ba" },
+            indexed = { [16] = "#ffa066", [17] = "#ff5d62" },
+        }
+        return config
+      '';
     };
   };
 }
