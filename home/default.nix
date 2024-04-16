@@ -74,7 +74,7 @@
       deadnix
       devenv
       inputs.agenix.packages.x86_64-linux.default
-      inputs.nh.packages.x86_64-linux.default
+      nh
       nil
       nvd
       # basics
