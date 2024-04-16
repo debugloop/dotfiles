@@ -72,6 +72,7 @@
       age
       comma
       deadnix
+      devenv
       inputs.agenix.packages.x86_64-linux.default
       inputs.nh.packages.x86_64-linux.default
       nil
@@ -119,6 +120,7 @@
       pdftk
       # dev
       awscli2
+      buf
       cargo
       codespell
       delve

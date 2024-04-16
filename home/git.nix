@@ -24,6 +24,10 @@
         hunk-header-decoration-style = "blue ul box";
       };
     };
+    difftastic = {
+      enable = false;
+      background = "dark";
+    };
     aliases = {
       # shorthands for daily stuff
       a = "add";
