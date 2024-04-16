@@ -1555,6 +1555,9 @@ return inject_all({
       end,
       capabilities = vim.lsp.protocol.make_client_capabilities(),
       -- cmd_env = { GOFLAGS = "-tags=unit,integration,e2e" },
+      flags = {
+        allow_incremental_sync = false,
+      },
       settings = {
         gopls = {
           staticcheck = true,
