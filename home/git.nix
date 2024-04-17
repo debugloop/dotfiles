@@ -62,6 +62,7 @@
 
       # files from commits
       f = "show -m --pretty=tformat: --name-only";
+      ls = "ls-files -dmo";
 
       # repo main/master disambiguation
       main = "!f() { git symbolic-ref refs/remotes/origin/HEAD --short | cut -d/ -f2; }; f";
