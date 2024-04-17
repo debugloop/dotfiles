@@ -60,9 +60,14 @@
       cr = "!f() {cd $(git rev-parse --show-toplevel)}"; # change to root
       exec = "!exec "; # make from wherever
 
-      # files from commits
-      f = "show -m --pretty=tformat: --name-only";
-      ls = "ls-files -dmo";
+      # files from index or from commits
+      f = "!f() {
+        if [ -z \"$1\" ]; then
+          git ls-files -dmo
+        else
+          git show -m --pretty=tformat: --name-only $1
+        fi
+      }; f";
 
       # repo main/master disambiguation
       main = "!f() { git symbolic-ref refs/remotes/origin/HEAD --short | cut -d/ -f2; }; f";

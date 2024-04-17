@@ -110,21 +110,21 @@ M.components.branch = {
   flexible = 20,
   {
     provider = function(_)
-      return "  " .. vim.b.gitsigns_status_dict.head .. " "
+      return "  " .. vim.b.branch_name .. " "
     end,
   },
   {
     provider = function(_)
-      return " " .. vim.b.gitsigns_status_dict.head
+      return " " .. vim.b.branch_name
     end,
   },
 }
 
 M.components.changes = {
   init = function(self)
-    self.has_changes = vim.b.gitsigns_status_dict.added ~= 0
-      or vim.b.gitsigns_status_dict.removed ~= 0
-      or vim.b.gitsigns_status_dict.changed ~= 0
+    self.has_changes = vim.b.minidiff_summary.add ~= 0
+      or vim.b.minidiff_summary.delete ~= 0
+      or vim.b.minidiff_summary.change ~= 0
   end,
   condition = function(_)
     return conditions.is_active()
@@ -136,21 +136,21 @@ M.components.changes = {
     provider = " ",
     {
       provider = function(_)
-        local count = vim.b.gitsigns_status_dict.added or 0
+        local count = vim.b.minidiff_summary.add or 0
         return count > 0 and ("+" .. count .. " ")
       end,
       hl = { fg = "git_add" },
     },
     {
       provider = function(_)
-        local count = vim.b.gitsigns_status_dict.changed or 0
+        local count = vim.b.minidiff_summary.change or 0
         return count > 0 and ("~" .. count .. " ")
       end,
       hl = { fg = "git_change" },
     },
     {
       provider = function(_)
-        local count = vim.b.gitsigns_status_dict.removed or 0
+        local count = vim.b.minidiff_summary.delete or 0
         return count > 0 and ("-" .. count .. " ")
       end,
       hl = { fg = "git_del" },
@@ -159,7 +159,9 @@ M.components.changes = {
 }
 
 M.components.git = {
-  condition = conditions.is_git_repo,
+  condition = function()
+    return vim.b.minidiff_summary ~= nil
+  end,
   M.components.branch,
   M.components.changes,
 }

@@ -96,14 +96,13 @@
       tcurl = "curl -s -o /dev/null -w 'time_namelookup: %{time_namelookup}\ntime_connect: %{time_connect}\ntime_appconnect: %{time_appconnect}\ntime_pretransfer: %{time_pretransfer}\ntime_redirect: %{time_redirect}\ntime_starttransfer: %{time_starttransfer}\ntime_total: %{time_total}\n'";
       dmesg = "dmesg -T";
       docker-ip = "docker inspect --format '{{ .NetworkSettings.IPAddress }}'";
-      hl = "hledger";
       ip = "ip -c";
-      past = "curl -F 'f:1 = <-' ix.io | wl-copy";
       s = "kitty +kitten ssh";
       c = "cd (git rev-parse --show-toplevel)";
       sloc = "tokei";
-      vimdiff = "nvim -d";
+      v = "vim (git f)";
       vim = "nvim";
+      vimdiff = "nvim -d";
     };
   };
 }

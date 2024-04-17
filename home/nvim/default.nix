@@ -29,7 +29,6 @@
       "diffview-nvim"
       "flash-nvim"
       "gitlinker-nvim"
-      "gitsigns-nvim"
       "heirline-nvim"
       "kanagawa-nvim"
       "lazy-nvim"

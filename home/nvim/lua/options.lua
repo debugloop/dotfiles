@@ -236,3 +236,13 @@ vim.filetype.add({
     [".*deploy.*%.yml"] = "gotmpl",
   },
 })
+
+-- set branch name variable
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+  group = vim.api.nvim_create_augroup("on_term_open", { clear = true }),
+  callback = function()
+    if vim.bo.buftype == "" then
+      vim.b.branch_name = vim.fn.trim(vim.fn.system("git rev-parse --abbrev-ref HEAD"))
+    end
+  end,
+})

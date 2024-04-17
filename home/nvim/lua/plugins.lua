@@ -179,161 +179,11 @@ return inject_all({
   },
 
   {
-    "lewis6991/gitsigns.nvim",
-    event = "UIEnter",
-    keys = {
-      {
-        "]g",
-        function()
-          for _ = 1, vim.v.count1 do
-            require("gitsigns").next_hunk()
-          end
-        end,
-        desc = "goto next git change hunk",
-        mode = { "n", "x", "o" },
-      },
-      {
-        "[g",
-        function()
-          for _ = 1, vim.v.count1 do
-            require("gitsigns").prev_hunk()
-          end
-        end,
-        desc = "goto previous git change hunk",
-        mode = { "n", "x", "o" },
-      },
-      { "<leader>g", "<nop>", { desc = "+git" } },
-      {
-        "<leader>gR",
-        function()
-          require("gitsigns").reset_hunk()
-        end,
-        desc = "restore hunk",
-        mode = "n",
-      },
-      {
-        "<leader>gs",
-        function()
-          require("gitsigns").stage_hunk()
-        end,
-        desc = "stage hunk",
-        mode = "n",
-      },
-      {
-        "<leader>gs",
-        function()
-          require("gitsigns").stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-        end,
-        desc = "stage hunk",
-        mode = "v",
-      },
-      {
-        "<leader>gS",
-        function()
-          require("gitsigns").stage_buffer()
-        end,
-        desc = "stage buffer",
-      },
-      {
-        "<leader>gu",
-        function()
-          require("gitsigns").undo_stage_hunk()
-        end,
-        desc = "unstage last staged hunk",
-      },
-      {
-        "<leader>gU",
-        function()
-          require("gitsigns").reset_buffer_index()
-        end,
-        desc = "unstage buffer",
-      },
-      {
-        "<leader>gd",
-        function()
-          require("gitsigns").toggle_deleted()
-        end,
-        desc = "toggle display of deleted lines",
-      },
-      {
-        "<leader>gG",
-        function()
-          require("gitsigns").toggle_linehl(true)
-          require("gitsigns").toggle_deleted(true)
-          require("gitsigns").toggle_current_line_blame(true)
-          require("gitsigns").refresh()
-          require("gitsigns").toggle_word_diff(true)
-          require("gitsigns").refresh()
-        end,
-        desc = "turn on all git stuff",
-      },
-      {
-        "<leader>gg",
-        function()
-          require("gitsigns").toggle_linehl(false)
-          require("gitsigns").toggle_deleted(false)
-          require("gitsigns").toggle_word_diff(false)
-          require("gitsigns").toggle_current_line_blame(false)
-          require("gitsigns").refresh()
-        end,
-        desc = "turn off all git stuff, default",
-      },
-      {
-        "<leader>gl",
-        function()
-          require("gitsigns").toggle_linehl()
-        end,
-        desc = "toggle line highlight",
-      },
-      {
-        "<leader>gw",
-        function()
-          require("gitsigns").toggle_word_diff()
-        end,
-        desc = "toggle word diff",
-      },
-      {
-        "<leader>gb",
-        function()
-          require("gitsigns").toggle_current_line_blame()
-        end,
-        desc = "toggle blame line",
-      },
-      {
-        "<leader>gc",
-        function()
-          require("gitsigns").change_base(vim.fn.input("Ref: "), true)
-        end,
-        desc = "change base",
-      },
-      {
-        "<leader>go",
-        function()
-          require("gitsigns").show(vim.fn.input("Ref: "))
-        end,
-        desc = "open file at ref",
-      },
-      {
-        "<leader>gD",
-        function()
-          require("gitsigns").diffthis(vim.fn.input("Ref: "))
-        end,
-        desc = "diff file against ref",
-      },
-    },
-    opts = {
-      current_line_blame_opts = {
-        ignore_whitespace = true,
-        delay = 300,
-      },
-    },
-  },
-
-  {
     "rebelot/heirline.nvim",
     event = "UIEnter",
     dependencies = {
       { "rebelot/kanagawa.nvim" },
+      { "echasnovski/mini.diff" },
     },
     config = function()
       -- override some settings
@@ -734,6 +584,73 @@ return inject_all({
 
   {
     "echasnovski/mini.nvim",
+    main = "mini.diff",
+    name = "mini.diff",
+    event = "UIEnter",
+    keys = {
+      {
+        "<leader>gg",
+        function()
+          require("mini.diff").toggle_overlay()
+        end,
+        desc = "Show details",
+      },
+      {
+        "<leader>gb",
+        function()
+          require("mini.extra").pickers.git_branches({}, {
+            source = {
+              choose = function(item)
+                vim.fn.system("git read-tree " .. item:match("^%*?%s*(%S+)"))
+              end,
+            },
+          })
+        end,
+        desc = "Set git base to a branch",
+      },
+      {
+        "<leader>gc",
+        function()
+          require("mini.extra").pickers.git_commits({}, {
+            source = {
+              choose = function(item)
+                vim.fn.system("git read-tree " .. item:match("^(%S+)"))
+              end,
+            },
+          })
+        end,
+        desc = "Set git base to a commit",
+      },
+      {
+        "<leader>gr",
+        function()
+          vim.fn.system("git reset")
+        end,
+        desc = "Reset git base",
+      },
+    },
+    opts = {
+      view = {
+        style = "sign",
+        signs = { add = "┃", change = "┃", delete = "_" },
+      },
+      mappings = {
+        apply = "ga",
+        reset = "<leader>gR",
+        textobject = "gh",
+        goto_first = "[G",
+        goto_prev = "[g",
+        goto_next = "]g",
+        goto_last = "]G",
+      },
+      options = {
+        wrap_goto = true,
+      },
+    },
+  },
+
+  {
+    "echasnovski/mini.nvim",
     main = "mini.files",
     name = "mini.files",
     keys = {
@@ -805,7 +722,7 @@ return inject_all({
     "echasnovski/mini.nvim",
     main = "mini.move",
     name = "mini.move",
-    event = "VeryLazy", -- load on event for clue to work correctly
+    event = "VeryLazy",
     keys = {
       { "<leader>M", "<nop>", { desc = "+move" } },
     },
@@ -1665,7 +1582,7 @@ return inject_all({
       {
         "-",
         function()
-          vim.cmd("NvimTreeToggle focus=false")
+          require("nvim-tree.api").tree.toggle({ focus = false })
         end,
         desc = "toggle buffer tree",
       },
@@ -1745,9 +1662,8 @@ return inject_all({
         api.tree.expand_all()
         -- hide bufferbar
         HIDE_BUFFERS = true
-        vim.cmd("windo do VimEnter")
         vim.schedule(function()
-          vim.cmd.doautocmd("BufWinEnter")
+          vim.cmd.doautocmd("VimEnter")
         end)
         -- remap tab
         vim.keymap.set("n", "<tab>", function()
@@ -1772,9 +1688,8 @@ return inject_all({
       api.events.subscribe(api.events.Event.TreeClose, function(_)
         -- show bufferbar
         HIDE_BUFFERS = false
-        vim.cmd("windo do VimEnter")
         vim.schedule(function()
-          vim.cmd.doautocmd("BufWinEnter")
+          vim.cmd.doautocmd("VimEnter")
         end)
         -- remap tab to their regular mappings
         vim.keymap.set("n", "<tab>", function()
