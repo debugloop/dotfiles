@@ -167,7 +167,6 @@
     };
     eza = {
       enable = true;
-      enableAliases = true;
     };
     go = {
       enable = true;
