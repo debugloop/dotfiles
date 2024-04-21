@@ -43,6 +43,7 @@
         };
       };
     nixosConfigurations = {
+
       simmons = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
@@ -102,6 +103,7 @@
           })
         ];
       };
+
       hyperion = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
@@ -123,18 +125,9 @@
               };
             };
           })
-          # extra settings that only apply for the testvm
-          ({ lib, ... }:
-            {
-              # empty password for myself
-              age = lib.mkForce { };
-              users.users.danieln.passwordFile = lib.mkForce null;
-              users.users.danieln.initialHashedPassword = "";
-              # launch in a useable and graphical window
-              virtualisation.qemu.options = [ "-vga none -device virtio-vga-gl -display gtk,gl=on" ]; # -full-screen
-            })
         ];
       };
+
     };
   };
 }

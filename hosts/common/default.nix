@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, hostname, ... }:
+{ config, lib, pkgs, hostname, ... }:
 {
   imports =
     [
@@ -32,6 +32,21 @@
     # myself open in case something goes wrong with agenix, impermanence, or
     # anything else.
     users.root.initialHashedPassword = "$y$j9T$1DGnFy3m6PTbQoYB5kICV1$7gzz.2guf2Lj1wy4uo.YR0r1TfhI6/OTvjSi7.Tcm56";
+  };
+
+  virtualisation.vmVariant = {
+    # no persistence
+    virtualisation.diskImage = null;
+    environment.persistence = lib.mkForce {};
+    # empty password for myself
+    age = lib.mkForce { };
+    users.users.danieln.passwordFile = lib.mkForce null;
+    users.users.danieln.initialHashedPassword = "";
+    # launch in a useable and graphical window
+    virtualisation.qemu.options = [
+      "-vga virtio"
+      "-display gtk,zoom-to-fit=false"
+    ];
   };
 }
 
