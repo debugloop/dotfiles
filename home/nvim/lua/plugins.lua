@@ -598,6 +598,18 @@ return inject_all({
       {
         "<leader>gb",
         function()
+          local linenum = vim.api.nvim_win_get_cursor(0)[1]
+          local filename = vim.fn.expand("%")
+          local blame = vim.fn.system(
+            "git log --date=relative --format='%ad by %an - %s' -s -L" .. linenum .. "," .. linenum .. ":" .. filename
+          )
+          vim.notify(blame)
+        end,
+        desc = "Show git blame",
+      },
+      {
+        "<leader>gc",
+        function()
           require("mini.extra").pickers.git_branches({}, {
             source = {
               choose = function(item)
@@ -609,7 +621,7 @@ return inject_all({
         desc = "Set git base to a branch",
       },
       {
-        "<leader>gc",
+        "<leader>gC",
         function()
           require("mini.extra").pickers.git_commits({}, {
             source = {
