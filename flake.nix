@@ -32,16 +32,6 @@
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
       in
       {
-        "danieln@clarke" = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [
-            ./home
-            inputs.gridx.home-module
-          ];
-          extraSpecialArgs = {
-            inherit inputs;
-          };
-        };
         danieln = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
