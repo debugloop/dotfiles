@@ -72,11 +72,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1712239075,
-        "narHash": "sha256-bu1sCPzhSUlJQaoruymHaped6qdXK6cYFdvoVt9+iP4=",
+        "lastModified": 1713769085,
+        "narHash": "sha256-2HRhKEUDipMCvPY3GHqxuXhU0ATy94hK0Unhsjhz+m4=",
         "ref": "refs/heads/master",
-        "rev": "85acd251bdf1f19f3758ffcb24edaeaa0dc2bb95",
-        "revCount": 7,
+        "rev": "fd4da53e66690c20eaf03cffe4a92df4216a89b3",
+        "revCount": 8,
         "type": "git",
         "url": "ssh://git@github.com/debugloop/gridx"
       },
@@ -164,11 +164,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1711854532,
-        "narHash": "sha256-JPStavwlT7TfxxiXHk6Q7sbNxtnXAIjXQJMLO0KB6M0=",
+        "lastModified": 1713668931,
+        "narHash": "sha256-rVlwWQlgFGGK3aPVcKmtYqWgjYnPah5FOIsYAqrMN2w=",
         "owner": "Mic92",
         "repo": "nix-index-database",
-        "rev": "2844b5f3ad3b478468151bd101370b9d8ef8a3a7",
+        "rev": "07ece11b22217b8459df589f858e92212b74f1a1",
         "type": "github"
       },
       "original": {
