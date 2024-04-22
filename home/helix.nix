@@ -16,16 +16,16 @@
         cursorline = true;
         color-modes = true;
         indent-guides = {
-            render = true;
-            character = "·";
+          render = true;
+          character = "·";
         };
         statusline = {
-            left = ["mode" "spacer" "version-control" "workspace-diagnostics" "file-name" "diagnostics" ];
-            center = [];
-            right = ["file-type" "position-percentage" "total-line-numbers"];
-            mode.normal = "NORMAL";
-            mode.insert = "INSERT";
-            mode.select = "SELECT";
+          left = [ "mode" "spacer" "version-control" "workspace-diagnostics" "file-name" "diagnostics" ];
+          center = [ ];
+          right = [ "file-type" "position-percentage" "total-line-numbers" ];
+          mode.normal = "NORMAL";
+          mode.insert = "INSERT";
+          mode.select = "SELECT";
         };
       };
       keys.normal = {

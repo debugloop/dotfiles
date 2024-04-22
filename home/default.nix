@@ -195,7 +195,7 @@
         secrets_filter = false;
         sync_frequency = "5m";
         enter_accept = false;
-        keymap_mode = "vim-normal";
+        keymap_mode = "vim-insert";
       };
     };
     bat = {
@@ -230,8 +230,8 @@
     ssh = {
       enable = true;
       extraConfig = ''
-      PermitLocalCommand yes
-      LocalCommand ${pkgs.libnotify}/bin/notify-send "%r@%h" "Connected to %h."
+        PermitLocalCommand yes
+        LocalCommand ${pkgs.libnotify}/bin/notify-send "%r@%h" "Connected to %h."
       '';
     };
   };

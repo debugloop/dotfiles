@@ -37,7 +37,7 @@
   virtualisation.vmVariant = {
     # no persistence
     virtualisation.diskImage = null;
-    environment.persistence = lib.mkForce {};
+    environment.persistence = lib.mkForce { };
     # empty password for myself
     age = lib.mkForce { };
     users.users.danieln.passwordFile = lib.mkForce null;
