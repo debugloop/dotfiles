@@ -4,7 +4,7 @@ local function inject(spec)
     return spec
   end
 
-  if spec["dir"] == nil then
+  if spec["dir"] == nil and spec["dev"] ~= true then
     local plugin_name = spec[1]:match("[^/]+$")
     local nixpkgs_dir = vim.fn.stdpath("data") .. "/nixpkgs/" .. plugin_name:gsub("%.", "-")
     if vim.fn.isdirectory(nixpkgs_dir) == 1 then
@@ -1897,6 +1897,7 @@ return inject_all({
 
   {
     "debugloop/telescope-undo.nvim",
+    dev = true,
     dependencies = {
       {
         "nvim-telescope/telescope.nvim",
