@@ -159,6 +159,7 @@
       redis
       rr
       sqlite
+      ssm-session-manager-plugin
       stylua
       tcpdump
       tree-sitter
