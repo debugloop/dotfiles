@@ -3,7 +3,7 @@
 {
   imports = [
     # our windowmanager
-    ./hyprland.nix
+    ./sway.nix
     # auxiliary services
     ./avizo.nix
     ./clipman.nix
@@ -99,6 +99,7 @@
     wdisplays
     wev
     wireshark
+    wl-mirror
     xdg-utils
   ];
 

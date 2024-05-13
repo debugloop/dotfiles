@@ -16,10 +16,14 @@
     settings = [
       {
         "layer" = "top";
+        "output" = "!HEADLESS-1";
         "modules-left" = [
           "hyprland/workspaces"
           "hyprland/submap"
           "hyprland/window"
+          "sway/workspaces"
+          "sway/mode"
+          "sway/window"
         ];
         "modules-center" = [
           "custom/media"
@@ -145,9 +149,35 @@
             "8" = " 8:code";
             "9" = " 9:code";
             "10" = " 10:code";
-            #"urgent" = "";
-            #"focused" = "";
-            #"default" = "";
+          };
+        };
+        "sway/mode" = {
+          "format" = " {}";
+          "tooltip" = false;
+        };
+        "sway/window" = {
+          "format" = "{}";
+          "max-length" = 160;
+          #"rewrite" = {
+          #  "(.*) — Mozilla Firefox" = " $1";
+          #  "(.*) — Evolution" = " $1";
+          #  "vim (.*)" = " vim $1";
+          #  "fish (.*)" = " $1";
+          #};
+        };
+        "sway/workspaces" = {
+          "all-outputs" = false;
+          "format" = "{icon} {name}";
+          "format-icons" = {
+            "1:web" = "";
+            "2:com" = "";
+            "3:file" = "";
+            "4:music" = "";
+            "5:steam" = "";
+            "8:term" = "";
+            "9:term" = "";
+            "10:term" = "";
+            "default" = "";
           };
         };
         "temperature" = {
@@ -197,7 +227,8 @@
         background: none; /* Remove predefined background color (white) */
         transition: none; /* Disable predefined animations */
       }
-      #workspaces button.active {
+      #workspaces button.active,
+      #workspaces button.visible {
         color: #${config.colors.foreground};
         background-color: #${config.colors.light_bg};
         border-top: 1px solid #${config.colors.blue};
@@ -263,7 +294,7 @@
         background-color: #${config.colors.red};
         padding: 0px 8px;
       }
-      #submap {
+      #submap, #mode {
         background: #${config.colors.purple};
         color: #${config.colors.background};
       }

@@ -5,7 +5,7 @@
     enable = true;
     systemdTarget = "graphical-session.target";
     profiles = {
-      home_initial = {
+      home = {
         outputs = [
           {
             criteria = "LG Electronics LG ULTRAWIDE 208NTKF4V093";
@@ -17,15 +17,8 @@
             criteria = "eDP-1";
             status = "disable";
           }
-        ];
-      };
-      home = {
-        outputs = [
           {
-            criteria = "LG Electronics LG ULTRAWIDE 208NTKF4V093";
-            mode = "3440x1440@60Hz";
-            position = "0,0";
-            status = "enable";
+            criteria = "HEADLESS-1";
           }
         ];
       };
@@ -34,6 +27,9 @@
           {
             criteria = "eDP-1";
             status = "enable";
+          }
+          {
+            criteria = "HEADLESS-1";
           }
         ];
         exec = [
@@ -45,6 +41,9 @@
           {
             criteria = "eDP-1";
             status = "enable";
+          }
+          {
+            criteria = "HEADLESS-1";
           }
           {
             criteria = "*";

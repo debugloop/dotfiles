@@ -51,9 +51,13 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = [
-      pkgs.xdg-desktop-portal-hyprland
-    ];
+    wlr.settings.screencast = {
+      max_fps = 30;
+      #exec_before = "disable_notifications.sh";
+      #exec_after = "enable_notifications.sh";
+      chooser_type = "dmenu";
+      chooser_cmd = "swaymsg -t get_outputs | jq -r '.[] | .name' | wofi -d";
+    };
   };
 
   services = {
@@ -89,8 +93,10 @@
   programs = {
     light.enable = true;
     nm-applet.enable = true;
-    hyprland = {
+    sway = {
       enable = true;
+      extraPackages = [];
     };
+    hyprland.enable = true;
   };
 }
