@@ -97,6 +97,5 @@
       enable = true;
       extraPackages = [];
     };
-    hyprland.enable = true;
   };
 }

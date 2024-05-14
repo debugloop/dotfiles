@@ -4,9 +4,6 @@
   home.packages = with pkgs; [
     playerctl
   ];
-  systemd.user = {
-    services.waybar.Service.Environment = "PATH=/run/wrappers/bin:${pkgs.hyprland}/bin";
-  };
   programs.waybar = {
     enable = true;
     systemd = {
@@ -18,9 +15,6 @@
         "layer" = "top";
         "output" = "!HEADLESS-1";
         "modules-left" = [
-          "hyprland/workspaces"
-          "hyprland/submap"
-          "hyprland/window"
           "sway/workspaces"
           "sway/mode"
           "sway/window"
@@ -125,32 +119,6 @@
           "on-click-middle" = "${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list sinks short | ${pkgs.gnugrep}/bin/grep -v $(${pkgs.pulseaudio}/bin/pactl get-default-sink) | ${pkgs.coreutils}/bin/cut -f 1 | ${pkgs.coreutils}/bin/head -1)";
           "on-click-right" = "${pkgs.easyeffects}/bin/easyeffects";
         };
-        "hyprland/submap" = {
-          "format" = " {}";
-          "tooltip" = false;
-        };
-        "hyprland/window" = {
-          "format" = "{}";
-          "max-length" = 160;
-        };
-        "hyprland/workspaces" = {
-          "all-outputs" = false;
-          "sort-by-number" = true;
-          "format" = "{icon}";
-          "format-icons" = {
-            # TODO: since workspaces have no names to ensure they're sorted, we assign names here -> refactor some time
-            "1" = " web";
-            "2" = " com";
-            "3" = " music";
-            "4" = " 4:misc";
-            "5" = " 5:misc";
-            "6" = " 6:code";
-            "7" = " 7:code";
-            "8" = " 8:code";
-            "9" = " 9:code";
-            "10" = " 10:code";
-          };
-        };
         "sway/mode" = {
           "format" = " {}";
           "tooltip" = false;
@@ -227,7 +195,6 @@
         background: none; /* Remove predefined background color (white) */
         transition: none; /* Disable predefined animations */
       }
-      #workspaces button.active,
       #workspaces button.visible {
         color: #${config.colors.foreground};
         background-color: #${config.colors.light_bg};
@@ -294,7 +261,7 @@
         background-color: #${config.colors.red};
         padding: 0px 8px;
       }
-      #submap, #mode {
+      #mode {
         background: #${config.colors.purple};
         color: #${config.colors.background};
       }
