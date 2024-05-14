@@ -756,7 +756,7 @@ return inject_all({
     "echasnovski/mini.nvim",
     main = "mini.operators",
     name = "mini.operators",
-    event = "InsertEnter",
+    event = "VeryLazy",
     opts = {
       replace = {
         prefix = "gR",
