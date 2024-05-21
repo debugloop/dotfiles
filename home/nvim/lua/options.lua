@@ -73,26 +73,6 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-  group = vim.api.nvim_create_augroup("on_markdown", { clear = true }),
-  pattern = { "markdown" },
-  callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.conceallevel = 2
-  end,
-})
-
-vim.api.nvim_create_autocmd("FileType", {
-  group = vim.api.nvim_create_augroup("on_gitcommit", { clear = true }),
-  pattern = { "gitcommit" },
-  callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.spell = true
-    vim.opt_local.textwidth = 72
-    vim.opt_local.colorcolumn = "72"
-  end,
-})
-
 -- auto create dir when saving a file, in case some intermediate directory does not exist
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   group = vim.api.nvim_create_augroup("auto_create_dir", { clear = true }),

@@ -451,7 +451,7 @@ return inject_all({
       buffer = { suffix = "", options = {} },
       comment = { suffix = "", options = {} },
       conflict = { suffix = "x", options = {} },
-      diagnostic = { suffix = "d", options = {} },
+      diagnostic = { suffix = "", options = {} },
       file = { suffix = "", options = {} },
       indent = { suffix = "", options = {} },
       jump = { suffix = "j", options = {} },
@@ -569,21 +569,6 @@ return inject_all({
 
   {
     "echasnovski/mini.nvim",
-    main = "mini.comment",
-    name = "mini.comment",
-    event = "VeryLazy", -- event based, so the text object is also available the start
-    keys = {
-      {
-        "gcc",
-        "gcl",
-        desc = "comment current line",
-      },
-    },
-    opts = {},
-  },
-
-  {
-    "echasnovski/mini.nvim",
     main = "mini.diff",
     name = "mini.diff",
     event = "UIEnter",
@@ -645,6 +630,7 @@ return inject_all({
       view = {
         style = "sign",
         signs = { add = "┃", change = "┃", delete = "_" },
+        priority = 20,
       },
       mappings = {
         apply = "ga",
@@ -659,6 +645,12 @@ return inject_all({
         wrap_goto = true,
       },
     },
+    config = function(_, opts)
+      vim.api.nvim_set_hl(0, "MiniDiffSignAdd", { link = "diffAdded" })
+      vim.api.nvim_set_hl(0, "MiniDiffSignChange", { link = "diffChanged" })
+      vim.api.nvim_set_hl(0, "MiniDiffSignDelete", { link = "diffDeleted" })
+      require("mini.diff").setup(opts)
+    end,
   },
 
   {
@@ -1938,6 +1930,10 @@ return inject_all({
         undo = {
           side_by_side = true,
           layout_strategy = "vertical",
+          vim_diff_opts = {
+            algorithm = "histogram",
+            ctxlen = 6,
+          },
           layout_config = {
             preview_height = 0.8,
           },

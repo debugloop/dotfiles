@@ -194,15 +194,14 @@ end, { desc = "set conceal" })
 vim.keymap.set("n", "<leader>oi", function()
   vim.g.miniindentscope_disable = not vim.g.miniindentscope_disable
 end, { desc = "set indentscope" })
+vim.keymap.set("n", "<leader>oh", function()
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }))
+end, { desc = "set lsp inlay hints" })
 vim.keymap.set("n", "<leader>ol", function()
   vim.o.list = not vim.o.list
 end, { desc = "set list" })
 vim.keymap.set("n", "<leader>oL", function()
-  if vim.diagnostic.is_disabled() then
-    vim.diagnostic.enable(0)
-  else
-    vim.diagnostic.disable(0)
-  end
+  vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = "set lsp diagnostics" })
 vim.keymap.set("n", "<leader>on", function()
   vim.o.number = not vim.o.number
@@ -258,7 +257,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "<leader>qD", function()
       vim.diagnostic.setqflist({ severity = vim.diagnostic.severity.ERROR })
     end, { buffer = event.buf, desc = "lsp: list serious diagnostics" })
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = event.buf, desc = "lsp: show help" })
     vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = event.buf, desc = "lsp: rename symbol" })
     vim.keymap.set("n", "<leader>?", vim.lsp.buf.code_action, { buffer = event.buf, desc = "lsp: run code action" })
     vim.keymap.set("n", "<cr>", vim.diagnostic.open_float, { buffer = event.buf, desc = "lsp: open diagnostic" })
