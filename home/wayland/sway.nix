@@ -19,11 +19,11 @@
     extraConfig = ''
       bindsym --whole-window Mod4+button2 kill
 
-      bindsym --locked XF86AudioMute exec ${pkgs.avizo}/bin/volumectl toggle-mute && pkill -SIGRTMIN+4 waybar
-      bindsym --locked XF86AudioRaiseVolume exec ${pkgs.avizo}/bin/volumectl up 1 && pkill -SIGRTMIN+4 waybar
-      bindsym --locked XF86AudioLowerVolume exec ${pkgs.avizo}/bin/volumectl down 1 && pkill -SIGRTMIN+4 waybar
-      bindsym --locked Shift+XF86AudioRaiseVolume exec ${pkgs.avizo}/bin/volumectl up 5 && pkill -SIGRTMIN+4 waybar
-      bindsym --locked Shift+XF86AudioLowerVolume exec ${pkgs.avizo}/bin/volumectl down 5 && pkill -SIGRTMIN+4 waybar
+      bindsym --locked XF86AudioMute exec ${pkgs.avizo}/bin/volumectl -M0 toggle-mute && pkill -SIGRTMIN+4 waybar
+      bindsym --locked XF86AudioRaiseVolume exec ${pkgs.avizo}/bin/volumectl -M0 up 1 && pkill -SIGRTMIN+4 waybar
+      bindsym --locked XF86AudioLowerVolume exec ${pkgs.avizo}/bin/volumectl -M0 down 1 && pkill -SIGRTMIN+4 waybar
+      bindsym --locked Shift+XF86AudioRaiseVolume exec ${pkgs.avizo}/bin/volumectl -M0 up 5 && pkill -SIGRTMIN+4 waybar
+      bindsym --locked Shift+XF86AudioLowerVolume exec ${pkgs.avizo}/bin/volumectl -M0 down 5 && pkill -SIGRTMIN+4 waybar
 
       bindsym --locked XF86AudioPlay exec ${pkgs.playerctl}/bin/playerctl -p spotify play-pause
       bindsym --locked XF86AudioNext exec ${pkgs.playerctl}/bin/playerctl -p spotify next
@@ -97,7 +97,7 @@
         };
         "HEADLESS-1" = {
           position = "0 1440";
-          resolution = "1000 1400";
+          resolution = "1300 1400";
           bg = "#${config.colors.red} solid_color";
         };
       };
@@ -281,12 +281,12 @@
 
         # TODO: build DND binding and indicator for waybar?
         # fancy keys
-        "XF86AudioMicMute" = "exec ${pkgs.avizo}/bin/volumectl -m toggle-mute && pkill -SIGRTMIN+4 waybar";
+        "XF86AudioMicMute" = "exec ${pkgs.avizo}/bin/volumectl -M0 -m toggle-mute && pkill -SIGRTMIN+4 waybar";
         "XF86AudioStop" = "exec ${pkgs.playerctl}/bin/playerctl -p spotify stop";
 
         # brightness
-        "XF86MonBrightnessUp" = "exec ${pkgs.avizo}/bin/lightctl up 5";
-        "XF86MonBrightnessDown" = "exec ${pkgs.avizo}/bin/lightctl down 5";
+        "XF86MonBrightnessUp" = "exec ${pkgs.avizo}/bin/lightctl -M0 up 5";
+        "XF86MonBrightnessDown" = "exec ${pkgs.avizo}/bin/lightctl -M0 down 5";
         "Shift+XF86MonBrightnessUp" = "exec ${pkgs.sudo}/bin/sudo ${pkgs.ddcutil}/bin/ddcutil -d 1 setvcp 10 + 20";
         "Shift+XF86MonBrightnessDown" = "exec ${pkgs.sudo}/bin/sudo ${pkgs.ddcutil}/bin/ddcutil -d 1 setvcp 10 - 20";
 
