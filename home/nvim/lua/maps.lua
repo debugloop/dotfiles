@@ -52,7 +52,19 @@ end, { desc = "grep in project" })
 vim.keymap.set("n", "<bs>", "<c-o>", { desc = "jump backwards" })
 vim.keymap.set("n", "<s-bs>", "<c-i>", { desc = "jump forwards" })
 vim.keymap.set("n", "gb", "<c-t>", { desc = "tagstack backwards" })
-vim.keymap.set("n", "gl", "`.", { desc = "goto to last change" })
+vim.keymap.set("n", "gl", function()
+  local lcount = vim.api.nvim_buf_line_count(0)
+  local last_change = vim.api.nvim_buf_get_mark(0, ".")
+  if last_change[1] > 0 and last_change[1] <= lcount then
+    pcall(vim.api.nvim_win_set_cursor, 0, last_change)
+    return
+  end
+  local last_leave = vim.api.nvim_buf_get_mark(0, '"')
+  if last_leave[1] > 0 and last_leave[1] <= lcount then
+    pcall(vim.api.nvim_win_set_cursor, 0, last_leave)
+    return
+  end
+end, { desc = "jump to last leave or last edit" })
 
 -- open fold
 vim.keymap.set("n", "zi", "zA", { desc = "toggle fold" })
@@ -133,21 +145,6 @@ vim.keymap.set("n", "dd", function()
     return "dd"
   end
 end, { desc = "delete line", expr = true })
-
--- goto last change site or where we left the buffer
-vim.keymap.set("n", "g.", function()
-  local lcount = vim.api.nvim_buf_line_count(0)
-  local last_change = vim.api.nvim_buf_get_mark(0, ".")
-  if last_change[1] > 0 and last_change[1] <= lcount then
-    pcall(vim.api.nvim_win_set_cursor, 0, last_change)
-    return
-  end
-  local last_leave = vim.api.nvim_buf_get_mark(0, '"')
-  if last_leave[1] > 0 and last_leave[1] <= lcount then
-    pcall(vim.api.nvim_win_set_cursor, 0, last_leave)
-    return
-  end
-end)
 
 -- open jumplist
 vim.keymap.set("n", "<leader>qj", function()
