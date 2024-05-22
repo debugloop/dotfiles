@@ -197,7 +197,7 @@ end, { desc = "set lsp inlay hints" })
 vim.keymap.set("n", "<leader>ol", function()
   vim.o.list = not vim.o.list
 end, { desc = "set list" })
-vim.keymap.set("n", "<leader>oL", function()
+vim.keymap.set("n", "<leader>od", function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = "set lsp diagnostics" })
 vim.keymap.set("n", "<leader>on", function()

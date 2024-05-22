@@ -540,17 +540,17 @@ return inject_all({
           { mode = "x", keys = "<leader>Mk", postkeys = "<leader>M" },
           { mode = "x", keys = "<leader>Ml", postkeys = "<leader>M" },
           -- maps that don't quit option mode (all of them)
+          { mode = "n", keys = "<leader>oS", postkeys = "<leader>o" }, -- treesitter scope display
           { mode = "n", keys = "<leader>ob", postkeys = "<leader>o" }, -- background
           { mode = "n", keys = "<leader>oc", postkeys = "<leader>o" }, -- conceal
-          { mode = "n", keys = "<leader>oI", postkeys = "<leader>o" }, -- indentscope
+          { mode = "n", keys = "<leader>od", postkeys = "<leader>o" }, -- lsp diagnostics
+          { mode = "n", keys = "<leader>oh", postkeys = "<leader>o" }, -- lsp inlay hints
+          { mode = "n", keys = "<leader>oi", postkeys = "<leader>o" }, -- treesitter illumination
           { mode = "n", keys = "<leader>ol", postkeys = "<leader>o" }, -- list
-          { mode = "n", keys = "<leader>oL", postkeys = "<leader>o" }, -- LSP
           { mode = "n", keys = "<leader>on", postkeys = "<leader>o" }, -- number
           { mode = "n", keys = "<leader>or", postkeys = "<leader>o" }, -- relativenumber
           { mode = "n", keys = "<leader>os", postkeys = "<leader>o" }, -- spell
           { mode = "n", keys = "<leader>ot", postkeys = "<leader>o" }, -- treesitter context
-          { mode = "n", keys = "<leader>oi", postkeys = "<leader>o" }, -- treesitter illumination
-          { mode = "n", keys = "<leader>oS", postkeys = "<leader>o" }, -- treesitter scope display
           { mode = "n", keys = "<leader>ov", postkeys = "<leader>o" }, -- virtualedit
           { mode = "n", keys = "<leader>ow", postkeys = "<leader>o" }, -- wrap
           { mode = "n", keys = "<leader>ox", postkeys = "<leader>o" }, -- cursorcolumn
