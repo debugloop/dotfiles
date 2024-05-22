@@ -1,6 +1,5 @@
 -- general behavior
 vim.opt.clipboard = "unnamedplus" -- sync yank with system clipboard
-vim.opt.termguicolors = true -- assume a modern terminal and use 24bit RGB
 vim.opt.shortmess:append({ W = true, I = true, c = true, s = true }) -- suppress some messages
 vim.opt.updatetime = 500 -- faster cursor hold
 vim.opt.mouse = "" -- no mouse
@@ -13,7 +12,7 @@ vim.opt.expandtab = true -- use spaces instead of tabs
 -- backups
 vim.opt.backup = true -- enable backup files
 vim.opt.backupdir = vim.fn.expand("~/.backup") -- set backup location
-vim.opt.backupext = ".bak" -- disable suffix, we're in a backup dir
+vim.opt.backupext = ".bak" -- use bak suffix
 vim.opt.swapfile = false -- disable swap files
 vim.opt.undodir = vim.fn.expand("~/.undo") -- set undo location
 vim.opt.undofile = true -- enable persistent undo
@@ -28,7 +27,6 @@ vim.opt.textwidth = 120 -- text width, format comments to this
 -- finding stuff
 vim.opt.gdefault = true -- show multiple matches per line without specifying global
 vim.opt.grepformat = "%f:%l:%c:%m" -- grep result format
-vim.opt.grepprg = "rg --vimgrep" -- use fast grep
 vim.opt.ignorecase = true -- search case-insensitive
 vim.opt.smartcase = true -- search case-sensitive when capital letters are searched
 
