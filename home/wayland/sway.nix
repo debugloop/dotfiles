@@ -41,7 +41,7 @@
         smartBorders = "on";
       };
       window = {
-        border = 2;
+        border = 1;
         commands = [
           {
             command = "title_format 'ಠ_ಠ :: %title'";
@@ -112,18 +112,18 @@
           childBorder = "#${config.colors.blue}";
         };
         focusedInactive = {
-          border = "#${config.colors.background}";
-          background = "#${config.colors.background}";
+          border = "#${config.colors.light_bg}";
+          background = "#${config.colors.light_bg}";
           text = "#${config.colors.foreground}";
-          indicator = "#${config.colors.background}";
-          childBorder = "#${config.colors.background}";
+          indicator = "#${config.colors.light_bg}";
+          childBorder = "#${config.colors.light_bg}";
         };
         unfocused = {
-          border = "#${config.colors.background}";
-          background = "#${config.colors.background}";
+          border = "#${config.colors.light_bg}";
+          background = "#${config.colors.light_bg}";
           text = "#${config.colors.foreground}";
-          indicator = "#${config.colors.background}";
-          childBorder = "#${config.colors.background}";
+          indicator = "#${config.colors.light_bg}";
+          childBorder = "#${config.colors.light_bg}";
         };
         urgent = {
           border = "#${config.colors.red}";
@@ -134,6 +134,12 @@
         };
       };
       modes = {
+        "suspend" = {
+          "Ctrl+Mod4+Backslash" = "exec systemctl suspend; mode 'default'";
+          "q" = "mode 'default'";
+          "Return" = "mode 'default'";
+          "Escape" = "mode 'default'";
+        };
         "close" = {
           "c" = "kill; mode 'default'";
           "q" = "mode 'default'";
@@ -217,6 +223,7 @@
         "Mod4+Shift+c" = "reload";
         "Mod4+Shift+e" = "mode 'exit'";
         "Mod4+c" = "mode 'close'";
+        "Mod4+Ctrl+Backslash" = "mode 'suspend'";
         "Mod4+Period" = "exec ${pkgs.psmisc}/bin/killall -SIGUSR1 .waybar-wrapped";
         "Mod4+Escape" = "mode 'escape'";
         "Mod4+w" = "layout tabbed";
