@@ -20,7 +20,7 @@ vim.opt.undofile = true -- enable persistent undo
 -- editing
 vim.opt.foldenable = false -- no folding unless I close one myself
 vim.opt.foldmethod = "indent" -- use indent for folding
-vim.opt.jumpoptions = "stack" -- discard jumps when diverging from an earlier position
+vim.opt.jumpoptions = "stack,view" -- discard jumps when diverging from an earlier position
 vim.opt.spelloptions = "camel,noplainbuffer" -- set some spell options for when I enable
 vim.opt.textwidth = 120 -- text width, format comments to this
 
@@ -87,6 +87,7 @@ vim.api.nvim_create_autocmd("FileType", {
     "help",
     "dap-float",
     "dap-preview",
+    "git",
     "lspinfo",
     "man",
     "notify",
@@ -158,16 +159,29 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
   end,
 })
 
--- tag edited buffers as persistent
+-- autocmds for every buffer
 vim.api.nvim_create_autocmd({ "BufRead" }, {
   group = vim.api.nvim_create_augroup("autocmd_on_buf_enter", { clear = true }),
   pattern = { "*" },
-  callback = function()
+  callback = function(_)
+    -- mark as persisted
     vim.api.nvim_create_autocmd({ "InsertEnter", "BufModifiedSet" }, {
       buffer = 0,
       once = true,
-      callback = function()
-        vim.fn.setbufvar(vim.api.nvim_get_current_buf(), "bufpersist", 1)
+      callback = function(_)
+        vim.fn.setbufvar(0, "bufpersist", 1)
+      end,
+    })
+    -- go to last loc when focusing a buffer the first time
+    vim.api.nvim_create_autocmd("BufWinEnter", {
+      buffer = 0,
+      once = true,
+      callback = function(_)
+        local mark = vim.api.nvim_buf_get_mark(0, '"')
+        local lcount = vim.api.nvim_buf_line_count(0)
+        if mark[1] > 0 and mark[1] < lcount then
+          pcall(vim.api.nvim_win_set_cursor, 0, mark)
+        end
       end,
     })
   end,
@@ -201,14 +215,4 @@ vim.filetype.add({
     [".*deploy.*%.yaml"] = "gotmpl",
     [".*deploy.*%.yml"] = "gotmpl",
   },
-})
-
--- set branch name variable
-vim.api.nvim_create_autocmd({ "BufEnter" }, {
-  group = vim.api.nvim_create_augroup("on_term_open", { clear = true }),
-  callback = function()
-    if vim.bo.buftype == "" then
-      vim.b.branch_name = vim.fn.trim(vim.fn.system("git rev-parse --abbrev-ref HEAD"))
-    end
-  end,
 })

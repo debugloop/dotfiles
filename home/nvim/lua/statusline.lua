@@ -107,15 +107,18 @@ M.components.mode = {
 }
 
 M.components.branch = {
+  condition = function(_)
+    return vim.b.minigit_summary ~= nil
+  end,
   flexible = 20,
   {
     provider = function(_)
-      return "  " .. vim.b.branch_name .. " "
+      return "  " .. vim.b.minigit_summary.head_name .. " "
     end,
   },
   {
     provider = function(_)
-      return " " .. vim.b.branch_name
+      return " " .. vim.b.minigit_summary.head_name
     end,
   },
 }
@@ -160,7 +163,7 @@ M.components.changes = {
 
 M.components.git = {
   condition = function()
-    return vim.b.minidiff_summary ~= nil
+    return vim.b.minidiff_summary ~= nil and vim.b.minigit_summary ~= nil
   end,
   M.components.branch,
   M.components.changes,

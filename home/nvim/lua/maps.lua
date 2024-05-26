@@ -125,6 +125,8 @@ end, { desc = "close buffers not marked as persistent" })
 
 -- banish weird mappings
 vim.keymap.set("n", "gQ", "<nop>") -- ex mode
+vim.keymap.set("n", "s", "<nop>") -- substitute char
+vim.keymap.set("n", "S", "<nop>") -- substitute rest of line
 
 -- indent on insert in empty lines
 vim.keymap.set("n", "i", function()

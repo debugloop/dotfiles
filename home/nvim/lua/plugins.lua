@@ -4,6 +4,10 @@ local function inject(spec)
     return spec
   end
 
+  if spec["clone"] then
+    return spec
+  end
+
   if spec["dir"] == nil and spec["dev"] ~= true then
     local plugin_name = spec[1]:match("[^/]+$")
     local nixpkgs_dir = vim.fn.stdpath("data") .. "/nixpkgs/" .. plugin_name:gsub("%.", "-")
@@ -48,10 +52,7 @@ return inject_all({
 
   {
     "sindrets/diffview.nvim",
-    cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewPR", "DiffviewPRLog" },
-    dependencies = {
-      { "nvim-lua/plenary.nvim" },
-    },
+    cmd = { "DiffviewOpen", "DiffviewFileHistory", "PRDiff", "PRLog" },
     opts = {
       default_args = {
         DiffviewOpen = { "--imply-local" },
@@ -73,90 +74,6 @@ return inject_all({
         vim.cmd("DiffviewFileHistory --range=origin/HEAD...HEAD --base=LOCAL --right-only --no-merges")
       end, { desc = "open diffview for current PR" })
     end,
-  },
-
-  {
-    "folke/flash.nvim",
-    event = "VeryLazy",
-    keys = {
-      {
-        "f",
-        mode = { "n", "x", "o" },
-        function()
-          -- TODO: make eyeliner like work:
-          -- https://github.com/willothy/nvim-config/blob/b3c2f3701373070a511ee8b0fb1d386257d93f7c/lua/plugins/navigation/flash.lua#L83
-          local Char = require("flash.plugins.char")
-          local Config = require("flash.config")
-          local Repeat = require("flash.repeat")
-          Repeat.setup()
-          Char.jumping = true
-          local autohide = Config.get("char").autohide
-          if Repeat.is_repeat then
-            Char.jump_labels = false
-            Char.state:jump({ count = vim.v.count1 })
-            Char.state:show()
-          else
-            Char.jump("f")
-          end
-          vim.schedule(function()
-            Char.jumping = false
-            if Char.state and autohide then
-              Char.state:hide()
-            end
-          end)
-        end,
-        {
-          silent = true,
-        },
-      },
-      "F",
-      "t",
-      "T",
-      ";",
-      ",",
-      {
-        "S",
-        mode = { "n", "x", "o" },
-        function()
-          require("flash").jump()
-        end,
-        desc = "Flash jump",
-      },
-      {
-        "<c-s>",
-        mode = { "c" },
-        function()
-          require("flash").toggle()
-        end,
-        desc = "toggle Flash search",
-      },
-    },
-    opts = {
-      search = {
-        multi_window = false,
-      },
-      jump = {
-        autojump = true,
-      },
-      modes = {
-        search = {
-          enabled = false,
-          highlight = { backdrop = true },
-        },
-        char = {
-          enabled = true,
-          keys = { "F", "t", "T", ",", ";" },
-          char_actions = function(motion)
-            return {
-              [";"] = "right",
-              [","] = "left",
-              [motion:lower()] = "right",
-              [motion:upper()] = "left",
-            }
-          end,
-        },
-      },
-    },
   },
 
   {
@@ -188,7 +105,7 @@ return inject_all({
     config = function()
       -- override some settings
       vim.opt.showtabline = 0 -- no tabline ever
-      vim.opt.laststatus = 3 -- global statusline
+      vim.opt.laststatus = 2 -- per window statusline
       vim.opt.showcmdloc = "statusline" -- enable partial command printing segment
       -- import required things
       local conditions = require("heirline.conditions")
@@ -313,7 +230,7 @@ return inject_all({
     end,
     opts = {
       theme = "wave",
-      dimInactive = true,
+      -- dimInactive = true,
       commentStyle = { italic = false },
       keywordStyle = { italic = false },
       variablebuiltinStyle = { italic = false },
@@ -325,14 +242,12 @@ return inject_all({
           PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
           PmenuSbar = { bg = theme.ui.bg_m1 },
           PmenuThumb = { bg = theme.ui.bg_p2 },
-          -- invisible window separator
-          WinSeparator = { fg = theme.ui.bg_dim, bg = theme.ui.bg_dim },
           -- nvim-tree
           NvimTreeNormal = { bg = theme.ui.bg_dim },
           NvimTreeGitDirty = { fg = theme.term[5], bg = "none" },
           NvimTreeGitStaged = { fg = theme.term[4], bg = "none" },
-          -- incline
-          InclineNormal = { fg = theme.ui.bg, bg = theme.syn.fun },
+          -- invisible window separator
+          -- WinSeparator = { fg = theme.ui.bg_dim, bg = theme.ui.bg_dim },
         }
       end,
       colors = {
@@ -354,32 +269,32 @@ return inject_all({
     event = "VeryLazy",
     keys = function(_, _)
       local maps = {}
-      local map_start = function(op, ai)
+      local map_start = function(keyf, keyb, op, ai)
         table.insert(maps, {
-          "]" .. op,
+          keyf .. op,
           function()
             require("mini.ai").move_cursor("left", ai, op, { search_method = "next" })
           end,
           desc = "Goto next start of " .. ai .. op .. " textobject",
         })
         table.insert(maps, {
-          "[" .. op,
+          keyb .. op,
           function()
             require("mini.ai").move_cursor("left", ai, op, { search_method = "cover_or_prev" })
           end,
           desc = "Goto previous start of " .. ai .. op .. " textobject",
         })
       end
-      local map_end = function(op, ai)
+      local map_end = function(keyf, keyb, op, ai)
         table.insert(maps, {
-          "]" .. op:upper(),
+          keyf .. op:upper(),
           function()
             require("mini.ai").move_cursor("right", ai, op, { search_method = "cover_or_next" })
           end,
           desc = "Goto next end of " .. ai .. op .. " textobject",
         })
         table.insert(maps, {
-          "[" .. op:upper(),
+          keyb .. op:upper(),
           function()
             require("mini.ai").move_cursor("right", ai, op, { search_method = "prev" })
           end,
@@ -388,15 +303,20 @@ return inject_all({
       end
       -- do actual mapping
       for _, op in pairs({ "f", "c", "i", "l", "t" }) do
-        map_start(op, "a")
-        map_end(op, "a")
+        map_start("]", "[", op, "a")
+        map_start("s", "S", op, "a")
+        map_end("]", "[", op, "a")
+        map_end("s", "S", op, "a")
       end
       for _, op in pairs({ "a", "s" }) do
-        map_start(op, "i")
-        map_end(op, "i")
+        map_start("]", "[", op, "i")
+        map_start("s", "S", op, "i")
+        map_end("]", "[", op, "i")
+        map_end("s", "S", op, "i")
       end
       for _, op in pairs({ "b", "B", "<", ">", '"', "'", "`" }) do
-        map_start(op, "i")
+        map_start("]", "[", op, "i")
+        map_start("s", "S", op, "i")
       end
       return maps
     end,
@@ -581,18 +501,6 @@ return inject_all({
         desc = "Show details",
       },
       {
-        "<leader>gb",
-        function()
-          local linenum = vim.api.nvim_win_get_cursor(0)[1]
-          local filename = vim.fn.expand("%")
-          local blame = vim.fn.system(
-            "git log --date=relative --format='%ad by %an - %s' -s -L" .. linenum .. "," .. linenum .. ":" .. filename
-          )
-          vim.notify(blame)
-        end,
-        desc = "Show git blame",
-      },
-      {
         "<leader>gc",
         function()
           require("mini.extra").pickers.git_branches({}, {
@@ -670,6 +578,57 @@ return inject_all({
 
   {
     "echasnovski/mini.nvim",
+    clone = true, -- TODO: remove once in nixpkgs
+    main = "mini.git",
+    name = "mini.git",
+    event = "VeryLazy",
+    keys = {
+      {
+        "<leader>gi",
+        mode = { "n", "v" },
+        function()
+          require("mini.git").show_at_cursor()
+        end,
+        desc = "Show Git info",
+      },
+      {
+        "<leader>gb",
+        function()
+          vim.cmd("vertical Git blame -- %")
+        end,
+        desc = "Show git blame",
+      },
+    },
+    opts = {},
+    config = function(_, opts)
+      require("mini.git").setup(opts)
+
+      local align_blame = function(au_data)
+        if au_data.data.git_subcommand ~= "blame" then
+          return
+        end
+
+        -- Align blame output with source
+        local win_src = au_data.data.win_source
+        vim.wo.wrap = false
+        vim.fn.winrestview({ topline = vim.fn.line("w0", win_src) - 1 })
+        vim.api.nvim_win_set_cursor(0, { vim.fn.line(".", win_src), 0 })
+
+        -- Bind both windows so that they scroll together
+        vim.wo[win_src].scrollbind, vim.wo.scrollbind = true, true
+        vim.wo[win_src].cursorbind, vim.wo.cursorbind = true, true
+      end
+
+      vim.api.nvim_create_autocmd("User", {
+        group = vim.api.nvim_create_augroup("mini_git", { clear = true }),
+        pattern = "MiniGitCommandSplit",
+        callback = align_blame,
+      })
+    end,
+  },
+
+  {
+    "echasnovski/mini.nvim",
     main = "mini.hipatterns",
     name = "mini.hipatterns",
     event = "VeryLazy",
@@ -719,6 +678,18 @@ return inject_all({
           require("mini.indentscope").config.options.border = "top"
         end,
       })
+    end,
+  },
+
+  {
+    "echasnovski/mini.nvim",
+    main = "mini.jump",
+    name = "mini.jump",
+    event = "VeryLazy",
+    opts = {},
+    config = function(_, opts)
+      require("mini.jump").setup(opts)
+      vim.api.nvim_set_hl(0, "MiniJump", { link = "@comment.note" })
     end,
   },
 
@@ -801,13 +772,6 @@ return inject_all({
     event = "VeryLazy",
     keys = {
       {
-        "<Bslash>",
-        function()
-          require("mini.pick").builtin.buffers()
-        end,
-        desc = "find buffers",
-      },
-      {
         "<leader>f",
         function()
           require("mini.pick").builtin.files()
@@ -889,16 +853,13 @@ return inject_all({
 
   {
     "echasnovski/mini.nvim",
+    enabled = false, -- surrounding stuff is so rare, let's use `s` better
     main = "mini.surround",
     name = "mini.surround",
     keys = { "s" },
     opts = {
       search_method = "cover_or_next",
     },
-    config = function(opts)
-      vim.keymap.set({ "n", "v" }, "s", "<nop>")
-      require("mini.surround").setup(opts)
-    end,
   },
 
   {
@@ -1011,10 +972,9 @@ return inject_all({
     event = "InsertEnter",
     dependencies = {
       { "hrsh7th/cmp-nvim-lsp" },
-      { "dcampos/nvim-snippy" },
-      { "dcampos/cmp-snippy" },
     },
     opts = function()
+      require("snippets").register_cmp_source()
       require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
       local kind_icons = {
         Text = "",
@@ -1048,16 +1008,26 @@ return inject_all({
         return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
       end
       local cmp = require("cmp")
-      local snippy = require("snippy")
       return {
         enabled = function()
           local context = require("cmp.config.context")
-          return vim.api.nvim_get_mode().mode ~= "c"
-            and not (context.in_treesitter_capture("comment") or context.in_syntax_group("Comment"))
+          -- no completion while a snippet is active
+          if vim.snippet.active({ direction = 1 }) then
+            return false
+          end
+          -- no cmp completion in command mode
+          if vim.api.nvim_get_mode().mode ~= "c" then
+            return false
+          end
+          -- no completion in comments
+          if context.in_treesitter_capture("comment") or context.in_syntax_group("Comment") then
+            return false
+          end
+          return true
         end,
         sources = cmp.config.sources({
-          { name = "snippy" },
           { name = "nvim_lsp" },
+          { name = "snippets" },
         }),
         sorting = {
           comparators = {
@@ -1079,18 +1049,13 @@ return inject_all({
             hl_group = "@comment",
           },
         },
-        snippet = {
-          expand = function(args)
-            require("snippy").expand_snippet(args.body)
-          end,
-        },
         preselect = cmp.PreselectMode.None,
         mapping = {
           ["<tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
+            if vim.snippet.active({ direction = 1 }) then
+              vim.snippet.jump(1)
+            elseif cmp.visible() then
               cmp.select_next_item()
-            elseif snippy.can_expand_or_advance() then
-              snippy.expand_or_advance()
             elseif has_words_before() then
               cmp.complete()
             else
@@ -1100,8 +1065,6 @@ return inject_all({
           ["<s-tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
-            elseif snippy.can_jump(-1) then
-              snippy.previous()
             else
               fallback()
             end
@@ -1140,39 +1103,22 @@ return inject_all({
             dap.toggle_breakpoint()
           end
           -- if we're in a test file, run in test mode
-          if vim.fn.expand("%:t"):sub(-#"_test.go", -1) == "_test.go" then
-            -- see if we can find a specific test to run
-            local cursor = vim.api.nvim_win_get_cursor(0)
-            local lsp_response, lsp_err = vim.lsp.buf_request_sync(
-              0,
-              "textDocument/documentSymbol",
-              { textDocument = vim.lsp.util.make_text_document_params() },
-              1000
-            )
-            if lsp_err == nil then
-              for _, symbol in pairs(lsp_response[1].result) do
-                if
-                  symbol["detail"] ~= nil
-                  and symbol.detail:sub(1, 4) == "func"
-                  and symbol.name:sub(1, 4) == "Test"
-                  and cursor[1] > symbol.range.start.line
-                  and cursor[1] < symbol.range["end"].line
-                then
-                  dap.run({
-                    type = "go",
-                    name = symbol.name,
-                    request = "launch",
-                    mode = "test",
-                    program = "./" .. vim.fn.fnamemodify(vim.fn.expand("%:.:h"), ":r"),
-                    args = { "-test.run", "^" .. symbol.name .. "$" },
-                    buildFlags = "-tags=unit,integration,e2e",
-                  })
-                  return
-                end
-              end
+          local ok, inTestfile, testName = pcall(SurroundingTestName)
+          if ok and inTestfile then
+            if testName ~= "" then
+              dap.run({
+                type = "go",
+                name = testName,
+                request = "launch",
+                mode = "test",
+                program = "./" .. vim.fn.fnamemodify(vim.fn.expand("%:.:h"), ":r"),
+                args = { "-test.run", "^" .. testName .. "$" },
+                buildFlags = "-tags=unit,integration,e2e",
+              })
+            else
+              -- if we can't find a specific one we could run the whole test file:
+              dap.run(dap.configurations.go[1])
             end
-            -- if we can't find a specific one we could run the whole test file:
-            dap.run(dap.configurations.go[1])
             return
           end
           -- try to restart a session
@@ -1889,6 +1835,7 @@ return inject_all({
 
   {
     "debugloop/telescope-undo.nvim",
+    enabled = false,
     dev = true,
     dependencies = {
       {
