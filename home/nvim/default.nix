@@ -25,7 +25,6 @@
       "conform-nvim"
       "cmp-nvim-lsp"
       "diffview-nvim"
-      "gitlinker-nvim"
       "heirline-nvim"
       "kanagawa-nvim"
       "lazy-nvim"

@@ -77,25 +77,6 @@ return inject_all({
   },
 
   {
-    "ruifm/gitlinker.nvim",
-    keys = function()
-      local keys = {}
-      for _, mode in pairs({ "n", "v" }) do
-        table.insert(keys, {
-          "gy",
-          function()
-            require("gitlinker").get_buf_range_url(mode)
-          end,
-          desc = "copy github url",
-          mode = mode,
-        })
-      end
-      return keys
-    end,
-    opts = {},
-  },
-
-  {
     "rebelot/heirline.nvim",
     event = "UIEnter",
     dependencies = {
@@ -793,13 +774,6 @@ return inject_all({
         desc = "find in marks",
       },
       {
-        "<leader>t",
-        function()
-          require("mini.extra").pickers.treesitter()
-        end,
-        desc = "find in treesitter",
-      },
-      {
         "<leader>T",
         function()
           require("mini.extra").pickers.hipatterns()
@@ -1009,22 +983,6 @@ return inject_all({
       end
       local cmp = require("cmp")
       return {
-        enabled = function()
-          local context = require("cmp.config.context")
-          -- no completion while a snippet is active
-          if vim.snippet.active({ direction = 1 }) then
-            return false
-          end
-          -- no cmp completion in command mode
-          if vim.api.nvim_get_mode().mode ~= "c" then
-            return false
-          end
-          -- no completion in comments
-          if context.in_treesitter_capture("comment") or context.in_syntax_group("Comment") then
-            return false
-          end
-          return true
-        end,
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
           { name = "snippets" },
@@ -1393,12 +1351,31 @@ return inject_all({
     ft = { "go", "gomod" },
     opts = {
       on_attach = function(_, bufnr)
-        -- display code lenses
+        -- get gc details
         vim.keymap.set("n", "<leader>G", function()
           vim.lsp.buf_request_sync(0, "workspace/executeCommand", {
             command = "gopls.gc_details",
             arguments = { "file://" .. vim.api.nvim_buf_get_name(0) },
           }, 2000)
+        end, { desc = "lsp: show GC details" })
+        -- run current test
+        vim.keymap.set("n", "<leader>t", function()
+          local ok, inTestfile, testName = pcall(SurroundingTestName)
+          if not ok or not inTestfile then
+            return
+          end
+          vim.lsp.buf_request_sync(0, "workspace/executeCommand", {
+            command = "gopls.run_tests",
+            arguments = {
+              {
+                URI = vim.uri_from_bufnr(0),
+                Tests = { testName },
+              },
+            },
+          }, 10000)
+          -- vim.lsp.buf.execute_command({
+          --   command = "gopls.run_tests",
+          -- })
         end, { desc = "lsp: show GC details" })
         -- organize imports on save
         vim.api.nvim_create_autocmd("BufWritePre", {
@@ -1421,36 +1398,34 @@ return inject_all({
         })
       end,
       capabilities = vim.lsp.protocol.make_client_capabilities(),
-      -- cmd_env = { GOFLAGS = "-tags=unit,integration,e2e" },
       flags = {
         allow_incremental_sync = false,
       },
       settings = {
         gopls = {
+          usePlaceholders = true,
+          experimentalPostfixCompletions = true,
           staticcheck = true,
           codelenses = {
             gc_details = true,
+            test = true,
           },
           analyses = {
-            fieldalignment = false,
-            nilness = true,
-            shadow = false, -- useful but to spammy with `err`
-            unusedparams = true,
-            unusedwrite = true,
-            useany = true,
+            fieldalignment = false, -- useful, but better optimize for readability
+            shadow = false, -- useful, but to spammy with `err`
             unusedvariable = true,
+            useany = true,
           },
           hints = {
             assignVariableTypes = true,
             compositeLiteralFields = true,
+            compositeLiteralTypes = true,
             constantValues = true,
             functionTypeParameters = true,
             parameterNames = true,
             rangeVariableTypes = true,
           },
           buildFlags = { "-tags=unit,integration,e2e" },
-          -- directoryFilters = { "vendor" },
-          -- expandWorkspaceToModule = true,
         },
       },
     },

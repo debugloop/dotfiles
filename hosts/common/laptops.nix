@@ -7,7 +7,10 @@
     ];
 
   networking.networkmanager.enable = true;
-  hardware.bluetooth.enable = true;
+  hardware = {
+    bluetooth.enable = true;
+    opengl.enable = true;
+  };
 
   virtualisation = {
     docker = {
