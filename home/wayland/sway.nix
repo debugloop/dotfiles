@@ -31,7 +31,7 @@
     '';
     config = {
       modifier = "Mod4";
-      terminal = "${pkgs.kitty}/bin/kitty";
+      terminal = "${pkgs.wezterm}/bin/wezterm";
       workspaceAutoBackAndForth = true;
       fonts = {
         names = [ "Fira Mono" ];
@@ -188,7 +188,6 @@
       };
       startup = [
         { command = "${pkgs.clipman}/bin/clipman clear --all"; }
-        { command = "${pkgs.kitty}/bin/kitty -T 'scratch: ipython' ${pkgs.fish}/bin/fish -c 'while true; ${pkgs.python3Packages.ipython}/bin/ipython; end'"; }
         { command = "swaymsg create_output && swaymsg output HEADLESS-1 disable"; }
       ];
       keybindings = {
@@ -200,7 +199,7 @@
         "Mod4+Equal" = "move scratchpad";
 
         # run
-        "Mod4+Return" = "exec ${pkgs.kitty}/bin/kitty";
+        "Mod4+Return" = "exec ${pkgs.wezterm}/bin/wezterm";
         "XF86Display" = "exec ${pkgs.wdisplays}/bin/wdisplays";
 
         # lock

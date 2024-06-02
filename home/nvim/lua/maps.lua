@@ -178,9 +178,9 @@ end, { desc = "delete line", expr = true })
 
 -- open jumplist
 vim.keymap.set("n", "<leader>qj", function()
-  local jumplist, _ = unpack(vim.fn.getjumplist())
+  local jumplist = vim.fn.getjumplist()[1]
   local qf_list = {}
-  for _, v in pairs(jumplist) do
+  for _, v in ipairs(jumplist) do
     if vim.fn.bufloaded(v.bufnr) == 1 then
       table.insert(qf_list, {
         bufnr = v.bufnr,
@@ -210,48 +210,7 @@ vim.keymap.set("n", "N", "'nN'[v:searchforward]", { expr = true, desc = "prev se
 vim.keymap.set("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "prev search result" })
 vim.keymap.set("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "prev search result" })
 
--- quick settings
-vim.keymap.set("n", "<leader>o", "<nop>", { desc = "+options" })
-vim.keymap.set("n", "<leader>ob", function()
-  vim.o.bg = vim.o.bg == "dark" and "light" or "dark"
-end, { desc = "set background" })
-vim.keymap.set("n", "<leader>oc", function()
-  vim.o.conceallevel = vim.o.conceallevel == 2 and 0 or 2
-end, { desc = "set conceal" })
-vim.keymap.set("n", "<leader>oi", function()
-  vim.g.miniindentscope_disable = not vim.g.miniindentscope_disable
-end, { desc = "set indentscope" })
-vim.keymap.set("n", "<leader>oh", function()
-  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }))
-end, { desc = "set lsp inlay hints" })
-vim.keymap.set("n", "<leader>ol", function()
-  vim.o.list = not vim.o.list
-end, { desc = "set list" })
-vim.keymap.set("n", "<leader>od", function()
-  vim.diagnostic.enable(not vim.diagnostic.is_enabled())
-end, { desc = "set lsp diagnostics" })
-vim.keymap.set("n", "<leader>on", function()
-  vim.o.number = not vim.o.number
-end, { desc = "set number" })
-vim.keymap.set("n", "<leader>or", function()
-  vim.o.relativenumber = not vim.o.relativenumber
-end, { desc = "set relativenumber" })
-vim.keymap.set("n", "<leader>os", function()
-  vim.o.spell = not vim.o.spell
-end, { desc = "set spell" })
-vim.keymap.set("n", "<leader>ot", function()
-  vim.cmd("TSContextToggle")
-end, { desc = "set treesitter context" })
-vim.keymap.set("n", "<leader>ov", function()
-  vim.o.virtualedit = vim.o.virtualedit == "all" and "block" or "all"
-end, { desc = "set virtualedit" })
-vim.keymap.set("n", "<leader>ow", function()
-  vim.o.wrap = not vim.o.wrap
-end, { desc = "set wrap" })
-vim.keymap.set("n", "<leader>ox", function()
-  vim.o.cursorcolumn = not vim.o.cursorcolumn
-end, { desc = "draw cursorcolumn" })
-
+-- general LSP settings and maps
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("lsp_user_bindings", {}),
   callback = function(event)

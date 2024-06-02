@@ -244,63 +244,18 @@ return inject_all({
   },
 
   {
+    "folke/lazydev.nvim",
+    ft = "lua",
+    opts = {
+      enabled = true,
+    },
+  },
+
+  {
     "echasnovski/mini.nvim",
     main = "mini.ai",
     name = "mini.ai",
     event = "VeryLazy",
-    keys = function(_, _)
-      local maps = {}
-      local map_start = function(keyf, keyb, op, ai)
-        table.insert(maps, {
-          keyf .. op,
-          function()
-            require("mini.ai").move_cursor("left", ai, op, { search_method = "next" })
-          end,
-          desc = "Goto next start of " .. ai .. op .. " textobject",
-        })
-        table.insert(maps, {
-          keyb .. op,
-          function()
-            require("mini.ai").move_cursor("left", ai, op, { search_method = "cover_or_prev" })
-          end,
-          desc = "Goto previous start of " .. ai .. op .. " textobject",
-        })
-      end
-      local map_end = function(keyf, keyb, op, ai)
-        table.insert(maps, {
-          keyf .. op:upper(),
-          function()
-            require("mini.ai").move_cursor("right", ai, op, { search_method = "cover_or_next" })
-          end,
-          desc = "Goto next end of " .. ai .. op .. " textobject",
-        })
-        table.insert(maps, {
-          keyb .. op:upper(),
-          function()
-            require("mini.ai").move_cursor("right", ai, op, { search_method = "prev" })
-          end,
-          desc = "Goto previous end of " .. ai .. op .. " textobject",
-        })
-      end
-      -- do actual mapping
-      for _, op in pairs({ "f", "c", "i", "l", "t" }) do
-        map_start("]", "[", op, "a")
-        map_start("s", "S", op, "a")
-        map_end("]", "[", op, "a")
-        map_end("s", "S", op, "a")
-      end
-      for _, op in pairs({ "a", "s" }) do
-        map_start("]", "[", op, "i")
-        map_start("s", "S", op, "i")
-        map_end("]", "[", op, "i")
-        map_end("s", "S", op, "i")
-      end
-      for _, op in pairs({ "b", "B", "<", ">", '"', "'", "`" }) do
-        map_start("]", "[", op, "i")
-        map_start("s", "S", op, "i")
-      end
-      return maps
-    end,
     opts = {
       mappings = {
         around_last = "aN",
@@ -341,29 +296,6 @@ return inject_all({
       }
       require("mini.ai").setup(opts)
     end,
-  },
-
-  {
-    "echasnovski/mini.nvim",
-    main = "mini.bracketed",
-    name = "mini.bracketed",
-    keys = { "]", "[" },
-    opts = {
-      buffer = { suffix = "", options = {} },
-      comment = { suffix = "", options = {} },
-      conflict = { suffix = "x", options = {} },
-      diagnostic = { suffix = "", options = {} },
-      file = { suffix = "", options = {} },
-      indent = { suffix = "", options = {} },
-      jump = { suffix = "j", options = {} },
-      location = { suffix = "", options = {} },
-      oldfile = { suffix = "", options = {} },
-      quickfix = { suffix = "q", options = {} },
-      treesitter = { suffix = "", options = {} },
-      undo = { suffix = "", options = {} },
-      window = { suffix = "", options = {} },
-      yank = { suffix = "y", options = {} },
-    },
   },
 
   {
@@ -440,21 +372,6 @@ return inject_all({
           { mode = "x", keys = "<leader>Mj", postkeys = "<leader>M" },
           { mode = "x", keys = "<leader>Mk", postkeys = "<leader>M" },
           { mode = "x", keys = "<leader>Ml", postkeys = "<leader>M" },
-          -- maps that don't quit option mode (all of them)
-          { mode = "n", keys = "<leader>oS", postkeys = "<leader>o" }, -- treesitter scope display
-          { mode = "n", keys = "<leader>ob", postkeys = "<leader>o" }, -- background
-          { mode = "n", keys = "<leader>oc", postkeys = "<leader>o" }, -- conceal
-          { mode = "n", keys = "<leader>od", postkeys = "<leader>o" }, -- lsp diagnostics
-          { mode = "n", keys = "<leader>oh", postkeys = "<leader>o" }, -- lsp inlay hints
-          { mode = "n", keys = "<leader>oi", postkeys = "<leader>o" }, -- treesitter illumination
-          { mode = "n", keys = "<leader>ol", postkeys = "<leader>o" }, -- list
-          { mode = "n", keys = "<leader>on", postkeys = "<leader>o" }, -- number
-          { mode = "n", keys = "<leader>or", postkeys = "<leader>o" }, -- relativenumber
-          { mode = "n", keys = "<leader>os", postkeys = "<leader>o" }, -- spell
-          { mode = "n", keys = "<leader>ot", postkeys = "<leader>o" }, -- treesitter context
-          { mode = "n", keys = "<leader>ov", postkeys = "<leader>o" }, -- virtualedit
-          { mode = "n", keys = "<leader>ow", postkeys = "<leader>o" }, -- wrap
-          { mode = "n", keys = "<leader>ox", postkeys = "<leader>o" }, -- cursorcolumn
           -- builtin
           miniclue.gen_clues.g(),
           miniclue.gen_clues.marks(),
@@ -477,7 +394,7 @@ return inject_all({
       {
         "<leader>gg",
         function()
-          require("mini.diff").toggle_overlay()
+          require("mini.diff").toggle_overlay(0)
         end,
         desc = "Show details",
       },
@@ -559,7 +476,6 @@ return inject_all({
 
   {
     "echasnovski/mini.nvim",
-    clone = true, -- TODO: remove once in nixpkgs
     main = "mini.git",
     name = "mini.git",
     event = "VeryLazy",
@@ -986,6 +902,10 @@ return inject_all({
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
           { name = "snippets" },
+          {
+            name = "lazydev",
+            group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+          },
         }),
         sorting = {
           comparators = {
@@ -1326,6 +1246,215 @@ return inject_all({
   },
 
   {
+    "idanarye/nvim-impairative",
+    event = "VeryLazy",
+    config = function(_, _)
+      -- options
+      vim.keymap.set("n", "<leader>o", "<nop>", { desc = "+options" })
+      vim.keymap.set("n", "]o", "<nop>", { desc = "+enable options" })
+      vim.keymap.set("n", "[o", "<nop>", { desc = "+disable options" })
+      require("impairative")
+        .toggling({
+          enable = "]o",
+          disable = "[o",
+          toggle = "<leader>o",
+        })
+        :option({
+          key = "b",
+          option = "background",
+          values = { [true] = "dark", [false] = "light" },
+        })
+        :option({
+          key = "c",
+          option = "conceallevel",
+          values = { [true] = 2, [false] = 0 },
+        })
+        :getter_setter({
+          key = "d",
+          name = "diagnostics",
+          get = vim.lsp.diagnostic.is_enabled,
+          set = vim.lsp.diagnostic.enable,
+        })
+        :getter_setter({
+          key = "D",
+          name = "diff mode",
+          get = function()
+            return vim.o.diff
+          end,
+          set = function(value)
+            if value then
+              vim.cmd.diffthis()
+            else
+              vim.cmd.diffoff()
+            end
+          end,
+        })
+        :getter_setter({
+          key = "h",
+          name = "inlay hints",
+          get = vim.lsp.inlay_hint.is_enabled,
+          set = vim.lsp.inlay_hint.enable,
+        })
+        :field({
+          key = "i",
+          name = "indentscope",
+          table = vim.g,
+          field = "miniindentscope_disable",
+        })
+        :option({
+          key = "l",
+          option = "list",
+        })
+        :option({
+          key = "n",
+          option = "number",
+        })
+        :option({
+          key = "r",
+          option = "relativenumber",
+        })
+        :option({
+          key = "s",
+          option = "spell",
+        })
+        :option({
+          key = "v",
+          option = "virtualedit",
+          values = { [true] = "all", [false] = "block" },
+        })
+        :option({
+          key = "w",
+          option = "wrap",
+        })
+        :option({
+          key = "x",
+          option = "cursorcolumn",
+        })
+      vim.keymap.set(
+        "n",
+        "<leader>oI",
+        "<cmd>TSBufToggle refactor.highlight_definitions<cr>",
+        { desc = "toggle highlight occurences" }
+      )
+      vim.keymap.set(
+        "n",
+        "]oI",
+        "<cmd>TSBufEnable refactor.highlight_definitions<cr>",
+        { desc = "enable highlight occurences" }
+      )
+      vim.keymap.set(
+        "n",
+        "[oI",
+        "<cmd>TSBufDisable refactor.highlight_definitions<cr>",
+        { desc = "disable highlight occurences" }
+      )
+      vim.keymap.set(
+        "n",
+        "<leader>oS",
+        "<cmd>TSBufToggle refactor.highlight_current_scope<cr>",
+        { desc = "toggle highlight scope" }
+      )
+      vim.keymap.set(
+        "n",
+        "]oS",
+        "<cmd>TSBufEnable refactor.highlight_current_scope<cr>",
+        { desc = "enable highlight scope" }
+      )
+      vim.keymap.set(
+        "n",
+        "[oS",
+        "<cmd>TSBufDisable refactor.highlight_current_scope<cr>",
+        { desc = "disable highlight scope" }
+      )
+      vim.keymap.set("n", "<leader>ot", "<cmd>TSContextToggle<cr>", { desc = "toggle context" })
+      vim.keymap.set("n", "]ot", "<cmd>TSContextEnable<cr>", { desc = "enable context" })
+      vim.keymap.set("n", "[ot", "<cmd>TSContextDisable<cr>", { desc = "disable context" })
+      -- textobject navigation
+      vim.keymap.set("n", "]", "<nop>", { desc = "+forward goto " })
+      vim.keymap.set("n", "[", "<nop>", { desc = "+backward goto" })
+      local multiplexer = {
+        require("impairative")
+          .operations({
+            backward = "[",
+            forward = "]",
+          })
+          :command_pair({
+            key = "q",
+            backward = "cprevious",
+            forward = "cnext",
+          }),
+        require("impairative").operations({
+          backward = "S",
+          forward = "s",
+        }),
+      }
+      function multiplexer.unified_function(self, arg)
+        for _, elem in ipairs(self) do
+          elem:unified_function(arg)
+        end
+      end
+      for key, ia in pairs({
+        a = "i",
+        A = "i",
+        b = "i",
+        B = "i",
+        s = "i",
+        S = "i",
+        f = "a",
+        c = "a",
+        i = "a",
+        l = "a",
+        t = "a",
+      }) do
+        local edge = "left"
+        local target = "beginning"
+        local dirmap = {
+          backward = "cover_or_prev",
+          forward = "next",
+        }
+        if key == key:upper() then
+          edge = "right"
+          target = "end"
+          dirmap = {
+            lookahead = true,
+            include_surrounding_whitespace = false,
+            keymaps = {
+              ["ia"] = { query = "@parameter.inner", desc = "select parameter" },
+              ["aa"] = { query = "@parameter.outer", desc = "select parameter with delimiters" },
+              ["ic"] = { query = "@call.inner", desc = "select call arguments" },
+              ["ac"] = { query = "@call.outer", desc = "select call" },
+              ["if"] = { query = "@function.inner", desc = "select function body" },
+              ["af"] = { query = "@function.outer", desc = "select function" },
+              ["ii"] = { query = "@customconditional.inner", desc = "select conditional body" },
+              ["ai"] = { query = "@conditional.outer", desc = "select conditional" },
+              ["il"] = { query = "@customloop.inner", desc = "select loop body" },
+              ["al"] = { query = "@loop.outer", desc = "select loop" },
+              ["is"] = { query = "@customblock.inner", desc = "select scope body" },
+              ["as"] = { query = "@block.outer", desc = "select scope" },
+              ["it"] = { query = "@customtype.inner", desc = "select type body" },
+              ["at"] = { query = "@customtype.outer", desc = "select type" },
+            },
+            backward = "prev",
+            forward = "cover_or_next",
+          }
+        end
+        multiplexer:unified_function({
+          key = key,
+          desc = "jump to " .. target .. " of '" .. key:lower() .. "' textobject",
+          fun = function(direction)
+            require("mini.ai").move_cursor(
+              edge,
+              ia,
+              key:lower(),
+              { search_method = dirmap[direction], n_times = vim.v.count1 }
+            )
+          end,
+        })
+      end
+    end,
+  },
+
+  {
     "mfussenegger/nvim-lint",
     event = "BufWritePre",
     opts = {
@@ -1382,13 +1511,13 @@ return inject_all({
           group = vim.api.nvim_create_augroup("lsp_organize_imports_on_save", { clear = false }), -- dont clear, there is one autocmd per buffer in this group
           buffer = bufnr,
           callback = function()
-            local params = vim.lsp.util.make_range_params(nil, vim.lsp.util._get_offset_encoding())
+            local params = vim.lsp.util.make_range_params(nil, vim.lsp.util._get_offset_encoding(bufnr))
             params.context = { only = { "source.organizeImports" } }
             local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
             for _, res in pairs(result or {}) do
               for _, r in pairs(res.result or {}) do
                 if r.edit then
-                  vim.lsp.util.apply_workspace_edit(r.edit, vim.lsp.util._get_offset_encoding())
+                  vim.lsp.util.apply_workspace_edit(r.edit, vim.lsp.util._get_offset_encoding(bufnr))
                 else
                   vim.lsp.buf.execute_command(r.command)
                 end
@@ -1443,19 +1572,9 @@ return inject_all({
       table.insert(runtime_path, "lua/?.lua")
       table.insert(runtime_path, "lua/?/init.lua")
       return {
-        capabilities = vim.lsp.protocol.make_client_capabilities(),
+        single_file_support = true,
         settings = {
           Lua = {
-            workspace = {
-              checkThirdParty = false,
-            },
-            runtime = {
-              version = "LuaJIT",
-              path = runtime_path,
-            },
-            diagnostics = {
-              globals = { "vim" },
-            },
             telemetry = { enable = false },
           },
         },
@@ -1714,12 +1833,6 @@ return inject_all({
       require("nvim-treesitter.configs").setup(opts)
       vim.api.nvim_set_hl(0, "TSDefinition", { link = "IncSearch" })
       vim.api.nvim_set_hl(0, "TSDefinitionUsage", { link = "CurSearch" })
-      vim.keymap.set("n", "<leader>oi", function()
-        vim.cmd("TSBufToggle refactor.highlight_definitions")
-      end, { desc = "set treesitter illumination" })
-      vim.keymap.set("n", "<leader>oS", function()
-        vim.cmd("TSBufToggle refactor.highlight_current_scope")
-      end, { desc = "set treesitter scope" })
     end,
   },
 
@@ -1741,68 +1854,13 @@ return inject_all({
           },
         },
         swap = {
-          enable = false,
+          enable = false, -- not needed
         },
         select = {
-          enable = false,
-          lookahead = true,
-          include_surrounding_whitespace = false,
-          keymaps = {
-            ["ia"] = { query = "@parameter.inner", desc = "select parameter" },
-            ["aa"] = { query = "@parameter.outer", desc = "select parameter with delimiters" },
-            ["ic"] = { query = "@call.inner", desc = "select call arguments" },
-            ["ac"] = { query = "@call.outer", desc = "select call" },
-            ["if"] = { query = "@function.inner", desc = "select function body" },
-            ["af"] = { query = "@function.outer", desc = "select function" },
-            ["ii"] = { query = "@customconditional.inner", desc = "select conditional body" },
-            ["ai"] = { query = "@conditional.outer", desc = "select conditional" },
-            ["il"] = { query = "@customloop.inner", desc = "select loop body" },
-            ["al"] = { query = "@loop.outer", desc = "select loop" },
-            ["is"] = { query = "@customblock.inner", desc = "select scope body" },
-            ["as"] = { query = "@block.outer", desc = "select scope" },
-            ["it"] = { query = "@customtype.inner", desc = "select type body" },
-            ["at"] = { query = "@customtype.outer", desc = "select type" },
-          },
+          enable = false, -- done with mini.ai
         },
         move = {
-          enable = false,
-          set_jumps = true,
-          goto_next_start = {
-            ["]a"] = "@parameter.inner",
-            ["]c"] = "@call.outer",
-            ["]f"] = "@function.outer",
-            ["]i"] = "@conditional.outer",
-            ["]l"] = "@loop.outer",
-            ["]s"] = "@customblock.inner",
-            ["]t"] = "@customtype.outer",
-          },
-          goto_next_end = {
-            ["]A"] = "@parameter.inner",
-            ["]C"] = "@call.outer",
-            ["]F"] = "@function.outer",
-            ["]L"] = "@loop.outer",
-            ["]M"] = "@call.outer",
-            ["]S"] = "@customblock.inner",
-            ["]T"] = "@customtype.outer",
-          },
-          goto_previous_start = {
-            ["[a"] = "@parameter.inner",
-            ["[c"] = "@call.outer",
-            ["[f"] = "@function.outer",
-            ["[i"] = "@conditional.outer",
-            ["[l"] = "@loop.outer",
-            ["[s"] = "@customblock.inner",
-            ["[t"] = "@customtype.outer",
-          },
-          goto_previous_end = {
-            ["[A"] = "@parameter.inner",
-            ["[C"] = "@call.outer",
-            ["[F"] = "@function.outer",
-            ["[L"] = "@loop.outer",
-            ["[M"] = "@call.outer",
-            ["[S"] = "@customblock.inner",
-            ["[T"] = "@customtype.outer",
-          },
+          enable = false, -- done with mini.ai and impairative
         },
       },
     },

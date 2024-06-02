@@ -24,6 +24,8 @@
       set -g fish_pager_color_description ${config.colors.bright-black}
 
       set fish_greeting ""
+
+      set fish_vi_force_cursor 1
       set fish_cursor_default block
       set fish_cursor_insert line
       set fish_cursor_visual block
@@ -97,7 +99,6 @@
       dmesg = "dmesg -T";
       docker-ip = "docker inspect --format '{{ .NetworkSettings.IPAddress }}'";
       ip = "ip -c";
-      s = "kitty +kitten ssh";
       c = "cd (git rev-parse --show-toplevel)";
       sloc = "tokei";
       v = "vim (git f)";

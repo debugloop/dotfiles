@@ -6,7 +6,7 @@
     settings = {
       format = lib.strings.concatStrings [
         "$sudo$username$hostname" # usually hidden
-        "$directory$custom"
+        "$directory$custom$nix_shell"
         "$git_branch$git_commit$git_state$git_status"
         "$cmd_duration"
         "$line_break"
@@ -17,11 +17,6 @@
       custom.persistent = {
         when = ''not persistent'';
         format = "[󱙄](bold) ";
-      };
-
-      custom.nix = {
-        when = ''echo $PATH | cut -d" " -f1 | grep -v kitty'';
-        format = "[](bold)  ";
       };
 
       directory = {
@@ -95,6 +90,11 @@
         format = "[$user]($style) ";
         style_user = "bright-green";
         show_always = false;
+      };
+
+      nix_shell = {
+        format = "[](bold)  ";
+        heuristic = true;
       };
     };
   };

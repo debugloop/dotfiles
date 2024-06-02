@@ -7,9 +7,7 @@
     ./fish.nix
     ./git.nix
     ./helix.nix
-    ./kitty.nix
     ./nvim
-    #./ranger.nix
     ./starship.nix
     ./wayland
   ];
@@ -99,6 +97,7 @@
       # cli utils
       ast-grep
       bmon
+      dmidecode
       dogdns
       dstat
       du-dust

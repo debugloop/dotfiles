@@ -6,7 +6,10 @@
       ./software.nix
     ];
 
-  networking.hostName = hostname;
+  networking = {
+    hostName = hostname;
+    nftables.enable = true;
+  };
 
   time = {
     timeZone = "Europe/Berlin";
