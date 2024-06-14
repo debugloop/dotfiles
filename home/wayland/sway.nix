@@ -31,7 +31,7 @@
     '';
     config = {
       modifier = "Mod4";
-      terminal = "${pkgs.wezterm}/bin/wezterm";
+      terminal = "${pkgs.kitty}/bin/kitty";
       workspaceAutoBackAndForth = true;
       fonts = {
         names = [ "Fira Mono" ];
@@ -199,7 +199,7 @@
         "Mod4+Equal" = "move scratchpad";
 
         # run
-        "Mod4+Return" = "exec ${pkgs.wezterm}/bin/wezterm";
+        "Mod4+Return" = "exec ${pkgs.kitty}/bin/kitty";
         "XF86Display" = "exec ${pkgs.wdisplays}/bin/wdisplays";
 
         # lock

@@ -47,10 +47,16 @@
     fira
     fira-code
     fira-code-symbols
-    (nerdfonts.override { fonts = [ "FiraCode" "FiraMono" ]; })
-    # fallback to render all chars
+    fira-go
+    fira-math
+    jetbrains-mono
+    (nerdfonts.override { fonts = [ "FiraCode" "FiraMono" "Noto" ]; })
     noto-fonts
     noto-fonts-extra
+    noto-fonts-monochrome-emoji
+    noto-fonts-lgc-plus
+    roboto
+    roboto-mono
   ];
 
   xdg.portal = {
@@ -59,8 +65,8 @@
       max_fps = 30;
       #exec_before = "disable_notifications.sh";
       #exec_after = "enable_notifications.sh";
-      chooser_type = "dmenu";
-      chooser_cmd = "swaymsg -t get_outputs | jq -r '.[] | .name' | wofi -d";
+      #chooser_type = "wofi --dmenu";
+      #chooser_cmd = "swaymsg -t get_outputs | jq -r '.[] | .name' | wofi -d";
     };
   };
 
@@ -99,7 +105,7 @@
     nm-applet.enable = true;
     sway = {
       enable = true;
-      extraPackages = [];
+      extraPackages = [ ];
     };
   };
 }

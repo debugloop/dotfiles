@@ -82,6 +82,7 @@ return inject_all({
     dependencies = {
       { "rebelot/kanagawa.nvim" },
       { "echasnovski/mini.diff" },
+      { "echasnovski/mini.git" },
     },
     config = function()
       -- override some settings
@@ -98,7 +99,7 @@ return inject_all({
       local function setup_colors()
         return statusline.colors
       end
-      require("heirline").load_colors(setup_colors)
+      require("heirline").load_colors(setup_colors) ---@diagnostic disable-line: param-type-mismatch
       vim.api.nvim_create_autocmd("ColorScheme", {
         group = vim.api.nvim_create_augroup("Heirline", { clear = true }),
         callback = function()
@@ -107,7 +108,7 @@ return inject_all({
       })
       -- declare
       require("heirline").setup({
-        statusline = {
+        statusline = { ---@diagnostic disable-line: missing-fields
           static = static,
           {
             init = function(self)
@@ -151,11 +152,11 @@ return inject_all({
             },
           },
         },
-        winbar = {
+        winbar = { ---@diagnostic disable-line: missing-fields
           {
             static = static,
             init = function(self)
-              self.focused_bufnr = vim.api.nvim_buf_get_number(0)
+              self.focused_bufnr = vim.api.nvim_get_current_buf()
               self:find_mode()
             end,
             utils.make_buflist({
@@ -244,18 +245,13 @@ return inject_all({
   },
 
   {
-    "folke/lazydev.nvim",
-    ft = "lua",
-    opts = {
-      enabled = true,
-    },
-  },
-
-  {
     "echasnovski/mini.nvim",
     main = "mini.ai",
     name = "mini.ai",
     event = "VeryLazy",
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter-textobjects" },
+    },
     opts = {
       mappings = {
         around_last = "aN",
@@ -440,7 +436,7 @@ return inject_all({
       },
       mappings = {
         apply = "ga",
-        reset = "<leader>gR",
+        reset = "gR",
         textobject = "gh",
         goto_first = "[G",
         goto_prev = "[g",
@@ -499,23 +495,19 @@ return inject_all({
     opts = {},
     config = function(_, opts)
       require("mini.git").setup(opts)
-
       local align_blame = function(au_data)
         if au_data.data.git_subcommand ~= "blame" then
           return
         end
-
         -- Align blame output with source
         local win_src = au_data.data.win_source
         vim.wo.wrap = false
         vim.fn.winrestview({ topline = vim.fn.line("w0", win_src) - 1 })
         vim.api.nvim_win_set_cursor(0, { vim.fn.line(".", win_src), 0 })
-
         -- Bind both windows so that they scroll together
         vim.wo[win_src].scrollbind, vim.wo.scrollbind = true, true
         vim.wo[win_src].cursorbind, vim.wo.cursorbind = true, true
       end
-
       vim.api.nvim_create_autocmd("User", {
         group = vim.api.nvim_create_augroup("mini_git", { clear = true }),
         pattern = "MiniGitCommandSplit",
@@ -619,14 +611,14 @@ return inject_all({
     event = "VeryLazy",
     opts = {
       replace = {
-        prefix = "gR",
+        prefix = "R",
+      },
+      exchange = {
+        prefix = "X",
       },
       -- defaults:
       evaluate = {
         prefix = "g=",
-      },
-      exchange = {
-        prefix = "gx",
       },
       multiply = {
         prefix = "gm",
@@ -775,7 +767,6 @@ return inject_all({
     },
     dependencies = {
       { "MunifTanjim/nui.nvim" },
-      { "rcarriga/nvim-notify" },
     },
     opts = {
       presets = {
@@ -789,10 +780,6 @@ return inject_all({
           ["vim.lsp.util.stylize_markdown"] = true,
           ["cmp.entry.get_documentation"] = true,
         },
-      },
-      messages = {
-        enabled = true,
-        view = "mini",
       },
       views = {
         mini = {
@@ -855,11 +842,16 @@ return inject_all({
         border = "single",
       },
     },
+    config = function(_, opts)
+      require("bqf").setup(opts)
+      vim.api.nvim_set_hl(0, "BqfPreviewTitle", { link = "BqfPreviewBorder" })
+    end,
   },
 
   {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
+    module = false,
     dependencies = {
       { "hrsh7th/cmp-nvim-lsp" },
     },
@@ -967,6 +959,7 @@ return inject_all({
 
   {
     "mfussenegger/nvim-dap",
+    module = false,
     keys = {
       {
         "<leader>d",
@@ -1269,25 +1262,17 @@ return inject_all({
           option = "conceallevel",
           values = { [true] = 2, [false] = 0 },
         })
-        :getter_setter({
-          key = "d",
-          name = "diagnostics",
-          get = vim.lsp.diagnostic.is_enabled,
-          set = vim.lsp.diagnostic.enable,
-        })
-        :getter_setter({
+        -- :getter_setter({
+        --   key = "d",
+        --   name = "diagnostics",
+        --   get = vim.lsp.diagnostic.is_enabled,
+        --   set = vim.lsp.diagnostic.enable,
+        -- })
+        :field({
           key = "D",
-          name = "diff mode",
-          get = function()
-            return vim.o.diff
-          end,
-          set = function(value)
-            if value then
-              vim.cmd.diffthis()
-            else
-              vim.cmd.diffoff()
-            end
-          end,
+          name = "diff gutter",
+          table = vim.g,
+          field = "minidiff_disable",
         })
         :getter_setter({
           key = "h",
@@ -1296,11 +1281,24 @@ return inject_all({
           set = vim.lsp.inlay_hint.enable,
         })
         :field({
+          key = "H",
+          name = "todo highlights",
+          table = vim.g,
+          field = "minihipatterns_disable",
+        })
+        :field({
           key = "i",
           name = "indentscope",
           table = vim.g,
           field = "miniindentscope_disable",
         })
+        -- :manual({
+        --   key = "I",
+        --   name = "highlight occurences",
+        --   enable = "TSBufEnable refactor.highlight_definitions",
+        --   disable = "TSBufDisable refactor.highlight_definitions",
+        --   toggle = "TSBufToggle refactor.highlight_definitions",
+        -- })
         :option({
           key = "l",
           option = "list",
@@ -1309,6 +1307,12 @@ return inject_all({
           key = "n",
           option = "number",
         })
+        :field({
+          key = "p",
+          name = "auto pairs",
+          table = vim.g,
+          field = "minipairs_disable",
+        })
         :option({
           key = "r",
           option = "relativenumber",
@@ -1316,6 +1320,13 @@ return inject_all({
         :option({
           key = "s",
           option = "spell",
+        })
+        :manual({
+          key = "t",
+          name = "show context",
+          enable = "TSContextEnable",
+          disable = "TSContextDisable",
+          toggle = "TSContextToggle",
         })
         :option({
           key = "v",
@@ -1330,45 +1341,34 @@ return inject_all({
           key = "x",
           option = "cursorcolumn",
         })
-      vim.keymap.set(
-        "n",
-        "<leader>oI",
-        "<cmd>TSBufToggle refactor.highlight_definitions<cr>",
-        { desc = "toggle highlight occurences" }
-      )
-      vim.keymap.set(
-        "n",
-        "]oI",
-        "<cmd>TSBufEnable refactor.highlight_definitions<cr>",
-        { desc = "enable highlight occurences" }
-      )
-      vim.keymap.set(
-        "n",
-        "[oI",
-        "<cmd>TSBufDisable refactor.highlight_definitions<cr>",
-        { desc = "disable highlight occurences" }
-      )
-      vim.keymap.set(
-        "n",
-        "<leader>oS",
-        "<cmd>TSBufToggle refactor.highlight_current_scope<cr>",
-        { desc = "toggle highlight scope" }
-      )
-      vim.keymap.set(
-        "n",
-        "]oS",
-        "<cmd>TSBufEnable refactor.highlight_current_scope<cr>",
-        { desc = "enable highlight scope" }
-      )
-      vim.keymap.set(
-        "n",
-        "[oS",
-        "<cmd>TSBufDisable refactor.highlight_current_scope<cr>",
-        { desc = "disable highlight scope" }
-      )
-      vim.keymap.set("n", "<leader>ot", "<cmd>TSContextToggle<cr>", { desc = "toggle context" })
-      vim.keymap.set("n", "]ot", "<cmd>TSContextEnable<cr>", { desc = "enable context" })
-      vim.keymap.set("n", "[ot", "<cmd>TSContextDisable<cr>", { desc = "disable context" })
+      -- ts navigation of usages (adapted from nvim-treesitter-refactor)
+      local function index_of(tbl, obj)
+        for i, o in ipairs(tbl) do
+          if o == obj then
+            return i
+          end
+        end
+      end
+      local function goto_adjacent_usage(delta)
+        local ts_utils = require("nvim-treesitter.ts_utils")
+        local locals = require("nvim-treesitter.locals")
+        local bufnr = vim.api.nvim_get_current_buf()
+        local node_at_point = ts_utils.get_node_at_cursor()
+        if not node_at_point then
+          return
+        end
+
+        local def_node, scope = locals.find_definition(node_at_point, bufnr)
+        local usages = locals.find_usages(def_node, scope, bufnr)
+
+        local index = index_of(usages, node_at_point)
+        if not index then
+          return
+        end
+
+        local target_index = (index + delta + #usages - 1) % #usages + 1
+        ts_utils.goto_node(usages[target_index])
+      end
       -- textobject navigation
       vim.keymap.set("n", "]", "<nop>", { desc = "+forward goto " })
       vim.keymap.set("n", "[", "<nop>", { desc = "+backward goto" })
@@ -1377,6 +1377,24 @@ return inject_all({
           .operations({
             backward = "[",
             forward = "]",
+          })
+          :function_pair({
+            key = "]",
+            backward = function()
+              goto_adjacent_usage(-vim.v.count1)
+            end,
+            forward = function()
+              goto_adjacent_usage(vim.v.count1)
+            end,
+          })
+          :function_pair({
+            key = "[",
+            backward = function()
+              goto_adjacent_usage(-vim.v.count1)
+            end,
+            forward = function()
+              goto_adjacent_usage(vim.v.count1)
+            end,
           })
           :command_pair({
             key = "q",
@@ -1416,24 +1434,6 @@ return inject_all({
           edge = "right"
           target = "end"
           dirmap = {
-            lookahead = true,
-            include_surrounding_whitespace = false,
-            keymaps = {
-              ["ia"] = { query = "@parameter.inner", desc = "select parameter" },
-              ["aa"] = { query = "@parameter.outer", desc = "select parameter with delimiters" },
-              ["ic"] = { query = "@call.inner", desc = "select call arguments" },
-              ["ac"] = { query = "@call.outer", desc = "select call" },
-              ["if"] = { query = "@function.inner", desc = "select function body" },
-              ["af"] = { query = "@function.outer", desc = "select function" },
-              ["ii"] = { query = "@customconditional.inner", desc = "select conditional body" },
-              ["ai"] = { query = "@conditional.outer", desc = "select conditional" },
-              ["il"] = { query = "@customloop.inner", desc = "select loop body" },
-              ["al"] = { query = "@loop.outer", desc = "select loop" },
-              ["is"] = { query = "@customblock.inner", desc = "select scope body" },
-              ["as"] = { query = "@block.outer", desc = "select scope" },
-              ["it"] = { query = "@customtype.inner", desc = "select type body" },
-              ["at"] = { query = "@customtype.outer", desc = "select type" },
-            },
             backward = "prev",
             forward = "cover_or_next",
           }
@@ -1567,19 +1567,17 @@ return inject_all({
     "neovim/nvim-lspconfig",
     name = "lspconfig.lua_ls",
     ft = { "lua" },
-    opts = function(_, _)
-      local runtime_path = vim.split(package.path, ";")
-      table.insert(runtime_path, "lua/?.lua")
-      table.insert(runtime_path, "lua/?/init.lua")
-      return {
-        single_file_support = true,
-        settings = {
-          Lua = {
-            telemetry = { enable = false },
-          },
+    dependencies = {
+      { "folke/lazydev.nvim", opts = {} },
+    },
+    opts = {
+      single_file_support = true,
+      settings = {
+        Lua = {
+          telemetry = { enable = false },
         },
-      }
-    end,
+      },
+    },
     config = function(_, opts)
       require("lspconfig").lua_ls.setup(opts)
     end,
@@ -1796,44 +1794,10 @@ return inject_all({
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
     },
-    event = "BufReadPost",
-  },
-
-  {
-    "nvim-treesitter/nvim-treesitter-refactor",
-    main = "nvim-treesitter.configs",
-    dependencies = {
-      { "nvim-treesitter/nvim-treesitter" },
-    },
-    event = "BufReadPost",
+    keys = { "<leader>ot", "]ot", "[ot" },
     opts = {
-      refactor = {
-        highlight_definitions = {
-          enable = true,
-        },
-        highlight_current_scope = {
-          enable = false,
-        },
-        smart_rename = {
-          enable = false,
-        },
-        navigation = {
-          enable = true,
-          keymaps = {
-            goto_definition = false,
-            list_definitions = false,
-            list_definitions_toc = false,
-            goto_next_usage = "]]",
-            goto_previous_usage = "[[",
-          },
-        },
-      },
+      enable = false,
     },
-    config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
-      vim.api.nvim_set_hl(0, "TSDefinition", { link = "IncSearch" })
-      vim.api.nvim_set_hl(0, "TSDefinitionUsage", { link = "CurSearch" })
-    end,
   },
 
   {
@@ -1842,7 +1806,7 @@ return inject_all({
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
     },
-    event = "BufReadPost",
+    keys = { "gz", "gF", "gT" },
     opts = {
       textobjects = {
         lsp_interop = {

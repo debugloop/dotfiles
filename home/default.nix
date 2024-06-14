@@ -122,6 +122,7 @@
       buf
       cargo
       codespell
+      cutter
       delve
       docker-compose
       gcc

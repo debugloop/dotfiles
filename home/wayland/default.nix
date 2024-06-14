@@ -8,6 +8,7 @@
     ./avizo.nix
     ./clipman.nix
     ./kanshi.nix
+    ./kitty.nix
     ./mako.nix
     ./swayidle.nix
     ./swaylock.nix

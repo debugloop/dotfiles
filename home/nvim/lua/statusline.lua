@@ -113,12 +113,14 @@ M.components.branch = {
   flexible = 20,
   {
     provider = function(_)
-      return "  " .. vim.b.minigit_summary.head_name .. " "
+      local head = vim.b.minigit_summary ~= nil and vim.b.minigit_summary.head_name or ""
+      return "  " .. head .. " "
     end,
   },
   {
     provider = function(_)
-      return " " .. vim.b.minigit_summary.head_name
+      local head = vim.b.minigit_summary ~= nil and vim.b.minigit_summary.head_name or ""
+      return "  " .. head .. " "
     end,
   },
 }
@@ -285,11 +287,11 @@ M.components.linecol = {
 
 M.components.bufmark = {
   provider = function(self)
-    if vim.api.nvim_buf_get_option(self.bufnr, "modified") then
+    if vim.api.nvim_get_option_value("modified", { buf = self.bufnr }) then
       return "● "
     elseif
-      not vim.api.nvim_buf_get_option(self.bufnr, "modifiable")
-      or vim.api.nvim_buf_get_option(self.bufnr, "readonly")
+      not vim.api.nvim_get_option_value("modifiable", { buf = self.bufnr })
+      or vim.api.nvim_get_option_value("readonly", { buf = self.bufnr })
     then
       return " "
     else
@@ -312,7 +314,8 @@ M.components.bufname = {
 
 M.components.dap = {
   condition = function()
-    return require("dap").session() ~= nil
+    local ok, dap = pcall(require, "dap")
+    return ok and dap.session() ~= nil
   end,
   provider = function()
     return " " .. require("dap").status()

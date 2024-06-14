@@ -120,7 +120,7 @@ vim.keymap.set("n", "<leader>x", function()
       vim.cmd("bd " .. tostring(bufnr))
     end
   end
-  pcall(vim.cmd, "NvimTreeRefresh")
+  pcall(vim.cmd, "NvimTreeRefresh") ---@diagnostic disable-line: param-type-mismatch this works although vim.cmd is technically a table
 end, { desc = "close buffers not marked as persistent" })
 
 -- copy git url
@@ -133,7 +133,7 @@ vim.keymap.set({ "n", "v" }, "gy", function()
   url = url .. repo_path .. "/blob/"
   -- revision
   local rev = vim.fn.systemlist("git rev-parse HEAD")[1]
-  url = url .. rev .. "/"
+  url = url .. rev
   -- path
   local fullpath = vim.fn.expand("%:p")
   local gitroot = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
@@ -166,8 +166,6 @@ vim.keymap.set("n", "i", function()
 end, { desc = "enter insert mode", expr = true })
 
 -- no yank delete
-vim.keymap.set("n", "X", '"_d', { desc = "delete without yanking" })
-vim.keymap.set("n", "XX", '"_dd', { desc = "delete line without yanking" })
 vim.keymap.set("n", "dd", function()
   if vim.api.nvim_get_current_line():match("^%s*$") then
     return '"_dd'
