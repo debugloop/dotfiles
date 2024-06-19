@@ -91,10 +91,10 @@
       tokei
       zk
       # cli for graphics
-      ghostscript_headless
-      graphviz
-      imagemagick
-      pdftk
+      # ghostscript_headless
+      # graphviz
+      # imagemagick
+      # pdftk
       # dev
       awscli2
       cargo
@@ -114,7 +114,7 @@
       gotest
       gotools
       highlight
-      insomnia
+      # insomnia
       k6
       kubectl
       lua-language-server
@@ -133,7 +133,7 @@
       # fun
       nms
       # hardware (TODO: are those installed system-wide?)
-      powertop
+      # powertop
       pulseaudio
     ];
   };
