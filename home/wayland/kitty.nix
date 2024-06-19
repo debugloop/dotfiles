@@ -34,7 +34,7 @@
       # tab style
       tab_bar_style = "powerline";
       tab_powerline_style = "slanted";
-      tab_title_template = "{fmt.fg.red}{bell_symbol}{activity_symbol}{fmt.fg.tab}{'*' if layout_name == 'stack' and num_windows > 1 else ''}{index}: {title}";
+      tab_title_template = "{fmt.fg.red}{bell_symbol}{activity_symbol}{fmt.fg.tab}{'*' if layout_name == 'stack' and num_windows > 1 else ''}{index}: {tab.active_exe}";
       active_tab_font_style = "bold";
 
       # no default mappings
@@ -88,6 +88,7 @@
 
       # os windows
       "ctrl+shift+n" = "launch --type=os-window --cwd=current";
+      "ctrl+shift+r" = "set_window_title";
 
       # clipboard
       "ctrl+shift+c" = "copy_to_clipboard";
@@ -129,7 +130,6 @@
       # tabs
       "ctrl+shift+enter" = "new_tab_with_cwd";
       "ctrl+shift+t" = "new_tab";
-      "ctrl+shift+r" = "set_tab_title";
       "ctrl+shift+j" = "previous_tab";
       "ctrl+shift+k" = "next_tab";
       "ctrl+shift+right" = "move_tab_forward";
