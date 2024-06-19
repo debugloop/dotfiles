@@ -20,6 +20,7 @@
       "/var/lib/bluetooth" # blueman connections
       "/var/lib/nixos" # uid and gid mappings
       "/var/log" # logs
+      "/var/lib/rancher/k3s" # k3s cluster
     ];
     files = [
       "/etc/machine-id" # important, e.g. for journald

@@ -70,7 +70,7 @@
       age
       comma
       deadnix
-      devenv
+      devspace
       inputs.agenix.packages.x86_64-linux.default
       nh
       nil
@@ -138,6 +138,7 @@
       gotags
       gotest
       gotestsum
+      go-tools
       gotools
       highlight
       insomnia
@@ -145,11 +146,13 @@
       kontemplate
       kubeconform
       kubectl
+      kustomize
       luajit
       lua-language-server
       marksman
       nodePackages_latest.yaml-language-server
       #postman
+      pgcli
       proselint
       protobuf
       protoc-gen-go

@@ -6,7 +6,12 @@
       ./impermanence.nix
     ];
 
-  networking.networkmanager.enable = true;
+  networking = {
+    networkmanager.enable = true;
+    firewall.allowedTCPPorts = [
+      6443
+    ];
+  };
   hardware = {
     bluetooth.enable = true;
     opengl.enable = true;
@@ -31,6 +36,10 @@
         commands = [
           {
             command = "/run/current-system/sw/bin/ddcutil";
+            options = [ "NOPASSWD" ];
+          }
+          {
+            command = "/run/current-system/sw/bin/k3s";
             options = [ "NOPASSWD" ];
           }
         ];
@@ -75,7 +84,11 @@
     gnome.gnome-keyring = {
       enable = true;
     };
-    pcscd.enable = true;
+    k3s = {
+      enable = true;
+      role = "server";
+      extraFlags = toString [ ];
+    };
     pipewire = {
       enable = true;
       alsa.enable = true;
