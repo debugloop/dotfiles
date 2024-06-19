@@ -33,10 +33,7 @@
   };
 
   services = {
-    dbus = {
-      enable = true;
-      packages = [ pkgs.gcr ];
-    };
+    dbus.enable = true;
     openssh.enable = true;
   };
 }

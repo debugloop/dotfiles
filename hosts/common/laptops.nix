@@ -29,6 +29,7 @@
 
   security = {
     pam.services.swaylock = { };
+    rtkit.enable = true;
     sudo.extraRules = [
       {
         # needed for setting external monitor brightness
@@ -70,13 +71,7 @@
 
   xdg.portal = {
     enable = true;
-    wlr.settings.screencast = {
-      max_fps = 30;
-      #exec_before = "disable_notifications.sh";
-      #exec_after = "enable_notifications.sh";
-      #chooser_type = "wofi --dmenu";
-      #chooser_cmd = "swaymsg -t get_outputs | jq -r '.[] | .name' | wofi -d";
-    };
+    wlr.enable = true;
   };
 
   services = {
