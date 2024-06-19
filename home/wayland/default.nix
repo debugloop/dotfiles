@@ -4,6 +4,7 @@
   imports = [
     # our windowmanager
     ./sway.nix
+    ./river
     # auxiliary services
     ./avizo.nix
     ./clipman.nix

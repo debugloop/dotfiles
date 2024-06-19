@@ -242,6 +242,7 @@
         "Mod4+XF86AudioLowerVolume" = "resize shrink horizontal 20 px";
         "Mod4+Shift+XF86AudioRaiseVolume" = "resize grow vertical 20 px";
         "Mod4+Shift+XF86AudioLowerVolume" = "resize shrink vertical 20 px";
+        "Mod4+Shift+r" = "resize set width 35 ppt; split v";
 
         # focus
         "Mod4+space" = "focus mode_toggle";

@@ -18,12 +18,16 @@
           "sway/workspaces"
           "sway/mode"
           "sway/window"
+          "river/tags"
+          "river/mode"
+          "river/window"
         ];
         "modules-center" = [
           "custom/media"
         ];
         "modules-right" = [
           "pulseaudio"
+          #"river/layout"
           "idle_inhibitor"
           "tray"
           "temperature"
@@ -119,6 +123,55 @@
           "on-click-middle" = "${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list sinks short | ${pkgs.gnugrep}/bin/grep -v $(${pkgs.pulseaudio}/bin/pactl get-default-sink) | ${pkgs.coreutils}/bin/cut -f 1 | ${pkgs.coreutils}/bin/head -1)";
           "on-click-right" = "${pkgs.easyeffects}/bin/easyeffects";
         };
+        "river/mode" = {
+          "format" = " {}";
+        };
+        "river/tags" = {
+          "num-tags" = 10;
+          "tag-labels" = [
+            "1"
+            "2"
+            "3"
+            "4"
+            "5"
+            "6"
+            "7"
+            "8"
+            "9"
+            "0"
+          ];
+          "toggle-tags" = [
+            1
+            2
+            4
+            8
+            16
+            32
+            64
+            128
+            256
+            512
+          ];
+          "set-tags" = [
+            1
+            2
+            4
+            8
+            16
+            32
+            64
+            128
+            256
+            512
+          ];
+        };
+        "river/window" = {
+          "format" = "{}";
+          "max-length" = 160;
+        };
+        "river/layout" = {
+          "format" = "{}";
+        };
         "sway/mode" = {
           "format" = " {}";
           "tooltip" = false;
@@ -173,34 +226,36 @@
         margin: 0;
         padding: 0;
       }
-      #waybar {
-        background: #${config.colors.dark_bg};
-        color: #${config.colors.foreground};
-        font-family: "Fira Code Nerd Font";
-        font-size: 13px;
-      }
-      #workspaces button {
-        padding: 4px 10px;
-        color: #${config.colors.foreground};
-        background-color: #${config.colors.dark_bg};
-        border-top: 1px solid #${config.colors.background};
-      }
-      #workspaces button:hover {
-        background-color: #${config.colors.background};
-        border-top: 1px solid #${config.colors.cyan};
-      }
       button:hover {
         box-shadow: none; /* Remove predefined box-shadow */
         text-shadow: none; /* Remove predefined text-shadow */
         background: none; /* Remove predefined background color (white) */
         transition: none; /* Disable predefined animations */
       }
-      #workspaces button.visible {
+      #waybar {
+        background: #${config.colors.dark_bg};
         color: #${config.colors.foreground};
+        font-family: "Fira Code Nerd Font";
+        font-size: 13px;
+      }
+      #tags button {
+        padding: 4px 4px;
+        color: #${config.colors.foreground};
+        background-color: #${config.colors.background};
+        border-top: 1px solid #${config.colors.background};
+      }
+      #tags button.occupied {
+        border-top: 1px solid #${config.colors.foreground};
+      }
+      #tags button:hover {
+        background-color: #${config.colors.background};
+        border-top: 1px solid #${config.colors.cyan};
+      }
+      #tags button.focused {
         background-color: #${config.colors.light_bg};
         border-top: 1px solid #${config.colors.blue};
       }
-      #workspaces button.urgent {
+      #tags button.urgent {
         border-top: 1px solid #${config.colors.red};
       }
       tooltip {
@@ -214,7 +269,7 @@
         padding: 0px 8px;
       }
       /* no padding in front */
-      .modules-left > widget:first-child > #workspaces {
+      .modules-left > widget:first-child > #tags {
         padding: 0;
       }
       /* all right hand modules */
@@ -224,7 +279,8 @@
       /* settings modules */
       #idle_inhibitor,
       #pulseaudio,
-      #tray {
+      #tray,
+      #layout {
         border-top: 1px solid #${config.colors.foreground};
       }
       /* device status modules */
@@ -264,6 +320,12 @@
       #mode {
         background: #${config.colors.purple};
         color: #${config.colors.background};
+      }
+      #mode.normal {
+        background-color: #${config.colors.dark_bg};
+        color: #${config.colors.background};
+        padding: 0;
+        font-size: 0;
       }
     '';
   };
