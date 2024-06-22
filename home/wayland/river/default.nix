@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 {
+
+  home.sessionVariables = {
+    XDG_CURRENT_DESKTOP = "river";
+  };
   xdg.configFile = {
     "river-luatile/layout.lua".source = ./layout.lua;
   };
