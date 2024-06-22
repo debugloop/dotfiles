@@ -29,13 +29,21 @@
       extraGroups = [ "wheel" "video" "docker" "libvirtd" "dialout" ];
       shell = pkgs.fish;
       passwordFile = config.age.secrets.password.path;
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJJvfqr6PpG4BHmUHcj7LzfYhPjoxGeLGxNGF6FAXauX danieln@clarke"
+      ];
     };
 
-    # NOTE: This is of course not smart, but should not matter as it is only
-    # usable locally. Having this hash outside agenix keeps a backdoor for
-    # myself open in case something goes wrong with agenix, impermanence, or
-    # anything else.
-    users.root.initialHashedPassword = "$y$j9T$1DGnFy3m6PTbQoYB5kICV1$7gzz.2guf2Lj1wy4uo.YR0r1TfhI6/OTvjSi7.Tcm56";
+    users.root = {
+      # NOTE: This is of course not smart, but should not matter as it is only
+      # usable locally. Having this hash outside agenix keeps a backdoor for
+      # myself open in case something goes wrong with agenix, impermanence, or
+      # anything else.
+      initialHashedPassword = "$y$j9T$1DGnFy3m6PTbQoYB5kICV1$7gzz.2guf2Lj1wy4uo.YR0r1TfhI6/OTvjSi7.Tcm56";
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJJvfqr6PpG4BHmUHcj7LzfYhPjoxGeLGxNGF6FAXauX danieln@clarke"
+      ];
+    };
   };
 
   virtualisation.vmVariant = {

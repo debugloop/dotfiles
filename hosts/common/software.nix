@@ -34,6 +34,5 @@
 
   services = {
     dbus.enable = true;
-    openssh.enable = true;
   };
 }
