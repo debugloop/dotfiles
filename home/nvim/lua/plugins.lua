@@ -1593,6 +1593,16 @@ return inject_all({
     end,
   },
 
+  {
+    "neovim/nvim-lspconfig",
+    name = "lspconfig.nixd",
+    ft = { "nix" },
+    opts = {},
+    config = function(_, opts)
+      require("lspconfig").nixd.setup(opts)
+    end,
+  },
+
   -- {
   --   "neovim/nvim-lspconfig",
   --   name = "lspconfig.yamlls",

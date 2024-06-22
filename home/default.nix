@@ -50,9 +50,10 @@
       deadnix
       devspace
       inputs.agenix.packages.x86_64-linux.default
-      home-manager
+      inputs.home-manager.packages.x86_64-linux.default
       nh
       nil
+      nixd
       nvd
       # basics
       getopt
