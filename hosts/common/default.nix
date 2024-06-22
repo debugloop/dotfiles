@@ -40,6 +40,8 @@
   virtualisation.vmVariant = {
     # no persistence
     virtualisation.diskImage = null;
+    virtualisation.memorySize = 2048;
+    virtualisation.cores = 2;
     environment.persistence = lib.mkForce { };
     # empty password for myself
     age = lib.mkForce { };
