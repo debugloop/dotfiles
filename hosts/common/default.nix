@@ -38,20 +38,22 @@
   };
 
   virtualisation.vmVariant = {
-    # no persistence
-    virtualisation.diskImage = null;
-    virtualisation.memorySize = 2048;
-    virtualisation.cores = 2;
+    # better performance and no qcow, it's not persisted anyhow
+    virtualisation = {
+      memorySize =  2048;
+      cores = 2;
+      diskImage = null;
+      # launch in a useable and graphical window
+      qemu.options = [
+        "-vga virtio"
+        "-display gtk,zoom-to-fit=false"
+      ];
+    };
     environment.persistence = lib.mkForce { };
     # empty password for myself
     age = lib.mkForce { };
     users.users.danieln.passwordFile = lib.mkForce null;
     users.users.danieln.initialHashedPassword = "";
-    # launch in a useable and graphical window
-    virtualisation.qemu.options = [
-      "-vga virtio"
-      "-display gtk,zoom-to-fit=false"
-    ];
   };
 }
 

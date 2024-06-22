@@ -108,6 +108,23 @@
     '';
   };
 
+  systemd.services.shutdown-k3s = {
+    enable = true;
+    description = "ensure k3s shuts down correctly";
+    unitConfig = {
+      DefaultDependencies = false;
+      Before = [
+        "shutdown.target"
+        "umount.target"
+      ];
+    };
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.k3s}/bin/k3s-killall.sh";
+    };
+    wantedBy = [ "shutdown.target" ];
+  };
+
   programs = {
     light.enable = true;
     nm-applet.enable = true;
