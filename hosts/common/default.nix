@@ -1,7 +1,8 @@
-{ config, lib, pkgs, hostname, ... }:
+{ config, inputs, lib, pkgs, hostname, ... }:
 {
   imports =
     [
+      inputs.home-manager.nixosModules.home-manager
       ./nix.nix
       ./software.nix
     ];

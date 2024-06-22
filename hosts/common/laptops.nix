@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
   imports =
@@ -6,15 +6,25 @@
       ./impermanence.nix
     ];
 
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.danieln = import ../../home;
+    extraSpecialArgs = {
+      inherit inputs;
+    };
+  };
+
   networking = {
     networkmanager.enable = true;
     firewall.allowedTCPPorts = [
       6443
     ];
   };
+
   hardware = {
     bluetooth.enable = true;
-    opengl.enable = true;
+    graphics.enable = true;
   };
 
   virtualisation = {

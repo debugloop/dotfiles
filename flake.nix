@@ -32,11 +32,31 @@
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
       in
       {
-        danieln = home-manager.lib.homeManagerConfiguration {
+        "danieln@clarke" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
             ./home
+            ({ ... }:
+            {
+              imports = [
+                inputs.gridx.home-module
+              ];
+            })
           ];
+          extraSpecialArgs = {
+            inherit inputs;
+          };
+        };
+        "danieln@simmons" = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ ./home ];
+          extraSpecialArgs = {
+            inherit inputs;
+          };
+        };
+        "danieln@hyperion" = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ ./home/headless.nix ];
           extraSpecialArgs = {
             inherit inputs;
           };
@@ -58,14 +78,6 @@
             nixpkgs.overlays = [
               # inputs.neovim-nightly-overlay.overlay
             ];
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              users.danieln = import ./home;
-              extraSpecialArgs = {
-                inherit inputs;
-              };
-            };
           })
         ];
       };
@@ -84,22 +96,14 @@
             nixpkgs.overlays = [
               # inputs.neovim-nightly-overlay.overlay
             ];
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              users.danieln = (
+            home-manager.users.danieln = (
                 { ... }:
                 {
                   imports = [
-                    ./home
                     inputs.gridx.home-module
                   ];
                 }
               );
-              extraSpecialArgs = {
-                inherit inputs;
-              };
-            };
           })
         ];
       };
@@ -115,16 +119,6 @@
           ./hosts/common
           ./hosts/common/servers.nix
           ./hosts/hyperion
-          ({ system, ... }: {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              users.danieln = import ./home/headless.nix;
-              extraSpecialArgs = {
-                inherit inputs;
-              };
-            };
-          })
         ];
       };
 
