@@ -12,45 +12,23 @@
     ./wayland
   ];
 
-  services = {
-    blueman-applet.enable = true;
-    gnome-keyring.enable = true;
-  };
-
   nixpkgs.config = {
     allowUnfree = true;
     allowUnfreePredicate = (_: true);
   };
 
-  gtk.enable = true; # applies generated configs
-
   home = {
     username = "danieln";
     homeDirectory = "/home/danieln";
-    pointerCursor = {
-      package = "${pkgs.numix-cursor-theme}";
-      name = "Numix-Cursor";
-      gtk.enable = true; # generates gtk cursor config
-    };
     stateVersion = "22.11";
     sessionPath = [
       "$HOME/go/bin"
     ];
     sessionVariables = {
-      DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
       EDITOR = "${pkgs.neovim}/bin/nvim";
       FLAKE = "/etc/nixos";
-      GRIM_DEFAULT_DIR = "/home/danieln/pictures";
-      GTK_THEME = "Arc-Darker";
       HIGHLIGHT_STYLE = "base16/grayscale-dark";
-      MOZ_ENABLE_WAYLAND = "1";
-      NIXOS_OZONE_WL = "1";
       PAGER = "less -R --use-color -Dd+r -Du+b";
-      XDG_DESKTOP_DIR = "/home/danieln";
-      XDG_DOCUMENTS_DIR = "/home/danieln/documents";
-      XDG_DOWNLOAD_DIR = "/home/danieln/downloads";
-      XDG_PICTURES_DIR = "/home/danieln/pictures";
-      ZK_NOTEBOOK_DIR = "/home/danieln/documents/notes";
     };
 
     file.".sqliterc".text = ''
@@ -141,7 +119,6 @@
       go-tools
       gotools
       highlight
-      insomnia
       k6
       kontemplate
       kubeconform
@@ -149,9 +126,7 @@
       kustomize
       luajit
       lua-language-server
-      marksman
       nodePackages_latest.yaml-language-server
-      #postman
       pgcli
       proselint
       protobuf
@@ -172,7 +147,7 @@
       nms
       # hardware (TODO: are those installed system-wide?)
       powertop
-      pulseaudio
+      pulseaudio # TODO: should be installed by services
       # keyboard
       dfu-util
       gcc-arm-embedded

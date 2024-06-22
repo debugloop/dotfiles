@@ -17,15 +17,53 @@
     ./wezterm
   ];
 
+  gtk.enable = true; # applies generated configs
+
+  home = {
+    pointerCursor = {
+      package = "${pkgs.numix-cursor-theme}";
+      name = "Numix-Cursor";
+      gtk.enable = true; # generates gtk cursor config
+    };
+    sessionVariables = {
+      DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
+      GRIM_DEFAULT_DIR = "/home/danieln/pictures";
+      GTK_THEME = "Arc-Darker";
+      MOZ_ENABLE_WAYLAND = "1";
+      NIXOS_OZONE_WL = "1";
+      XDG_DESKTOP_DIR = "/home/danieln";
+      XDG_DOCUMENTS_DIR = "/home/danieln/documents";
+      XDG_DOWNLOAD_DIR = "/home/danieln/downloads";
+      XDG_PICTURES_DIR = "/home/danieln/pictures";
+    };
+  };
+
+  xdg = {
+    # TODO: does this work for any electron app?
+    configFile."electron25-flags.conf".text = ''
+      --enable-features=WaylandWindowDecorations
+      --ozone-platform-hint=auto
+    '';
+
+    mimeApps = {
+      enable = true;
+      defaultApplications = {
+        "text/html" = "org.firefox.firefox.desktop";
+        "x-scheme-handler/http" = "org.firefox.firefox.desktop";
+        "x-scheme-handler/https" = "org.firefox.firefox.desktop";
+        "x-scheme-handler/unknown" = "org.firefox.firefox.desktop";
+      };
+    };
+  };
+
+  services = {
+    blueman-applet.enable = true;
+    gnome-keyring.enable = true;
+  };
+
   programs = {
     firefox.enable = true;
     mpv.enable = true;
-    obs-studio = {
-      enable = true;
-      plugins = with pkgs.obs-studio-plugins; [
-        #obs-backgroundremoval
-      ];
-    };
     qutebrowser.enable = true;
     wofi = {
       enable = true;
@@ -62,16 +100,6 @@
     };
   };
 
-  xdg.mimeApps = {
-    enable = true;
-    defaultApplications = {
-      "text/html" = "org.firefox.firefox.desktop";
-      "x-scheme-handler/http" = "org.firefox.firefox.desktop";
-      "x-scheme-handler/https" = "org.firefox.firefox.desktop";
-      "x-scheme-handler/unknown" = "org.firefox.firefox.desktop";
-    };
-  };
-
   home.packages = with pkgs; [
     arc-theme
     cinnamon.nemo
@@ -105,10 +133,4 @@
     wl-mirror
     xdg-utils
   ];
-
-  # TODO: does this work for any electron app?
-  xdg.configFile."electron25-flags.conf".text = ''
-    --enable-features=WaylandWindowDecorations
-    --ozone-platform-hint=auto
-  '';
 }
