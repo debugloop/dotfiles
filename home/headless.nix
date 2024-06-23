@@ -59,7 +59,6 @@
       lsof
       moreutils
       netcat-gnu
-      openssh
       pcre
       pwgen
       unzip
@@ -174,10 +173,9 @@
     };
     ssh = {
       enable = true;
-      extraConfig = '' 
-      PermitLocalCommand yes
-      LocalCommand ${pkgs.libnotify}/bin/notify-send "%r@%h" "Connected to %h."
-      '';
+      addKeysToAgent = "10m";
     };
   };
+
+  services.ssh-agent.enable = true;
 }
