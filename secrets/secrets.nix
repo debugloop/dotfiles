@@ -4,7 +4,8 @@ let
 
   simmons = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM6PfN5CQE9VRocpilzDhhfaHfQwwC0mZkx4ndYTsS75";
   clarke = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILbV3a87YcN9cxWyUeY6nAxpLGBxFJuAyC7Mh2iM6BJY";
-  systems = [ simmons clarke ];
+  hyperion = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL5AsSvmh0/jPzl4gDynYuPnI4yFkK9srbAxPsQgL/sE";
+  systems = [ simmons clarke hyperion ];
 in
 {
   "password.age".publicKeys = users ++ systems;
