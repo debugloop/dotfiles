@@ -53,6 +53,7 @@
       inputs.agenix.packages.x86_64-linux.default
       nh
       nil
+      nixd
       nvd
       # basics
       getopt

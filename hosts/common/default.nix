@@ -6,6 +6,7 @@
       ./impermanence.nix
       ./nix.nix
       ./software.nix
+      ./tailscale.nix
     ];
 
   networking = {

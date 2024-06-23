@@ -25,6 +25,5 @@
         PermitRootLogin = "prohibit-password";
       };
     };
-
   };
 }

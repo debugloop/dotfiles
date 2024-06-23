@@ -8,4 +8,5 @@ in
   "password.age".publicKeys = all;
   "restic_rclone_config.age".publicKeys = all;
   "restic_password.age".publicKeys = all;
+  "tailscale.age".publicKeys = all;
 }
