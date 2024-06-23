@@ -6,6 +6,7 @@
     ./colors.nix
     ./fish.nix
     ./git.nix
+    ./nvim
     ./starship.nix
   ];
 

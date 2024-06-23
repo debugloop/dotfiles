@@ -100,6 +100,7 @@
       ip = "ip -c";
       c = "cd (git rev-parse --show-toplevel)";
       sloc = "tokei";
+      ssh = "kitten ssh";
       v = "vim (git f)";
       vim = "nvim";
       vimdiff = "nvim -d";

@@ -1,11 +1,6 @@
 { pkgs, inputs, ... }:
 
 {
-  imports =
-    [
-      ./impermanence.nix
-    ];
-
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
