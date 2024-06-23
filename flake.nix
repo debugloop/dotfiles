@@ -115,7 +115,6 @@
           hostname = "hyperion";
         };
         modules = [
-          "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
           ./hosts/common
           ./hosts/common/servers.nix
           ./hosts/hyperion

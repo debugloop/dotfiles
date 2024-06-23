@@ -3,6 +3,7 @@
   imports =
     [
       inputs.home-manager.nixosModules.home-manager
+      ./impermanence.nix
       ./nix.nix
       ./software.nix
     ];
