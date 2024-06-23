@@ -5,7 +5,7 @@
     enable = true;
     settings = {
       format = lib.strings.concatStrings [
-        "$sudo$username$hostname" # usually hidden
+        "$sudo$hostname" # usually hidden
         "$directory$custom$nix_shell"
         "$git_branch$git_commit$git_state$git_status"
         "$cmd_duration"
@@ -84,12 +84,6 @@
         format = "[$symbol]($style) ";
         symbol = "";
         disabled = false;
-      };
-
-      username = {
-        format = "[$user]($style) ";
-        style_user = "bright-green";
-        show_always = false;
       };
 
       nix_shell = {
