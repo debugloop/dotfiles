@@ -10,4 +10,5 @@ in
   "restic_password.age".publicKeys = all;
   "tailscale.age".publicKeys = all;
   "grafana.age".publicKeys = all;
+  "miniflux.age".publicKeys = all;
 }

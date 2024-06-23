@@ -7,6 +7,7 @@
       ../services/caddy.nix
       ../services/grafana.nix
       ../services/grocy.nix
+      ../services/miniflux.nix
       ../services/prometheus.nix
     ];
 }

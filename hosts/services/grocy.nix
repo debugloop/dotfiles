@@ -19,4 +19,8 @@
       "/var/lib/grocy"
     ];
   };
+
+  services.caddy.virtualHosts."vorrat.danieln.de".extraConfig = ''
+    reverse_proxy http://localhost:8080
+  ''; 
 }
