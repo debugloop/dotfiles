@@ -35,6 +35,8 @@
         for env_var in (gnome-keyring-daemon --start 2>/dev/null);
           set -x (echo $env_var | string split "=")
         end
+      else
+        eval (ssh-agent -c)
       end
     '';
     loginShellInit = ''
@@ -100,7 +102,7 @@
       ip = "ip -c";
       c = "cd (git rev-parse --show-toplevel)";
       sloc = "tokei";
-      ssh = "kitten ssh";
+      s = "kitten ssh";
       v = "vim (git f)";
       vim = "nvim";
       vimdiff = "nvim -d";
