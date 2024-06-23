@@ -39,4 +39,10 @@
       ${pkgs.tailscale}/bin/tailscale up -authkey file:${config.age.secrets.tailscaleAuthkey.path}
     '';
   };
+
+  environment.persistence."/nix/persist" = {
+    directories = [
+      "/var/lib/tailscale"
+    ];
+  };
 }
