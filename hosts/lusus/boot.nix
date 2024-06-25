@@ -2,45 +2,43 @@
 
 {
   imports =
-    [
-      (modulesPath + "/installer/scan/not-detected.nix")
+    [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
+
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   fileSystems = {
-    "/nix" =
-      {
-        device = "/dev/disk/by-uuid/e16b1c19-95dc-4119-a535-a4e7baa330c4";
-        fsType = "xfs";
-      };
+  "/nix" =
+    { device = "/dev/disk/by-uuid/2bbe58f6-c736-4207-8646-05b07fd024f4";
+      fsType = "xfs";
+    };
 
-    "/boot" =
-      {
-        device = "/dev/disk/by-uuid/819E-6D65";
-        fsType = "vfat";
-      };
+  "/boot" =
+    { device = "/dev/disk/by-uuid/D7EE-6599";
+      fsType = "vfat";
+    };
   };
+
 
   boot = {
     initrd = {
-      availableKernelModules = [ "nvme" "xhci_pci" "usb_storage" "sd_mod" ];
-      kernelModules = [ "usb_storage" "i2c-dev" ];
+      availableKernelModules = [ "xhci_pci" "thunderbolt" "vmd" "nvme" "usb_storage" "sd_mod" ];
+      kernelModules = [ "usb_storage" ];
       luks.devices.crypt = {
-        device = "/dev/disk/by-uuid/8be92b1e-0907-4ae0-a000-eb8cc250fe8d";
+        device = "/dev/disk/by-uuid/d31e511f-f385-4993-9437-619e9501f535";
         allowDiscards = true;
       };
     };
     loader = {
       systemd-boot.enable = true;
       efi = {
-        canTouchEfiVariables = true;
+        canTouchEfiVariables = false;
       };
     };
     kernelPackages = pkgs.linuxPackages_latest;
-    kernelModules = [ "kvm-intel" "v4l2loopback" ];
+    kernelModules = [ "kvm-intel" ];
     extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback.out ];
-
     tmp.useTmpfs = true;
   };
 

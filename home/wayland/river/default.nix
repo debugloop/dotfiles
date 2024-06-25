@@ -172,6 +172,12 @@
             "Super+Shift 9" = "set-view-tags 256";
             "Super+Shift 0" = "set-view-tags 512";
 
+            # outputs
+            "Super Prior" = "focus-output next";
+            "Super Next" = "focus-output previous";
+            "Super+Shift Prior" = "send-to-output -current-tags next";
+            "Super+Shift Next" = "send-to-output -current-tags previous";
+
             # TODO: build DND binding and indicator for waybar?
             # fancy keys
             "None XF86AudioMicMute" = "spawn '${pkgs.avizo}/bin/volumectl -M0 -m toggle-mute && pkill -SIGRTMIN+4 waybar'";

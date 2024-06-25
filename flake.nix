@@ -32,7 +32,7 @@
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
       in
       {
-        "danieln@clarke" = home-manager.lib.homeManagerConfiguration {
+        "danieln@lusus" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
             ./home
@@ -82,16 +82,16 @@
         ];
       };
 
-      clarke = nixpkgs.lib.nixosSystem {
+      lusus = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
-          hostname = "clarke";
+          hostname = "lusus";
         };
         modules = [
           ./hosts/common
           ./hosts/common/laptops.nix
-          ./hosts/clarke
+          ./hosts/lusus
           ({ system, ... }: {
             nixpkgs.overlays = [
               # inputs.neovim-nightly-overlay.overlay
