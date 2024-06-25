@@ -10,6 +10,10 @@
 
   networking.firewall.allowedTCPPorts = [ 80 443 ];
 
+  services.caddy.virtualHosts."danieln.de".extraConfig = ''
+    respond "brb!"
+  '';
+
   environment.persistence."/nix/persist" = {
     directories = [
       "/var/lib/caddy"
