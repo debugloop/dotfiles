@@ -48,12 +48,12 @@
       d = "dlv --headless -l 'localhost:2345'";
     };
     functions = {
-     fish_title = {
+      fish_title = {
         body = ''
           set -q argv[1]; or set argv fish
           echo (fish_prompt_pwd_dir_length=0 prompt_pwd): $argv;
-          '';
-        };
+        '';
+      };
       persistent = {
         body = ''
           	  test (findmnt -JT (pwd) | jq -r '.filesystems[0].fstype') = "xfs"

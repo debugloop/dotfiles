@@ -58,7 +58,7 @@
   virtualisation.vmVariant = {
     # better performance and no qcow, it's not persisted anyhow
     virtualisation = {
-      memorySize =  2048;
+      memorySize = 2048;
       cores = 2;
       diskImage = null;
       # launch in a useable and graphical window

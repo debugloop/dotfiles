@@ -37,11 +37,11 @@
           modules = [
             ./home
             ({ ... }:
-            {
-              imports = [
-                inputs.gridx.home-module
-              ];
-            })
+              {
+                imports = [
+                  inputs.gridx.home-module
+                ];
+              })
           ];
           extraSpecialArgs = {
             inherit inputs;
@@ -97,13 +97,13 @@
               # inputs.neovim-nightly-overlay.overlay
             ];
             home-manager.users.danieln = (
-                { ... }:
-                {
-                  imports = [
-                    inputs.gridx.home-module
-                  ];
-                }
-              );
+              { ... }:
+              {
+                imports = [
+                  inputs.gridx.home-module
+                ];
+              }
+            );
           })
         ];
       };

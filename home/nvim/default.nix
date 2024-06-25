@@ -19,8 +19,19 @@
 
   };
 
-  xdg.dataFile = builtins.listToAttrs (
-    [{ name = "nvim/nixpkgs/fzf"; value = { source = "${pkgs.fzf}/share/vim-plugins/fzf"; }; }] ++
+  xdg.dataFile = {
+    "nvim/nixpkgs/fzf" = {
+      source = "${pkgs.fzf}/share/vim-plugins/fzf";
+    };
+    "nvim/nixpkgs/nvim-impairative" = {
+      source = pkgs.fetchFromGitHub {
+        owner = "idanarye";
+        repo = "nvim-impairative";
+        rev = "v0.2.0";
+        sha256 = "sha256-bXEABjb3HvVcQmVbDdDB5CSMp1rd+6AIFihOYnO1slg=";
+      };
+    };
+  } // builtins.listToAttrs (
     lib.lists.forEach [
       "conform-nvim"
       "cmp-nvim-lsp"
@@ -28,6 +39,7 @@
       "heirline-nvim"
       "kanagawa-nvim"
       "lazy-nvim"
+      "lazydev-nvim"
       "mini-nvim"
       "noice-nvim"
       "nui-nvim"
