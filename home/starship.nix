@@ -6,11 +6,11 @@
     settings = {
       format = lib.strings.concatStrings [
         "$sudo$hostname" # usually hidden
-        "$directory$custom$nix_shell"
+        "$directory$custom"
         "$git_branch$git_commit$git_state$git_status"
         "$cmd_duration"
         "$line_break"
-        "$jobs$status$character"
+        "$jobs$status$shlvl$character"
       ];
       right_format = "$memory_usage$battery";
 
@@ -86,9 +86,13 @@
         disabled = false;
       };
 
-      nix_shell = {
-        format = "[](bold)  ";
-        heuristic = true;
+      shlvl = {
+        disabled = false;
+        format = "[$symbol](green)";
+        repeat = true;
+        symbol = "❯";
+        repeat_offset = 2;
+        threshold = 3;
       };
     };
   };

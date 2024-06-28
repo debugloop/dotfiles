@@ -8,7 +8,6 @@
     };
     settings = {
       # basics
-      env = "PATH=/run/wrappers/bin:/home/danieln/.nix-profile/bin:/etc/profiles/per-user/danieln/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin";
       close_on_child_death = "yes";
       focus_follows_mouse = "no";
       enable_audio_bell = "no";
