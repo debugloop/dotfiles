@@ -52,6 +52,9 @@
         default-layout = "luatile";
         focus-follows-cursor = "normal";
         input = {
+          "pointer-1267-12848-ASUE1410:00_04F3:3230_Touchpad" = {
+            tap = "enabled";
+          };
           # pointer-foo-bar = {
           #   accel-profile = "flat";
           #   events = true;
