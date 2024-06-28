@@ -17,6 +17,9 @@
             criteria = "eDP-1";
             status = "disable";
           }
+          {
+            criteria = "HEADLESS-1";
+          }
         ];
       };
       solo = {
@@ -25,6 +28,9 @@
             criteria = "eDP-1";
             status = "enable";
           }
+          {
+            criteria = "HEADLESS-1";
+          }
         ];
       };
       other = {
@@ -32,6 +38,9 @@
           {
             criteria = "eDP-1";
             status = "enable";
+          }
+          {
+            criteria = "HEADLESS-1";
           }
           {
             criteria = "*";

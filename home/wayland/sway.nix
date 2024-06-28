@@ -153,6 +153,8 @@
           "l" = "resize grow horizontal 50 px";
           "XF86AudioRaiseVolume" = "resize grow horizontal 20 px";
           "XF86AudioLowerVolume" = "resize shrink horizontal 20 px";
+          "Shift+XF86AudioRaiseVolume" = "resize grow vertical 20 px";
+          "Shift+XF86AudioLowerVolume" = "resize shrink vertical 20 px";
           "Shift+h" = "resize shrink horizontal 20 px";
           "Shift+j" = "resize shrink vertical 20 px";
           "Shift+k" = "resize grow vertical 20 px";
@@ -170,12 +172,16 @@
           "j" = "move down";
           "k" = "move up";
           "l" = "move right";
+          "XF86AudioRaiseVolume" = "move right";
+          "XF86AudioLowerVolume" = "move left";
+          "Shift+XF86AudioRaiseVolume" = "move up";
+          "Shift+XF86AudioLowerVolume" = "move down";
           "q" = "mode 'default'";
           "Return" = "mode 'default'";
           "Escape" = "mode 'default'";
         };
         "escape" = {
-          "Escape" = "mode 'default'";
+          "Mod4+Escape" = "mode 'default'";
         };
         "exit" = {
           "Mod4+Shift+e" = "exit";
@@ -192,11 +198,12 @@
       ];
       keybindings = {
         # scratch
-        "XF86Favorites" = "[title='scratch: ipython'] scratchpad show";
-        "F5" = "[title='scratch: ipython'] scratchpad show";
-        "Mod4+Backspace" = "scratchpad show";
-        "Mod4+Minus" = "move scratchpad";
-        "Mod4+Equal" = "move scratchpad";
+        "Mod4+Tab" = "scratchpad show";
+        "Mod4+Shift+Tab" = "move scratchpad";
+
+        # virtual output for presenting
+        "Mod4+Backspace" = "output HEADLESS-1 enable";
+        "Mod4+Shift+Backspace" = "output HEADLESS-1 disable";
 
         # run
         "Mod4+Return" = "exec ${pkgs.kitty}/bin/kitty";
