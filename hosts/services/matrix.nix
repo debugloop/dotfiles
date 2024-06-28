@@ -1,12 +1,22 @@
 { config, ... }:
 
 {
-  services.matrix-synapse = {
-    enable = true;
-    settings = {
-      server_name = "danieln.de";
-      database = {
-        name = "sqlite3";
+  services = {
+    heisenbridge = {
+      enable = true;
+      owner = "@d:bugpara.de";
+      homeserver = "http://localhost:8008";
+    };
+    matrix-synapse = {
+      enable = true;
+      settings = {
+        app_service_config_files = [
+          "/var/lib/heisenbridge/registration.yml"
+        ];
+        server_name = "bugpara.de";
+        database = {
+          name = "sqlite3";
+        };
       };
     };
   };
@@ -18,12 +28,19 @@
     ];
   };
 
-  services.caddy.virtualHosts."matrix.danieln.de".extraConfig = ''
+  environment.persistence."/nix/persist" = {
+    directories = [
+      "/var/lib/heisenbridge"
+      "/var/lib/matrix-synapse"
+    ];
+  };
+
+  services.caddy.virtualHosts."matrix.bugpara.de".extraConfig = ''
     reverse_proxy /_matrix/* localhost:8008
     reverse_proxy /_synapse/client/* localhost:8008
   ''; 
 
-  services.caddy.virtualHosts."danieln.de:8448".extraConfig = ''
+  services.caddy.virtualHosts."bugpara.de:8448".extraConfig = ''
     reverse_proxy /_matrix/* localhost:8008
   ''; 
 }
