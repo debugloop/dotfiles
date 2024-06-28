@@ -18,16 +18,12 @@
           "sway/workspaces"
           "sway/mode"
           "sway/window"
-          "river/tags"
-          "river/mode"
-          "river/window"
         ];
         "modules-center" = [
           "custom/media"
         ];
         "modules-right" = [
           "pulseaudio"
-          #"river/layout"
           "idle_inhibitor"
           "tray"
           "temperature"
@@ -123,55 +119,6 @@
           "on-click-middle" = "${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list sinks short | ${pkgs.gnugrep}/bin/grep -v $(${pkgs.pulseaudio}/bin/pactl get-default-sink) | ${pkgs.coreutils}/bin/cut -f 1 | ${pkgs.coreutils}/bin/head -1)";
           "on-click-right" = "${pkgs.easyeffects}/bin/easyeffects";
         };
-        "river/mode" = {
-          "format" = " {}";
-        };
-        "river/tags" = {
-          "num-tags" = 10;
-          "tag-labels" = [
-            "1"
-            "2"
-            "3"
-            "4"
-            "5"
-            "6"
-            "7"
-            "8"
-            "9"
-            "0"
-          ];
-          "toggle-tags" = [
-            1
-            2
-            4
-            8
-            16
-            32
-            64
-            128
-            256
-            512
-          ];
-          "set-tags" = [
-            1
-            2
-            4
-            8
-            16
-            32
-            64
-            128
-            256
-            512
-          ];
-        };
-        "river/window" = {
-          "format" = "{}";
-          "max-length" = 160;
-        };
-        "river/layout" = {
-          "format" = "{}";
-        };
         "sway/mode" = {
           "format" = " {}";
           "tooltip" = false;
@@ -238,24 +185,24 @@
         font-family: "Fira Code Nerd Font";
         font-size: 13px;
       }
-      #tags button {
-        padding: 4px 4px;
+      #workspaces button {
+        padding: 4px 10px;
         color: #${config.colors.foreground};
         background-color: #${config.colors.background};
         border-top: 1px solid #${config.colors.background};
       }
-      #tags button.occupied {
+      #workspaces button.visible {
         border-top: 1px solid #${config.colors.foreground};
       }
-      #tags button:hover {
+      #workspaces button:hover {
         background-color: #${config.colors.background};
         border-top: 1px solid #${config.colors.cyan};
       }
-      #tags button.focused {
+      #workspaces button.focused {
         background-color: #${config.colors.light_bg};
         border-top: 1px solid #${config.colors.blue};
       }
-      #tags button.urgent {
+      #workspaces button.urgent {
         border-top: 1px solid #${config.colors.red};
       }
       tooltip {
@@ -269,7 +216,7 @@
         padding: 0px 8px;
       }
       /* no padding in front */
-      .modules-left > widget:first-child > #tags {
+      .modules-left > widget:first-child > #workspaces {
         padding: 0;
       }
       /* all right hand modules */
@@ -320,12 +267,6 @@
       #mode {
         background: #${config.colors.purple};
         color: #${config.colors.background};
-      }
-      #mode.normal {
-        background-color: #${config.colors.dark_bg};
-        color: #${config.colors.background};
-        padding: 0;
-        font-size: 0;
       }
     '';
   };

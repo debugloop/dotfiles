@@ -133,7 +133,6 @@
   programs = {
     light.enable = true;
     nm-applet.enable = true;
-    river.enable = true;
     sway = {
       enable = true;
       extraPackages = [ ];

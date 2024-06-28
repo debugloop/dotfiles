@@ -40,7 +40,7 @@
     loginShellInit = ''
       # start wm on tty1
       if test (tty) = /dev/tty1
-        river
+        sway
       end
     '';
     shellAbbrs = {
