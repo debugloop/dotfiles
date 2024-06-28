@@ -47,7 +47,7 @@
       };
 
       git_status = {
-        format = "[$conflicted](red)[$deleted$renamed$modified](blue)[$staged](yellow)[$untracked$stashed](bright-black)[$ahead_behind](bold) ";
+        format = "[$conflicted](red)[$modified](blue)[$staged$deleted$renamed](yellow)[$untracked$stashed](bright-black)[$ahead_behind](bold) ";
         ahead = " ↑$count";
         behind = " ↓$count";
         diverged = " ↑$ahead_count↓$behind_count";
