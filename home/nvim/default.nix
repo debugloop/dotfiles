@@ -36,7 +36,6 @@
       "conform-nvim"
       "cmp-nvim-lsp"
       "diffview-nvim"
-      "heirline-nvim"
       "kanagawa-nvim"
       "lazy-nvim"
       "lazydev-nvim"

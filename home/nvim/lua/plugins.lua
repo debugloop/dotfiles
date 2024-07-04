@@ -82,134 +82,8 @@ return inject_all({
   },
 
   {
-    "rebelot/heirline.nvim",
-    event = "UIEnter",
-    dependencies = {
-      { "rebelot/kanagawa.nvim" },
-      { "echasnovski/mini.diff" },
-      { "echasnovski/mini.git" },
-    },
-    config = function()
-      -- override some settings
-      vim.opt.showtabline = 0 -- no tabline ever
-      vim.opt.laststatus = 2 -- per window statusline
-      vim.opt.showcmdloc = "statusline" -- enable partial command printing segment
-      -- import required things
-      local conditions = require("heirline.conditions")
-      local utils = require("heirline.utils")
-      local statusline = require("statusline")
-      local components = statusline.components
-      local static = statusline.static
-      -- setup color based on the current colorscheme
-      local function setup_colors()
-        return statusline.colors
-      end
-      require("heirline").load_colors(setup_colors) ---@diagnostic disable-line: param-type-mismatch
-      vim.api.nvim_create_autocmd("ColorScheme", {
-        group = vim.api.nvim_create_augroup("Heirline", { clear = true }),
-        callback = function()
-          utils.on_colorscheme(setup_colors)
-        end,
-      })
-      -- declare
-      require("heirline").setup({
-        statusline = { ---@diagnostic disable-line: missing-fields
-          static = static,
-          {
-            init = function(self)
-              self.filename = vim.api.nvim_buf_get_name(0)
-              self:find_mode()
-            end,
-            { -- left section a, inverted bright color
-              hl = static.color_a,
-              components.mode,
-            },
-            { -- left section b, bright color
-              hl = static.color_b,
-              components.git,
-              components.lsp,
-            },
-            { -- middle section c, plain color
-              hl = static.color_c,
-              { -- left aligned
-                components.space,
-                components.filename,
-              },
-              components.truncate,
-              components.fill,
-              { -- right aligned
-                flexible = 10,
-                {
-                  components.macro,
-                  components.filetype,
-                  components.encoding,
-                  components.fileformat,
-                },
-              },
-            },
-            { -- right section b, bright color
-              hl = static.color_b,
-              components.ruler,
-            },
-            { -- right section a, inverted bright color
-              hl = static.color_a,
-              components.linecol,
-            },
-          },
-        },
-        winbar = { ---@diagnostic disable-line: missing-fields
-          {
-            static = static,
-            init = function(self)
-              self.focused_bufnr = vim.api.nvim_get_current_buf()
-              self:find_mode()
-            end,
-            utils.make_buflist({
-              init = function(self)
-                self.filename = vim.api.nvim_buf_get_name(self.bufnr)
-                self.is_displayed = self.bufnr == self.focused_bufnr
-              end,
-              hl = function(self)
-                if conditions.is_active() then -- if this window has focus...
-                  if self.is_displayed then -- ...and this is the displayed buffer
-                    return self:color_a()
-                  else -- ...and this is another buffer
-                    return "StatusLine"
-                  end
-                else -- if this window is visible but unfocused...
-                  if self.is_displayed then -- ...and this is the displayed buffer
-                    return "Folded"
-                  else -- ...and this is another buffer
-                    return "StatusLineNC"
-                  end
-                end
-              end,
-              {
-                components.space,
-                components.bufmark,
-                components.bufname,
-                components.space,
-              },
-            }),
-            components.fill,
-            components.dap,
-          },
-        },
-        opts = {
-          disable_winbar_cb = function(args)
-            return HIDE_BUFFERS
-              or conditions.buffer_matches({
-                buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
-                filetype = { "^git.*", "noice", "NvimTree" },
-              }, args.buf)
-          end,
-        },
-      })
-    end,
-  },
-
-  {
     "rebelot/kanagawa.nvim",
+    clone = true,
     event = "UIEnter",
     config = function(_, opts)
       require("kanagawa").setup(opts)
@@ -217,7 +91,7 @@ return inject_all({
     end,
     opts = {
       theme = "wave",
-      -- dimInactive = true,
+      dimInactive = true,
       commentStyle = { italic = false },
       keywordStyle = { italic = false },
       variablebuiltinStyle = { italic = false },
@@ -234,7 +108,14 @@ return inject_all({
           NvimTreeGitDirty = { fg = theme.term[5], bg = "none" },
           NvimTreeGitStaged = { fg = theme.term[4], bg = "none" },
           -- invisible window separator
-          -- WinSeparator = { fg = theme.ui.bg_dim, bg = theme.ui.bg_dim },
+          WinSeparator = { fg = theme.ui.bg_dim, bg = theme.ui.bg_dim },
+          -- nice tabline
+          MiniTablineCurrent = { bg = theme.syn.fun, fg = theme.ui.bg },
+          MiniTablineHidden = { link = "StatusLineNC" },
+          MiniTablineVisible = { link = "StatusLineNC" },
+          MiniTablineModifiedCurrent = { link = "MiniTablineCurrent" },
+          MiniTablineModifiedHidden = { link = "MiniTablineHidden" },
+          MiniTablineModifiedVisible = { link = "MiniTablineVisible" },
         }
       end,
       colors = {
@@ -543,6 +424,15 @@ return inject_all({
 
   {
     "echasnovski/mini.nvim",
+    clone = true,
+    main = "mini.icons",
+    name = "mini.icons",
+    event = "VeryLazy",
+    opts = {},
+  },
+
+  {
+    "echasnovski/mini.nvim",
     main = "mini.indentscope",
     name = "mini.indentscope",
     event = "VeryLazy",
@@ -740,12 +630,120 @@ return inject_all({
 
   {
     "echasnovski/mini.nvim",
+    clone = true,
+    main = "mini.statusline",
+    name = "mini.statusline",
+    dependencies = {
+      {
+        "echasnovski/mini.nvim",
+        main = "mini.icons",
+        name = "mini.icons",
+      },
+    },
+    event = "VeryLazy",
+    opts = {
+      content = {
+        active = function()
+          local function inverted(group)
+            local hl = vim.api.nvim_get_hl(0, { name = group })
+            local name = group .. "Inverted"
+            vim.api.nvim_set_hl(0, name, { fg = hl.bg, bg = "NONE", force = true })
+            return name
+          end
+          local MiniStatusline = require("mini.statusline")
+          local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
+          local diagnostics = MiniStatusline.section_diagnostics({ trunc_width = 75 })
+          local filename = MiniStatusline.section_filename({ trunc_width = 140 })
+          return MiniStatusline.combine_groups({
+            { hl = mode_hl, strings = { mode:upper() } },
+            {
+              hl = inverted(mode_hl),
+              strings = {
+                vim.b.minigit_summary and vim.b.minigit_summary.head_name and " " .. vim.b.minigit_summary.head_name
+                  or "",
+              },
+            },
+            MiniStatusline.combine_groups({
+              {
+                hl = "@diff.plus",
+                strings = {
+                  (vim.b.minidiff_summary and vim.b.minidiff_summary.add or 0) > 0
+                    and "+" .. vim.b.minidiff_summary.add,
+                },
+              },
+              {
+                hl = "@diff.delta",
+                strings = {
+                  (vim.b.minidiff_summary and vim.b.minidiff_summary.change or 0) > 0
+                    and "~" .. vim.b.minidiff_summary.change,
+                },
+              },
+              {
+                hl = "@diff.minus",
+                strings = {
+                  (vim.b.minidiff_summary and vim.b.minidiff_summary.delete or 0) > 0
+                    and "-" .. vim.b.minidiff_summary.delete,
+                },
+              },
+            }):gsub(" %%", "%%"),
+            { hl = "DiagnosticInfo", strings = { diagnostics } },
+            "%<", -- Mark general truncate point
+            { hl = "StatusLine", strings = { filename } },
+            "%=", -- End left alignment
+            {
+              hl = "StatusLine",
+              strings = {
+                vim.bo.filetype ~= ""
+                  and require("mini.icons").get("filetype", vim.bo.filetype) .. " " .. vim.bo.filetype,
+              },
+            },
+            {
+              hl = inverted(mode_hl),
+              strings = {
+                "%p%%/%L",
+              },
+            },
+            { hl = mode_hl, strings = { "%l:%v" } },
+          })
+        end,
+      },
+    },
+  },
+
+  {
+    "echasnovski/mini.nvim",
     enabled = false, -- surrounding stuff is so rare, let's use `s` better
     main = "mini.surround",
     name = "mini.surround",
     keys = { "s" },
     opts = {
       search_method = "cover_or_next",
+    },
+  },
+
+  {
+    "echasnovski/mini.nvim",
+    clone = true,
+    main = "mini.tabline",
+    name = "mini.tabline",
+    dependencies = {
+      {
+        "echasnovski/mini.nvim",
+        main = "mini.icons",
+        name = "mini.icons",
+      },
+    },
+    event = "VeryLazy",
+    opts = {
+      format = function(buf_id, label)
+        local suffix = ""
+        if vim.bo[buf_id].modified then
+          suffix = "● "
+        elseif vim.bo[buf_id].readonly then
+          suffix = " "
+        end
+        return MiniTabline.default_format(buf_id, label) .. suffix
+      end,
     },
   },
 
@@ -1852,6 +1850,7 @@ return inject_all({
     dependencies = {
       {
         "nvim-telescope/telescope.nvim",
+        config = function() end,
         dependencies = {
           { "nvim-lua/plenary.nvim" },
         },
