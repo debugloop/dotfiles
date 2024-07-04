@@ -84,6 +84,11 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   end,
 })
 
+-- change diagnostic display
+vim.diagnostic.config({
+  severity_sort = true,
+})
+
 -- close some buffers with q only
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("close_with_q", { clear = true }),
