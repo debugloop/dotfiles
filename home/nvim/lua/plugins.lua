@@ -38,7 +38,12 @@ return inject_all({
         go = { "gofumpt", "goimports-reviser" },
         lua = { "stylua" },
         nix = { "nixpkgs_fmt" },
-        ["_"] = { "trim_whitespace" },
+        ["*"] = function(bufnr)
+          if vim.fn.getbufvar(bufnr, "&filetype") == "terraform" then
+            return {}
+          end
+          return { "trim_whitespace" }
+        end,
       },
       format_on_save = {
         lsp_fallback = true,
