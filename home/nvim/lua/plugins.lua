@@ -652,6 +652,10 @@ return inject_all({
           end
           local MiniStatusline = require("mini.statusline")
           local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
+          if DEBUG_MODE then
+            mode = "DEBUG"
+            mode_hl = "Substitute"
+          end
           local diagnostics = MiniStatusline.section_diagnostics({ trunc_width = 75 })
           local filename = MiniStatusline.section_filename({ trunc_width = 140 })
           return MiniStatusline.combine_groups({
