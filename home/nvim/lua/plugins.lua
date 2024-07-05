@@ -360,7 +360,6 @@ return inject_all({
     "echasnovski/mini.nvim",
     main = "mini.git",
     name = "mini.git",
-    event = "VeryLazy",
     keys = {
       {
         "<leader>gi",
@@ -427,7 +426,6 @@ return inject_all({
     clone = true,
     main = "mini.icons",
     name = "mini.icons",
-    event = "VeryLazy",
     opts = {},
   },
 
@@ -469,7 +467,7 @@ return inject_all({
     "echasnovski/mini.nvim",
     main = "mini.jump",
     name = "mini.jump",
-    event = "VeryLazy",
+    keys = { "f", "F", "t", "T" },
     opts = {},
     config = function(_, opts)
       require("mini.jump").setup(opts)
@@ -481,7 +479,7 @@ return inject_all({
     "echasnovski/mini.nvim",
     main = "mini.move",
     name = "mini.move",
-    event = "VeryLazy",
+    event = "VeryLazy", -- TODO
     keys = {
       { "<leader>M", "<nop>", { desc = "+move" } },
     },
@@ -504,6 +502,7 @@ return inject_all({
     main = "mini.operators",
     name = "mini.operators",
     event = "VeryLazy",
+    keys = { "R", "X", "g" },
     opts = {
       replace = {
         prefix = "R",
@@ -553,7 +552,6 @@ return inject_all({
         name = "mini.extra",
       },
     },
-    event = "VeryLazy",
     keys = {
       {
         "<leader>f",
@@ -597,8 +595,8 @@ return inject_all({
         move_down = "<c-j>",
       },
     },
-    config = function(_, opts)
-      require("mini.pick").setup(opts)
+    config = function(spec, opts)
+      require(spec.main).setup(opts)
       vim.ui.select = require("mini.pick").ui_select
     end,
   },
@@ -638,6 +636,16 @@ return inject_all({
         "echasnovski/mini.nvim",
         main = "mini.icons",
         name = "mini.icons",
+      },
+      {
+        "echasnovski/mini.nvim",
+        main = "mini.git",
+        name = "mini.git",
+      },
+      {
+        "echasnovski/mini.nvim",
+        main = "mini.diff",
+        name = "mini.diff",
       },
     },
     event = "VeryLazy",
@@ -806,6 +814,9 @@ return inject_all({
         name = "fzf",
         build = "./install --all",
       },
+      {
+        "yorickpeterse/nvim-pqf",
+      },
     },
     opts = {
       func_map = {
@@ -858,11 +869,11 @@ return inject_all({
   {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
-    module = false,
+    module = false, -- needed so it does not lazy load early
     dependencies = {
       { "hrsh7th/cmp-nvim-lsp" },
     },
-    opts = function()
+    config = function(_, _)
       require("snippets").register_cmp_source()
       require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
       local kind_icons = {
@@ -897,7 +908,7 @@ return inject_all({
         return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
       end
       local cmp = require("cmp")
-      return {
+      cmp.setup({
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
           { name = "snippets" },
@@ -907,6 +918,7 @@ return inject_all({
           },
         }),
         sorting = {
+          priority_weight = 1,
           comparators = {
             cmp.config.compare.locality,
             cmp.config.compare.recently_used,
@@ -916,6 +928,8 @@ return inject_all({
           },
         },
         formatting = {
+          expandable_indicator = true,
+          fields = { "abbr", "kind", "menu" },
           format = function(_, vim_item)
             vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind:lower())
             return vim_item
@@ -960,13 +974,12 @@ return inject_all({
             s = cmp.mapping.confirm({ select = true }),
           }),
         },
-      }
+      })
     end,
   },
 
   {
     "mfussenegger/nvim-dap",
-    module = false,
     keys = {
       {
         "<leader>d",
@@ -1364,15 +1377,12 @@ return inject_all({
         if not node_at_point then
           return
         end
-
         local def_node, scope = locals.find_definition(node_at_point, bufnr)
         local usages = locals.find_usages(def_node, scope, bufnr)
-
         local index = index_of(usages, node_at_point)
         if not index then
           return
         end
-
         local target_index = (index + delta + #usages - 1) % #usages + 1
         ts_utils.goto_node(usages[target_index])
       end
@@ -1630,12 +1640,6 @@ return inject_all({
   -- },
 
   {
-    "yorickpeterse/nvim-pqf",
-    event = "VeryLazy",
-    opts = {},
-  },
-
-  {
     "nvim-tree/nvim-tree.lua",
     keys = {
       {
@@ -1720,7 +1724,7 @@ return inject_all({
         -- expand all folders
         api.tree.expand_all()
         -- hide bufferbar
-        HIDE_BUFFERS = true
+        vim.opt.showtabline = 0
         vim.schedule(function()
           vim.cmd.doautocmd("VimEnter")
         end)
@@ -1746,7 +1750,7 @@ return inject_all({
       end)
       api.events.subscribe(api.events.Event.TreeClose, function(_)
         -- show bufferbar
-        HIDE_BUFFERS = false
+        vim.opt.showtabline = 2
         vim.schedule(function()
           vim.cmd.doautocmd("VimEnter")
         end)
@@ -1811,7 +1815,7 @@ return inject_all({
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
     },
-    keys = { "<leader>ot", "]ot", "[ot" },
+    event = "VeryLazy",
     opts = {
       enable = false,
     },
