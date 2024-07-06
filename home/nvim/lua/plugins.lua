@@ -131,9 +131,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.ai",
-    name = "mini.ai",
+    "echasnovski/mini.ai",
     event = "VeryLazy",
     dependencies = {
       { "nvim-treesitter/nvim-treesitter-textobjects" },
@@ -181,9 +179,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.bufremove",
-    name = "mini.bufremove",
+    "echasnovski/mini.bufremove",
     keys = {
       {
         "<leader><tab>",
@@ -197,9 +193,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.clue",
-    name = "mini.clue",
+    "echasnovski/mini.clue",
     event = "VeryLazy",
     config = function(_, _)
       local miniclue = require("mini.clue")
@@ -268,9 +262,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.diff",
-    name = "mini.diff",
+    "echasnovski/mini.diff",
     event = "UIEnter",
     keys = {
       {
@@ -342,9 +334,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.files",
-    name = "mini.files",
+    "echasnovski/mini.files",
     keys = {
       {
         "_",
@@ -357,9 +347,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.git",
-    name = "mini.git",
+    "echasnovski/mini.git",
     keys = {
       {
         "<leader>gi",
@@ -402,9 +390,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.hipatterns",
-    name = "mini.hipatterns",
+    "echasnovski/mini.hipatterns",
     event = "VeryLazy",
     opts = {
       highlighters = {
@@ -422,17 +408,13 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
+    "echasnovski/mini.icons",
     clone = true,
-    main = "mini.icons",
-    name = "mini.icons",
     opts = {},
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.indentscope",
-    name = "mini.indentscope",
+    "echasnovski/mini.indentscope",
     event = "VeryLazy",
     opts = {
       draw = {
@@ -464,9 +446,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.jump",
-    name = "mini.jump",
+    "echasnovski/mini.jump",
     keys = { "f", "F", "t", "T" },
     opts = {},
     config = function(_, opts)
@@ -476,9 +456,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.move",
-    name = "mini.move",
+    "echasnovski/mini.move",
     event = "VeryLazy", -- TODO
     keys = {
       { "<leader>M", "<nop>", { desc = "+move" } },
@@ -498,9 +476,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.operators",
-    name = "mini.operators",
+    "echasnovski/mini.operators",
     event = "VeryLazy",
     keys = { "R", "X", "g" },
     opts = {
@@ -524,9 +500,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.pairs",
-    name = "mini.pairs",
+    "echasnovski/mini.pairs",
     event = "InsertEnter",
     opts = {
       mappings = {
@@ -542,14 +516,10 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.pick",
-    name = "mini.pick",
+    "echasnovski/mini.pick",
     dependencies = {
       {
-        "echasnovski/mini.nvim",
-        main = "mini.extra",
-        name = "mini.extra",
+        "echasnovski/mini.extra",
       },
     },
     keys = {
@@ -602,9 +572,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.splitjoin",
-    name = "mini.splitjoin",
+    "echasnovski/mini.splitjoin",
     keys = { "gS" },
     config = function(_, _)
       require("mini.splitjoin").setup({
@@ -627,25 +595,17 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
+    "echasnovski/mini.statusline",
     clone = true,
-    main = "mini.statusline",
-    name = "mini.statusline",
     dependencies = {
       {
-        "echasnovski/mini.nvim",
-        main = "mini.icons",
-        name = "mini.icons",
+        "echasnovski/mini.icons",
       },
       {
-        "echasnovski/mini.nvim",
-        main = "mini.git",
-        name = "mini.git",
+        "echasnovski/mini.git",
       },
       {
-        "echasnovski/mini.nvim",
-        main = "mini.diff",
-        name = "mini.diff",
+        "echasnovski/mini.diff",
       },
     },
     event = "VeryLazy",
@@ -723,10 +683,8 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
+    "echasnovski/mini.surround",
     enabled = false, -- surrounding stuff is so rare, let's use `s` better
-    main = "mini.surround",
-    name = "mini.surround",
     keys = { "s" },
     opts = {
       search_method = "cover_or_next",
@@ -734,15 +692,11 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
+    "echasnovski/mini.tabline",
     clone = true,
-    main = "mini.tabline",
-    name = "mini.tabline",
     dependencies = {
       {
-        "echasnovski/mini.nvim",
-        main = "mini.icons",
-        name = "mini.icons",
+        "echasnovski/mini.icons",
       },
     },
     event = "VeryLazy",
@@ -760,9 +714,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.nvim",
-    main = "mini.visits",
-    name = "mini.visits",
+    "echasnovski/mini.visits",
     event = "VeryLazy",
     opts = {},
   },
@@ -1282,12 +1234,12 @@ return inject_all({
           option = "conceallevel",
           values = { [true] = 2, [false] = 0 },
         })
-        -- :getter_setter({
-        --   key = "d",
-        --   name = "diagnostics",
-        --   get = vim.lsp.diagnostic.is_enabled,
-        --   set = vim.lsp.diagnostic.enable,
-        -- })
+        :getter_setter({
+          key = "d",
+          name = "diagnostics",
+          get = vim.diagnostic.is_enabled,
+          set = vim.diagnostic.enable,
+        })
         :field({
           key = "D",
           name = "diff gutter",
@@ -1312,6 +1264,7 @@ return inject_all({
           table = vim.g,
           field = "miniindentscope_disable",
         })
+        -- TODO: make highlights toggleable
         -- :manual({
         --   key = "I",
         --   name = "highlight occurences",
