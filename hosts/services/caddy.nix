@@ -5,7 +5,7 @@
     enable = true;
     virtualHosts."${hostname}.danieln.de".extraConfig = ''
       metrics /metrics
-    ''; 
+    '';
   };
 
   networking.firewall.allowedTCPPorts = [ 80 443 ];

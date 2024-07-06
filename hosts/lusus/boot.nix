@@ -2,22 +2,25 @@
 
 {
   imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
+    [
+      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   fileSystems = {
-  "/nix" =
-    { device = "/dev/disk/by-uuid/2bbe58f6-c736-4207-8646-05b07fd024f4";
-      fsType = "xfs";
-    };
+    "/nix" =
+      {
+        device = "/dev/disk/by-uuid/2bbe58f6-c736-4207-8646-05b07fd024f4";
+        fsType = "xfs";
+      };
 
-  "/boot" =
-    { device = "/dev/disk/by-uuid/D7EE-6599";
-      fsType = "vfat";
-    };
+    "/boot" =
+      {
+        device = "/dev/disk/by-uuid/D7EE-6599";
+        fsType = "vfat";
+      };
   };
 
 

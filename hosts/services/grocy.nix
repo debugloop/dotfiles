@@ -22,5 +22,5 @@
 
   services.caddy.virtualHosts."vorrat.danieln.de".extraConfig = ''
     reverse_proxy localhost:8080
-  ''; 
+  '';
 }

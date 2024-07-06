@@ -42,5 +42,5 @@
 
   services.caddy.virtualHosts."grafana.danieln.de".extraConfig = ''
     reverse_proxy localhost:3000
-  ''; 
+  '';
 }

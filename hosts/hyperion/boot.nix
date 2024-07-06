@@ -34,12 +34,12 @@
       device = "/dev/disk/by-uuid/97c78d7f-8a6c-4e6c-9957-4c51bc31b040";
       fsType = "xfs";
     };
-  "/" =
-    {
-      device = "none";
-      fsType = "tmpfs";
-      options = [ "defaults" "size=1G" "mode=755" ];
-    };
+    "/" =
+      {
+        device = "none";
+        fsType = "tmpfs";
+        options = [ "defaults" "size=1G" "mode=755" ];
+      };
 
   };
 
