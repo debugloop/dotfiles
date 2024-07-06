@@ -13,7 +13,9 @@
       treesitterParsers = pkgs.symlinkJoin {
         name = "treesitter-parsers";
         paths = pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies;
-        # paths = builtins.filter (x: ((builtins.parseDrvName x.name).name) != "vimplugin-treesitter-grammar-javascript") pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies;
+        # paths = builtins.filter
+        #   (x: (builtins.parseDrvName x.name).name != "vimplugin-treesitter-grammar-javascript")
+        #   pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies;
       };
     in
     {
