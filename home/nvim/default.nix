@@ -43,7 +43,6 @@
           "nvim-bqf"
           "nvim-dap"
           "nvim-lint"
-          "nvim-lspconfig"
           "nvim-pqf"
           "nvim-tree-lua"
           "nvim-treesitter"

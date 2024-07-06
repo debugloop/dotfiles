@@ -263,7 +263,7 @@ return inject_all({
 
   {
     "echasnovski/mini.diff",
-    event = "UIEnter",
+    event = "VeryLazy",
     keys = {
       {
         "<leader>gg",
@@ -608,7 +608,7 @@ return inject_all({
         "echasnovski/mini.diff",
       },
     },
-    event = "VeryLazy",
+    event = "UIEnter",
     opts = {
       content = {
         active = function()
@@ -699,7 +699,7 @@ return inject_all({
         "echasnovski/mini.icons",
       },
     },
-    event = "VeryLazy",
+    event = "UIEnter",
     opts = {
       format = function(buf_id, label)
         local suffix = ""
@@ -768,6 +768,7 @@ return inject_all({
       },
       {
         "yorickpeterse/nvim-pqf",
+        opts = {},
       },
     },
     opts = {
@@ -1445,152 +1446,16 @@ return inject_all({
   },
 
   {
-    "neovim/nvim-lspconfig",
-    name = "lspconfig.gopls",
-    ft = { "go", "gomod" },
-    opts = {
-      on_attach = function(_, bufnr)
-        -- get gc details
-        vim.keymap.set("n", "<leader>G", function()
-          vim.lsp.buf_request_sync(0, "workspace/executeCommand", {
-            command = "gopls.gc_details",
-            arguments = { "file://" .. vim.api.nvim_buf_get_name(0) },
-          }, 2000)
-        end, { desc = "lsp: show GC details" })
-        -- run current test
-        vim.keymap.set("n", "<leader>t", function()
-          local ok, inTestfile, testName = pcall(SurroundingTestName)
-          if not ok or not inTestfile then
-            return
-          end
-          vim.lsp.buf_request_sync(0, "workspace/executeCommand", {
-            command = "gopls.run_tests",
-            arguments = {
-              {
-                URI = vim.uri_from_bufnr(0),
-                Tests = { testName },
-              },
-            },
-          }, 10000)
-          -- vim.lsp.buf.execute_command({
-          --   command = "gopls.run_tests",
-          -- })
-        end, { desc = "lsp: show GC details" })
-        -- organize imports on save
-        vim.api.nvim_create_autocmd("BufWritePre", {
-          group = vim.api.nvim_create_augroup("lsp_organize_imports_on_save", { clear = false }), -- dont clear, there is one autocmd per buffer in this group
-          buffer = bufnr,
-          callback = function()
-            local params = vim.lsp.util.make_range_params(nil, vim.lsp.util._get_offset_encoding(bufnr))
-            params.context = { only = { "source.organizeImports" } }
-            local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
-            for _, res in pairs(result or {}) do
-              for _, r in pairs(res.result or {}) do
-                if r.edit then
-                  vim.lsp.util.apply_workspace_edit(r.edit, vim.lsp.util._get_offset_encoding(bufnr))
-                else
-                  vim.lsp.buf.execute_command(r.command)
-                end
-              end
-            end
-          end,
-        })
-      end,
-      capabilities = vim.lsp.protocol.make_client_capabilities(),
-      flags = {
-        allow_incremental_sync = false,
-      },
-      settings = {
-        gopls = {
-          usePlaceholders = true,
-          experimentalPostfixCompletions = true,
-          staticcheck = true,
-          codelenses = {
-            gc_details = true,
-            test = true,
-          },
-          analyses = {
-            fieldalignment = false, -- useful, but better optimize for readability
-            shadow = false, -- useful, but to spammy with `err`
-            unusedvariable = true,
-            useany = true,
-          },
-          hints = {
-            assignVariableTypes = true,
-            compositeLiteralFields = true,
-            compositeLiteralTypes = true,
-            constantValues = true,
-            functionTypeParameters = true,
-            parameterNames = true,
-            rangeVariableTypes = true,
-          },
-          buildFlags = { "-tags=unit,integration,e2e" },
-        },
-      },
-    },
-    config = function(_, opts)
-      require("lspconfig").gopls.setup(opts)
-    end,
+    "yorickpeterse/nvim-pqf",
+    event = "VeryLazy", -- needs to be loaded before qf results are generated
+    opts = {},
   },
 
   {
-    "neovim/nvim-lspconfig",
-    name = "lspconfig.lua_ls",
+    "folke/lazydev.nvim",
     ft = { "lua" },
-    dependencies = {
-      { "folke/lazydev.nvim", opts = {} },
-    },
-    opts = {
-      single_file_support = true,
-      settings = {
-        Lua = {
-          telemetry = { enable = false },
-        },
-      },
-    },
-    config = function(_, opts)
-      require("lspconfig").lua_ls.setup(opts)
-    end,
-  },
-
-  {
-    "neovim/nvim-lspconfig",
-    name = "lspconfig.nil_ls",
-    ft = { "nix" },
     opts = {},
-    config = function(_, opts)
-      require("lspconfig").nil_ls.setup(opts)
-    end,
   },
-
-  {
-    "neovim/nvim-lspconfig",
-    name = "lspconfig.nixd",
-    ft = { "nix" },
-    opts = {},
-    config = function(_, opts)
-      require("lspconfig").nixd.setup(opts)
-    end,
-  },
-
-  -- {
-  --   "neovim/nvim-lspconfig",
-  --   name = "lspconfig.yamlls",
-  --   ft = { "yaml" },
-  --   opts = {
-  --     settings = {
-  --       yaml = {
-  --         schemaStore = {
-  --           enable = true,
-  --           url = "https://www.schemastore.org/api/json/catalog.json",
-  --         },
-  --       },
-  --     },
-  --   },
-  --   config = function(_, opts)
-  --     require("lspconfig").yamlls.setup(opts)
-  --   end,
-  -- },
 
   {
     "nvim-tree/nvim-tree.lua",

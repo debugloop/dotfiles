@@ -2,6 +2,75 @@
 vim.opt.tabstop = 8
 vim.opt.expandtab = false
 
+-- lsp
+vim.lsp.start({
+  name = "gopls",
+  cmd = { "gopls" },
+  filetypes = { "go", "gomod", "gowork", "gotmpl" },
+  root_dir = vim.fs.dirname(vim.fs.find({ "go.mod", "go.sum", ".git/" }, { upward = true })[1]),
+  single_file_support = true,
+  capabilities = vim.lsp.protocol.make_client_capabilities(),
+  settings = {
+    gopls = {
+      usePlaceholders = true,
+      experimentalPostfixCompletions = true,
+      staticcheck = true,
+      codelenses = {
+        gc_details = true,
+        test = true,
+      },
+      analyses = {
+        fieldalignment = false, -- useful, but better optimize for readability
+        shadow = false, -- useful, but to spammy with `err`
+        unusedvariable = true,
+        useany = true,
+      },
+      hints = {
+        assignVariableTypes = true,
+        compositeLiteralFields = true,
+        compositeLiteralTypes = true,
+        constantValues = true,
+        functionTypeParameters = true,
+        parameterNames = true,
+        rangeVariableTypes = true,
+      },
+      buildFlags = { "-tags=unit,integration,e2e" },
+    },
+  },
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("lsp_user_bindings_gopls", {}),
+  callback = function(event)
+    -- get gc details
+    vim.keymap.set("n", "<leader>G", function()
+      vim.lsp.buf_request_sync(0, "workspace/executeCommand", {
+        command = "gopls.gc_details",
+        arguments = { "file://" .. vim.api.nvim_buf_get_name(0) },
+      }, 2000)
+    end, { desc = "lsp: show GC details", buffer = event.buf })
+    -- run current test
+    vim.keymap.set("n", "<leader>t", function()
+      local ok, inTestfile, testName = pcall(SurroundingTestName)
+      if not ok or not inTestfile then
+        return
+      end
+      vim.lsp.buf_request_sync(0, "workspace/executeCommand", {
+        command = "gopls.run_tests",
+        arguments = {
+          {
+            URI = vim.uri_from_bufnr(0),
+            Tests = { testName },
+          },
+        },
+      }, 10000)
+      -- vim.lsp.buf.execute_command({
+      --   command = "gopls.run_tests",
+      -- })
+    end, { desc = "lsp: show GC details", buffer = event.buf })
+  end,
+})
+
 -- surrounding test name
 function SurroundingTestName()
   local inTestfile = false
