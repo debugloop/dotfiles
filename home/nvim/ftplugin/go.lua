@@ -7,23 +7,51 @@ vim.lsp.start({
   name = "gopls",
   cmd = { "gopls" },
   filetypes = { "go", "gomod", "gowork", "gotmpl" },
+  on_attach = function(client, _)
+    -- explicitly enable and modify some semantic tokens
+    if not client.server_capabilities.semanticTokensProvider then
+      local semantic = client.config.capabilities.textDocument.semanticTokens
+      if semantic == nil then
+        return
+      end
+      client.server_capabilities.semanticTokensProvider = {
+        full = true,
+        legend = {
+          tokenTypes = semantic.tokenTypes,
+          tokenModifiers = semantic.tokenModifiers,
+        },
+        range = true,
+      }
+    end
+    vim.api.nvim_create_autocmd("LspTokenUpdate", {
+      callback = function(args)
+        local token = args.data.token
+        if token.type == "keyword" and not token.modifiers.readonly then
+          local keyword =
+            vim.api.nvim_buf_get_text(args.buf, token.line, token.start_col, token.line, token.end_col, {})[1]
+          if keyword == "return" or keyword == "package" or keyword == "import" or keyword == "go" then
+            vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, "@keyword.return")
+          end
+        end
+      end,
+    })
+  end,
   root_dir = vim.fs.dirname(vim.fs.find({ "go.mod", "go.sum", ".git/" }, { upward = true })[1]),
   single_file_support = true,
   capabilities = vim.lsp.protocol.make_client_capabilities(),
   settings = {
     gopls = {
-      usePlaceholders = true,
-      experimentalPostfixCompletions = true,
-      staticcheck = true,
+      buildFlags = { "-tags=unit,integration,e2e" },
+      gofumpt = true,
       codelenses = {
         gc_details = true,
+        generate = true,
+        regenerate_cgo = true,
+        run_govulncheck = true,
         test = true,
-      },
-      analyses = {
-        fieldalignment = false, -- useful, but better optimize for readability
-        shadow = false, -- useful, but to spammy with `err`
-        unusedvariable = true,
-        useany = true,
+        tidy = true,
+        upgrade_dependency = true,
+        vendor = true,
       },
       hints = {
         assignVariableTypes = true,
@@ -34,7 +62,19 @@ vim.lsp.start({
         parameterNames = true,
         rangeVariableTypes = true,
       },
-      buildFlags = { "-tags=unit,integration,e2e" },
+      analyses = {
+        fieldalignment = false, -- useful, but better optimize for readability
+        shadow = false, -- useful, but to spammy with `err`
+        nilness = true,
+        unusedparams = true,
+        unusedwrite = true,
+        useany = true,
+      },
+      usePlaceholders = true,
+      completeUnimported = true,
+      staticcheck = true,
+      directoryFilters = { "-.git" },
+      semanticTokens = true,
     },
   },
 })
@@ -67,7 +107,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       -- vim.lsp.buf.execute_command({
       --   command = "gopls.run_tests",
       -- })
-    end, { desc = "lsp: show GC details", buffer = event.buf })
+    end, { desc = "lsp: run test at cursor", buffer = event.buf })
   end,
 })
 

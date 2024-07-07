@@ -213,10 +213,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("lsp_user_bindings", {}),
   callback = function(event)
     -- commands
-    vim.api.nvim_buf_create_user_command(event.buf, "FormatLSP", function(_)
+    vim.api.nvim_buf_create_user_command(event.buf, "LspFormat", function(_)
       vim.lsp.buf.format()
     end, { desc = "Format current buffer with LSP" })
-    vim.api.nvim_buf_create_user_command(event.buf, "RestartLSP", function(_)
+    vim.api.nvim_buf_create_user_command(event.buf, "LspRestart", function(_)
       vim.lsp.stop_client(vim.lsp.get_clients())
       vim.cmd("edit")
     end, { desc = "Restart all active LSP clients" })

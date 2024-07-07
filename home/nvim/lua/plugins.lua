@@ -1651,7 +1651,7 @@ return inject_all({
         lsp_interop = {
           enable = true,
           peek_definition_code = {
-            ["gz"] = "@peek", -- replaces both below
+            ["gz"] = "@peek", -- replaces both below for go
             ["gF"] = "@function.outer",
             ["gT"] = "@class.outer",
           },
