@@ -1,4 +1,7 @@
--- autopair on newline
+-- no default autopair
+vim.b.minipairs_disable = true
+
+-- autopair codefence on newline
 vim.keymap.set("i", "```<cr>", "```<cr>```<esc>O", { noremap = true })
 
 -- format
