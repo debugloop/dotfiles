@@ -87,7 +87,7 @@ function SurroundingTestName()
     { textDocument = vim.lsp.util.make_text_document_params() },
     1000
   )
-  if lsp_err ~= nil then
+  if lsp_err ~= nil or lsp_response == nil then
     return inTestfile, ""
   end
 
