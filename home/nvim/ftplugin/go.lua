@@ -7,7 +7,7 @@ vim.lsp.start({
   name = "gopls",
   cmd = { "gopls" },
   filetypes = { "go", "gomod", "gowork", "gotmpl" },
-  on_attach = function(client, _)
+  on_attach = function(client, bufnr)
     -- explicitly enable and modify some semantic tokens
     if not client.server_capabilities.semanticTokensProvider then
       local semantic = client.config.capabilities.textDocument.semanticTokens
@@ -31,6 +31,25 @@ vim.lsp.start({
             vim.api.nvim_buf_get_text(args.buf, token.line, token.start_col, token.line, token.end_col, {})[1]
           if keyword == "return" or keyword == "package" or keyword == "import" or keyword == "go" then
             vim.lsp.semantic_tokens.highlight_token(token, args.buf, args.data.client_id, "@keyword.return")
+          end
+        end
+      end,
+    })
+    -- organize imports on save
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      group = vim.api.nvim_create_augroup("lsp_organize_imports_on_save", { clear = false }), -- dont clear, there is one autocmd per buffer in this group
+      buffer = bufnr,
+      callback = function()
+        local params = vim.lsp.util.make_range_params(nil, vim.lsp.util._get_offset_encoding(bufnr))
+        params.context = { only = { "source.organizeImports" } }
+        local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
+        for _, res in pairs(result or {}) do
+          for _, r in pairs(res.result or {}) do
+            if r.edit then
+              vim.lsp.util.apply_workspace_edit(r.edit, vim.lsp.util._get_offset_encoding(bufnr))
+            else
+              vim.lsp.buf.execute_command(r.command)
+            end
           end
         end
       end,
