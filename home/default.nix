@@ -59,10 +59,11 @@
       getopt
       lsof
       moreutils
-      netcat-gnu
+      netcat-openbsd
       openssh
       pcre
       pwgen
+      socat
       unzip
       watch
       wget
