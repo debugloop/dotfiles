@@ -351,7 +351,7 @@ return inject_all({
     keys = {
       {
         "<leader>gi",
-        mode = { "n", "v" },
+        mode = { "n", "x" },
         function()
           require("mini.git").show_at_cursor()
         end,

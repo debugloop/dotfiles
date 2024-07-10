@@ -22,7 +22,7 @@ vim.keymap.set("n", "<leader>p", function()
 end, { desc = "paste as lines" })
 
 -- live grep
-vim.keymap.set("v", "<leader>*", function()
+vim.keymap.set("x", "<leader>*", function()
   local a_orig = vim.fn.getreg("a")
   local mode = vim.fn.mode()
   if mode ~= "v" and mode ~= "V" then
@@ -71,12 +71,12 @@ vim.keymap.set("n", "zi", "zA", { desc = "toggle fold" })
 vim.keymap.set("n", "zI", "zXzO", { desc = "open fold and close others" })
 
 -- move visual blocks
-vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { silent = true, desc = "move block down" })
-vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { silent = true, desc = "move block up" })
+vim.keymap.set("x", "J", ":m '>+1<cr>gv=gv", { silent = true, desc = "move block down" })
+vim.keymap.set("x", "K", ":m '<-2<cr>gv=gv", { silent = true, desc = "move block up" })
 
 -- stay in visual after indent
-vim.keymap.set("v", "<", "<gv", { desc = "deindent and reselct" })
-vim.keymap.set("v", ">", ">gv", { desc = "indent and reselect" })
+vim.keymap.set("x", "<", "<gv", { desc = "deindent and reselct" })
+vim.keymap.set("x", ">", ">gv", { desc = "indent and reselect" })
 
 -- clear highlight
 vim.keymap.set({ "n", "i" }, "<esc>", "<cmd>nohl<cr><esc>", { desc = "escape and clear search" })
@@ -124,7 +124,7 @@ vim.keymap.set("n", "<leader>x", function()
 end, { desc = "close buffers not marked as persistent" })
 
 -- copy git url
-vim.keymap.set({ "n", "v" }, "gy", function()
+vim.keymap.set({ "n", "x" }, "gy", function()
   -- base
   local url = "https://github.com/"
   -- repo
