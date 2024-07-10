@@ -64,8 +64,7 @@
     fira-code-symbols
     fira-go
     fira-math
-    jetbrains-mono
-    (nerdfonts.override { fonts = [ "FiraCode" "FiraMono" "Noto" ]; })
+    (nerdfonts.override { fonts = [ "FiraCode" "FiraMono" "Noto" "Iosevka" ]; })
     noto-fonts
     noto-fonts-extra
     noto-fonts-monochrome-emoji
