@@ -456,26 +456,6 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.move",
-    event = "VeryLazy", -- TODO
-    keys = {
-      { "<leader>M", "<nop>", { desc = "+move" } },
-    },
-    opts = {
-      mappings = {
-        left = "<leader>Mh",
-        right = "<leader>Ml",
-        down = "<leader>Mj",
-        up = "<leader>Mk",
-        line_left = "<leader>Mh",
-        line_right = "<leader>Ml",
-        line_down = "<leader>Mj",
-        line_up = "<leader>Mk",
-      },
-    },
-  },
-
-  {
     "echasnovski/mini.operators",
     event = "VeryLazy",
     keys = { "R", "X", "g" },
@@ -657,7 +637,7 @@ return inject_all({
                     and "-" .. vim.b.minidiff_summary.delete,
                 },
               },
-            }):gsub(" %%", "%%"),
+            }):gsub("# ", "#"),
             { hl = "DiagnosticInfo", strings = { diagnostics } },
             "%<", -- Mark general truncate point
             { hl = "StatusLine", strings = { filename } },
@@ -1240,12 +1220,6 @@ return inject_all({
           name = "diagnostics",
           get = vim.diagnostic.is_enabled,
           set = vim.diagnostic.enable,
-        })
-        :field({
-          key = "D",
-          name = "diff gutter",
-          table = vim.g,
-          field = "minidiff_disable",
         })
         :getter_setter({
           key = "h",

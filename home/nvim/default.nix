@@ -72,7 +72,6 @@
           "mini-icons"
           "mini-indentscope"
           "mini-jump"
-          "mini-move"
           "mini-operators"
           "mini-pairs"
           "mini-pick"
