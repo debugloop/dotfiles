@@ -222,8 +222,8 @@
         "Mod4+Shift+n" = "exec ${pkgs.mako}/bin/makoctl dismiss -a";
 
         # screenshots
-        "Print" = "exec ${pkgs.grim}/bin/grim -g $(${pkgs.slurp}/bin/slurp)";
-        "Shift+Print" = "exec ${pkgs.grim}/bin/grim";
+        "Print" = ''exec ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" "/home/danieln/pictures/screenshot-area-$(date +%d-%m-%Y-%T).png"'';
+        "Shift+Print" = ''exec ${pkgs.grim}/bin/grim "/home/danieln/pictures/screenshot-full-$(date +%d-%m-%Y-%T).png"'';
 
         # sway control
         "Mod4+Shift+c" = "reload";

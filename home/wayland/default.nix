@@ -26,7 +26,6 @@
     };
     sessionVariables = {
       DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
-      GRIM_DEFAULT_DIR = "/home/danieln/pictures";
       GTK_THEME = "Arc-Darker";
       MOZ_ENABLE_WAYLAND = "1";
       NIXOS_OZONE_WL = "1";
