@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 
 {
   home-manager = {
@@ -18,10 +18,9 @@
       };
     };
     tailscale = {
-      useRoutingFeatures = "server";
+      useRoutingFeatures = lib.mkForce "server";
       extraUpFlags = [
         "--advertise-exit-node"
-        "--exit-node"
       ];
     };
   };
