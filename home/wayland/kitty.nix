@@ -6,18 +6,18 @@
       # name = "FiraCode Nerd Font";
       # name = "JetBrainsMono NFM";
       # size = 11;
-      name = "Iosevka NFM";
+      name = "Iosevka"; # no NFM here, as the NFM variant is behind on versions
       size = 12;
     };
     settings = {
       # generated from https://github.com/ryanoasis/nerd-fonts/wiki/Glyph-Sets-and-Code-Points
-      symbol_map = "U+23fb-U+23fe,U+2665,U+26a1,U+2b58,U+e000-U+e00a,U+e0a0-U+e0a2,U+e0a3,U+e0b0-U+e0b3,U+e0b4-U+e0c8,U+e0ca,U+e0cc-U+e0d7,U+e200-U+e2a9,U+e300-U+e3e3,U+e5fa-U+e6b5,U+e700-U+e7c5,U+ea60-U+ec1e,U+ed00-U+efc1,U+f000-U+f2ff,U+f300-U+f372,U+f400-U+f533,U+f500-U+fd46,U+f0001-U+f1af0,U+276c-U+2771,U+2500-U+259f,U+274C IosevkaNFM";
+      symbol_map = "U+23fb-U+23fe,U+2665,U+26a1,U+2b58,U+e000-U+e00a,U+e0a0-U+e0a2,U+e0a3,U+e0b0-U+e0b3,U+e0b4-U+e0c8,U+e0ca,U+e0cc-U+e0d7,U+e200-U+e2a9,U+e300-U+e3e3,U+e5fa-U+e6b5,U+e700-U+e7c5,U+ea60-U+ec1e,U+ed00-U+efc1,U+f000-U+f2ff,U+f300-U+f372,U+f400-U+f533,U+f500-U+fd46,U+f0001-U+f1af0,U+276c-U+2771,U+2500-U+259f,U+274C IosevkaNFM"; # the last entry is ❌, which we wanna have it it's flat, no-color variant
 
       # make the font slightly wider
-      modify_font = "cell_width 104%";
+      modify_font = "cell_width 105%";
 
       # this is how to use opentype features
-      # font_features = "IosevkaNFM +ss18";
+      font_features = "Iosevka cv99=6 cv85=8";
 
       # basics
       close_on_child_death = "yes";
@@ -93,8 +93,8 @@
       mouse_map left click ungrabbed mouse_handle_click selection link prompt
     '';
     keybindings = {
-      "f1" = "toggle_marker iregex 1 \\\\berr(or)?\\\\b 2 \\\\bwarn(ing)?\\\\b 3 \\\\b(info|debug|trace)\\\\b";
-      "f2" = "toggle_marker regex 1 \\\\bOOMKilled\\\\b 2 \\\\bTerminated\\\\b 3 \\\\bRunning\\\\b";
+      "alt+f1" = "toggle_marker iregex 1 \\\\berr(or)?\\\\b 2 \\\\bwarn(ing)?\\\\b 3 \\\\b(info|debug|trace)\\\\b";
+      "alt+f2" = "toggle_marker regex 1 \\\\bOOMKilled\\\\b 2 \\\\bTerminated\\\\b 3 \\\\bRunning\\\\b";
 
       # os windows
       "ctrl+shift+n" = "launch --type=os-window --cwd=current";

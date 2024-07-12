@@ -64,6 +64,7 @@
     fira-code-symbols
     fira-go
     fira-math
+    iosevka
     (nerdfonts.override { fonts = [ "FiraCode" "FiraMono" "Noto" "Iosevka" ]; })
     noto-fonts
     noto-fonts-extra

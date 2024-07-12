@@ -17,7 +17,7 @@
       }
       {
         event = "after-resume";
-        command = "echo 'after-resume hook'; systemctl --user kill -sSIGHUP kanshi";
+        command = "echo 'after-resume hook'; ${pkgs.systemd}/bin/systemctl --user kill -sSIGHUP kanshi";
       }
     ];
   };
