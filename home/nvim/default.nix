@@ -58,7 +58,13 @@
             }
           )
       );
-      miniPlugin = builtins.getAttr "mini-nvim" pkgs.vimPlugins;
+      # miniPlugin = builtins.getAttr "mini-nvim" pkgs.vimPlugins;
+      miniPlugin = pkgs.fetchFromGitHub {
+        owner = "echasnovski";
+        repo = "mini.nvim";
+        rev = "6c873ff81c318119923a424e3aea39000d3a10cf";
+        sha256 = "sha256-XlSGXaYinJwMKOWdFz+Fyoi9L2bpWZupkr9W8LM6V7c=";
+      };
       miniPlugins = builtins.listToAttrs (
         lib.lists.forEach [
           "mini-ai"

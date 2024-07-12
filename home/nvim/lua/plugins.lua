@@ -83,7 +83,6 @@ return inject_all({
 
   {
     "rebelot/kanagawa.nvim",
-    clone = true,
     event = "UIEnter",
     config = function(_, opts)
       require("kanagawa").setup(opts)
@@ -409,7 +408,6 @@ return inject_all({
 
   {
     "echasnovski/mini.icons",
-    clone = true,
     opts = {},
   },
 
@@ -576,7 +574,6 @@ return inject_all({
 
   {
     "echasnovski/mini.statusline",
-    clone = true,
     dependencies = {
       {
         "echasnovski/mini.icons",
@@ -673,7 +670,6 @@ return inject_all({
 
   {
     "echasnovski/mini.tabline",
-    clone = true,
     dependencies = {
       {
         "echasnovski/mini.icons",
