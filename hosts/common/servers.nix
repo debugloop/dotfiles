@@ -17,5 +17,12 @@
         enabledCollectors = [ "systemd" ];
       };
     };
+    tailscale = {
+      useRoutingFeatures = "server";
+      extraUpFlags = [
+        "--advertise-exit-node"
+        "--exit-node"
+      ];
+    };
   };
 }
