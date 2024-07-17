@@ -1,6 +1,8 @@
-{ pkgs, config, ... }:
-
 {
+  pkgs,
+  config,
+  ...
+}: {
   services.mako = {
     enable = true;
     font = "pango:Fira Mono 9";

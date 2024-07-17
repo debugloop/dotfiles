@@ -23,47 +23,47 @@
     };
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, ... }: {
+  outputs = inputs @ {
+    nixpkgs,
+    home-manager,
+    ...
+  }: {
     formatter = {
-      x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
+      x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
     };
-    homeConfigurations =
-      let
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      in
-      {
-        "danieln@lusus" = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [
-            ./home
-            ({ ... }:
-              {
-                imports = [
-                  inputs.gridx.home-module
-                ];
-              })
-          ];
-          extraSpecialArgs = {
-            inherit inputs;
-          };
-        };
-        "danieln@simmons" = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [ ./home ];
-          extraSpecialArgs = {
-            inherit inputs;
-          };
-        };
-        "danieln@hyperion" = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [ ./home/headless.nix ];
-          extraSpecialArgs = {
-            inherit inputs;
-          };
+    homeConfigurations = let
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+    in {
+      "danieln@lusus" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [
+          ./home
+          ({...}: {
+            imports = [
+              inputs.gridx.home-module
+            ];
+          })
+        ];
+        extraSpecialArgs = {
+          inherit inputs;
         };
       };
+      "danieln@simmons" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [./home];
+        extraSpecialArgs = {
+          inherit inputs;
+        };
+      };
+      "danieln@hyperion" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [./home/headless.nix];
+        extraSpecialArgs = {
+          inherit inputs;
+        };
+      };
+    };
     nixosConfigurations = {
-
       simmons = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
@@ -74,7 +74,7 @@
           ./hosts/common
           ./hosts/common/laptops.nix
           ./hosts/simmons
-          ({ system, ... }: {
+          ({system, ...}: {
             nixpkgs.overlays = [
               # inputs.neovim-nightly-overlay.overlay
             ];
@@ -92,13 +92,12 @@
           ./hosts/common
           ./hosts/common/laptops.nix
           ./hosts/lusus
-          ({ system, ... }: {
+          ({system, ...}: {
             nixpkgs.overlays = [
               # inputs.neovim-nightly-overlay.overlay
             ];
             home-manager.users.danieln = (
-              { ... }:
-              {
+              {...}: {
                 imports = [
                   inputs.gridx.home-module
                 ];
@@ -120,7 +119,6 @@
           ./hosts/hyperion
         ];
       };
-
     };
   };
 }

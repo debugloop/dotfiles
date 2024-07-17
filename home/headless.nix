@@ -1,6 +1,8 @@
-{ pkgs, inputs, ... }:
-
 {
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
     inputs.nix-index-database.hmModules.nix-index
     ./colors.nix

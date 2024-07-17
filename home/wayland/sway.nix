@@ -1,6 +1,8 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   wayland.windowManager.sway = {
     enable = true;
     extraConfigEarly = ''
@@ -34,7 +36,7 @@
       terminal = "${pkgs.kitty}/bin/kitty";
       workspaceAutoBackAndForth = true;
       fonts = {
-        names = [ "Fira Mono" ];
+        names = ["Fira Mono"];
         size = 11.0;
       };
       gaps = {
@@ -101,7 +103,7 @@
           bg = "#${config.colors.red} solid_color";
         };
       };
-      bars = [ ];
+      bars = [];
       colors = {
         background = "#${config.colors.background}";
         focused = {
@@ -193,8 +195,8 @@
         };
       };
       startup = [
-        { command = "${pkgs.clipman}/bin/clipman clear --all"; }
-        { command = "swaymsg create_output && swaymsg output HEADLESS-1 disable"; }
+        {command = "${pkgs.clipman}/bin/clipman clear --all";}
+        {command = "swaymsg create_output && swaymsg output HEADLESS-1 disable";}
       ];
       keybindings = {
         # scratch

@@ -1,6 +1,4 @@
-{ hostname, ... }:
-
-{
+{hostname, ...}: {
   services.prometheus = {
     enable = true;
     extraFlags = [

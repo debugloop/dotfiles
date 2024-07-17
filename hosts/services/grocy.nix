@@ -1,6 +1,4 @@
-{ ... }:
-
-{
+{...}: {
   services.grocy = {
     enable = true;
     hostName = "https://vorrat.danieln.de";

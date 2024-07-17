@@ -1,6 +1,8 @@
-{ pkgs, config, ... }:
-
 {
+  pkgs,
+  config,
+  ...
+}: {
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
@@ -56,7 +58,7 @@
       };
       persistent = {
         body = ''
-          	  test (findmnt -JT (pwd) | jq -r '.filesystems[0].fstype') = "xfs"
+          test (findmnt -JT (pwd) | jq -r '.filesystems[0].fstype') = "xfs"
         '';
       };
       asname = {
@@ -67,7 +69,7 @@
       asn = {
         body = ''
           switch $argv
-            case "*.*" 
+            case "*.*"
               set six ""
             case '*:*'
               set six "6"

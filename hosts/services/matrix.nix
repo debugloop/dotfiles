@@ -1,6 +1,4 @@
-{ config, ... }:
-
-{
+{config, ...}: {
   services = {
     heisenbridge = {
       enable = true;
@@ -39,7 +37,7 @@
     redir / https://danieln.de permanent
     reverse_proxy /_matrix/* localhost:8008
     reverse_proxy /_synapse/client/* localhost:8008
-  ''; 
+  '';
 
   services.caddy.virtualHosts."matrix.bugpara.de".extraConfig = ''
     reverse_proxy /_matrix/* localhost:8008

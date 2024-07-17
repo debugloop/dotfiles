@@ -1,6 +1,8 @@
-{ inputs, lib, ... }:
-
 {
+  inputs,
+  lib,
+  ...
+}: {
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
@@ -14,7 +16,7 @@
     prometheus.exporters = {
       node = {
         enable = true;
-        enabledCollectors = [ "systemd" ];
+        enabledCollectors = ["systemd"];
       };
     };
     tailscale = {

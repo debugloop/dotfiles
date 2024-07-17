@@ -1,6 +1,8 @@
-{ pkgs, inputs, ... }:
-
 {
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
     inputs.nix-index-database.hmModules.nix-index
     ./colors.nix
@@ -14,7 +16,7 @@
 
   nixpkgs.config = {
     allowUnfree = true;
-    allowUnfreePredicate = (_: true);
+    allowUnfreePredicate = _: true;
   };
 
   home = {
@@ -47,10 +49,10 @@
     packages = with pkgs; [
       # nix
       age
-      comma
-      deadnix
-      devspace
       inputs.agenix.packages.x86_64-linux.default
+      alejandra
+      comma
+      devenv
       inputs.home-manager.packages.x86_64-linux.default
       nh
       nil
@@ -106,6 +108,7 @@
       codespell
       cutter
       delve
+      devspace
       docker-compose
       gcc
       git

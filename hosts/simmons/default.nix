@@ -1,9 +1,7 @@
-{ ... }:
-{
-  imports =
-    [
-      #./backup.nix
-      ./boot.nix
-      ./steam.nix
-    ];
+{...}: {
+  imports = [
+    #./backup.nix
+    ./boot.nix
+    ./steam.nix
+  ];
 }

@@ -1,16 +1,13 @@
-{ inputs, ... }:
-{
-  imports =
-    [
-      inputs.impermanence.nixosModule
-    ];
+{inputs, ...}: {
+  imports = [
+    inputs.impermanence.nixosModule
+  ];
 
-  fileSystems."/" =
-    {
-      device = "none";
-      fsType = "tmpfs";
-      options = [ "defaults" "size=1G" "mode=755" ];
-    };
+  fileSystems."/" = {
+    device = "none";
+    fsType = "tmpfs";
+    options = ["defaults" "size=1G" "mode=755"];
+  };
 
   environment.persistence."/nix/persist" = {
     hideMounts = true;
@@ -57,14 +54,29 @@
         ".local/share/atuin"
         ".local/share/nix"
         # secrets
-        { directory = ".aws"; mode = "0700"; }
-        { directory = ".gnupg"; mode = "0700"; }
-        { directory = ".gxctl"; mode = "0700"; }
-        { directory = ".ssh"; mode = "0700"; }
-        { directory = ".local/share/keyrings"; mode = "0700"; }
+        {
+          directory = ".aws";
+          mode = "0700";
+        }
+        {
+          directory = ".gnupg";
+          mode = "0700";
+        }
+        {
+          directory = ".gxctl";
+          mode = "0700";
+        }
+        {
+          directory = ".ssh";
+          mode = "0700";
+        }
+        {
+          directory = ".local/share/keyrings";
+          mode = "0700";
+        }
       ];
       files = [
-        # spotify login cookie 
+        # spotify login cookie
         ".config/spotify/prefs"
         # spotify user settings
         ".config/spotify/Users/analogbyte-user/prefs"

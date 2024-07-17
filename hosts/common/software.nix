@@ -1,6 +1,8 @@
-{ pkgs, inputs, ... }:
-
 {
+  pkgs,
+  inputs,
+  ...
+}: {
   environment = {
     sessionVariables = {
       EDITOR = "nvim";

@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   home = {
     packages = with pkgs; [
       git
@@ -93,7 +91,6 @@
 
       # update PR with unstaged
       rekt = "!f() { git a -u; git amend; git puf; }; f"; # add updates to amend commit and force push
-
     };
     ignores = [
       "*~"

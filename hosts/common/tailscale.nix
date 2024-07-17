@@ -1,6 +1,8 @@
-{ pkgs, config, ... }:
-
 {
+  pkgs,
+  config,
+  ...
+}: {
   services.tailscale = {
     enable = true;
     authKeyFile = config.age.secrets.tailscaleAuthkey.path;
@@ -8,7 +10,7 @@
     useRoutingFeatures = "client";
   };
 
-  environment.systemPackages = [ pkgs.tailscale ];
+  environment.systemPackages = [pkgs.tailscale];
 
   networking.firewall = {
     trustedInterfaces = [
@@ -17,7 +19,7 @@
   };
 
   age = {
-    identityPaths = [ "/nix/persist/etc/ssh/ssh_host_ed25519_key" ];
+    identityPaths = ["/nix/persist/etc/ssh/ssh_host_ed25519_key"];
     secrets = {
       tailscaleAuthkey.file = ../../secrets/tailscale.age;
     };

@@ -1,5 +1,4 @@
-{ config, ... }:
-{
+{config, ...}: {
   programs.kitty = {
     enable = true;
     font = {
@@ -32,7 +31,7 @@
       scrollback_lines = "4000";
       scrollback_pager_history_size = "50";
       scrollback_fill_enlarged_window = "yes";
-      scrollback_pager = ''bash -c "exec nvim 63<&0 0</dev/null -c 'autocmd TermEnter * stopinsert' -c 'autocmd TermClose * call cursor(max([0,INPUT_LINE_NUMBER-1])+CURSOR_LINE, CURSOR_COLUMN)' -c 'terminal sed </dev/fd/63 -e \"s/'$'\x1b''\'']8 file:[^\]*[\]//g\" && sleep 0.01 && printf \"'$'\x1b''\'']2;\"' -c 'set modifiable'"'';
+      scrollback_pager = "bash -c \"exec nvim 63<&0 0</dev/null -c 'autocmd TermEnter * stopinsert' -c 'autocmd TermClose * call cursor(max([0,INPUT_LINE_NUMBER-1])+CURSOR_LINE, CURSOR_COLUMN)' -c 'terminal sed </dev/fd/63 -e \\\"s/'$'\\x1b'']8 file:[^\\]*[\\]//g\\\" && sleep 0.01 && printf \\\"'$'\\x1b'']2;\\\"' -c 'set modifiable'\"";
 
       # selection
       strip_trailing_spaces = "smart";
@@ -208,8 +207,6 @@
       "ctrl+shift+7" = "goto_tab 7";
       "ctrl+shift+8" = "goto_tab 8";
       "ctrl+shift+9" = "goto_tab 9";
-
     };
   };
 }
-

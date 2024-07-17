@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   programs.helix = {
     enable = true;
     settings = {
@@ -20,9 +18,9 @@
           character = "·";
         };
         statusline = {
-          left = [ "mode" "spacer" "version-control" "workspace-diagnostics" "file-name" "diagnostics" ];
-          center = [ ];
-          right = [ "file-type" "position-percentage" "total-line-numbers" ];
+          left = ["mode" "spacer" "version-control" "workspace-diagnostics" "file-name" "diagnostics"];
+          center = [];
+          right = ["file-type" "position-percentage" "total-line-numbers"];
           mode.normal = "NORMAL";
           mode.insert = "INSERT";
           mode.select = "SELECT";

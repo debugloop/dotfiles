@@ -1,6 +1,4 @@
-{ hostname, ... }:
-
-{
+{hostname, ...}: {
   services.caddy = {
     enable = true;
     virtualHosts."${hostname}.danieln.de".extraConfig = ''
@@ -8,7 +6,7 @@
     '';
   };
 
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  networking.firewall.allowedTCPPorts = [80 443];
 
   services.caddy.virtualHosts."danieln.de".extraConfig = ''
     respond "brb!"

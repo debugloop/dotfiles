@@ -1,13 +1,18 @@
-{ config, inputs, lib, pkgs, hostname, ... }:
 {
-  imports =
-    [
-      inputs.home-manager.nixosModules.home-manager
-      ./impermanence.nix
-      ./nix.nix
-      ./software.nix
-      ./tailscale.nix
-    ];
+  config,
+  inputs,
+  lib,
+  pkgs,
+  hostname,
+  ...
+}: {
+  imports = [
+    inputs.home-manager.nixosModules.home-manager
+    ./impermanence.nix
+    ./nix.nix
+    ./software.nix
+    ./tailscale.nix
+  ];
 
   networking = {
     hostName = hostname;
@@ -34,15 +39,15 @@
 
   i18n = {
     defaultLocale = "en_US.UTF-8";
-    extraLocaleSettings = { LC_TIME = "en_GB.UTF-8"; };
-    supportedLocales = [ "en_US.UTF-8/UTF-8" "en_GB.UTF-8/UTF-8" ];
+    extraLocaleSettings = {LC_TIME = "en_GB.UTF-8";};
+    supportedLocales = ["en_US.UTF-8/UTF-8" "en_GB.UTF-8/UTF-8"];
   };
 
   users = {
     mutableUsers = false;
     users.danieln = {
       isNormalUser = true;
-      extraGroups = [ "wheel" "video" "docker" "libvirtd" "dialout" ];
+      extraGroups = ["wheel" "video" "docker" "libvirtd" "dialout"];
       shell = pkgs.fish;
       passwordFile = config.age.secrets.password.path;
       openssh.authorizedKeys.keys = [
@@ -72,11 +77,10 @@
         "-display gtk,zoom-to-fit=false"
       ];
     };
-    environment.persistence = lib.mkForce { };
+    environment.persistence = lib.mkForce {};
     # empty password for myself
-    age = lib.mkForce { };
+    age = lib.mkForce {};
     users.users.danieln.passwordFile = lib.mkForce null;
     users.users.danieln.initialHashedPassword = "";
   };
 }
-

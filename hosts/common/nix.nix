@@ -1,11 +1,8 @@
-{ inputs, ... }:
-
-{
-  imports =
-    [
-      inputs.agenix.nixosModules.default
-      inputs.home-manager.nixosModules.home-manager
-    ];
+{inputs, ...}: {
+  imports = [
+    inputs.agenix.nixosModules.default
+    inputs.home-manager.nixosModules.home-manager
+  ];
 
   system = {
     stateVersion = "22.11";
@@ -24,7 +21,7 @@
         "viperml.cachix.org-1:qZhKBMTfmcLL+OG6fj/hzsMEedgKvZVFRRAhq7j8Vh8="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
-      trusted-users = [ "root" "@wheel" ];
+      trusted-users = ["root" "@wheel"];
     };
   };
 
@@ -35,10 +32,9 @@
   };
 
   age = {
-    identityPaths = [ "/nix/persist/etc/ssh/ssh_host_ed25519_key" ];
+    identityPaths = ["/nix/persist/etc/ssh/ssh_host_ed25519_key"];
     secrets = {
       password.file = ../../secrets/password.age;
     };
   };
-
 }

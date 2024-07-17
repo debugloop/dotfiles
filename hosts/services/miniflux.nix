@@ -1,6 +1,4 @@
-{ config, ... }:
-
-{
+{config, ...}: {
   services.miniflux = {
     enable = true;
     adminCredentialsFile = "${config.age.secrets.miniflux.path}";

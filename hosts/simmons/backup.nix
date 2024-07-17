@@ -1,5 +1,8 @@
-{ config, pkgs, ... }:
 {
+  config,
+  pkgs,
+  ...
+}: {
   environment.systemPackages = with pkgs; [
     restic
   ];
@@ -8,7 +11,7 @@
     initialize = true;
     rcloneConfigFile = config.age.secrets.restic_rclone_config.path;
     passwordFile = config.age.secrets.restic_password.path;
-    paths = [ "/nix/persist" ];
+    paths = ["/nix/persist"];
     exclude = [
       "var/log"
       "home/danieln/scratch" # random repos
@@ -34,7 +37,7 @@
   };
 
   systemd.services.restic-backups-daily = {
-    wants = [ "network.target" ];
-    after = [ "network.target" ];
+    wants = ["network.target"];
+    after = ["network.target"];
   };
 }

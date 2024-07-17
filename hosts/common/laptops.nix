@@ -1,6 +1,8 @@
-{ pkgs, inputs, ... }:
-
 {
+  pkgs,
+  inputs,
+  ...
+}: {
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
@@ -33,20 +35,20 @@
   };
 
   security = {
-    pam.services.swaylock = { };
+    pam.services.swaylock = {};
     rtkit.enable = true;
     sudo.extraRules = [
       {
         # needed for setting external monitor brightness
-        groups = [ "wheel" ];
+        groups = ["wheel"];
         commands = [
           {
             command = "/run/current-system/sw/bin/ddcutil";
-            options = [ "NOPASSWD" ];
+            options = ["NOPASSWD"];
           }
           {
             command = "/run/current-system/sw/bin/k3s";
-            options = [ "NOPASSWD" ];
+            options = ["NOPASSWD"];
           }
         ];
       }
@@ -65,7 +67,7 @@
     fira-go
     fira-math
     iosevka
-    (nerdfonts.override { fonts = [ "FiraCode" "FiraMono" "Noto" "Iosevka" ]; })
+    (nerdfonts.override {fonts = ["FiraCode" "FiraMono" "Noto" "Iosevka"];})
     noto-fonts
     noto-fonts-extra
     noto-fonts-monochrome-emoji
@@ -87,7 +89,7 @@
     k3s = {
       enable = false;
       role = "server";
-      extraFlags = toString [ ];
+      extraFlags = toString [];
     };
     pipewire = {
       enable = true;
@@ -127,7 +129,7 @@
       Type = "oneshot";
       ExecStart = "${pkgs.k3s}/bin/k3s-killall.sh";
     };
-    wantedBy = [ "shutdown.target" ];
+    wantedBy = ["shutdown.target"];
   };
 
   programs = {
@@ -135,7 +137,7 @@
     nm-applet.enable = true;
     sway = {
       enable = true;
-      extraPackages = [ ];
+      extraPackages = [];
     };
   };
 }
