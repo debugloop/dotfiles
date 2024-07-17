@@ -29,7 +29,7 @@ require("lazy").setup({
     enabled = false,
   },
   install = {
-    colorscheme = { "kanagawa", "habamax" },
+    colorscheme = { "kanagawa", "zaibatsu" },
   },
   readme = {
     root = vim.fn.stdpath("data") .. "/lazy-readme",

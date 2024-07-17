@@ -12,8 +12,8 @@ vim.keymap.set("n", "H", function()
     vim.cmd("normal! 0")
   end
 end, { desc = "go to start of line" })
-vim.keymap.set({ "o", "v" }, "H", "^", { desc = "go to start of line" })
-vim.keymap.set({ "n", "o", "v" }, "L", "$", { desc = "go to end of line" })
+vim.keymap.set({ "o", "x" }, "H", "^", { desc = "go to start of line" })
+vim.keymap.set({ "n", "o", "x" }, "L", "$", { desc = "go to end of line" })
 
 -- better paste
 vim.keymap.set("n", "<leader>p", function()
@@ -66,23 +66,16 @@ vim.keymap.set("n", "gl", function()
   end
 end, { desc = "jump to last leave or last edit" })
 
--- open fold
-vim.keymap.set("n", "zi", "zA", { desc = "toggle fold" })
-vim.keymap.set("n", "zI", "zXzO", { desc = "open fold and close others" })
-
 -- move visual blocks
 vim.keymap.set("x", "J", ":m '>+1<cr>gv=gv", { silent = true, desc = "move block down" })
 vim.keymap.set("x", "K", ":m '<-2<cr>gv=gv", { silent = true, desc = "move block up" })
 
 -- stay in visual after indent
-vim.keymap.set("x", "<", "<gv", { desc = "deindent and reselct" })
+vim.keymap.set("x", "<", "<gv", { desc = "deindent and reselect" })
 vim.keymap.set("x", ">", ">gv", { desc = "indent and reselect" })
 
 -- clear highlight
-vim.keymap.set({ "n", "i" }, "<esc>", "<cmd>nohl<cr><esc>", { desc = "escape and clear search" })
-
--- fix Y map
-vim.keymap.set("n", "Y", "y$", { desc = "escape and clear search" })
+vim.keymap.set({ "n" }, "<esc>", "<cmd>nohl<cr><esc>", { desc = "escape and clear search" })
 
 -- window movement
 vim.keymap.set("n", "<c-h>", "<c-w>h", { desc = "move focus to left window" })
@@ -96,11 +89,8 @@ vim.keymap.set({ "i", "t" }, "<c-j>", "<c-\\><c-n><c-w>j", { desc = "move focus 
 vim.keymap.set({ "i", "t" }, "<c-k>", "<c-\\><c-n><c-w>k", { desc = "move focus to window above" })
 vim.keymap.set({ "i", "t" }, "<c-l>", "<c-\\><c-n><c-w>l", { desc = "move focus to right window" })
 
--- window resize
-vim.keymap.set({ "n", "t" }, "<s-up>", "<cmd>resize +2<cr>", { desc = "resize height positive" })
-vim.keymap.set({ "n", "t" }, "<s-down>", "<cmd>resize -2<cr>", { desc = "resize height negative" })
-vim.keymap.set({ "n", "t" }, "<s-left>", "<cmd>vertical resize -2<cr>", { desc = "resize width negative" })
-vim.keymap.set({ "n", "t" }, "<s-right>", "<cmd>vertical resize +2<cr>", { desc = "resize width positive" })
+-- window control for terminals
+vim.keymap.set({ "t" }, "<c-w>", "<c-\\><c-n><c-w>", { desc = "window control" })
 
 -- movement between buffers
 vim.keymap.set("n", "<tab>", function()
@@ -129,7 +119,8 @@ vim.keymap.set({ "n", "x" }, "gy", function()
   local url = "https://github.com/"
   -- repo
   local repo = vim.fn.systemlist("git config --get remote.origin.url")[1]
-  local repo_path = string.gsub(repo, "git@github%.com:?(.*)%.git", "%1")
+  local repo_nosuffix = string.gsub(repo, "(.*)%.git", "%1")
+  local repo_path = string.gsub(repo_nosuffix, "git@github%.com:(.*)", "%1")
   url = url .. repo_path .. "/blob/"
   -- revision
   local rev = vim.fn.systemlist("git rev-parse HEAD")[1]
@@ -151,7 +142,7 @@ vim.keymap.set({ "n", "x" }, "gy", function()
   vim.fn.setreg("+", url, "v")
 end, { silent = true, desc = "copy git url" })
 
--- banish weird mappings
+-- banish weird default mappings
 vim.keymap.set("n", "gQ", "<nop>") -- ex mode
 vim.keymap.set("n", "s", "<nop>") -- substitute char
 vim.keymap.set("n", "S", "<nop>") -- substitute rest of line
@@ -175,7 +166,7 @@ vim.keymap.set("n", "dd", function()
 end, { desc = "delete line", expr = true })
 
 -- open jumplist
-vim.keymap.set("n", "<leader>qj", function()
+vim.keymap.set("n", "<leader>j", function()
   local jumplist = vim.fn.getjumplist()[1]
   local qf_list = {}
   for _, v in ipairs(jumplist) do
@@ -199,14 +190,6 @@ end, { desc = "open quickfix" })
 
 -- add undo state when inserting a newline
 vim.keymap.set("i", "<cr>", "<cr><c-g>u")
-
--- always go forward using n, always go backward using N, independent of search with `/` or `?`
-vim.keymap.set("n", "n", "'Nn'[v:searchforward]", { expr = true, desc = "next search result" })
-vim.keymap.set("x", "n", "'Nn'[v:searchforward]", { expr = true, desc = "next search result" })
-vim.keymap.set("o", "n", "'Nn'[v:searchforward]", { expr = true, desc = "next search result" })
-vim.keymap.set("n", "N", "'nN'[v:searchforward]", { expr = true, desc = "prev search result" })
-vim.keymap.set("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "prev search result" })
-vim.keymap.set("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "prev search result" })
 
 -- general LSP settings and maps
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -234,11 +217,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = event.buf, desc = "lsp: show implementations" })
     vim.keymap.set("n", "go", vim.lsp.buf.document_symbol, { buffer = event.buf, desc = "lsp: outline symbols" })
     vim.keymap.set("n", "gq", vim.diagnostic.setqflist, { buffer = event.buf, desc = "lsp: list diagnostics" })
-    vim.keymap.set("n", "<leader>qd", vim.diagnostic.setqflist, { buffer = event.buf, desc = "lsp: list diagnostics" })
     vim.keymap.set("n", "gQ", function()
-      vim.diagnostic.setqflist({ severity = vim.diagnostic.severity.ERROR })
-    end, { buffer = event.buf, desc = "lsp: list serious diagnostics" })
-    vim.keymap.set("n", "<leader>qD", function()
       vim.diagnostic.setqflist({ severity = vim.diagnostic.severity.ERROR })
     end, { buffer = event.buf, desc = "lsp: list serious diagnostics" })
     vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = event.buf, desc = "lsp: rename symbol" })

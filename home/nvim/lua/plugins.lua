@@ -53,9 +53,9 @@ return inject_all({
     cmd = { "ConformInfo" },
     opts = {
       formatters_by_ft = {
-        go = { "gofumpt", "goimports-reviser" },
+        go = { "gofumpt", "goimports", "goimports-reviser" },
         lua = { "stylua" },
-        nix = { "nixpkgs_fmt" },
+        nix = { "alejandra" },
         ["*"] = function(bufnr)
           if vim.fn.getbufvar(bufnr, "&filetype") == "terraform" then
             return {}
@@ -101,6 +101,7 @@ return inject_all({
 
   {
     "rebelot/kanagawa.nvim",
+    priority = 1000,
     event = "UIEnter",
     config = function(_, opts)
       require("kanagawa").setup(opts)
@@ -193,6 +194,44 @@ return inject_all({
       }
       require("mini.ai").setup(opts)
     end,
+  },
+
+  {
+    "echasnovski/mini.bracketed",
+    event = "VeryLazy",
+    opts = {
+      conflict = {
+        suffix = "x",
+      },
+      diagnostic = {
+        suffix = "d",
+        options = {
+          float = true,
+        },
+      },
+      jump = {
+        suffix = "j",
+        options = {
+          wrap = false,
+        },
+      },
+      quickfix = {
+        suffix = "q",
+      },
+      yank = {
+        suffix = "y",
+      },
+      -- disable the rest
+      buffer = { suffix = "" },
+      comment = { suffix = "" },
+      file = { suffix = "" },
+      indent = { suffix = "" },
+      location = { suffix = "" },
+      oldfile = { suffix = "" },
+      treesitter = { suffix = "" },
+      undo = { suffix = "" },
+      window = { suffix = "" },
+    },
   },
 
   {
@@ -422,11 +461,6 @@ return inject_all({
       opts.highlighters.hex_color = require("mini.hipatterns").gen_highlighter.hex_color()
       require("mini.hipatterns").setup(opts)
     end,
-  },
-
-  {
-    "echasnovski/mini.icons",
-    opts = {},
   },
 
   {
@@ -821,7 +855,6 @@ return inject_all({
       { "hrsh7th/cmp-nvim-lsp" },
     },
     config = function(_, _)
-      require("snippets").register_cmp_source()
       require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
       local kind_icons = {
         Text = "",
@@ -858,7 +891,6 @@ return inject_all({
       cmp.setup({
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
-          { name = "snippets" },
           {
             name = "lazydev",
             group_index = 0, -- set group index to 0 to skip loading LuaLS completions
@@ -977,7 +1009,7 @@ return inject_all({
         desc = "continue or start fresh session",
       },
       {
-        "<leader>qb",
+        "<leader>qb", -- TODO: find something I can remember
         function()
           require("dap").list_breakpoints()
           vim.cmd.cwindow()
@@ -1223,11 +1255,6 @@ return inject_all({
           key = "b",
           option = "background",
           values = { [true] = "dark", [false] = "light" },
-        })
-        :option({
-          key = "c",
-          option = "conceallevel",
-          values = { [true] = 2, [false] = 0 },
         })
         :getter_setter({
           key = "d",

@@ -23,6 +23,7 @@ vim.opt.titlestring = [[vim %{substitute(getcwd(), '/home/danieln', '~', 0)}]] -
 
 -- editing
 vim.opt.foldenable = false -- no folding unless I close one myself
+vim.opt.foldlevel = 1024 -- if I close one, don't close any others
 vim.opt.foldmethod = "indent" -- use indent for folding
 vim.opt.jumpoptions = "stack,view" -- discard jumps when diverging from an earlier position
 vim.opt.spelloptions = "camel,noplainbuffer" -- set some spell options for when I enable
