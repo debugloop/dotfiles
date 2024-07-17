@@ -29,6 +29,7 @@
       FLAKE = "/etc/nixos";
       HIGHLIGHT_STYLE = "base16/grayscale-dark";
       PAGER = "less -R --use-color -Dd+r -Du+b";
+      ZK_NOTEBOOK_DIR = "/home/danieln/documents/notes";
     };
 
     file.".sqliterc".text = ''

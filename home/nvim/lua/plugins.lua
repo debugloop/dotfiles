@@ -30,6 +30,24 @@ end
 
 return inject_all({
   {
+    "zk-org/zk-nvim",
+    event = "VeryLazy",
+    main = "zk",
+    opts = {},
+  },
+
+  {
+    "MeanderingProgrammer/markdown.nvim",
+    name = "render-markdown",
+    ft = "markdown",
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter" },
+      { "echasnovski/mini.icons" },
+    },
+    opts = {},
+  },
+
+  {
     "stevearc/conform.nvim",
     event = "BufWritePre",
     cmd = { "ConformInfo" },

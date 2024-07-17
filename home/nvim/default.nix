@@ -58,16 +58,11 @@
             }
           )
       );
-      # miniPlugin = builtins.getAttr "mini-nvim" pkgs.vimPlugins;
-      miniPlugin = pkgs.fetchFromGitHub {
-        owner = "echasnovski";
-        repo = "mini.nvim";
-        rev = "6c873ff81c318119923a424e3aea39000d3a10cf";
-        sha256 = "sha256-XlSGXaYinJwMKOWdFz+Fyoi9L2bpWZupkr9W8LM6V7c=";
-      };
+      miniPlugin = builtins.getAttr "mini-nvim" pkgs.vimPlugins;
       miniPlugins = builtins.listToAttrs (
         lib.lists.forEach [
           "mini-ai"
+          "mini-bracketed"
           "mini-bufremove"
           "mini-clue"
           "mini-diff"
@@ -75,7 +70,7 @@
           "mini-files"
           "mini-git"
           "mini-hipatterns"
-          "mini-icons"
+          # "mini-icons"
           "mini-indentscope"
           "mini-jump"
           "mini-operators"
@@ -96,6 +91,12 @@
             }
           )
       );
+      miniPluginGit = pkgs.fetchFromGitHub {
+        owner = "echasnovski";
+        repo = "mini.nvim";
+        rev = "6c873ff81c318119923a424e3aea39000d3a10cf";
+        sha256 = "sha256-XlSGXaYinJwMKOWdFz+Fyoi9L2bpWZupkr9W8LM6V7c=";
+      };
     in
     {
       "nvim/nixpkgs/fzf" = {
@@ -108,6 +109,9 @@
           rev = "v0.2.0";
           sha256 = "sha256-bXEABjb3HvVcQmVbDdDB5CSMp1rd+6AIFihOYnO1slg=";
         };
+      };
+      "nvim/nixpkgs/mini-icons" = {
+        source = miniPluginGit;
       };
     }
     // vimPlugins // miniPlugins;
