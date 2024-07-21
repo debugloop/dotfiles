@@ -74,7 +74,7 @@
           ./hosts/common
           ./hosts/common/laptops.nix
           ./hosts/simmons
-          ({system, ...}: {
+          ({...}: {
             nixpkgs.overlays = [
               # inputs.neovim-nightly-overlay.overlay
             ];
@@ -92,7 +92,7 @@
           ./hosts/common
           ./hosts/common/laptops.nix
           ./hosts/lusus
-          ({system, ...}: {
+          ({...}: {
             nixpkgs.overlays = [
               # inputs.neovim-nightly-overlay.overlay
             ];

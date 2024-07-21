@@ -228,9 +228,8 @@
       /* settings modules */
       #idle_inhibitor,
       #pulseaudio,
-      #tray,
-      #layout {
-        border-top: 1px solid #${config.colors.foreground};
+      #tray {
+        border-top: 1px solid #${config.colors.dark_fg};
       }
       /* device status modules */
       #battery,

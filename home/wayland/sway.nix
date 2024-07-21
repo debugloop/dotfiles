@@ -87,7 +87,7 @@
           calibration_matrix = "8 0 0 0 5 0";
         };
         "type:touchpad" = {
-          events = "disabled";
+          # events = "disabled";
           tap = "enabled";
           dwt = "enabled";
           middle_emulation = "enabled";
@@ -225,6 +225,7 @@
 
         # screenshots
         "Print" = ''exec ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" "/home/danieln/pictures/screenshot-area-$(date +%d-%m-%Y-%T).png"'';
+        "Mod4+Shift+s" = ''exec ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" "/home/danieln/pictures/screenshot-area-$(date +%d-%m-%Y-%T).png"''; # laptop screenshot key
         "Shift+Print" = ''exec ${pkgs.grim}/bin/grim "/home/danieln/pictures/screenshot-full-$(date +%d-%m-%Y-%T).png"'';
 
         # sway control
@@ -307,7 +308,7 @@
         "Shift+XF86MonBrightnessDown" = "exec ${pkgs.sudo}/bin/sudo ${pkgs.ddcutil}/bin/ddcutil -d 1 setvcp 10 - 20";
 
         # peripheral control
-        "XF86Messenger" = "input type:touchpad events toggle enabled disabled";
+        "XF86TouchpadToggle" = "input type:touchpad events toggle enabled disabled";
       };
       assigns = {
         "$workspace2" = [

@@ -19,6 +19,11 @@
     allowUnfreePredicate = _: true;
   };
 
+  manual = {
+    html.enable = true;
+    json.enable = true;
+  };
+
   home = {
     username = "danieln";
     homeDirectory = "/home/danieln";
@@ -29,6 +34,7 @@
     sessionVariables = {
       EDITOR = "${pkgs.neovim}/bin/nvim";
       FLAKE = "/etc/nixos";
+      MANPAGER = "nvim +Man!";
       HIGHLIGHT_STYLE = "base16/grayscale-dark";
       PAGER = "less -R --use-color -Dd+r -Du+b";
       ZK_NOTEBOOK_DIR = "/home/danieln/documents/notes";
