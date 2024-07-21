@@ -18,7 +18,7 @@ vim.keymap.set({ "n", "o", "x" }, "L", "$", { desc = "go to end of line" })
 -- better paste
 vim.keymap.set("n", "<leader>p", function()
   vim.fn.setreg("+", vim.fn.getreg("+"), "V")
-  vim.cmd("normal p")
+  vim.cmd.normal("p")
 end, { desc = "paste as lines" })
 
 -- live grep
@@ -34,7 +34,7 @@ vim.keymap.set("x", "<leader>*", function()
   if #input > 0 and not string.find(input, "\n") then
     vim.cmd('silent! grep! "' .. input .. '" | cwindow')
   end
-end, { desc = "grep visual selecttion in project" })
+end, { desc = "grep visual selection in project" })
 vim.keymap.set("n", "<leader>*", function()
   local input = vim.fn.expand("<cword>")
   if #input > 0 then
@@ -110,7 +110,7 @@ vim.keymap.set("n", "<leader>x", function()
       vim.cmd("bd " .. tostring(bufnr))
     end
   end
-  pcall(vim.cmd, "NvimTreeRefresh") ---@diagnostic disable-line: param-type-mismatch this works although vim.cmd is technically a table
+  pcall(vim.cmd.NvimTreeRefresh)
 end, { desc = "close buffers not marked as persistent" })
 
 -- copy git url
@@ -190,38 +190,3 @@ end, { desc = "open quickfix" })
 
 -- add undo state when inserting a newline
 vim.keymap.set("i", "<cr>", "<cr><c-g>u")
-
--- general LSP settings and maps
-vim.api.nvim_create_autocmd("LspAttach", {
-  group = vim.api.nvim_create_augroup("lsp_user_bindings", {}),
-  callback = function(event)
-    -- commands
-    vim.api.nvim_buf_create_user_command(event.buf, "LspFormat", function(_)
-      vim.lsp.buf.format()
-    end, { desc = "Format current buffer with LSP" })
-    vim.api.nvim_buf_create_user_command(event.buf, "LspRestart", function(_)
-      vim.lsp.stop_client(vim.lsp.get_clients())
-      vim.cmd("edit")
-    end, { desc = "Restart all active LSP clients" })
-
-    -- mappings
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = event.buf, desc = "lsp: show definition" })
-    vim.keymap.set("n", "<c-w>d", function()
-      vim.cmd("vsplit")
-      vim.lsp.buf.definition()
-    end, { buffer = event.buf, desc = "lsp: show definition in new split" })
-    vim.keymap.set("n", "gD", vim.lsp.buf.type_definition, { buffer = event.buf, desc = "lsp: show type definition" })
-    vim.keymap.set("n", "gr", function()
-      vim.lsp.buf.references({ includeDeclaration = false })
-    end, { buffer = event.buf, desc = "lsp: show refs" })
-    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = event.buf, desc = "lsp: show implementations" })
-    vim.keymap.set("n", "go", vim.lsp.buf.document_symbol, { buffer = event.buf, desc = "lsp: outline symbols" })
-    vim.keymap.set("n", "gq", vim.diagnostic.setqflist, { buffer = event.buf, desc = "lsp: list diagnostics" })
-    vim.keymap.set("n", "gQ", function()
-      vim.diagnostic.setqflist({ severity = vim.diagnostic.severity.ERROR })
-    end, { buffer = event.buf, desc = "lsp: list serious diagnostics" })
-    vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = event.buf, desc = "lsp: rename symbol" })
-    vim.keymap.set("n", "<leader>?", vim.lsp.buf.code_action, { buffer = event.buf, desc = "lsp: run code action" })
-    vim.keymap.set("n", "<cr>", vim.diagnostic.open_float, { buffer = event.buf, desc = "lsp: open diagnostic" })
-  end,
-})

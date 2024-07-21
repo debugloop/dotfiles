@@ -1,10 +1,6 @@
+require("aucmd")
 require("options")
 require("maps")
-
-if vim.g.vscode then
-  vim.opt.loadplugins = false
-  return
-end
 
 local lazypath = vim.fn.stdpath("data") .. "/nixpkgs/lazy-nvim"
 vim.opt.rtp:prepend(lazypath)
@@ -29,7 +25,7 @@ require("lazy").setup({
     enabled = false,
   },
   install = {
-    colorscheme = { "kanagawa", "zaibatsu" },
+    colorscheme = { "catppuccin", "zaibatsu" },
   },
   readme = {
     root = vim.fn.stdpath("data") .. "/lazy-readme",

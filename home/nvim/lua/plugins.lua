@@ -37,6 +37,79 @@ return inject_all({
   },
 
   {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    enabled = false,
+    event = "UIEnter",
+    priority = 1000,
+    opts = {
+      term_colors = true,
+      dim_inactive = {
+        enabled = true,
+      },
+      styles = {
+        conditionals = {},
+        miscs = {},
+      },
+      color_overrides = {},
+      custom_highlights = function(colors)
+        return {
+          -- invisible window separator
+          WinSeparator = { fg = colors.base, bg = colors.base },
+          -- nice tabline
+          MiniTablineCurrent = { link = "MiniStatuslineModeNormal" },
+          MiniTablineHidden = { link = "StatusLineNC" },
+          MiniTablineVisible = { link = "StatusLineNC" },
+          MiniTablineModifiedCurrent = { link = "MiniTablineCurrent" },
+          MiniTablineModifiedHidden = { link = "MiniTablineHidden" },
+          MiniTablineModifiedVisible = { link = "MiniTablineVisible" },
+          -- eye-catching returns
+          ["@keyword.return"] = { link = "@variable.builtin" },
+        }
+      end,
+      default_integrations = false,
+      integrations = {
+        cmp = true,
+        dap = true,
+        diffview = true,
+        markdown = true,
+        mini = {
+          enabled = true,
+        },
+        native_lsp = {
+          enabled = true,
+          virtual_text = {
+            errors = {},
+            hints = {},
+            warnings = {},
+            information = {},
+            ok = {},
+          },
+          underlines = {
+            errors = { "underline" },
+            hints = { "underline" },
+            warnings = { "underline" },
+            information = { "underline" },
+            ok = { "underline" },
+          },
+          inlay_hints = {
+            background = true,
+          },
+        },
+        noice = true,
+        nvimtree = true,
+        semantic_tokens = true,
+        treesitter = true,
+        treesitter_context = true,
+      },
+    },
+    config = function(_, opts)
+      require("catppuccin").setup(opts)
+      vim.cmd.colorscheme("catppuccin")
+    end,
+  },
+
+  {
     "MeanderingProgrammer/markdown.nvim",
     name = "render-markdown",
     ft = "markdown",
@@ -134,6 +207,10 @@ return inject_all({
           MiniTablineModifiedCurrent = { link = "MiniTablineCurrent" },
           MiniTablineModifiedHidden = { link = "MiniTablineHidden" },
           MiniTablineModifiedVisible = { link = "MiniTablineVisible" },
+          -- visible MiniJump
+          MiniJump = { link = "@comment.note" },
+          -- less prominent qf title
+          BqfPreviewTitle = { link = "BqfPreviewBorder" },
         }
       end,
       colors = {
@@ -381,12 +458,6 @@ return inject_all({
         wrap_goto = true,
       },
     },
-    config = function(_, opts)
-      vim.api.nvim_set_hl(0, "MiniDiffSignAdd", { link = "diffAdded" })
-      vim.api.nvim_set_hl(0, "MiniDiffSignChange", { link = "diffChanged" })
-      vim.api.nvim_set_hl(0, "MiniDiffSignDelete", { link = "diffDeleted" })
-      require("mini.diff").setup(opts)
-    end,
   },
 
   {
@@ -499,10 +570,6 @@ return inject_all({
     "echasnovski/mini.jump",
     keys = { "f", "F", "t", "T" },
     opts = {},
-    config = function(_, opts)
-      require("mini.jump").setup(opts)
-      vim.api.nvim_set_hl(0, "MiniJump", { link = "@comment.note" })
-    end,
   },
 
   {
@@ -595,8 +662,8 @@ return inject_all({
         move_down = "<c-j>",
       },
     },
-    config = function(spec, opts)
-      require(spec.main).setup(opts)
+    config = function(_, opts)
+      require("mini.pick").setup(opts)
       vim.ui.select = require("mini.pick").ui_select
     end,
   },
@@ -699,6 +766,12 @@ return inject_all({
               },
             },
             {
+              hl = "ModeMsg",
+              strings = {
+                vim.fn.reg_recording() ~= "" and "recording @" .. vim.fn.reg_recording(),
+              },
+            },
+            {
               hl = inverted(mode_hl),
               strings = {
                 "%p%%/%L",
@@ -781,6 +854,16 @@ return inject_all({
           timeout = 3000,
         },
       },
+      routes = {
+        {
+          filter = {
+            event = "msg_show",
+            kind = "",
+            find = "bytes",
+          },
+          opts = { skip = true },
+        },
+      },
     },
   },
 
@@ -841,10 +924,6 @@ return inject_all({
         border = "single",
       },
     },
-    config = function(_, opts)
-      require("bqf").setup(opts)
-      vim.api.nvim_set_hl(0, "BqfPreviewTitle", { link = "BqfPreviewBorder" })
-    end,
   },
 
   {
@@ -1516,6 +1595,10 @@ return inject_all({
           enable = true,
         },
         icons = {
+          show = {
+            file = false,
+            folder = false,
+          },
           git_placement = "signcolumn",
           glyphs = {
             git = {
