@@ -38,6 +38,7 @@
       HIGHLIGHT_STYLE = "base16/grayscale-dark";
       PAGER = "less -R --use-color -Dd+r -Du+b";
       ZK_NOTEBOOK_DIR = "/home/danieln/documents/notes";
+      NODE_PATH = "${pkgs.typescript}/lib/node_modules";
     };
 
     file.".sqliterc".text = ''
@@ -65,6 +66,7 @@
       nixd
       nvd
       # basics
+      difftastic
       getopt
       lsof
       moreutils
@@ -141,6 +143,7 @@
       lua-language-server
       nodePackages_latest.yaml-language-server
       pgcli
+      nodePackages_latest.prettier
       proselint
       protobuf
       protoc-gen-go
@@ -154,6 +157,8 @@
       stylua
       tcpdump
       tree-sitter
+      typescript
+      typescript-language-server
       vale
       yamllint
       # fun

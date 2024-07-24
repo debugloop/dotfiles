@@ -30,103 +30,13 @@ end
 
 return inject_all({
   {
-    "zk-org/zk-nvim",
-    event = "VeryLazy",
-    main = "zk",
-    opts = {},
-  },
-
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    enabled = false,
-    event = "UIEnter",
-    priority = 1000,
-    opts = {
-      term_colors = true,
-      dim_inactive = {
-        enabled = true,
-      },
-      styles = {
-        conditionals = {},
-        miscs = {},
-      },
-      color_overrides = {},
-      custom_highlights = function(colors)
-        return {
-          -- invisible window separator
-          WinSeparator = { fg = colors.base, bg = colors.base },
-          -- nice tabline
-          MiniTablineCurrent = { link = "MiniStatuslineModeNormal" },
-          MiniTablineHidden = { link = "StatusLineNC" },
-          MiniTablineVisible = { link = "StatusLineNC" },
-          MiniTablineModifiedCurrent = { link = "MiniTablineCurrent" },
-          MiniTablineModifiedHidden = { link = "MiniTablineHidden" },
-          MiniTablineModifiedVisible = { link = "MiniTablineVisible" },
-          -- eye-catching returns
-          ["@keyword.return"] = { link = "@variable.builtin" },
-        }
-      end,
-      default_integrations = false,
-      integrations = {
-        cmp = true,
-        dap = true,
-        diffview = true,
-        markdown = true,
-        mini = {
-          enabled = true,
-        },
-        native_lsp = {
-          enabled = true,
-          virtual_text = {
-            errors = {},
-            hints = {},
-            warnings = {},
-            information = {},
-            ok = {},
-          },
-          underlines = {
-            errors = { "underline" },
-            hints = { "underline" },
-            warnings = { "underline" },
-            information = { "underline" },
-            ok = { "underline" },
-          },
-          inlay_hints = {
-            background = true,
-          },
-        },
-        noice = true,
-        nvimtree = true,
-        semantic_tokens = true,
-        treesitter = true,
-        treesitter_context = true,
-      },
-    },
-    config = function(_, opts)
-      require("catppuccin").setup(opts)
-      vim.cmd.colorscheme("catppuccin")
-    end,
-  },
-
-  {
-    "MeanderingProgrammer/markdown.nvim",
-    name = "render-markdown",
-    ft = "markdown",
-    dependencies = {
-      { "nvim-treesitter/nvim-treesitter" },
-      { "echasnovski/mini.icons" },
-    },
-    opts = {},
-  },
-
-  {
     "stevearc/conform.nvim",
     event = "BufWritePre",
     cmd = { "ConformInfo" },
     opts = {
       formatters_by_ft = {
         go = { "gofumpt", "goimports", "goimports-reviser" },
+        javascript = { "prettier" },
         lua = { "stylua" },
         nix = { "alejandra" },
         ["*"] = function(bufnr)
@@ -223,6 +133,17 @@ return inject_all({
         },
       },
     },
+  },
+
+  {
+    "MeanderingProgrammer/markdown.nvim",
+    name = "render-markdown",
+    ft = "markdown",
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter" },
+      { "echasnovski/mini.icons" },
+    },
+    opts = {},
   },
 
   {
@@ -614,6 +535,7 @@ return inject_all({
 
   {
     "echasnovski/mini.pick",
+    event = "VeryLazy", -- for overriding vim.ui.select at startup
     dependencies = {
       {
         "echasnovski/mini.extra",
@@ -1222,10 +1144,18 @@ return inject_all({
         vim.keymap.set("n", "s", function()
           dap.step_over()
         end, { desc = "debug: step forward", remap = true })
+        -- step back
+        vim.keymap.set("n", "S", function()
+          dap.step_back()
+        end, { desc = "debug: step backward", remap = true })
         -- continue
         vim.keymap.set("n", "c", function()
           dap.continue()
         end, { desc = "debug: continue" })
+        -- reverse continue
+        vim.keymap.set("n", "C", function()
+          dap.reverse_continue()
+        end, { desc = "debug: reverse continue" })
         -- step into
         vim.keymap.set("n", "i", function()
           dap.step_into()
@@ -1826,5 +1756,12 @@ return inject_all({
       require("telescope").setup(opts)
       require("telescope").load_extension("undo")
     end,
+  },
+
+  {
+    "zk-org/zk-nvim",
+    event = "VeryLazy",
+    main = "zk",
+    opts = {},
   },
 })

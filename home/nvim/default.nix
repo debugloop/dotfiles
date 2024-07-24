@@ -22,9 +22,9 @@
     "nvim/init.lua".source = ./init.lua;
     "nvim/lua".source = ./lua;
     "nvim/ftplugin".source = ./ftplugin;
+    "nvim/parser".source = "${treesitterParsers}/parser";
     "nvim/after/queries/go/textobjects.scm".source = ./go-textobjects.scm;
     "nvim/after/queries/gotmpl/injections.scm".source = ./gotmpl-injections.scm;
-    "nvim/parser".source = "${treesitterParsers}/parser";
   };
 
   xdg.dataFile = let
@@ -47,6 +47,7 @@
         "nvim-treesitter"
         "nvim-treesitter-context"
         "nvim-treesitter-textobjects"
+        "zk-nvim"
       ]
       (
         name: {
