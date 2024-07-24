@@ -137,6 +137,10 @@ vim.api.nvim_create_autocmd({ "BufRead" }, {
   group = vim.api.nvim_create_augroup("autocmd_on_buf_enter", { clear = true }),
   pattern = { "*" },
   callback = function(_)
+    -- skip those on some filetypes
+    if vim.o.filetype == "gitcommit" then
+      return
+    end
     -- mark as persisted
     vim.api.nvim_create_autocmd({ "InsertEnter", "BufModifiedSet" }, {
       buffer = 0,
