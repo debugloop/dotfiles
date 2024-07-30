@@ -30,6 +30,19 @@ end
 
 return inject_all({
   {
+    "maxandron/goplements.nvim",
+    ft = "go",
+    opts = {
+      prefix = {
+        interface = "",
+        struct = "",
+      },
+      display_package = true,
+      highlight = "Folded",
+    },
+  },
+
+  {
     "stevearc/conform.nvim",
     event = "BufWritePre",
     cmd = { "ConformInfo" },

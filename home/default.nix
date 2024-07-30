@@ -130,6 +130,7 @@
       gopls
       gotags
       gotest
+      gotests
       gotestsum
       go-tools
       gotools
