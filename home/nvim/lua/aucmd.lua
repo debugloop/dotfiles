@@ -97,7 +97,7 @@ vim.api.nvim_create_autocmd({ "InsertLeave" }, {
   group = vim.api.nvim_create_augroup("on_insert_leave", { clear = true }),
   pattern = "*",
   callback = function(event)
-    if vim.bo[event.buf].ft == "TelescopePrompt" then
+    if vim.bo[event.buf].ft == "qf" then
       vim.opt.relativenumber = false
       return
     end

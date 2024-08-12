@@ -29,18 +29,6 @@ local function inject_all(specs)
 end
 
 return inject_all({
-  {
-    "maxandron/goplements.nvim",
-    ft = "go",
-    opts = {
-      prefix = {
-        interface = "",
-        struct = "",
-      },
-      display_package = true,
-      highlight = "Folded",
-    },
-  },
 
   {
     "stevearc/conform.nvim",
@@ -62,6 +50,11 @@ return inject_all({
       format_on_save = {
         lsp_fallback = true,
         timeout_ms = 5000,
+      },
+      formatters = {
+        prettier = {
+          prepend_args = { "--tab-width", "4" },
+        },
       },
     },
     init = function()
@@ -803,6 +796,91 @@ return inject_all({
   },
 
   {
+    "stevearc/quicker.nvim",
+    event = "VeryLazy",
+    opts = {
+      opts = {
+        winfixheight = false,
+      },
+      on_qf = function(bufnr) end,
+      keys = {
+        {
+          "q",
+          function()
+            vim.cmd.q()
+            if not require("bqf.preview.handler").autoEnabled() then
+              require("bqf.preview.handler").toggle()
+            end
+          end,
+          desc = "Close Quickfix",
+        },
+        {
+          ">",
+          function()
+            vim.cmd("wincmd =")
+            if require("bqf.preview.handler").autoEnabled() then
+              require("bqf.preview.handler").toggle()
+            end
+            require("quicker").expand({ before = 2, after = 2, add_to_existing = true })
+          end,
+          desc = "Expand quickfix context",
+        },
+        {
+          "<",
+          function()
+            vim.cmd("copen 10")
+            if not require("bqf.preview.handler").autoEnabled() then
+              require("bqf.preview.handler").toggle()
+            end
+            require("quicker").collapse()
+          end,
+          desc = "Collapse quickfix context",
+        },
+        {
+          "J",
+          function()
+            local items = vim.fn.getqflist()
+            local lnum = vim.api.nvim_win_get_cursor(0)[1]
+            for i = lnum + 1, #items do
+              if items[i].valid == 1 then
+                vim.api.nvim_win_set_cursor(0, { i, 0 })
+                return
+              end
+            end
+            -- Wrap around the end of quickfix list
+            for i = 1, lnum do
+              if items[i].valid == 1 then
+                vim.api.nvim_win_set_cursor(0, { i, 0 })
+                return
+              end
+            end
+          end,
+        },
+        {
+          "K",
+          function()
+            local items = vim.fn.getqflist()
+            local lnum = vim.api.nvim_win_get_cursor(0)[1]
+            for i = lnum - 1, 1, -1 do
+              if items[i].valid == 1 then
+                vim.api.nvim_win_set_cursor(0, { i, 0 })
+                return
+              end
+            end
+            -- Wrap around the start of quickfix list
+            for i = #items, lnum, -1 do
+              if items[i].valid == 1 then
+                vim.api.nvim_win_set_cursor(0, { i, 0 })
+                return
+              end
+            end
+          end,
+        },
+      },
+    },
+  },
+
+  {
     "kevinhwang91/nvim-bqf",
     ft = "qf",
     dependencies = {
@@ -813,13 +891,12 @@ return inject_all({
         build = "./install --all",
       },
       {
-        "yorickpeterse/nvim-pqf",
-        opts = {},
+        "stevearc/quicker.nvim",
       },
     },
     opts = {
       func_map = {
-        open = "o",
+        open = "",
         openc = "<cr>",
         drop = "",
         split = "<C-x>",
@@ -831,13 +908,13 @@ return inject_all({
         ptogglemode = "<tab>",
         ptoggleitem = "",
         ptoggleauto = "",
-        pscrollup = "<C-u>",
-        pscrolldown = "<C-d>",
+        pscrollup = "",
+        pscrolldown = "",
         pscrollorig = "zz",
-        prevfile = "K",
-        nextfile = "J",
-        prevhist = "<",
-        nexthist = ">",
+        prevfile = "",
+        nextfile = "",
+        prevhist = "<C-p>",
+        nexthist = "<C-n>",
         lastleave = "",
         stoggleup = "",
         stoggledown = "",
@@ -1380,45 +1457,29 @@ return inject_all({
       -- textobject navigation
       vim.keymap.set("n", "]", "<nop>", { desc = "+forward goto " })
       vim.keymap.set("n", "[", "<nop>", { desc = "+backward goto" })
-      local multiplexer = {
-        require("impairative")
-          .operations({
-            backward = "[",
-            forward = "]",
-          })
-          :function_pair({
-            key = "]",
-            backward = function()
-              goto_adjacent_usage(-vim.v.count1)
-            end,
-            forward = function()
-              goto_adjacent_usage(vim.v.count1)
-            end,
-          })
-          :function_pair({
-            key = "[",
-            backward = function()
-              goto_adjacent_usage(-vim.v.count1)
-            end,
-            forward = function()
-              goto_adjacent_usage(vim.v.count1)
-            end,
-          })
-          :command_pair({
-            key = "q",
-            backward = "cprevious",
-            forward = "cnext",
-          }),
-        require("impairative").operations({
-          backward = "S",
-          forward = "s",
-        }),
-      }
-      function multiplexer.unified_function(self, arg)
-        for _, elem in ipairs(self) do
-          elem:unified_function(arg)
-        end
-      end
+      local base = require("impairative")
+        .operations({
+          backward = "[",
+          forward = "]",
+        })
+        :function_pair({
+          key = "]",
+          backward = function()
+            goto_adjacent_usage(-vim.v.count1)
+          end,
+          forward = function()
+            goto_adjacent_usage(vim.v.count1)
+          end,
+        })
+        :function_pair({
+          key = "[",
+          backward = function()
+            goto_adjacent_usage(-vim.v.count1)
+          end,
+          forward = function()
+            goto_adjacent_usage(vim.v.count1)
+          end,
+        })
       for key, ia in pairs({
         a = "i",
         A = "i",
@@ -1446,7 +1507,7 @@ return inject_all({
             forward = "cover_or_next",
           }
         end
-        multiplexer:unified_function({
+        base:unified_function({
           key = key,
           desc = "jump to " .. target .. " of '" .. key:lower() .. "' textobject",
           fun = function(direction)
@@ -1482,11 +1543,11 @@ return inject_all({
     end,
   },
 
-  {
-    "yorickpeterse/nvim-pqf",
-    event = "VeryLazy", -- needs to be loaded before qf results are generated
-    opts = {},
-  },
+  -- {
+  --   "yorickpeterse/nvim-pqf",
+  --   event = "VeryLazy", -- needs to be loaded before qf results are generated
+  --   opts = {},
+  -- },
 
   {
     "folke/lazydev.nvim",
