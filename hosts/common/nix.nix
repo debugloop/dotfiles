@@ -1,9 +1,4 @@
-{
-  inputs,
-  lib,
-  config,
-  ...
-}: {
+{inputs, ...}: {
   imports = [
     inputs.agenix.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
@@ -27,15 +22,14 @@
       ];
       trusted-users = ["root" "@wheel"];
     };
-    # flake inputs as channels
-    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
   };
 
   nixpkgs = {
     hostPlatform = "x86_64-linux";
-    config.allowUnfree = true;
-    flake.setNixPath = false;
+    config = {
+      allowUnfree = true;
+      warnUndeclaredOptions = true;
+    };
   };
 
   age = {
