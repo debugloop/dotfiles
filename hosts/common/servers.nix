@@ -26,4 +26,11 @@
       ];
     };
   };
+
+  system.autoUpgrade = {
+    enable = true;
+    persistent = false;
+    flake = "github:debugloop/dotfiles";
+    allowReboot = true;
+  };
 }

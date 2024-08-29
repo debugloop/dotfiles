@@ -3,7 +3,7 @@ name: "Update dependencies and create a PR with necessary Build check"
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: "0 5 */1 * *"
+    - cron: "0 0 */1 * *"
 jobs:
   update:
     runs-on: ubuntu-latest
