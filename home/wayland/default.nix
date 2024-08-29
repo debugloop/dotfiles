@@ -102,12 +102,12 @@
 
   home.packages = with pkgs; [
     arc-theme
-    cinnamon.nemo
+    nemo
     easyeffects
     filezilla
     gimp
-    gnome.eog
-    gnome.evince
+    eog
+    evince
     gnome-icon-theme
     google-chrome
     grim

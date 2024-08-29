@@ -182,11 +182,15 @@ vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "TermOpen" }, {
 })
 
 -- highlight definitions (adapted from nvim-treesitter-refactor)
+vim.g.disable_highlight_defs = false
 local highlight_defs_augroup = vim.api.nvim_create_augroup("highlight_defs", { clear = true })
 local highlight_defs = vim.api.nvim_create_namespace("nvim_treesitter_usages")
 vim.api.nvim_create_autocmd({ "CursorHold" }, {
   group = highlight_defs_augroup,
   callback = function(event)
+    if vim.g.disable_highlight_defs then
+      return
+    end
     local ts_utils = require("nvim-treesitter.ts_utils")
     local locals = require("nvim-treesitter.locals")
     local last_nodes = {}

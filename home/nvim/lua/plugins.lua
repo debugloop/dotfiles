@@ -281,6 +281,8 @@ return inject_all({
           { mode = "n", keys = "[" },
           { mode = "x", keys = "]" },
           { mode = "x", keys = "[" },
+          -- custom
+          { mode = "n", keys = "p" },
           -- builtin
           { mode = "n", keys = "<leader>" },
           { mode = "x", keys = "<leader>" },
@@ -528,9 +530,14 @@ return inject_all({
     event = "InsertEnter",
     opts = {
       mappings = {
-        ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\][%s%)%]}]" },
-        ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\][%s%)%]}]" },
-        ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\][%s%)%]}]" },
+        -- do not auto create a pair when in front of word chars
+        ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\][^%w]" },
+        ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\][^%w]" },
+        ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\][^%w]" },
+        -- do not swallow closing brackets when after a space chars
+        [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\%s]." },
+        ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\%s]." },
+        ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\%s]." },
         -- we use the default close actions
         ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\][%s%)%]}]", register = { cr = false } },
         ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\][%s%)%]}]", register = { cr = false } },
@@ -644,7 +651,7 @@ return inject_all({
           end
           local MiniStatusline = require("mini.statusline")
           local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
-          if DEBUG_MODE then
+          if DEBUG_MODE ~= nil and DEBUG_MODE:active() then
             mode = "DEBUG"
             mode_hl = "Substitute"
           end
@@ -714,7 +721,6 @@ return inject_all({
 
   {
     "echasnovski/mini.surround",
-    enabled = false, -- surrounding stuff is so rare, let's use `s` better
     keys = { "s" },
     opts = {
       search_method = "cover_or_next",
@@ -1050,13 +1056,20 @@ return inject_all({
 
   {
     "mfussenegger/nvim-dap",
+    dependencies = {
+      {
+        "debugloop/layers.nvim",
+        dev = true,
+        opts = {},
+      },
+    },
     keys = {
       {
         "<leader>d",
         function()
           local dap = require("dap")
           if dap.session() ~= nil then
-            EnterDebugMode()
+            DEBUG_MODE:activate()
             return
           end
           -- set breakpoint if there is none
@@ -1100,7 +1113,7 @@ return inject_all({
         desc = "continue or start fresh session",
       },
       {
-        "<leader>qb", -- TODO: find something I can remember
+        "gb",
         function()
           require("dap").list_breakpoints()
           vim.cmd.cwindow()
@@ -1203,136 +1216,189 @@ return inject_all({
           vim.cmd("startinsert")
         end,
       })
-      -- utility functions
-      local function quit_debugging()
-        dap.listeners.after.event_stopped["refresh_expr"] = nil
-        vim.cmd("pclose")
-        dap.terminate()
-        dap.repl.close()
-      end
-      -- debug mode entry and exit
-      function EnterDebugMode()
-        DEBUG_MODE = true
-        -- evaluate expression continuously
-        vim.keymap.set("n", "e", function()
-          local exp = vim.fn.input("Expression: ")
-          if exp == "" then
-            vim.fn.expand("<cexpr>")
-          end
-          local prefix = exp:sub(-1) == ")" and "call " or ""
-          require("dap.ui.widgets").preview(prefix .. exp)
-          dap.listeners.after.event_stopped["refresh_expr"] = function()
-            require("dap.ui.widgets").preview(prefix .. exp)
-          end
-        end, { desc = "debug: auto evaluate expression" })
-        -- clear evaluation watch
-        vim.keymap.set("n", "E", function()
-          dap.listeners.after.event_stopped["refresh_expr"] = nil
-          vim.cmd("pclose")
-        end, { desc = "debug: clear auto evaluate" })
-        -- step over/next
-        vim.keymap.set("n", "s", function()
-          dap.step_over()
-        end, { desc = "debug: step forward", remap = true })
-        -- step back
-        vim.keymap.set("n", "S", function()
-          dap.step_back()
-        end, { desc = "debug: step backward", remap = true })
-        -- continue
-        vim.keymap.set("n", "c", function()
-          dap.continue()
-        end, { desc = "debug: continue" })
-        -- reverse continue
-        vim.keymap.set("n", "C", function()
-          dap.reverse_continue()
-        end, { desc = "debug: reverse continue" })
-        -- step into
-        vim.keymap.set("n", "i", function()
-          dap.step_into()
-        end, { desc = "debug: step into" })
-        -- step out of
-        vim.keymap.set("n", "o", function()
-          dap.step_out()
-        end, { desc = "debug: step out" })
-        -- hover with value
-        vim.keymap.set("n", "J", function()
-          require("dap").session():evaluate(vim.fn.expand("<cexpr>"), function(err, resp)
-            if err then
-              vim.print("Could not evaluate expression at cursor.")
-            else
-              vim.lsp.util.open_floating_preview({ resp.result }, "go", { focus_id = "dap-float" })
-            end
-          end)
-        end, { desc = "debug: hover value" })
-        -- up one frame
-        vim.keymap.set("n", "u", function()
-          dap.up()
-        end, { desc = "debug: frame up" })
-        -- down one frame
-        vim.keymap.set("n", "d", function()
-          dap.down()
-        end, { desc = "debug: frame down" })
-        -- toggle breakpoint
-        vim.keymap.set("n", "b", function()
-          dap.toggle_breakpoint()
-        end, { desc = "debug: toggle breakpoint" })
-        -- set conditional breakpoint
-        vim.keymap.set("n", "B", function()
-          local cond = vim.fn.input("Breakpoint condition or count: ")
-          if tonumber(cond) ~= nil then
-            vim.print("Breakpoint at visit #" .. cond)
-            dap.set_breakpoint(nil, cond, nil)
-          else
-            vim.print("Breakpoint `if " .. cond .. "`")
-            dap.set_breakpoint(cond, nil, nil)
-          end
-        end, { desc = "debug: set conditional breakpoint" })
-        -- restart
-        vim.keymap.set("n", "r", function()
-          dap.restart()
-        end, { desc = "debug: restart" })
-        -- exit debug mode
-        vim.keymap.set("n", "<esc>", ExitDebugMode, { desc = "debug: exit debug mode" })
-        -- quit
-        vim.keymap.set("n", "q", quit_debugging, { desc = "debug: quit" })
-        -- quit and clear breakpoints
-        vim.keymap.set("n", "Q", function()
-          quit_debugging()
-          dap.clear_breakpoints()
-        end, { desc = "debug: quit" })
-        -- exit debug mode on insert so we have <esc> available to go back to normal
-        vim.api.nvim_create_autocmd("ModeChanged", {
-          group = vim.api.nvim_create_augroup("on_debug_mode_exit", { clear = true }),
-          pattern = "*:i",
-          callback = function()
-            ExitDebugMode()
-          end,
-        })
+      -- debug mode map overlay
+      DEBUG_MODE = Layers.mode.new()
+      DEBUG_MODE:auto_show_help()
+      DEBUG_MODE:add_hook(function(_)
         vim.cmd("redrawstatus")
+      end)
+      dap.listeners.after.event_initialized["custom_maps"] = function()
+        DEBUG_MODE:activate()
       end
-      function ExitDebugMode()
-        vim.api.nvim_del_augroup_by_name("on_debug_mode_exit")
-        DEBUG_MODE = false
-        vim.keymap.del("n", "b") -- toggle breakpoint
-        vim.keymap.del("n", "B") -- set conditional breakpoint
-        vim.keymap.del("n", "c") -- continue
-        vim.keymap.del("n", "d") -- down one frame
-        vim.keymap.del("n", "e") -- evaluate expression continuously
-        vim.keymap.del("n", "E") -- clear evaluation watch
-        vim.keymap.del("n", "<esc>") -- exit debug mode
-        vim.keymap.del("n", "i") -- step into
-        vim.keymap.del("n", "J") -- hover with value
-        vim.keymap.del("n", "o") -- step out of
-        vim.keymap.del("n", "q") -- quit
-        vim.keymap.del("n", "Q") -- quit and clear breakpoints
-        vim.keymap.del("n", "r") -- restart
-        vim.keymap.del("n", "s") -- step over/next
-        vim.keymap.del("n", "u") -- up one frame
-        vim.cmd("redrawstatus")
+      dap.listeners.before.event_terminated["custom_maps"] = function()
+        DEBUG_MODE:deactivate()
       end
-      dap.listeners.after.event_initialized["custom_maps"] = EnterDebugMode
-      dap.listeners.before.event_terminated["custom_maps"] = ExitDebugMode
-      dap.listeners.before.event_exited["custom_maps"] = ExitDebugMode
+      dap.listeners.before.event_exited["custom_maps"] = function()
+        DEBUG_MODE:deactivate()
+      end
+      DEBUG_MODE:keymaps({
+        n = {
+          { -- step over/next
+            "s",
+            function()
+              dap.step_over()
+            end,
+            { desc = "step forward" },
+          },
+          { -- step back
+            "S",
+            function()
+              dap.step_back()
+            end,
+            { desc = "step backward" },
+          },
+          { -- open thread select
+            "t",
+            function()
+              require("dap.ui.widgets").centered_float(require("dap.ui.widgets").threads)
+            end,
+            { desc = "threads" },
+          },
+          { -- open scope view
+            "v",
+            function()
+              require("dap.ui.widgets").centered_float(require("dap.ui.widgets").scopes)
+            end,
+            { desc = "variables" },
+          },
+          { -- hover with value
+            "J",
+            function()
+              require("dap.ui.widgets").centered_float(require("dap.ui.widgets").expression)
+            end,
+            { desc = "hover value" },
+          },
+          { -- evaluate expression continuously
+            "e",
+            function()
+              local exp = vim.fn.input("Expression: ")
+              if exp == "" then
+                exp = vim.fn.expand("<cexpr>")
+              end
+              local prefix = exp:sub(-1) == ")" and "call " or ""
+              require("dap.ui.widgets").preview(prefix .. exp)
+              dap.listeners.after.event_stopped["refresh_expr"] = function()
+                require("dap.ui.widgets").preview(prefix .. exp)
+              end
+            end,
+            { desc = "auto eval" },
+          },
+          { -- clear evaluation watch
+            "E",
+            function()
+              dap.listeners.after.event_stopped["refresh_expr"] = nil
+              vim.cmd("pclose")
+            end,
+            { desc = "clear auto eval" },
+          },
+          { -- toggle breakpoint
+            "b",
+            function()
+              dap.toggle_breakpoint()
+            end,
+            { desc = "toggle breakpoint" },
+          },
+          { -- set conditional breakpoint
+            "B",
+            function()
+              local cond = vim.fn.input("Breakpoint condition: ")
+              dap.set_breakpoint(cond, nil, nil)
+            end,
+            { desc = "conditional break" },
+          },
+          { -- continue
+            "c",
+            function()
+              dap.continue()
+            end,
+            { desc = "continue" },
+          },
+          { -- reverse continue
+            "C",
+            function()
+              dap.reverse_continue()
+            end,
+            { desc = "reverse continue" },
+          },
+          { -- run to cursor
+            ".",
+            function()
+              dap.run_to_cursor()
+            end,
+            { desc = "run to cursor" },
+          },
+          { -- step into
+            "i",
+            function()
+              dap.step_into()
+            end,
+            { desc = "step into" },
+          },
+          { -- step out of
+            "o",
+            function()
+              dap.step_out()
+            end,
+            { desc = "step out" },
+          },
+          { -- down one frame
+            "d",
+            function()
+              dap.down()
+            end,
+            { desc = "frame down" },
+          },
+          { -- up one frame
+            "u",
+            function()
+              dap.up()
+            end,
+            { desc = "frame up" },
+          },
+          { -- open frame select
+            "f",
+            function()
+              require("dap.ui.widgets").centered_float(require("dap.ui.widgets").frames)
+            end,
+            { desc = "frames" },
+          },
+          { -- exit debug mode
+            "<esc>",
+            function()
+              DEBUG_MODE:deactivate()
+            end,
+            { desc = "exit" },
+          },
+          { -- restart
+            "r",
+            function()
+              dap.restart()
+            end,
+            { desc = "restart" },
+          },
+          { -- quit
+            "q",
+            function()
+              dap.listeners.after.event_stopped["refresh_expr"] = nil
+              vim.cmd("pclose")
+              dap.terminate()
+              dap.repl.close()
+            end,
+            { desc = "quit" },
+          },
+          { -- quit and clear breakpoints
+            "Q",
+            function()
+              dap.listeners.after.event_stopped["refresh_expr"] = nil
+              vim.cmd("pclose")
+              dap.terminate()
+              dap.repl.close()
+              dap.clear_breakpoints()
+            end,
+            { desc = "quit and clear" },
+          },
+        },
+      })
     end,
   },
 
@@ -1372,6 +1438,12 @@ return inject_all({
           name = "todo highlights",
           table = vim.g,
           field = "minihipatterns_disable",
+        })
+        :field({
+          key = "D",
+          name = "highlight usages and definitions",
+          table = vim.g,
+          field = "disable_highlight_defs",
         })
         :field({
           key = "i",
@@ -1772,9 +1844,9 @@ return inject_all({
   },
 
   {
-    "debugloop/telescope-undo.nvim",
+    "Ajaymamtora/telescope-undo.nvim",
     enabled = false,
-    dev = true,
+    -- dev = true,
     dependencies = {
       {
         "nvim-telescope/telescope.nvim",

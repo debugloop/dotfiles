@@ -51,7 +51,6 @@ end, { desc = "grep in project" })
 -- jump back to last position
 vim.keymap.set("n", "<bs>", "<c-o>", { desc = "jump backwards" })
 vim.keymap.set("n", "<s-bs>", "<c-i>", { desc = "jump forwards" })
-vim.keymap.set("n", "gb", "<c-t>", { desc = "tagstack backwards" })
 vim.keymap.set("n", "gl", function()
   local lcount = vim.api.nvim_buf_line_count(0)
   local last_change = vim.api.nvim_buf_get_mark(0, ".")
@@ -121,6 +120,7 @@ vim.keymap.set({ "n", "x" }, "gy", function()
   local repo = vim.fn.systemlist("git config --get remote.origin.url")[1]
   local repo_nosuffix = string.gsub(repo, "(.*)%.git", "%1")
   local repo_path = string.gsub(repo_nosuffix, "git@github%.com:(.*)", "%1")
+  repo_path = string.gsub(repo_nosuffix, "https://github%.com/(.*)", "%1")
   url = url .. repo_path .. "/blob/"
   -- revision
   local rev = vim.fn.systemlist("git rev-parse HEAD")[1]
@@ -144,7 +144,7 @@ end, { silent = true, desc = "copy git url" })
 
 -- banish weird default mappings
 vim.keymap.set("n", "gQ", "<nop>") -- ex mode
-vim.keymap.set("n", "s", "<nop>") -- substitute char
+vim.keymap.set({ "n", "x" }, "s", "<nop>") -- substitute char
 vim.keymap.set("n", "S", "<nop>") -- substitute rest of line
 
 -- indent on insert in empty lines

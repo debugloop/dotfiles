@@ -1,4 +1,9 @@
-{inputs, ...}: {
+{
+  inputs,
+  lib,
+  config,
+  ...
+}: {
   imports = [
     inputs.agenix.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
@@ -9,7 +14,6 @@
   };
 
   nix = {
-    channel.enable = false;
     settings = {
       experimental-features = "nix-command flakes";
       substituters = [
@@ -23,6 +27,9 @@
       ];
       trusted-users = ["root" "@wheel"];
     };
+    # flake inputs as channels
+    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
+    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
   };
 
   nixpkgs = {

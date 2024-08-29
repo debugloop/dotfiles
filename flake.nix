@@ -19,6 +19,7 @@
     # neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     gridx = {
       url = "git+ssh://git@github.com/debugloop/gridx";
+      # url = "path:/home/danieln/code/gridx";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

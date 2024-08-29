@@ -97,11 +97,6 @@
         "*" = {
           bg = "#${config.colors.dark_bg} solid_color";
         };
-        "HEADLESS-1" = {
-          position = "0 1440";
-          resolution = "1300 1400";
-          bg = "#${config.colors.red} solid_color";
-        };
       };
       bars = [];
       colors = {
@@ -196,7 +191,6 @@
       };
       startup = [
         {command = "${pkgs.clipman}/bin/clipman clear --all";}
-        {command = "swaymsg create_output && swaymsg output HEADLESS-1 disable";}
       ];
       keybindings = {
         # scratch
@@ -204,8 +198,8 @@
         "Mod4+Shift+Tab" = "move scratchpad";
 
         # virtual output for presenting
-        "Mod4+Backspace" = "output HEADLESS-1 enable";
-        "Mod4+Shift+Backspace" = "output HEADLESS-1 disable";
+        "Mod4+Backspace" = "output eDP-1 enable";
+        "Mod4+Shift+Backspace" = "output eDP-1 disable";
 
         # run
         "Mod4+Return" = "exec ${pkgs.kitty}/bin/kitty";
