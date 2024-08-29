@@ -1,9 +1,11 @@
 {config, ...}: {
   services.grafana = {
     enable = true;
-    domain = "grafana.danieln.de";
-    rootUrl = "https://grafana.danieln.de/";
     settings = {
+      server = {
+        root_url = "https://grafana.danieln.de/";
+        domain = "grafana.danieln.de";
+      };
       security = {
         admin_user = "danieln";
         admin_password = "$__file{${config.age.secrets.grafana.path}}";
