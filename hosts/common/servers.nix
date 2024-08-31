@@ -1,17 +1,4 @@
-{
-  inputs,
-  lib,
-  ...
-}: {
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    users.danieln = import ../../home/headless.nix;
-    extraSpecialArgs = {
-      inherit inputs;
-    };
-  };
-
+{lib, ...}: {
   services = {
     prometheus.exporters = {
       node = {

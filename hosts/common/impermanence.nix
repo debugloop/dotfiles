@@ -74,6 +74,10 @@
           directory = ".local/share/keyrings";
           mode = "0700";
         }
+        {
+          directory = ".config/rbw";
+          mode = "0700";
+        }
       ];
       files = [
         # spotify login cookie

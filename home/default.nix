@@ -20,7 +20,6 @@
   };
 
   manual = {
-    html.enable = true;
     json.enable = true;
   };
 
@@ -41,89 +40,111 @@
       NODE_PATH = "${pkgs.typescript}/lib/node_modules";
     };
 
-    file.".sqliterc".text = ''
-      .mode column
-      .headers on
-      .separator ROW "\n"
-      .nullvalue NULL
-    '';
-
-    file.".rgignore".text = ''
-      go.mod
-      go.sum
-    '';
+    file = {
+      ".sqliterc".text = ''
+        .mode column
+        .headers on
+        .separator ROW "\n"
+        .nullvalue NULL
+      '';
+      ".rgignore".text = ''
+        go.mod
+        go.sum
+      '';
+    };
 
     packages = with pkgs; [
       # nix
       age
-      inputs.agenix.packages.x86_64-linux.default
       alejandra
       comma
       devenv
-      inputs.home-manager.packages.x86_64-linux.default
+      inputs.agenix.packages.${pkgs.system}.default
       nh
-      nil
       nixd
       nvd
       # basics
-      difftastic
-      getopt
-      lsof
-      moreutils
-      netcat-openbsd
-      openssh
-      pcre
-      pwgen
-      socat
-      unzip
-      watch
-      wget
-      whois
-      zip
-      # apis
-      curl
-      grpcurl
-      jq
-      jwt-cli
-      yq-go
-      # cli utils
-      ast-grep
       bmon
+      busybox
+      curl
+      dig
       dmidecode
       dogdns
       dstat
       du-dust
       entr
       fd
-      ijq
-      gping
-      miniserve
-      nmap
-      renameutils
-      ripgrep
-      sshfs
-      tokei
-      zk
-      # cli for graphics
-      ghostscript_headless
-      graphviz
-      imagemagick
-      pdftk
-      # dev
-      awscli2
-      buf
-      cargo
-      codespell
-      cutter
-      delve
-      devspace
-      docker-compose
       gcc
+      getopt
       git
       gitAndTools.git-absorb
+      gitAndTools.git-machete
       gitAndTools.git-trim
       glibc
       gnumake
+      highlight
+      ijq
+      jq
+      lsof
+      moreutils
+      netcat-openbsd
+      openssh
+      pwgen
+      renameutils
+      ripgrep
+      socat
+      tokei
+      unzip
+      watch
+      wget
+      whois
+      zip
+      zk
+      # networking
+      gping
+      miniserve
+      nmap
+      sshfs
+      tcpdump
+      # dev api
+      grpcurl
+      jwt-cli
+      k6
+      yq-go
+      # dev languages
+      jupyter
+      lua-language-server
+      luajit
+      nodePackages_latest.yaml-language-server
+      protobuf
+      typescript
+      typescript-language-server
+      # dev general linters
+      ast-grep
+      buf
+      codespell
+      nodePackages_latest.prettier
+      proselint
+      stylua
+      tree-sitter
+      vale
+      yamllint
+      # dev debug
+      rr
+      # dev databases
+      pgcli
+      sqlite
+      redis
+      # dev cloud
+      awscli2
+      devspace
+      ssm-session-manager-plugin
+      kontemplate
+      kubeconform
+      kubectl
+      kustomize
+      # dev go
+      delve
       gofumpt
       goimports-reviser
       golangci-lint
@@ -134,48 +155,15 @@
       gotestsum
       go-tools
       gotools
-      highlight
-      k6
-      kontemplate
-      kubeconform
-      kubectl
-      kustomize
-      luajit
-      lua-language-server
-      nodePackages_latest.yaml-language-server
-      pgcli
-      nodePackages_latest.prettier
-      proselint
-      protobuf
       protoc-gen-go
       protoc-gen-go-grpc
-      python3
-      python3Packages.ipython
-      redis
-      rr
-      sqlite
-      ssm-session-manager-plugin
-      stylua
-      tcpdump
-      tree-sitter
-      typescript
-      typescript-language-server
-      vale
-      yamllint
-      # fun
-      nms
       # hardware (TODO: are those installed system-wide?)
       powertop
       pulseaudio # TODO: should be installed by services
-      # keyboard
-      dfu-util
-      gcc-arm-embedded
-      qmk
     ];
   };
 
   programs = {
-    dircolors.enable = true;
     fzf.enable = true;
     gpg.enable = true;
     home-manager.enable = true;

@@ -14,6 +14,14 @@
     ./tailscale.nix
   ];
 
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    extraSpecialArgs = {
+      inherit inputs;
+    };
+  };
+
   networking = {
     hostName = hostname;
     nftables.enable = true;

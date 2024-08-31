@@ -30,35 +30,16 @@
     ...
   }: {
     formatter = {
-      x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
+      x86_64-linux = nixpkgs.legacyPackages.${nixpkgs.system}.alejandra;
     };
     homeConfigurations = let
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      pkgs = nixpkgs.legacyPackages.${nixpkgs.system};
     in {
-      "danieln@lusus" = home-manager.lib.homeManagerConfiguration {
+      "danieln" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [
           ./home
-          ({...}: {
-            imports = [
-              inputs.gridx.home-module
-            ];
-          })
         ];
-        extraSpecialArgs = {
-          inherit inputs;
-        };
-      };
-      "danieln@simmons" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [./home];
-        extraSpecialArgs = {
-          inherit inputs;
-        };
-      };
-      "danieln@hyperion" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [./home/headless.nix];
         extraSpecialArgs = {
           inherit inputs;
         };
@@ -76,6 +57,14 @@
           ./hosts/common/laptops.nix
           ./hosts/simmons
           ({...}: {
+            home-manager.users.danieln = (
+              {...}: {
+                imports = [
+                  ./home
+                  ./home/graphical.nix
+                ];
+              }
+            );
             nixpkgs.overlays = [
               # inputs.neovim-nightly-overlay.overlay
             ];
@@ -94,16 +83,18 @@
           ./hosts/common/laptops.nix
           ./hosts/lusus
           ({...}: {
-            nixpkgs.overlays = [
-              # inputs.neovim-nightly-overlay.overlay
-            ];
             home-manager.users.danieln = (
               {...}: {
                 imports = [
+                  ./home
+                  ./home/graphical.nix
                   inputs.gridx.home-module
                 ];
               }
             );
+            nixpkgs.overlays = [
+              # inputs.neovim-nightly-overlay.overlay
+            ];
           })
         ];
       };
@@ -118,6 +109,15 @@
           ./hosts/common
           ./hosts/common/servers.nix
           ./hosts/hyperion
+          ({...}: {
+            home-manager.users.danieln = (
+              {...}: {
+                imports = [
+                  ./home
+                ];
+              }
+            );
+          })
         ];
       };
     };

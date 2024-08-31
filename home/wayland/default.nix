@@ -102,6 +102,7 @@
 
   home.packages = with pkgs; [
     arc-theme
+    cutter
     nemo
     easyeffects
     filezilla
@@ -120,7 +121,6 @@
     pavucontrol
     pinentry-gnome3
     playerctl
-    python311Packages.managesieve
     slack
     slurp
     spotify

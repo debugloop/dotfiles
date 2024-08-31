@@ -1,17 +1,4 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: {
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    users.danieln = import ../../home;
-    extraSpecialArgs = {
-      inherit inputs;
-    };
-  };
-
+{pkgs, ...}: {
   networking = {
     networkmanager.enable = true;
     firewall.allowedTCPPorts = [
