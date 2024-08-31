@@ -18,6 +18,10 @@
     ./wezterm
   ];
 
+  manual = {
+    html.enable = true;
+  };
+
   gtk.enable = true; # applies generated configs
 
   home = {
@@ -36,6 +40,48 @@
       XDG_DOWNLOAD_DIR = "/home/danieln/downloads";
       XDG_PICTURES_DIR = "/home/danieln/pictures";
     };
+    packages = with pkgs; [
+      # applications
+      cutter
+      easyeffects
+      eog
+      evince
+      filezilla
+      gimp
+      google-chrome
+      inkscape
+      libreoffice
+      nemo
+      pavucontrol
+      spotify
+      teamspeak_client
+      vlc
+      wdisplays
+      wev
+      wireshark
+      wl-mirror
+      # general gui
+      arc-theme
+      gnome-icon-theme
+      hicolor-icon-theme
+      libnotify.out
+      mako
+      pinentry-gnome3
+      # cli
+      ghostscript_headless
+      graphviz
+      grim
+      imagemagick
+      kanshi
+      pdftk
+      playerctl
+      slurp
+      xdg-utils
+      # not precisely graphical, but require physical access
+      dfu-util
+      gcc-arm-embedded
+      qmk
+    ];
   };
 
   xdg = {
@@ -99,38 +145,4 @@
       '';
     };
   };
-
-  home.packages = with pkgs; [
-    arc-theme
-    cutter
-    nemo
-    easyeffects
-    filezilla
-    gimp
-    eog
-    evince
-    gnome-icon-theme
-    google-chrome
-    grim
-    hicolor-icon-theme
-    inkscape
-    kanshi
-    libnotify.out
-    libreoffice
-    mako
-    pavucontrol
-    pinentry-gnome3
-    playerctl
-    slack
-    slurp
-    spotify
-    teamspeak_client
-    virt-manager
-    vlc
-    wdisplays
-    wev
-    wireshark
-    wl-mirror
-    xdg-utils
-  ];
 }

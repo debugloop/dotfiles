@@ -72,6 +72,7 @@
       du-dust
       entr
       fd
+      ffmpeg
       gcc
       getopt
       git

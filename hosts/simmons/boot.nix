@@ -50,7 +50,7 @@
     kernelPackages = pkgs.linuxPackages_latest;
     kernelModules = ["kvm-amd"];
     kernelParams = ["amdgpu.sg_display=0"];
-    extraModulePackages = [];
+    extraModulePackages = with config.boot.kernelPackages; [v4l2loopback.out];
     tmp.useTmpfs = true;
   };
 

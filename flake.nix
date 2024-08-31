@@ -61,7 +61,7 @@
               {...}: {
                 imports = [
                   ./home
-                  ./home/graphical.nix
+                  ./home/wayland
                 ];
               }
             );
@@ -87,7 +87,7 @@
               {...}: {
                 imports = [
                   ./home
-                  ./home/graphical.nix
+                  ./home/wayland
                   inputs.gridx.home-module
                 ];
               }
