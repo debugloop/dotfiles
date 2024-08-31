@@ -64,7 +64,6 @@
       nvd
       # basics
       bmon
-      busybox
       curl
       dig
       dmidecode
