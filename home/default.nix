@@ -11,7 +11,6 @@
     ./helix.nix
     ./nvim
     ./starship.nix
-    ./wayland
   ];
 
   nixpkgs.config = {

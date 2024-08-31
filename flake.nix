@@ -114,6 +114,7 @@
               {...}: {
                 imports = [
                   ./home
+                  ./home/headless.nix
                 ];
               }
             );
