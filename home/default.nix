@@ -70,6 +70,7 @@
       dogdns
       dstat
       du-dust
+      dyff
       entr
       fd
       ffmpeg
