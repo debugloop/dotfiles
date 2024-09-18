@@ -120,7 +120,7 @@ vim.keymap.set({ "n", "x" }, "gy", function()
   local repo = vim.fn.systemlist("git config --get remote.origin.url")[1]
   local repo_nosuffix = string.gsub(repo, "(.*)%.git", "%1")
   local repo_path = string.gsub(repo_nosuffix, "git@github%.com:(.*)", "%1")
-  repo_path = string.gsub(repo_nosuffix, "https://github%.com/(.*)", "%1")
+  repo_path = string.gsub(repo_path, "https://github%.com/(.*)", "%1")
   url = url .. repo_path .. "/blob/"
   -- revision
   local rev = vim.fn.systemlist("git rev-parse HEAD")[1]
