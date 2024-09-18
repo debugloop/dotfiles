@@ -111,8 +111,10 @@
       };
       rebase = {
         autosquash = true;
+        autostash = true;
         updateRefs = true;
       };
+      merge.autostash = true;
       rerere.enabled = true;
       tag.sort = "version:refname";
       url."ssh://git@github.com/".insteadOf = "https://github.com/";
