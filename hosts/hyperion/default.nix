@@ -2,6 +2,7 @@
   imports = [
     ./boot.nix
     ../services/caddy.nix
+    ../services/factorio.nix
     ../services/grafana.nix
     ../services/grocy.nix
     ../services/matrix.nix

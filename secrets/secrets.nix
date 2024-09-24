@@ -10,4 +10,5 @@ in {
   "tailscale.age".publicKeys = all;
   "grafana.age".publicKeys = all;
   "miniflux.age".publicKeys = all;
+  "factorio.age".publicKeys = all;
 }
