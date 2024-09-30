@@ -60,6 +60,23 @@
           "interval" = 1;
           "format" = "{:%a, %d.%m. %H:%M:%S}";
           "tooltip-format" = "<tt>{calendar}</tt>";
+          "calendar" = {
+            "mode" = "month";
+            "weeks-pos" = "left";
+            "on-scroll" = 1;
+            "format" = {
+              "months" = "<span color='#${config.colors.foreground}'>{}</span>";
+              "days" = "<span color='#${config.colors.foreground}'>{}</span>";
+              "weeks" = "<span color='#${config.colors.bright-black}'>W{}</span>";
+              "weekdays" = "<span color='#${config.colors.foreground}'>{}</span>";
+              "today" = "<span color='#${config.colors.red}'><b>{}</b></span>";
+            };
+          };
+          "actions" = {
+            "on-click-right" = "mode";
+            "on-scroll-up" = "shift_down";
+            "on-scroll-down" = "shift_up";
+          };
           "locale" = "en_GB.utf-8";
         };
         "custom/media" = {
