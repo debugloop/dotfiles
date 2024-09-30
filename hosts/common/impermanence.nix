@@ -18,6 +18,7 @@
       "/var/lib/nixos" # uid and gid mappings
       "/var/log" # logs
       "/var/lib/rancher/k3s" # k3s cluster
+      "/var/lib/docker" # docker rootful
     ];
     files = [
       "/etc/machine-id" # important, e.g. for journald
@@ -86,6 +87,8 @@
         ".config/spotify/Users/analogbyte-user/prefs"
         # kubectl settings
         ".kube/config"
+        # other
+        ".netrc"
       ];
     };
   };

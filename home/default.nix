@@ -60,6 +60,7 @@
       devenv
       inputs.agenix.packages.${pkgs.system}.default
       nh
+      nix-tree
       nixd
       nvd
       # basics
