@@ -15,7 +15,7 @@
     enable = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    factorio
-  ];
+  # environment.systemPackages = with pkgs; [
+  #   factorio
+  # ];
 }
