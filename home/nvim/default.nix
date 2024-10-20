@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  inputs,
   ...
 }: {
   programs.neovim = {
@@ -31,14 +32,13 @@
     vimPlugins = builtins.listToAttrs (
       lib.lists.forEach [
         "conform-nvim"
-        "cmp-nvim-lsp"
         "diffview-nvim"
+        "friendly-snippets"
         "kanagawa-nvim"
         "lazy-nvim"
         "lazydev-nvim"
         "noice-nvim"
         "nui-nvim"
-        "nvim-cmp"
         "nvim-bqf"
         "nvim-dap"
         "nvim-lint"
@@ -65,12 +65,14 @@
         "mini-bracketed"
         "mini-bufremove"
         "mini-clue"
+        "mini-completion"
         "mini-diff"
         "mini-extra"
         "mini-files"
+        "mini-fuzzy"
         "mini-git"
         "mini-hipatterns"
-        # "mini-icons"
+        "mini-icons"
         "mini-indentscope"
         "mini-jump"
         "mini-operators"
@@ -91,14 +93,11 @@
         }
       )
     );
-    miniPluginGit = pkgs.fetchFromGitHub {
-      owner = "echasnovski";
-      repo = "mini.nvim";
-      rev = "6c873ff81c318119923a424e3aea39000d3a10cf";
-      sha256 = "sha256-XlSGXaYinJwMKOWdFz+Fyoi9L2bpWZupkr9W8LM6V7c=";
-    };
   in
     {
+      "nvim/nixpkgs/blink-cmp" = {
+        source = inputs.nvim-blink-cmp.packages.${pkgs.system}.default;
+      };
       "nvim/nixpkgs/fzf" = {
         source = "${pkgs.fzf}/share/vim-plugins/fzf";
       };
@@ -106,12 +105,9 @@
         source = pkgs.fetchFromGitHub {
           owner = "idanarye";
           repo = "nvim-impairative";
-          rev = "v0.2.0";
+          rev = "v0.5.0";
           sha256 = "sha256-bXEABjb3HvVcQmVbDdDB5CSMp1rd+6AIFihOYnO1slg=";
         };
-      };
-      "nvim/nixpkgs/mini-icons" = {
-        source = miniPluginGit;
       };
     }
     // vimPlugins

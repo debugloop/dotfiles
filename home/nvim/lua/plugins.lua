@@ -29,6 +29,86 @@ local function inject_all(specs)
 end
 
 return inject_all({
+  {
+    "saghen/blink.cmp",
+    lazy = false, -- it handles itself and is an integral part anyhow
+    -- enabled = false,
+    dependencies = {
+      { "rafamadriz/friendly-snippets" },
+    },
+    opts = {
+      keymap = {
+        show = "<c-space>",
+        hide = "<c-e>",
+        accept = "<cr>",
+        select_and_accept = "<cr>",
+        select_prev = { "<s-tab>", "<up>", "<c-p>" },
+        select_next = { "<tab>", "<down>", "<c-n>" },
+
+        show_documentation = "<c-space>",
+        hide_documentation = "<c-space>",
+        scroll_documentation_up = "<c-u>",
+        scroll_documentation_down = "<c-d>",
+
+        snippet_forward = "<tab>",
+        snippet_backward = "<s-tab>",
+      },
+      accept = {
+        auto_brackets = {
+          enabled = true,
+        },
+      },
+      windows = {
+        autocomplete = {
+          selection = "auto_insert",
+          max_height = 16,
+        },
+        documentation = {
+          auto_show = true,
+          max_width = 82,
+          max_height = 16,
+        },
+      },
+      highlight = {
+        use_nvim_cmp_as_default = true,
+      },
+      nerd_font_variant = "mono",
+      sources = {
+        providers = {
+          { "blink.cmp.sources.lsp", name = "LSP" },
+          { "blink.cmp.sources.path", name = "Path" },
+          { "blink.cmp.sources.snippets", name = "Snippets", score_offset = -3 },
+        },
+      },
+      kind_icons = {
+        Class = "󰠱",
+        Color = "󰏘",
+        Constant = "󰏿",
+        Constructor = "󰒓",
+        Enum = "",
+        EnumMember = "",
+        Event = "󱐋",
+        Field = "󰇽",
+        File = "󰈔",
+        Folder = "󰉋",
+        Function = "󰊕",
+        Interface = "",
+        Keyword = "󰌋",
+        Method = "󰆧",
+        Module = "󰅩",
+        Operator = "󰆕",
+        Property = "󰜢",
+        Reference = "",
+        Snippet = "",
+        Struct = "",
+        Text = "󰉿",
+        TypeParameter = "󰅲",
+        Unit = "",
+        Value = "󰎠",
+        Variable = "󰂡",
+      },
+    },
+  },
 
   {
     "stevearc/conform.nvim",
@@ -142,8 +222,7 @@ return inject_all({
   },
 
   {
-    "MeanderingProgrammer/markdown.nvim",
-    name = "render-markdown",
+    "MeanderingProgrammer/render-markdown.nvim",
     ft = "markdown",
     dependencies = {
       { "nvim-treesitter/nvim-treesitter" },
@@ -250,6 +329,40 @@ return inject_all({
       },
     },
     opts = {},
+  },
+
+  {
+    "echasnovski/mini.completion",
+    enabled = false,
+    lazy = false,
+    dependencies = {
+      {
+        "echasnovski/mini.icons",
+      },
+      {
+        "echasnovski/mini.fuzzy",
+        opts = {},
+      },
+    },
+    keys = {
+      {
+        "<tab>",
+        [[pumvisible() ? "\<c-n>" : "\<tab>"]],
+        mode = "i",
+        expr = true,
+      },
+      {
+        "<s-tab>",
+        [[pumvisible() ? "\<c-p>" : "\<s-tab>"]],
+        mode = "i",
+        expr = true,
+      },
+    },
+    opts = {
+      delay = {
+        signature = 10 ^ 7,
+      },
+    },
   },
 
   {
@@ -460,6 +573,43 @@ return inject_all({
     config = function(_, opts)
       opts.highlighters.hex_color = require("mini.hipatterns").gen_highlighter.hex_color()
       require("mini.hipatterns").setup(opts)
+    end,
+  },
+
+  {
+    "echasnovski/mini.icons",
+    opts = {
+      lsp = {
+        class = { glyph = "󰠱" },
+        color = { glyph = "󰏘" },
+        constant = { glyph = "󰏿" },
+        constructor = { glyph = "󰒓" },
+        enum = { glyph = "" },
+        enumMember = { glyph = "" },
+        event = { glyph = "󱐋" },
+        field = { glyph = "󰇽" },
+        file = { glyph = "󰈔" },
+        folder = { glyph = "󰉋" },
+        ["function"] = { glyph = "󰊕" },
+        interface = { glyph = "" },
+        keyword = { glyph = "󰌋" },
+        method = { glyph = "󰆧" },
+        module = { glyph = "󰅩" },
+        operator = { glyph = "󰆕" },
+        property = { glyph = "󰜢" },
+        reference = { glyph = "" },
+        snippet = { glyph = "" },
+        struct = { glyph = "" },
+        text = { glyph = "󰉿" },
+        typeParameter = { glyph = "󰅲" },
+        unit = { glyph = "" },
+        value = { glyph = "󰎠" },
+        variable = { glyph = "󰂡" },
+      },
+    },
+    config = function(_, opts)
+      require("mini.icons").setup(opts)
+      MiniIcons.tweak_lsp_kind()
     end,
   },
 
@@ -774,14 +924,9 @@ return inject_all({
       presets = {
         bottom_search = true,
         command_palette = true,
-        long_message_to_split = true,
       },
-      lsp = {
-        override = {
-          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-          ["vim.lsp.util.stylize_markdown"] = true,
-          ["cmp.entry.get_documentation"] = true,
-        },
+      popupmenu = {
+        enabled = false,
       },
       views = {
         mini = {
@@ -942,116 +1087,6 @@ return inject_all({
         border = "single",
       },
     },
-  },
-
-  {
-    "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
-    module = false, -- needed so it does not lazy load early
-    dependencies = {
-      { "hrsh7th/cmp-nvim-lsp" },
-    },
-    config = function(_, _)
-      require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
-      local kind_icons = {
-        Text = "",
-        Method = "󰆧",
-        Function = "󰊕",
-        Constructor = "",
-        Field = "󰇽",
-        Variable = "󰂡",
-        Class = "󰠱",
-        Interface = "",
-        Module = "",
-        Property = "󰜢",
-        Unit = "",
-        Value = "󰎠",
-        Enum = "",
-        Keyword = "󰌋",
-        Snippet = "",
-        Color = "󰏘",
-        File = "󰈙",
-        Reference = "",
-        Folder = "󰉋",
-        EnumMember = "",
-        Constant = "󰏿",
-        Struct = "",
-        Event = "",
-        Operator = "󰆕",
-        TypeParameter = "󰅲",
-      }
-      local has_words_before = function()
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-      end
-      local cmp = require("cmp")
-      cmp.setup({
-        sources = cmp.config.sources({
-          { name = "nvim_lsp" },
-          {
-            name = "lazydev",
-            group_index = 0, -- set group index to 0 to skip loading LuaLS completions
-          },
-        }),
-        sorting = {
-          priority_weight = 1,
-          comparators = {
-            cmp.config.compare.locality,
-            cmp.config.compare.recently_used,
-            cmp.config.compare.score,
-            cmp.config.compare.offset,
-            cmp.config.compare.order,
-          },
-        },
-        formatting = {
-          expandable_indicator = true,
-          fields = { "abbr", "kind", "menu" },
-          format = function(_, vim_item)
-            vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind:lower())
-            return vim_item
-          end,
-        },
-        experimental = {
-          ghost_text = {
-            hl_group = "@comment",
-          },
-        },
-        preselect = cmp.PreselectMode.None,
-        mapping = {
-          ["<tab>"] = cmp.mapping(function(fallback)
-            if vim.snippet.active({ direction = 1 }) then
-              vim.snippet.jump(1)
-            elseif cmp.visible() then
-              cmp.select_next_item()
-            elseif has_words_before() then
-              cmp.complete()
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-          ["<s-tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-          ["<cr>"] = cmp.mapping({
-            i = function(fallback)
-              if cmp.visible() and cmp.get_active_entry() then
-                cmp.confirm({
-                  behavior = cmp.ConfirmBehavior.Replace,
-                  select = false,
-                })
-              else
-                fallback()
-              end
-            end,
-            s = cmp.mapping.confirm({ select = true }),
-          }),
-        },
-      })
-    end,
   },
 
   {

@@ -22,6 +22,10 @@
       # url = "path:/home/danieln/code/gridx";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nvim-blink-cmp = {
+      url = "github:Saghen/blink.cmp";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
