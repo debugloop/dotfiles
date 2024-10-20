@@ -1097,6 +1097,24 @@ return inject_all({
         dev = true,
         opts = {},
       },
+      {
+        "jbyuki/one-small-step-for-vimkind",
+        lazy = false,
+        config = function()
+          local dap = require("dap")
+          dap.configurations.lua = {
+            {
+              type = "nlua",
+              request = "attach",
+              name = "Attach to running Neovim instance",
+            },
+          }
+
+          dap.adapters.nlua = function(callback, config)
+            callback({ type = "server", host = config.host or "127.0.0.1", port = config.port or 8086 })
+          end
+        end,
+      },
     },
     keys = {
       {
@@ -1110,6 +1128,11 @@ return inject_all({
           -- set breakpoint if there is none
           if #require("dap.breakpoints").to_qf_list(require("dap.breakpoints").get()) == 0 then
             dap.toggle_breakpoint()
+          end
+          -- if we're in a lua file, run the file
+          if vim.bo.filetype == "lua" then
+            require("osv").run_this()
+            return
           end
           -- if we're in a test file, run in test mode
           local ok, inTestfile, testName = pcall(SurroundingTestName)
