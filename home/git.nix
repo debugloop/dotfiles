@@ -51,6 +51,7 @@
       rba = "rebase --abort";
       rbc = "rebase --continue";
       s = "status --short";
+      sh = "show --stat";
       sw = "switch";
 
       # repo path
