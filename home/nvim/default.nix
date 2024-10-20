@@ -47,6 +47,7 @@
         "nvim-treesitter"
         "nvim-treesitter-context"
         "nvim-treesitter-textobjects"
+        "render-markdown-nvim"
         "zk-nvim"
       ]
       (
