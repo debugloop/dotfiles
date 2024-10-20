@@ -183,6 +183,29 @@ vim.keymap.set("n", "<leader>j", function()
   vim.cmd.cwindow()
 end, { desc = "list jumplist" })
 
+vim.keymap.set("n", "<leader>c", function()
+  local qf_list = {}
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(buf) then
+      local changelist = vim.fn.getchangelist()[1]
+      local seen = {}
+      for _, v in ipairs(changelist) do
+        if not seen[v.lnum] then
+          seen[v.lnum] = true
+          table.insert(qf_list, {
+            bufnr = buf,
+            lnum = v.lnum,
+            col = v.col,
+            text = vim.api.nvim_buf_get_lines(buf, v.lnum - 1, v.lnum, false)[1],
+          })
+        end
+      end
+    end
+  end
+  vim.fn.setqflist(qf_list, " ")
+  vim.cmd.cwindow()
+end, { desc = "list changelist" })
+
 -- toggle quickfix
 vim.keymap.set("n", "<leader><leader>", function()
   vim.cmd.cwindow()
