@@ -1918,9 +1918,9 @@ return inject_all({
   },
 
   {
-    "Ajaymamtora/telescope-undo.nvim",
+    "debugloop/telescope-undo.nvim",
     enabled = false,
-    -- dev = true,
+    dev = true,
     dependencies = {
       {
         "nvim-telescope/telescope.nvim",
