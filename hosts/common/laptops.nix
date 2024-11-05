@@ -1,6 +1,13 @@
 {pkgs, ...}: {
   networking = {
-    networkmanager.enable = true;
+    networkmanager = {
+      enable = true;
+      logLevel = "DEBUG";
+      wifi = {
+        scanRandMacAddress = false;
+        backend = "iwd";
+      };
+    };
     firewall.allowedTCPPorts = [
       6443
     ];
