@@ -107,7 +107,7 @@
           owner = "idanarye";
           repo = "nvim-impairative";
           rev = "v0.5.0";
-          sha256 = "sha256-bXEABjb3HvVcQmVbDdDB5CSMp1rd+6AIFihOYnO1slg=";
+          sha256 = "sha256-YywI9ntLEmXAf788anlvaUFPLDBne7kmOIIe0GaaC+U=";
         };
       };
     }
