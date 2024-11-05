@@ -9,6 +9,7 @@
   hardware = {
     bluetooth.enable = true;
     graphics.enable = true;
+    sane.enable = true;
   };
 
   virtualisation = {

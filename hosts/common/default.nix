@@ -55,7 +55,7 @@
     mutableUsers = false;
     users.danieln = {
       isNormalUser = true;
-      extraGroups = ["wheel" "video" "docker" "libvirtd" "dialout"];
+      extraGroups = ["wheel" "video" "docker" "libvirtd" "dialout" "scanner" "lp"];
       shell = pkgs.fish;
       hashedPasswordFile = config.age.secrets.password.path;
       openssh.authorizedKeys.keys = [
