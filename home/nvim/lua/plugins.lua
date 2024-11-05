@@ -38,24 +38,44 @@ return inject_all({
     },
     opts = {
       keymap = {
-        show = "<c-space>",
-        hide = "<c-e>",
-        accept = "<cr>",
-        select_and_accept = "<cr>",
-        select_prev = { "<s-tab>", "<up>", "<c-p>" },
-        select_next = { "<tab>", "<down>", "<c-n>" },
-
-        show_documentation = "<c-space>",
-        hide_documentation = "<c-space>",
-        scroll_documentation_up = "<c-u>",
-        scroll_documentation_down = "<c-d>",
-
-        snippet_forward = "<tab>",
-        snippet_backward = "<s-tab>",
+        ["<c-space>"] = { "show", "show_documentation", "hide_documentation" },
+        ["<c-e>"] = { "hide", "fallback" },
+        ["<cr>"] = { "accept", "fallback" },
+        ["<tab>"] = {
+          function(cmp)
+            if cmp.is_in_snippet() then
+              return cmp.select_and_accept()
+            else
+              return cmp.select_next()
+            end
+          end,
+          "snippet_forward",
+          "fallback",
+        },
+        ["<s-tab>"] = { "select_prev", "snippet_backward", "fallback" },
+        ["<up>"] = { "select_prev", "fallback" },
+        ["<down>"] = { "select_next", "fallback" },
+        ["<c-p>"] = { "select_prev", "fallback" },
+        ["<c-n>"] = { "select_next", "fallback" },
+        ["<c-u>"] = { "scroll_documentation_up", "fallback" },
+        ["<c-d>"] = { "scroll_documentation_down", "fallback" },
+      },
+      trigger = {
+        completion = {
+          show_in_snippet = false,
+        },
+      },
+      sources = {
+        completion = {
+          enabled_providers = { "lsp", "path", "snippets", "buffer" },
+        },
       },
       accept = {
         auto_brackets = {
           enabled = true,
+          semantic_token_resolution = {
+            blocked_filetypes = {},
+          },
         },
       },
       windows = {
@@ -72,14 +92,10 @@ return inject_all({
       highlight = {
         use_nvim_cmp_as_default = true,
       },
-      nerd_font_variant = "mono",
-      sources = {
-        providers = {
-          { "blink.cmp.sources.lsp", name = "LSP" },
-          { "blink.cmp.sources.path", name = "Path" },
-          { "blink.cmp.sources.snippets", name = "Snippets", score_offset = -3 },
-        },
+      ghost_text = {
+        enabled = true,
       },
+      nerd_font_variant = "mono",
       kind_icons = {
         Class = "󰠱",
         Color = "󰏘",
