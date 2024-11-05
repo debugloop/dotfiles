@@ -131,6 +131,7 @@
       vale
       yamllint
       # dev debug
+      protoscope
       rr
       # dev databases
       pgcli
