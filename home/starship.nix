@@ -5,7 +5,10 @@
       format = lib.strings.concatStrings [
         "$sudo$hostname" # usually hidden
         "$directory$custom"
+        "$nix_shell"
+        "$direnv"
         "$git_branch$git_commit$git_state$git_status"
+        "$env_var"
         "$cmd_duration"
         "$line_break"
         "$jobs$status$shlvl$character"
@@ -25,6 +28,17 @@
         before_repo_root_style = "green";
         repo_root_style = "bold green";
         read_only = "✖";
+      };
+
+      direnv = {
+        disabled = true;
+      };
+
+      env_var = {
+        disabled = false;
+        variable = "SERIAL_NUMBER";
+        style = "bright-black";
+        format = "[$env_value]($style)";
       };
 
       git_branch = {
@@ -69,6 +83,14 @@
         format = "[$symbol$ram]($style) ";
         style = "bold red";
         symbol = "";
+      };
+
+      nix_shell = {
+        disabled = false;
+        impure_msg = "[󱄅](blue)";
+        pure_msg = "[󱄅](bold white)";
+        unknown_msg = "[󱄅](bold red)";
+        format = "$state ";
       };
 
       status = {
