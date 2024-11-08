@@ -24,7 +24,6 @@
     };
     nvim-blink-cmp = {
       url = "github:Saghen/blink.cmp";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
