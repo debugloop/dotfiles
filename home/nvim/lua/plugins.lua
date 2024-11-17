@@ -72,6 +72,14 @@ return inject_all({
         providers = {
           lsp = { fallback_for = { "lazydev" } },
           lazydev = { name = "LazyDev", module = "lazydev.integrations.blink" },
+          snippets = {
+            enabled = function(ctx)
+              if ctx == nil then
+                return true
+              end
+              return ctx.trigger.kind ~= vim.lsp.protocol.CompletionTriggerKind.TriggerCharacter
+            end,
+          },
         },
       },
       accept = {
