@@ -19,6 +19,9 @@
       font_features = "Iosevka cv99=6 cv85=8";
 
       # basics
+      # cursor_trail = 100;
+      # cursor_trail_decay = "0.3 0.3";
+      # cursor_trail_start_threshold = 16;
       close_on_child_death = "yes";
       focus_follows_mouse = "no";
       enable_audio_bell = "no";
