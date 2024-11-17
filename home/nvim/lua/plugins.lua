@@ -67,7 +67,11 @@ return inject_all({
       },
       sources = {
         completion = {
-          enabled_providers = { "lsp", "path", "snippets", "buffer" },
+          enabled_providers = { "lsp", "path", "snippets", "buffer", "lazydev" },
+        },
+        providers = {
+          lsp = { fallback_for = { "lazydev" } },
+          lazydev = { name = "LazyDev", module = "lazydev.integrations.blink" },
         },
       },
       accept = {
