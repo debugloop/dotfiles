@@ -3,10 +3,62 @@
     packages = with pkgs; [
       git
       tig
+      (rustPlatform.buildRustPackage
+        rec {
+          pname = "mergiraf";
+          version = "0.2.0";
+
+          src = fetchFromGitea {
+            domain = "codeberg.org";
+            owner = "mergiraf";
+            repo = "mergiraf";
+            rev = "v${version}";
+            sha256 = "sha256-egtX2daCbPXi5rX2OxbEZA/VI9R4HMj5LRKbUEBFo+E=";
+          };
+          nativeBuildInputs = [
+            git
+          ];
+          cargoLock = {
+            lockFile = "${src}/Cargo.lock";
+            outputHashes = {
+              "tree-sitter-go-0.23.1" = "sha256-elPqkvVYs0vADOuN/umDteWP5hqcXhQAoSkqYDtTxaU=";
+              "tree-sitter-xml-0.7.0" = "sha256-RTWvOUAs3Uql9DKsP1jf9FZZHaZORE40GXd+6g6RQZw=";
+              "tree-sitter-yaml-0.6.1" = "sha256-gS+SjOnGl/86U9VV/y1ca7naYIe7DAOvOv++jCRLTKo=";
+            };
+          };
+
+          meta = with lib; {
+            description = "A syntax-aware git merge driver for a growing collection of programming languages and file formats.";
+            homepage = "https://codeberg.org/mergiraf/mergiraf";
+            license = licenses.gpl3;
+            maintainers = [];
+          };
+        })
     ];
-    file.".gitignore".text = ''
-      .session.nvim
-    '';
+    file = {
+      ".gitignore".text = ''
+        .session.nvim
+      '';
+      ".gitattributes".text = ''
+        *.java merge=mergiraf
+        *.rs merge=mergiraf
+        *.go merge=mergiraf
+        *.js merge=mergiraf
+        *.jsx merge=mergiraf
+        *.json merge=mergiraf
+        *.yml merge=mergiraf
+        *.yaml merge=mergiraf
+        *.html merge=mergiraf
+        *.htm merge=mergiraf
+        *.xhtml merge=mergiraf
+        *.xml merge=mergiraf
+        *.c merge=mergiraf
+        *.h merge=mergiraf
+        *.cpp merge=mergiraf
+        *.hpp merge=mergiraf
+        *.cs merge=mergiraf
+      '';
+    };
   };
   programs.git = {
     enable = true;
@@ -100,7 +152,10 @@
     extraConfig = {
       branch.sort = "-committerdate";
       commit.gpgsign = true;
-      core.excludesfile = "~/.gitignore";
+      core = {
+        excludesfile = "~/.gitignore";
+        attributesfile = "~/.gitattributes";
+      };
       diff.algorithm = "histogram";
       gpg.format = "ssh";
       init.defaultBranch = "main";
@@ -120,6 +175,10 @@
       tag.sort = "version:refname";
       url."ssh://git@github.com/".insteadOf = "https://github.com/";
       user.signingkey = "~/.ssh/id_ed25519";
+      "merge \"mergiraf\"" = {
+        name = "mergiraf";
+        driver = "mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P";
+      };
     };
   };
 }
