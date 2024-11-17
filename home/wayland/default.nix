@@ -42,7 +42,7 @@
     };
     packages = with pkgs; [
       # applications
-      cutter
+      # cutter
       easyeffects
       eog
       evince
