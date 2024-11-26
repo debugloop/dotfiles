@@ -30,6 +30,26 @@ end
 
 return inject_all({
   {
+    "ColinKennedy/cursor-text-objects.nvim",
+    lazy = false,
+    config = function()
+      vim.keymap.set(
+        { "o", "x" },
+        "[",
+        "<Plug>(cursor-text-objects-up)",
+        { desc = "Run from your current cursor to the end of the text-object." }
+      )
+      vim.keymap.set(
+        { "o", "x" },
+        "]",
+        "<Plug>(cursor-text-objects-down)",
+        { desc = "Run from your current cursor to the end of the text-object." }
+      )
+    end,
+    version = "v1.*",
+  },
+
+  {
     "saghen/blink.cmp",
     lazy = false, -- it handles itself and is an integral part anyhow
     -- enabled = false,
