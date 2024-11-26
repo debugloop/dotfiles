@@ -18,10 +18,6 @@
     allowUnfreePredicate = _: true;
   };
 
-  manual = {
-    json.enable = true;
-  };
-
   home = {
     username = "danieln";
     homeDirectory = "/home/danieln";

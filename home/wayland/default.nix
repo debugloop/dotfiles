@@ -18,10 +18,6 @@
     ./wezterm
   ];
 
-  manual = {
-    html.enable = true;
-  };
-
   gtk.enable = true; # applies generated configs
 
   home = {
