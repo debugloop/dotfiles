@@ -13,12 +13,20 @@
 ; custom go type (@class includes literals?!)
 (type_declaration) @customtype.outer
 
+; add variadic_parameter_declaration
+(parameter_list
+  .
+  (variadic_parameter_declaration) @parameter.inner
+  .
+  ","? @_end
+  (#make-range! "parameter.outer" @parameter.inner @_end))
+
 ; peeking should show the body of functions and types
 [ (type_declaration) (function_declaration) (method_declaration) ] @peek
 
 ; custom go type bodies without curlies
 (type_declaration
-  (type_spec 
+  (type_spec
     name: (type_identifier)
     type: [
     	(struct_type (field_declaration_list . "{" . (_) @_start @_end (_)? @_end . "}"))
