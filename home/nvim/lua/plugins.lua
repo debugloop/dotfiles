@@ -269,10 +269,6 @@ return inject_all({
       { "nvim-treesitter/nvim-treesitter-textobjects" },
     },
     opts = {
-      mappings = {
-        around_last = "aN",
-        inside_last = "iN",
-      },
       n_lines = 200,
     },
     config = function(_, opts)
@@ -293,7 +289,7 @@ return inject_all({
           i = { "@customconditional.inner", "@conditional.inner" },
         }),
         -- loop
-        l = require("mini.ai").gen_spec.treesitter({ a = "@loop.outer", i = { "@customloop.inner", "@loop.inner" } }),
+        L = require("mini.ai").gen_spec.treesitter({ a = "@loop.outer", i = { "@customloop.inner", "@loop.inner" } }),
         -- disable quote, I use string
         q = false,
         -- string
@@ -1651,7 +1647,7 @@ return inject_all({
         f = "a",
         c = "a",
         i = "a",
-        l = "a",
+        L = "a",
         t = "a",
       }) do
         local edge = "left"
