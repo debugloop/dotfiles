@@ -3,7 +3,7 @@
     enable = true;
     settings = {
       format = lib.strings.concatStrings [
-        "$sudo$hostname" # usually hidden
+        "$hostname" # usually hidden
         "$directory$custom"
         "$nix_shell"
         "$direnv"
@@ -97,13 +97,6 @@
         disabled = false;
         pipestatus = true;
         format = "[$status $common_meaning$signal_name]($style)";
-      };
-
-      sudo = {
-        style = "green";
-        format = "[$symbol]($style) ";
-        symbol = "";
-        disabled = false;
       };
 
       shlvl = {
