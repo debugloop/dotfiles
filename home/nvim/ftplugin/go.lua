@@ -38,7 +38,8 @@ vim.lsp.start({
   end,
   root_dir = vim.fs.dirname(vim.fs.find({ "go.mod", "go.sum", ".git/" }, { upward = true })[1]),
   single_file_support = true,
-  capabilities = vim.lsp.protocol.make_client_capabilities(),
+  -- capabilities = vim.lsp.protocol.make_client_capabilities(),
+  capabilities = require("blink.cmp").get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities()),
   settings = {
     gopls = {
       buildFlags = { "-tags=unit,integration,e2e" },
@@ -104,9 +105,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
           },
         },
       }, 10000)
-      -- vim.lsp.buf.execute_command({
-      --   command = "gopls.run_tests",
-      -- })
     end, { desc = "lsp: run test at cursor", buffer = event.buf })
   end,
 })

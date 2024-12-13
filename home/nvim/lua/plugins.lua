@@ -30,6 +30,62 @@ end
 
 return inject_all({
   {
+    "folke/snacks.nvim",
+    lazy = false,
+    keys = {
+      {
+        "<leader>gb",
+        mode = { "n" },
+        function()
+          require("snacks").git.blame_line()
+        end,
+        desc = "Show Git blame",
+      },
+      {
+        "gy",
+        mode = { "n", "x" },
+        function()
+          require("snacks").gitbrowse()
+        end,
+        desc = "copy git url",
+      },
+      {
+        "<leader>n",
+        function()
+          require("snacks").notifier.show_history()
+        end,
+        desc = "Notification History",
+      },
+    },
+    config = function(_, opts)
+      require("snacks").setup(opts)
+      vim.print = require("snacks").debug.inspect
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "MiniFilesActionRename",
+        callback = function(event)
+          require("snacks").rename.on_rename_file(event.data.from, event.data.to)
+        end,
+      })
+    end,
+    opts = {
+      gitbrowse = {
+        notify = false,
+        open = function(url)
+          vim.fn.setreg("+", url, "v")
+        end,
+      },
+      notifier = { enabled = true },
+      quickfile = { enabled = false },
+      statuscolumn = { enabled = true },
+      styles = {
+        notification = {
+          wo = { wrap = true },
+        },
+      },
+    },
+  },
+
+  {
     "ColinKennedy/cursor-text-objects.nvim",
     lazy = false,
     config = function()
@@ -52,38 +108,59 @@ return inject_all({
   {
     "saghen/blink.cmp",
     lazy = false, -- it handles itself and is an integral part anyhow
-    -- enabled = false,
     dependencies = {
       { "rafamadriz/friendly-snippets" },
     },
+    config = function(_, opts)
+      require("blink.cmp").setup(opts)
+      vim.api.nvim_create_autocmd("InsertEnter", {
+        group = vim.api.nvim_create_augroup("blink_signature_help", { clear = true }),
+        callback = function()
+          require("blink.cmp.signature.trigger").show()
+        end,
+      })
+    end,
     opts = {
       keymap = {
-        ["<c-space>"] = { "show", "show_documentation", "hide_documentation" },
-        ["<c-e>"] = { "hide", "fallback" },
-        ["<cr>"] = { "accept", "fallback" },
-        ["<tab>"] = {
-          function(cmp)
-            if cmp.is_in_snippet() then
-              return cmp.select_and_accept()
-            else
-              return cmp.select_next()
-            end
-          end,
-          "snippet_forward",
-          "fallback",
-        },
-        ["<s-tab>"] = { "select_prev", "snippet_backward", "fallback" },
-        ["<up>"] = { "select_prev", "fallback" },
-        ["<down>"] = { "select_next", "fallback" },
-        ["<c-p>"] = { "select_prev", "fallback" },
-        ["<c-n>"] = { "select_next", "fallback" },
-        ["<c-u>"] = { "scroll_documentation_up", "fallback" },
-        ["<c-d>"] = { "scroll_documentation_down", "fallback" },
+        preset = "enter",
+        ["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
+        ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
+        ["<C-u>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-d>"] = { "scroll_documentation_down", "fallback" },
+        ["("] = { "accept", "fallback" },
       },
-      trigger = {
-        completion = {
+      completion = {
+        keyword = {
+          range = "full",
+        },
+        trigger = {
           show_in_snippet = false,
         },
+        list = {
+          selection = "auto_insert",
+        },
+        accept = {
+          auto_brackets = {
+            enabled = true,
+          },
+        },
+        menu = {
+          max_height = 16,
+        },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 50,
+          window = {
+            max_width = 82,
+            max_height = 16,
+          },
+        },
+        ghost_text = {
+          enabled = true,
+        },
+      },
+      signature = {
+        enabled = true,
       },
       sources = {
         completion = {
@@ -102,41 +179,18 @@ return inject_all({
           },
         },
       },
-      accept = {
-        auto_brackets = {
-          enabled = true,
-          semantic_token_resolution = {
-            blocked_filetypes = {},
-          },
-        },
-      },
-      windows = {
-        autocomplete = {
-          selection = "auto_insert",
-          max_height = 16,
-        },
-        documentation = {
-          auto_show = true,
-          max_width = 82,
-          max_height = 16,
-        },
-      },
-      highlight = {
+      appearance = {
         use_nvim_cmp_as_default = true,
-      },
-      ghost_text = {
-        enabled = true,
-      },
-      nerd_font_variant = "mono",
-      kind_icons = {
-        Interface = "",
-        Keyword = "󰌋",
-        Method = "󰆧",
-        Operator = "󰆕",
-        Reference = "",
-        Snippet = "",
-        Value = "󰎠",
-        Variable = "󰂡",
+        kind_icons = {
+          Interface = "",
+          Keyword = "󰌋",
+          Method = "󰆧",
+          Operator = "󰆕",
+          Reference = "",
+          Snippet = "",
+          Value = "󰎠",
+          Variable = "󰂡",
+        },
       },
     },
   },
@@ -278,7 +332,7 @@ return inject_all({
         -- braces
         b = { { "%b()", "%b[]", "%b{}" }, "^.().*().$" },
         -- block
-        B = require("mini.ai").gen_spec.treesitter({ a = "@block.outer", i = { "@customblock.inner", "@block.inner" } }),
+        B = require("mini.ai").gen_spec.treesitter({ a = "@block.outer", i = "@block.inner" }),
         -- call
         c = require("mini.ai").gen_spec.treesitter({ a = "@call.outer", i = "@call.inner" }),
         -- function / method
@@ -286,10 +340,10 @@ return inject_all({
         -- if
         i = require("mini.ai").gen_spec.treesitter({
           a = "@conditional.outer",
-          i = { "@customconditional.inner", "@conditional.inner" },
+          i = "@conditional.inner",
         }),
         -- loop
-        L = require("mini.ai").gen_spec.treesitter({ a = "@loop.outer", i = { "@customloop.inner", "@loop.inner" } }),
+        L = require("mini.ai").gen_spec.treesitter({ a = "@loop.outer", i = "@loop.inner" }),
         -- disable quote, I use string
         q = false,
         -- string
@@ -359,40 +413,6 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.completion",
-    enabled = false,
-    lazy = false,
-    dependencies = {
-      {
-        "echasnovski/mini.icons",
-      },
-      {
-        "echasnovski/mini.fuzzy",
-        opts = {},
-      },
-    },
-    keys = {
-      {
-        "<tab>",
-        [[pumvisible() ? "\<c-n>" : "\<tab>"]],
-        mode = "i",
-        expr = true,
-      },
-      {
-        "<s-tab>",
-        [[pumvisible() ? "\<c-p>" : "\<s-tab>"]],
-        mode = "i",
-        expr = true,
-      },
-    },
-    opts = {
-      delay = {
-        signature = 10 ^ 7,
-      },
-    },
-  },
-
-  {
     "echasnovski/mini.clue",
     event = "VeryLazy",
     config = function(_, _)
@@ -406,8 +426,6 @@ return inject_all({
         },
         triggers = {
           -- custom modes
-          { mode = "n", keys = "<leader>M" },
-          { mode = "x", keys = "<leader>M" },
           { mode = "n", keys = "<leader>d" },
           { mode = "x", keys = "<leader>d" },
           { mode = "n", keys = "<leader>g" },
@@ -421,8 +439,6 @@ return inject_all({
           { mode = "n", keys = "[" },
           { mode = "x", keys = "]" },
           { mode = "x", keys = "[" },
-          -- custom
-          { mode = "n", keys = "p" },
           -- builtin
           { mode = "n", keys = "<leader>" },
           { mode = "x", keys = "<leader>" },
@@ -441,15 +457,6 @@ return inject_all({
           { mode = "x", keys = "z" },
         },
         clues = {
-          -- maps that don't quit move mode
-          { mode = "n", keys = "<leader>Mh", postkeys = "<leader>M" },
-          { mode = "n", keys = "<leader>Mj", postkeys = "<leader>M" },
-          { mode = "n", keys = "<leader>Mk", postkeys = "<leader>M" },
-          { mode = "n", keys = "<leader>Ml", postkeys = "<leader>M" },
-          { mode = "x", keys = "<leader>Mh", postkeys = "<leader>M" },
-          { mode = "x", keys = "<leader>Mj", postkeys = "<leader>M" },
-          { mode = "x", keys = "<leader>Mk", postkeys = "<leader>M" },
-          { mode = "x", keys = "<leader>Ml", postkeys = "<leader>M" },
           -- builtin
           miniclue.gen_clues.g(),
           miniclue.gen_clues.marks(),
@@ -553,36 +560,8 @@ return inject_all({
         end,
         desc = "Show Git info",
       },
-      {
-        "<leader>gb",
-        function()
-          vim.cmd("vertical Git blame -- %")
-        end,
-        desc = "Show git blame",
-      },
     },
     opts = {},
-    config = function(_, opts)
-      require("mini.git").setup(opts)
-      local align_blame = function(au_data)
-        if au_data.data.git_subcommand ~= "blame" then
-          return
-        end
-        -- Align blame output with source
-        local win_src = au_data.data.win_source
-        vim.wo.wrap = false
-        vim.fn.winrestview({ topline = vim.fn.line("w0", win_src) - 1 })
-        vim.api.nvim_win_set_cursor(0, { vim.fn.line(".", win_src), 0 })
-        -- Bind both windows so that they scroll together
-        vim.wo[win_src].scrollbind, vim.wo.scrollbind = true, true
-        vim.wo[win_src].cursorbind, vim.wo.cursorbind = true, true
-      end
-      vim.api.nvim_create_autocmd("User", {
-        group = vim.api.nvim_create_augroup("mini_git", { clear = true }),
-        pattern = "MiniGitCommandSplit",
-        callback = align_blame,
-      })
-    end,
   },
 
   {
@@ -782,9 +761,20 @@ return inject_all({
 
   {
     "echasnovski/mini.splitjoin",
-    keys = { "gS" },
+    keys = {
+      {
+        "gS",
+        function()
+          require("mini.splitjoin").toggle()
+        end,
+        desc = "split/join",
+      },
+    },
     config = function(_, _)
       require("mini.splitjoin").setup({
+        mappings = {
+          toggle = "",
+        },
         split = {
           hooks_post = {
             require("mini.splitjoin").gen_hook.add_trailing_separator({
@@ -834,6 +824,7 @@ return inject_all({
           end
           local diagnostics = MiniStatusline.section_diagnostics({ trunc_width = 75 })
           local filename = MiniStatusline.section_filename({ trunc_width = 140 })
+          local searchcount = MiniStatusline.section_searchcount({ trunc_width = 75 })
           return MiniStatusline.combine_groups({
             { hl = mode_hl, strings = { mode:upper() } },
             {
@@ -873,6 +864,7 @@ return inject_all({
             {
               hl = "StatusLine",
               strings = {
+                searchcount,
                 vim.bo.filetype ~= ""
                   and require("mini.icons").get("filetype", vim.bo.filetype) .. " " .. vim.bo.filetype,
               },
@@ -929,48 +921,6 @@ return inject_all({
     "echasnovski/mini.visits",
     event = "VeryLazy",
     opts = {},
-  },
-
-  {
-    "folke/noice.nvim",
-    main = "noice",
-    event = "VeryLazy",
-    keys = {
-      {
-        "<leader>n",
-        function()
-          require("noice").cmd("history")
-        end,
-        desc = "show message history",
-      },
-    },
-    dependencies = {
-      { "MunifTanjim/nui.nvim" },
-    },
-    opts = {
-      presets = {
-        bottom_search = true,
-        command_palette = true,
-      },
-      popupmenu = {
-        enabled = false,
-      },
-      views = {
-        mini = {
-          timeout = 3000,
-        },
-      },
-      routes = {
-        {
-          filter = {
-            event = "msg_show",
-            kind = "",
-            find = "bytes",
-          },
-          opts = { skip = true },
-        },
-      },
-    },
   },
 
   {
@@ -1124,24 +1074,6 @@ return inject_all({
         dev = true,
         opts = {},
       },
-      {
-        "jbyuki/one-small-step-for-vimkind",
-        lazy = false,
-        config = function()
-          local dap = require("dap")
-          dap.configurations.lua = {
-            {
-              type = "nlua",
-              request = "attach",
-              name = "Attach to running Neovim instance",
-            },
-          }
-
-          dap.adapters.nlua = function(callback, config)
-            callback({ type = "server", host = config.host or "127.0.0.1", port = config.port or 8086 })
-          end
-        end,
-      },
     },
     keys = {
       {
@@ -1158,7 +1090,6 @@ return inject_all({
           end
           -- if we're in a lua file, run the file
           if vim.bo.filetype == "lua" then
-            require("osv").run_this()
             return
           end
           -- if we're in a test file, run in test mode
@@ -1198,7 +1129,7 @@ return inject_all({
         desc = "continue or start fresh session",
       },
       {
-        "gb",
+        "<leader>qb",
         function()
           require("dap").list_breakpoints()
           vim.cmd.cwindow()
@@ -1524,12 +1455,12 @@ return inject_all({
           table = vim.g,
           field = "minihipatterns_disable",
         })
-        :field({
-          key = "D",
-          name = "highlight usages and definitions",
-          table = vim.g,
-          field = "disable_highlight_defs",
-        })
+        -- :field({
+        --   key = "D",
+        --   name = "highlight usages and definitions",
+        --   table = vim.g,
+        --   field = "disable_highlight_defs",
+        -- })
         :field({
           key = "i",
           name = "indentscope",

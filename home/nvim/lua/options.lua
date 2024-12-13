@@ -79,3 +79,9 @@ vim.filetype.add({
 vim.diagnostic.config({
   severity_sort = true,
 })
+
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+  -- border = { "", "", "", "│", "", "", "", "│" },
+  border = "none",
+  max_width = 120,
+})

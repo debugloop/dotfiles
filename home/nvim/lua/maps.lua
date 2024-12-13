@@ -112,36 +112,6 @@ vim.keymap.set("n", "<leader>x", function()
   pcall(vim.cmd.NvimTreeRefresh)
 end, { desc = "close buffers not marked as persistent" })
 
--- copy git url
-vim.keymap.set({ "n", "x" }, "gy", function()
-  -- base
-  local url = "https://github.com/"
-  -- repo
-  local repo = vim.fn.systemlist("git config --get remote.origin.url")[1]
-  local repo_nosuffix = string.gsub(repo, "(.*)%.git", "%1")
-  local repo_path = string.gsub(repo_nosuffix, "git@github%.com:(.*)", "%1")
-  repo_path = string.gsub(repo_path, "https://github%.com/(.*)", "%1")
-  url = url .. repo_path .. "/blob/"
-  -- revision
-  local rev = vim.fn.systemlist("git rev-parse HEAD")[1]
-  url = url .. rev
-  -- path
-  local fullpath = vim.fn.expand("%:p")
-  local gitroot = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
-  url = url .. fullpath:sub(#gitroot + 1, -1)
-  -- lines
-  local first, last
-  if vim.fn.mode():lower() == "v" then
-    first = vim.fn.getpos("v")[2]
-    last = vim.fn.getpos(".")[2]
-  else
-    first = vim.fn.line(".")
-    last = first
-  end
-  url = url .. "#L" .. first .. "-L" .. last
-  vim.fn.setreg("+", url, "v")
-end, { silent = true, desc = "copy git url" })
-
 -- banish weird default mappings
 vim.keymap.set("n", "gQ", "<nop>") -- ex mode
 vim.keymap.set({ "n", "x" }, "s", "<nop>") -- substitute char
@@ -166,7 +136,7 @@ vim.keymap.set("n", "dd", function()
 end, { desc = "delete line", expr = true })
 
 -- open jumplist
-vim.keymap.set("n", "<leader>j", function()
+vim.keymap.set("n", "<leader>qj", function()
   local jumplist = vim.fn.getjumplist()[1]
   local qf_list = {}
   for _, v in ipairs(jumplist) do
@@ -183,7 +153,7 @@ vim.keymap.set("n", "<leader>j", function()
   vim.cmd.cwindow()
 end, { desc = "list jumplist" })
 
-vim.keymap.set("n", "<leader>c", function()
+vim.keymap.set("n", "<leader>qc", function()
   local qf_list = {}
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_loaded(buf) then
