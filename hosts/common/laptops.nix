@@ -88,7 +88,10 @@
     fira-go
     fira-math
     iosevka
-    (nerdfonts.override {fonts = ["FiraCode" "FiraMono" "Noto" "Iosevka"];})
+    nerd-fonts.fira-code
+    nerd-fonts.fira-mono
+    nerd-fonts.noto
+    nerd-fonts.iosevka
     noto-fonts
     noto-fonts-extra
     noto-fonts-monochrome-emoji
