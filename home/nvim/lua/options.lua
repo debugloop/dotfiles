@@ -37,14 +37,6 @@ vim.opt.smartcase = true -- search case-sensitive when capital letters are searc
 vim.opt.cmdheight = 0 -- more space on the bottom
 vim.opt.laststatus = 3 -- global statusline
 vim.opt.signcolumn = "yes" -- always show signcolumn
-vim.opt.shortmess:append({
-  l = false, -- don't abbreviate remaining write message
-  W = true, -- no "written" messages when saving
-  I = true, -- no intro
-  c = true, -- no messages on completion items
-  C = true, -- no messages when scanning for completion
-  s = true, -- no search wrap message
-})
 
 -- virtual text
 vim.opt.listchars = "eol:¬,tab:»·,trail:~,space:·" -- list these chars if enabled

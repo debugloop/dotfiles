@@ -42,13 +42,12 @@
         "nvim-bqf"
         "nvim-dap"
         "nvim-lint"
-        "nvim-pqf"
         "nvim-tree-lua"
         "nvim-treesitter"
         "nvim-treesitter-context"
         "nvim-treesitter-textobjects"
         "render-markdown-nvim"
-        "zk-nvim"
+        "snacks-nvim"
       ]
       (
         name: {
@@ -66,11 +65,9 @@
         "mini-bracketed"
         "mini-bufremove"
         "mini-clue"
-        "mini-completion"
         "mini-diff"
         "mini-extra"
         "mini-files"
-        "mini-fuzzy"
         "mini-git"
         "mini-hipatterns"
         "mini-icons"

@@ -49,13 +49,6 @@ return inject_all({
         end,
         desc = "copy git url",
       },
-      {
-        "<leader>n",
-        function()
-          require("snacks").notifier.show_history()
-        end,
-        desc = "Notification History",
-      },
     },
     config = function(_, opts)
       require("snacks").setup(opts)
@@ -68,14 +61,22 @@ return inject_all({
       })
     end,
     opts = {
+      bigfile = { enabled = true },
       gitbrowse = {
         notify = false,
         open = function(url)
           vim.fn.setreg("+", url, "v")
         end,
       },
+      input = { enabled = true },
       notifier = { enabled = true },
       quickfile = { enabled = false },
+      scroll = {
+        enabled = true,
+        animate = {
+          duration = { step = 15, total = 150 },
+        },
+      },
       statuscolumn = { enabled = true },
       styles = {
         notification = {
@@ -83,26 +84,6 @@ return inject_all({
         },
       },
     },
-  },
-
-  {
-    "ColinKennedy/cursor-text-objects.nvim",
-    lazy = false,
-    config = function()
-      vim.keymap.set(
-        { "o", "x" },
-        "[",
-        "<Plug>(cursor-text-objects-up)",
-        { desc = "Run from your current cursor to the end of the text-object." }
-      )
-      vim.keymap.set(
-        { "o", "x" },
-        "]",
-        "<Plug>(cursor-text-objects-down)",
-        { desc = "Run from your current cursor to the end of the text-object." }
-      )
-    end,
-    version = "v1.*",
   },
 
   {
@@ -121,31 +102,24 @@ return inject_all({
       })
     end,
     opts = {
-      keymap = {
-        preset = "enter",
-        ["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
-        ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
-        ["<C-u>"] = { "scroll_documentation_up", "fallback" },
-        ["<C-d>"] = { "scroll_documentation_down", "fallback" },
-        ["("] = { "accept", "fallback" },
+      appearance = {
+        use_nvim_cmp_as_default = true,
+        kind_icons = {
+          Interface = "",
+          Keyword = "󰌋",
+          Method = "󰆧",
+          Operator = "󰆕",
+          Reference = "",
+          Snippet = "",
+          Value = "󰎠",
+          Variable = "󰂡",
+        },
       },
       completion = {
-        keyword = {
-          range = "full",
-        },
-        trigger = {
-          show_in_snippet = false,
-        },
-        list = {
-          selection = "auto_insert",
-        },
         accept = {
           auto_brackets = {
             enabled = true,
           },
-        },
-        menu = {
-          max_height = 16,
         },
         documentation = {
           auto_show = true,
@@ -158,16 +132,46 @@ return inject_all({
         ghost_text = {
           enabled = true,
         },
+        keyword = {
+          range = "full",
+        },
+        list = {
+          selection = "auto_insert",
+        },
+        menu = {
+          max_height = 16,
+          draw = {
+            treesitter = { "lsp" },
+          },
+        },
+        trigger = {
+          show_in_snippet = false,
+          show_on_insert_on_trigger_character = false,
+        },
+      },
+      keymap = {
+        preset = "enter",
+        ["<tab>"] = { "select_next", "snippet_forward", "fallback" },
+        ["<s-tab>"] = { "select_prev", "snippet_backward", "fallback" },
+        ["<c-u>"] = { "scroll_documentation_up", "fallback" },
+        ["<c-d>"] = { "scroll_documentation_down", "fallback" },
+        ["("] = { "accept", "fallback" },
+        ["<C-e>"] = { "cancel", "fallback" },
       },
       signature = {
         enabled = true,
+        window = {
+          direction_priority = { "s", "n" },
+        },
       },
       sources = {
-        completion = {
-          enabled_providers = { "lsp", "path", "snippets", "buffer", "lazydev" },
-        },
+        default = { "lsp", "path", "snippets", "buffer", "lazydev" },
+        cmdline = {},
         providers = {
-          lsp = { fallback_for = { "lazydev" } },
+          lsp = {
+            fallbacks = { "lazydev" },
+            score_offset = 10,
+          },
           lazydev = { name = "LazyDev", module = "lazydev.integrations.blink" },
           snippets = {
             enabled = function(ctx)
@@ -177,19 +181,6 @@ return inject_all({
               return ctx.trigger.kind ~= vim.lsp.protocol.CompletionTriggerKind.TriggerCharacter
             end,
           },
-        },
-      },
-      appearance = {
-        use_nvim_cmp_as_default = true,
-        kind_icons = {
-          Interface = "",
-          Keyword = "󰌋",
-          Method = "󰆧",
-          Operator = "󰆕",
-          Reference = "",
-          Snippet = "",
-          Value = "󰎠",
-          Variable = "󰂡",
         },
       },
     },
@@ -924,6 +915,68 @@ return inject_all({
   },
 
   {
+    "folke/noice.nvim",
+    main = "noice",
+    event = "VeryLazy",
+    keys = {
+      {
+        "<leader>n",
+        function()
+          require("noice").cmd("history")
+        end,
+        desc = "show message history",
+      },
+    },
+    dependencies = {
+      { "MunifTanjim/nui.nvim" },
+    },
+    opts = {
+      lsp = {
+        hover = {
+          silent = true,
+        },
+        override = {
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true,
+        },
+        signature = {
+          enabled = false,
+        },
+      },
+      presets = {
+        bottom_search = true,
+        command_palette = true,
+      },
+      views = {
+        mini = {
+          timeout = 3000,
+        },
+      },
+      routes = {
+        {
+          filter = {
+            event = "msg_show",
+            kind = "",
+            find = "bytes",
+          },
+          opts = { skip = true },
+        },
+        {
+          filter = {
+            event = "msg_show",
+            any = {
+              { find = "%d+L, %d+B" },
+              { find = "; after #%d+" },
+              { find = "; before #%d+" },
+            },
+          },
+          view = "mini",
+        },
+      },
+    },
+  },
+
+  {
     "stevearc/quicker.nvim",
     event = "VeryLazy",
     opts = {
@@ -1617,7 +1670,8 @@ return inject_all({
     opts = {
       bash = { "shellcheck" },
       go = { "golangcilint", "codespell" },
-      -- markdown = { 'vale', 'languagetool', },
+      markdown = { "proselint" },
+      text = { "proselint" },
       nix = { "nix" },
       -- yaml = { "yamllint" },
     },
@@ -1630,12 +1684,6 @@ return inject_all({
       })
     end,
   },
-
-  -- {
-  --   "yorickpeterse/nvim-pqf",
-  --   event = "VeryLazy", -- needs to be loaded before qf results are generated
-  --   opts = {},
-  -- },
 
   {
     "folke/lazydev.nvim",
@@ -1918,12 +1966,5 @@ return inject_all({
       require("telescope").setup(opts)
       require("telescope").load_extension("undo")
     end,
-  },
-
-  {
-    "zk-org/zk-nvim",
-    event = "VeryLazy",
-    main = "zk",
-    opts = {},
   },
 })
