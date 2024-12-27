@@ -1,5 +1,4 @@
 -- general behavior
-vim.opt.clipboard = "unnamedplus" -- sync yank with system clipboard
 vim.opt.updatetime = 500 -- faster CursorHold
 vim.opt.mouse = "" -- no mouse
 vim.opt.jumpoptions = "stack,view" -- discard jumps when diverging from an earlier position
@@ -36,7 +35,6 @@ vim.opt.smartcase = true -- search case-sensitive when capital letters are searc
 -- ui
 vim.opt.cmdheight = 0 -- more space on the bottom
 vim.opt.laststatus = 3 -- global statusline
-vim.opt.signcolumn = "yes" -- always show signcolumn
 
 -- virtual text
 vim.opt.listchars = "eol:¬,tab:»·,trail:~,space:·" -- list these chars if enabled
@@ -70,10 +68,4 @@ vim.filetype.add({
 -- change diagnostic display
 vim.diagnostic.config({
   severity_sort = true,
-})
-
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-  -- border = { "", "", "", "│", "", "", "", "│" },
-  border = "none",
-  max_width = 120,
 })

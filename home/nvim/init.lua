@@ -15,28 +15,15 @@ require("lazy").setup({
   dev = {
     path = "~/code",
   },
-  diff = {
-    cmd = "terminal_git",
-  },
-  checker = {
-    enabled = false,
-  },
   change_detection = {
     enabled = false,
   },
-  install = {
-    colorscheme = { "kanagawa", "zaibatsu" },
-  },
-  readme = {
-    root = vim.fn.stdpath("data") .. "/lazy-readme",
-  },
-  state = vim.fn.stdpath("data") .. "/lazy-state.json",
   performance = {
     rtp = {
       disabled_plugins = {
         "gzip",
         "matchit",
-        "netrw",
+        "matchparen",
         "netrwPlugin",
         "tarPlugin",
         "tohtml",

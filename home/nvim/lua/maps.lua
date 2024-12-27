@@ -16,10 +16,13 @@ vim.keymap.set({ "o", "x" }, "H", "^", { desc = "go to start of line" })
 vim.keymap.set({ "n", "o", "x" }, "L", "$", { desc = "go to end of line" })
 
 -- better paste
-vim.keymap.set("n", "<leader>p", function()
+vim.keymap.set({ "n", "x" }, "<leader>p", '"+p', { desc = "paste system clipboard" })
+vim.keymap.set({ "n", "x" }, "<leader>P", function()
   vim.fn.setreg("+", vim.fn.getreg("+"), "V")
-  vim.cmd.normal("p")
-end, { desc = "paste as lines" })
+  vim.cmd.normal('"+p')
+end, { desc = "paste system clipboard as lines" })
+-- better paste
+vim.keymap.set({ "n", "x" }, "<leader>y", '"+y', { desc = "yank system clipboard" })
 
 -- live grep
 vim.keymap.set("x", "<leader>*", function()
@@ -99,7 +102,7 @@ vim.keymap.set("n", "<s-tab>", function()
   vim.cmd("bp")
 end, { silent = true, desc = "go to previous buffer" })
 vim.keymap.set("n", "<leader>x", function()
-  vim.print("Clearing buffers...")
+  vim.notify("Clearing buffers...")
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     if
       vim.bo[bufnr].buflisted

@@ -7,36 +7,36 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.lsp.buf.format()
     end, { desc = "Format current buffer with LSP" })
     vim.api.nvim_buf_create_user_command(event.buf, "LspRestart", function(_)
-      vim.lsp.stop_client(vim.lsp.get_clients())
+      vim.lsp.stop_client(vim.lsp.get_clients(), true)
       vim.cmd("edit")
     end, { desc = "Restart all active LSP clients" })
 
     -- mappings
+    vim.keymap.set("n", "<cr>", vim.diagnostic.open_float, { buffer = event.buf, desc = "lsp: open diagnostic" })
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = event.buf, desc = "lsp: show definition" })
-    vim.keymap.set("n", "<c-w>d", function()
-      vim.cmd.vsplit()
-      vim.lsp.buf.definition()
-    end, { buffer = event.buf, desc = "lsp: show definition in new split" })
     vim.keymap.set("n", "gD", vim.lsp.buf.type_definition, { buffer = event.buf, desc = "lsp: show type definition" })
-    vim.keymap.set("n", "gr", function()
-      vim.lsp.buf.references({ includeDeclaration = false })
-    end, { buffer = event.buf, desc = "lsp: show refs" })
     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = event.buf, desc = "lsp: show implementations" })
     vim.keymap.set("n", "go", vim.lsp.buf.document_symbol, { buffer = event.buf, desc = "lsp: outline symbols" })
-    vim.keymap.set("n", "<leader>qd", vim.diagnostic.setqflist, { buffer = event.buf, desc = "lsp: list diagnostics" })
-    vim.keymap.set("n", "<leader>qD", function()
-      vim.diagnostic.setqflist({ severity = vim.diagnostic.severity.ERROR })
-    end, { buffer = event.buf, desc = "lsp: list serious diagnostics" })
     vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = event.buf, desc = "lsp: rename symbol" })
     vim.keymap.set("n", "<leader>?", vim.lsp.buf.code_action, { buffer = event.buf, desc = "lsp: run code action" })
-    vim.keymap.set("n", "<cr>", vim.diagnostic.open_float, { buffer = event.buf, desc = "lsp: open diagnostic" })
+    vim.keymap.set("n", "<leader>qd", vim.diagnostic.setqflist, { buffer = event.buf, desc = "lsp: list diagnostics" })
+    vim.keymap.set("n", "<leader>qD", function()
+      vim.diagnostic.setqflist({
+        severity = vim.diagnostic.severity.ERROR,
+      })
+    end, { buffer = event.buf, desc = "lsp: list serious diagnostics" })
+    vim.keymap.set("n", "gr", function()
+      vim.lsp.buf.references({
+        includeDeclaration = false,
+      })
+    end, { buffer = event.buf, desc = "lsp: show refs" })
   end,
 })
 
 -- display help in a vertical split
 vim.api.nvim_create_autocmd("BufWinEnter", {
   group = vim.api.nvim_create_augroup("vertical_help", { clear = true }),
-  pattern = { "*.txt" },
+  pattern = { "*.txt", "*.md" },
   callback = function()
     if vim.o.filetype == "help" then
       vim.cmd.wincmd("L")
@@ -61,7 +61,6 @@ vim.api.nvim_create_autocmd("FileType", {
     "dap-float",
     "dap-preview",
     "git",
-    "lspinfo",
     "man",
     "notify",
     "qf",
@@ -88,7 +87,6 @@ vim.api.nvim_create_autocmd({ "InsertEnter" }, {
   pattern = "*",
   callback = function()
     vim.opt.relativenumber = false -- switch to real line numbers
-    vim.g.miniindentscope_disable = true -- disable indent guides
   end,
 })
 
@@ -102,7 +100,6 @@ vim.api.nvim_create_autocmd({ "InsertLeave" }, {
       return
     end
     vim.opt.relativenumber = true -- switch to relative line numbers
-    vim.g.miniindentscope_disable = false -- re-enable indent guides
   end,
 })
 
@@ -134,7 +131,7 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
 
 -- autocmds for every buffer
 vim.api.nvim_create_autocmd({ "BufRead" }, {
-  group = vim.api.nvim_create_augroup("autocmd_on_buf_enter", { clear = true }),
+  group = vim.api.nvim_create_augroup("add_autocmd_on_buf_enter", { clear = true }),
   pattern = { "*" },
   callback = function(_)
     -- skip those on some filetypes
@@ -178,56 +175,5 @@ vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "TermOpen" }, {
     if vim.startswith(vim.api.nvim_buf_get_name(event.buf), "term://") then
       vim.cmd.startinsert()
     end
-  end,
-})
-
--- highlight definitions (adapted from nvim-treesitter-refactor)
-vim.g.disable_highlight_defs = false
-local highlight_defs_augroup = vim.api.nvim_create_augroup("highlight_defs", { clear = true })
-local highlight_defs = vim.api.nvim_create_namespace("nvim_treesitter_usages")
-vim.api.nvim_create_autocmd({ "CursorHold" }, {
-  group = highlight_defs_augroup,
-  callback = function(event)
-    if vim.g.disable_highlight_defs then
-      return
-    end
-    local ts_utils = require("nvim-treesitter.ts_utils")
-    local locals = require("nvim-treesitter.locals")
-    local last_nodes = {}
-    local node_at_point = ts_utils.get_node_at_cursor()
-    -- Don't calculate usages again if we are on the same node.
-    if
-      node_at_point
-      and node_at_point == last_nodes[event.buf]
-      and #vim.api.nvim_buf_get_extmarks(event.buf, highlight_defs, 0, -1, {}) > 0
-    then
-      return
-    else
-      last_nodes[event.buf] = node_at_point
-    end
-
-    vim.api.nvim_buf_clear_namespace(event.buf, highlight_defs, 0, -1)
-    if not node_at_point then
-      return
-    end
-
-    local def_node, scope = locals.find_definition(node_at_point, event.buf)
-    local usages = locals.find_usages(def_node, scope, event.buf)
-
-    for _, usage_node in ipairs(usages) do
-      if usage_node ~= node_at_point and usage_node ~= def_node then
-        ts_utils.highlight_node(usage_node, event.buf, highlight_defs, "CurSearch")
-      end
-    end
-
-    if def_node ~= node_at_point then
-      ts_utils.highlight_node(def_node, event.buf, highlight_defs, "IncSearch")
-    end
-  end,
-})
-vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter" }, {
-  group = highlight_defs_augroup,
-  callback = function(event)
-    vim.api.nvim_buf_clear_namespace(event.buf, highlight_defs, 0, -1)
   end,
 })

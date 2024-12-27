@@ -166,3 +166,5 @@ vim.keymap.set("n", "gY", function()
   else
   end
 end, { desc = "copy test command" })
+
+pcall(vim.cmd, "TSContextEnable")

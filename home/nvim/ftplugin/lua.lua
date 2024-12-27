@@ -13,6 +13,9 @@ vim.lsp.start({
   settings = {
     Lua = {
       telemetry = { enable = false },
+      diagnostics = {
+        disable = { "missing-fields" },
+      },
     },
   },
 })

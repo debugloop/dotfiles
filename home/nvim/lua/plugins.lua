@@ -30,63 +30,6 @@ end
 
 return inject_all({
   {
-    "folke/snacks.nvim",
-    lazy = false,
-    keys = {
-      {
-        "<leader>gb",
-        mode = { "n" },
-        function()
-          require("snacks").git.blame_line()
-        end,
-        desc = "Show Git blame",
-      },
-      {
-        "gy",
-        mode = { "n", "x" },
-        function()
-          require("snacks").gitbrowse()
-        end,
-        desc = "copy git url",
-      },
-    },
-    config = function(_, opts)
-      require("snacks").setup(opts)
-      vim.print = require("snacks").debug.inspect
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "MiniFilesActionRename",
-        callback = function(event)
-          require("snacks").rename.on_rename_file(event.data.from, event.data.to)
-        end,
-      })
-    end,
-    opts = {
-      bigfile = { enabled = true },
-      gitbrowse = {
-        notify = false,
-        open = function(url)
-          vim.fn.setreg("+", url, "v")
-        end,
-      },
-      input = { enabled = true },
-      notifier = { enabled = true },
-      quickfile = { enabled = false },
-      scroll = {
-        enabled = true,
-        animate = {
-          duration = { step = 15, total = 150 },
-        },
-      },
-      statuscolumn = { enabled = true },
-      styles = {
-        notification = {
-          wo = { wrap = true },
-        },
-      },
-    },
-  },
-
-  {
     "saghen/blink.cmp",
     lazy = false, -- it handles itself and is an integral part anyhow
     dependencies = {
@@ -104,16 +47,6 @@ return inject_all({
     opts = {
       appearance = {
         use_nvim_cmp_as_default = true,
-        kind_icons = {
-          Interface = "",
-          Keyword = "󰌋",
-          Method = "󰆧",
-          Operator = "󰆕",
-          Reference = "",
-          Snippet = "",
-          Value = "󰎠",
-          Variable = "󰂡",
-        },
       },
       completion = {
         accept = {
@@ -139,10 +72,24 @@ return inject_all({
           selection = "auto_insert",
         },
         menu = {
-          max_height = 16,
           draw = {
             treesitter = { "lsp" },
+            components = {
+              kind_icon = {
+                ellipsis = false,
+                text = function(ctx)
+                  local kind_icon, _, _ = require("mini.icons").get("lsp", ctx.kind)
+                  return kind_icon
+                end,
+                highlight = function(ctx)
+                  local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
+                  return hl
+                end,
+              },
+            },
           },
+          max_height = 16,
+          scrollbar = false,
         },
         trigger = {
           show_in_snippet = false,
@@ -203,10 +150,15 @@ return inject_all({
           return { "trim_whitespace" }
         end,
       },
-      format_on_save = {
-        lsp_fallback = true,
-        timeout_ms = 5000,
-      },
+      format_on_save = function(bufnr)
+        if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+          return
+        end
+        return {
+          lsp_fallback = true,
+          timeout_ms = 5000,
+        }
+      end,
       formatters = {
         prettier = {
           prepend_args = { "--tab-width", "4" },
@@ -214,6 +166,22 @@ return inject_all({
       },
     },
     init = function()
+      vim.api.nvim_create_user_command("FormatDisable", function(args)
+        if args.bang then
+          vim.b.disable_autoformat = true
+        else
+          vim.g.disable_autoformat = true
+        end
+      end, {
+        desc = "Disable autoformat-on-save",
+        bang = true,
+      })
+      vim.api.nvim_create_user_command("FormatEnable", function()
+        vim.b.disable_autoformat = false
+        vim.g.disable_autoformat = false
+      end, {
+        desc = "Re-enable autoformat-on-save",
+      })
       vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
     end,
   },
@@ -260,11 +228,20 @@ return inject_all({
       variablebuiltinStyle = { italic = false },
       overrides = function(colors)
         local theme = colors.theme
+        local makeDiagnosticColor = function(color)
+          local c = require("kanagawa.lib.color")
+          return { fg = color, bg = c(color):blend(theme.ui.bg, 0.98):to_hex() }
+        end
         return {
+          -- tinted diagnostics
+          DiagnosticVirtualTextHint = makeDiagnosticColor(theme.diag.hint),
+          DiagnosticVirtualTextInfo = makeDiagnosticColor(theme.diag.info),
+          DiagnosticVirtualTextWarn = makeDiagnosticColor(theme.diag.warning),
+          DiagnosticVirtualTextError = makeDiagnosticColor(theme.diag.error),
           -- dark completion
-          Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },
+          Pmenu = { bg = theme.ui.bg_p1 },
           PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
-          PmenuSbar = { bg = theme.ui.bg_m1 },
+          PmenuSbar = { bg = theme.ui.bg_p1 },
           PmenuThumb = { bg = theme.ui.bg_p2 },
           -- nvim-tree
           NvimTreeNormal = { bg = theme.ui.bg_dim },
@@ -283,13 +260,17 @@ return inject_all({
           MiniJump = { link = "@comment.note" },
           -- less prominent qf title
           BqfPreviewTitle = { link = "BqfPreviewBorder" },
+          NoiceCmdlineIcon = { fg = theme.diag.info, bg = theme.ui.bg },
+          NoiceCmdlinePopupBorder = { fg = theme.diag.info, bg = theme.ui.bg },
+          NoiceCmdlinePopupTitle = { fg = theme.diag.info, bg = theme.ui.bg },
+          NoiceConfirmBorder = { fg = theme.diag.info, bg = theme.ui.bg },
         }
       end,
       colors = {
         theme = {
-          all = {
+          wave = {
             ui = {
-              bg_gutter = "none",
+              bg_gutter = "#1a1a22", -- theme.ui.bg_m1
             },
           },
         },
@@ -639,6 +620,20 @@ return inject_all({
           require("mini.indentscope").config.options.border = "top"
         end,
       })
+      vim.api.nvim_create_autocmd({ "InsertEnter" }, {
+        group = vim.api.nvim_create_augroup("indentscope_insert_enter", { clear = true }),
+        pattern = "*",
+        callback = function()
+          vim.g.miniindentscope_disable = true
+        end,
+      })
+      vim.api.nvim_create_autocmd({ "InsertLeave" }, {
+        group = vim.api.nvim_create_augroup("indentscope_insert_leave", { clear = true }),
+        pattern = "*",
+        callback = function(event)
+          vim.g.miniindentscope_disable = false -- re-enable indent guides
+        end,
+      })
     end,
   },
 
@@ -881,9 +876,10 @@ return inject_all({
 
   {
     "echasnovski/mini.surround",
-    keys = { "s" },
+    event = "VeryLazy",
     opts = {
       search_method = "cover_or_next",
+      silent = true,
     },
   },
 
@@ -1114,7 +1110,7 @@ return inject_all({
       },
       preview = {
         winblend = 0,
-        border = "single",
+        border = { "─", "─", "─", "", "─", "─", "─", "" },
       },
     },
   },
@@ -1286,7 +1282,7 @@ return inject_all({
         end,
       })
       -- debug mode map overlay
-      DEBUG_MODE = Layers.mode.new()
+      DEBUG_MODE = Layers.mode.new("Debug Mode")
       DEBUG_MODE:auto_show_help()
       DEBUG_MODE:add_hook(function(_)
         vim.cmd("redrawstatus")
@@ -1474,6 +1470,10 @@ return inject_all({
   {
     "idanarye/nvim-impairative",
     event = "VeryLazy",
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter" },
+      { "echasnovski/mini.ai" },
+    },
     config = function(_, _)
       -- options
       vim.keymap.set("n", "<leader>o", "<nop>", { desc = "+options" })
@@ -1508,26 +1508,18 @@ return inject_all({
           table = vim.g,
           field = "minihipatterns_disable",
         })
-        -- :field({
-        --   key = "D",
-        --   name = "highlight usages and definitions",
-        --   table = vim.g,
-        --   field = "disable_highlight_defs",
-        -- })
+        :field({
+          key = "D",
+          name = "highlight usages and definitions",
+          table = vim.g,
+          field = "disable_highlight_defs",
+        })
         :field({
           key = "i",
           name = "indentscope",
           table = vim.g,
           field = "miniindentscope_disable",
         })
-        -- TODO: make highlights toggleable
-        -- :manual({
-        --   key = "I",
-        --   name = "highlight occurences",
-        --   enable = "TSBufEnable refactor.highlight_definitions",
-        --   disable = "TSBufDisable refactor.highlight_definitions",
-        --   toggle = "TSBufToggle refactor.highlight_definitions",
-        -- })
         :option({
           key = "l",
           option = "list",
@@ -1570,31 +1562,6 @@ return inject_all({
           key = "x",
           option = "cursorcolumn",
         })
-      -- ts navigation of usages (adapted from nvim-treesitter-refactor)
-      local function index_of(tbl, obj)
-        for i, o in ipairs(tbl) do
-          if o == obj then
-            return i
-          end
-        end
-      end
-      local function goto_adjacent_usage(delta)
-        local ts_utils = require("nvim-treesitter.ts_utils")
-        local locals = require("nvim-treesitter.locals")
-        local bufnr = vim.api.nvim_get_current_buf()
-        local node_at_point = ts_utils.get_node_at_cursor()
-        if not node_at_point then
-          return
-        end
-        local def_node, scope = locals.find_definition(node_at_point, bufnr)
-        local usages = locals.find_usages(def_node, scope, bufnr)
-        local index = index_of(usages, node_at_point)
-        if not index then
-          return
-        end
-        local target_index = (index + delta + #usages - 1) % #usages + 1
-        ts_utils.goto_node(usages[target_index])
-      end
       -- textobject navigation
       vim.keymap.set("n", "]", "<nop>", { desc = "+forward goto " })
       vim.keymap.set("n", "[", "<nop>", { desc = "+backward goto" })
@@ -1605,34 +1572,109 @@ return inject_all({
         })
         :function_pair({
           key = "]",
+          desc = "reference",
           backward = function()
-            goto_adjacent_usage(-vim.v.count1)
+            pcall(GotoTSUsage, -vim.v.count1)
           end,
           forward = function()
-            goto_adjacent_usage(vim.v.count1)
+            pcall(GotoTSUsage, vim.v.count1)
           end,
         })
         :function_pair({
           key = "[",
+          desc = "reference",
           backward = function()
-            goto_adjacent_usage(-vim.v.count1)
+            pcall(GotoTSUsage, -vim.v.count1)
           end,
           forward = function()
-            goto_adjacent_usage(vim.v.count1)
+            pcall(GotoTSUsage, vim.v.count1)
           end,
         })
-      for key, ia in pairs({
-        a = "i",
-        A = "i",
-        b = "i",
-        B = "i",
-        s = "i",
-        S = "i",
-        f = "a",
-        c = "a",
-        i = "a",
-        L = "a",
-        t = "a",
+      for key, obj in pairs({
+        a = {
+          name = "arguments",
+          scope = "i",
+          reverse = false,
+          textobject = "a",
+        },
+        A = {
+          name = "argmuments",
+          scope = "i",
+          reverse = true,
+          textobject = "a",
+        },
+        b = {
+          name = "braces",
+          scope = "i",
+          reverse = false,
+          textobject = "b",
+        },
+        B = {
+          name = "blocks",
+          scope = "i",
+          reverse = false,
+          textobject = "B",
+        },
+        s = {
+          name = "strings",
+          scope = "i",
+          reverse = false,
+          textobject = "s",
+        },
+        S = {
+          name = "strings",
+          scope = "i",
+          reverse = true,
+          textobject = "s",
+        },
+        f = {
+          name = "functions",
+          scope = "a",
+          reverse = false,
+          textobject = "f",
+        },
+        F = {
+          name = "functions",
+          scope = "a",
+          reverse = true,
+          textobject = "f",
+        },
+        c = {
+          name = "calls",
+          scope = "a",
+          reverse = false,
+          textobject = "c",
+        },
+        C = {
+          name = "calls",
+          scope = "i",
+          reverse = true,
+          textobject = "c",
+        },
+        i = {
+          name = "ifs",
+          scope = "a",
+          reverse = false,
+          textobject = "i",
+        },
+        I = {
+          name = "ifs",
+          scope = "a",
+          reverse = true,
+          textobject = "i",
+        },
+        L = {
+          name = "loops",
+          scope = "a",
+          reverse = false,
+          textobject = "L",
+        },
+        t = {
+          name = "types",
+          scope = "a",
+          reverse = false,
+          textobject = "t",
+        },
       }) do
         local edge = "left"
         local target = "beginning"
@@ -1640,7 +1682,7 @@ return inject_all({
           backward = "cover_or_prev",
           forward = "next",
         }
-        if key == key:upper() then
+        if obj.reverse then
           edge = "right"
           target = "end"
           dirmap = {
@@ -1650,12 +1692,12 @@ return inject_all({
         end
         base:unified_function({
           key = key,
-          desc = "jump to " .. target .. " of '" .. key:lower() .. "' textobject",
+          desc = "jump to " .. target .. " of '" .. obj.textobject .. "' textobject",
           fun = function(direction)
             require("mini.ai").move_cursor(
               edge,
-              ia,
-              key:lower(),
+              obj.scope,
+              obj.textobject,
               { search_method = dirmap[direction], n_times = vim.v.count1 }
             )
           end,
@@ -1863,6 +1905,67 @@ return inject_all({
     },
     config = function(_, opts)
       require("nvim-treesitter.configs").setup(opts)
+      -- ts navigation of usages (adapted from nvim-treesitter-refactor, used in impairative config)
+      local function index_of(tbl, obj)
+        for i, o in ipairs(tbl) do
+          if o == obj then
+            return i
+          end
+        end
+      end
+      function GotoTSUsage(delta)
+        local ts_utils = require("nvim-treesitter.ts_utils")
+        local locals = require("nvim-treesitter.locals")
+        local bufnr = vim.api.nvim_get_current_buf()
+        local node_at_point = ts_utils.get_node_at_cursor()
+        if not node_at_point then
+          return
+        end
+        local def_node, scope = locals.find_definition(node_at_point, bufnr)
+        local usages = locals.find_usages(def_node, scope, bufnr)
+        local index = index_of(usages, node_at_point)
+        if not index then
+          return
+        end
+        local target_index = (index + delta + #usages - 1) % #usages + 1
+        ts_utils.goto_node(usages[target_index])
+      end
+      -- highlight definitions (adapted from nvim-treesitter-refactor)
+      vim.g.disable_highlight_defs = false
+      local highlight_defs_augroup = vim.api.nvim_create_augroup("highlight_defs", { clear = true })
+      local highlight_defs_ns = vim.api.nvim_create_namespace("nvim_treesitter_usages")
+      vim.api.nvim_create_autocmd({ "CursorHold" }, {
+        group = highlight_defs_augroup,
+        callback = function(event)
+          if vim.g.disable_highlight_defs then
+            return
+          end
+          -- get cursor node
+          local ts_utils = require("nvim-treesitter.ts_utils")
+          local locals = require("nvim-treesitter.locals")
+          local node = ts_utils.get_node_at_cursor()
+          if not node then
+            return
+          end
+          -- get and paint definition and usages
+          local definition, scope = locals.find_definition(node, event.buf)
+          local usages = locals.find_usages(definition, scope, event.buf)
+          for _, usage in ipairs(usages) do
+            if usage ~= node and usage ~= definition then
+              ts_utils.highlight_node(usage, event.buf, highlight_defs_ns, "CurSearch")
+            end
+          end
+          if definition ~= node then
+            ts_utils.highlight_node(definition, event.buf, highlight_defs_ns, "IncSearch")
+          end
+        end,
+      })
+      vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter" }, {
+        group = highlight_defs_augroup,
+        callback = function(event)
+          vim.api.nvim_buf_clear_namespace(event.buf, highlight_defs_ns, 0, -1)
+        end,
+      })
     end,
   },
 
@@ -1902,6 +2005,68 @@ return inject_all({
         },
         move = {
           enable = false, -- done with mini.ai and impairative
+        },
+      },
+    },
+  },
+
+  {
+    "folke/snacks.nvim",
+    lazy = false,
+    dependencies = {
+      { "echasnovski/mini.git" },
+    },
+    keys = {
+      {
+        "<leader>gb",
+        mode = { "n" },
+        function()
+          require("snacks").git.blame_line()
+        end,
+        desc = "Show Git blame",
+      },
+      {
+        "gy",
+        mode = { "n", "x" },
+        function()
+          require("snacks").gitbrowse({
+            branch = MiniGit.get_buf_data().head,
+          })
+        end,
+        desc = "copy git url",
+      },
+    },
+    config = function(_, opts)
+      require("snacks").setup(opts)
+      vim.print = require("snacks").debug.inspect
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "MiniFilesActionRename",
+        callback = function(event)
+          require("snacks").rename.on_rename_file(event.data.from, event.data.to)
+        end,
+      })
+    end,
+    opts = {
+      bigfile = { enabled = true },
+      gitbrowse = {
+        notify = false,
+        open = function(url)
+          vim.fn.setreg("+", url, "v")
+        end,
+      },
+      input = { enabled = true },
+      notifier = { enabled = true },
+      quickfile = { enabled = false },
+      scroll = {
+        enabled = true,
+        animate = {
+          duration = { step = 15, total = 150 },
+        },
+      },
+      statuscolumn = { enabled = true },
+      styles = {
+        notification = {
+          wo = { wrap = true },
         },
       },
     },
