@@ -2,9 +2,10 @@
   services.kanshi = {
     enable = true;
     systemdTarget = "graphical-session.target";
-    profiles = {
-      home = {
-        outputs = [
+    settings = [
+      {
+        profile.name = "home";
+        profile.outputs = [
           {
             criteria = "LG Electronics LG ULTRAWIDE 208NTKF4V093";
             mode = "3440x1440@60Hz";
@@ -16,17 +17,19 @@
             status = "disable";
           }
         ];
-      };
-      solo = {
-        outputs = [
+      }
+      {
+        profile.name = "solo";
+        profile.outputs = [
           {
             criteria = "eDP-1";
             status = "enable";
           }
         ];
-      };
-      other = {
-        outputs = [
+      }
+      {
+        profile.name = "other";
+        profile.outputs = [
           {
             criteria = "eDP-1";
             status = "enable";
@@ -36,7 +39,7 @@
             status = "enable";
           }
         ];
-      };
-    };
+      }
+    ];
   };
 }
