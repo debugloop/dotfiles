@@ -150,7 +150,6 @@
       # pane creation and navigation
       "alt+enter" = "launch --location=vsplit --cwd=current";
       "shift+alt+enter" = "launch --location=vsplit";
-      "alt+v" = "launch --location=hsplit --cwd=current";
       "shift+alt+v" = "launch --location=hsplit";
       "alt+h" = "neighboring_window left";
       "alt+j" = "neighboring_window down";
