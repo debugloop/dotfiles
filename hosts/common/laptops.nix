@@ -58,22 +58,27 @@
   security = {
     pam.services.swaylock = {};
     rtkit.enable = true;
-    sudo.extraRules = [
-      {
-        # needed for setting external monitor brightness
-        groups = ["wheel"];
-        commands = [
-          {
-            command = "/run/current-system/sw/bin/ddcutil";
-            options = ["NOPASSWD"];
-          }
-          {
-            command = "/run/current-system/sw/bin/k3s";
-            options = ["NOPASSWD"];
-          }
-        ];
-      }
-    ];
+    sudo = {
+      extraConfig = ''
+        Defaults passprompt="[sudo] password for %p: "
+      '';
+      extraRules = [
+        {
+          groups = ["wheel"];
+          commands = [
+            {
+              # needed for setting external monitor brightness
+              command = "/run/current-system/sw/bin/ddcutil";
+              options = ["NOPASSWD"];
+            }
+            {
+              command = "/run/current-system/sw/bin/k3s";
+              options = ["NOPASSWD"];
+            }
+          ];
+        }
+      ];
+    };
   };
 
   environment.systemPackages = with pkgs; [
