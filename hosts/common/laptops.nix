@@ -93,10 +93,11 @@
     fira-go
     fira-math
     iosevka
-    nerd-fonts.fira-code
-    nerd-fonts.fira-mono
-    nerd-fonts.noto
-    nerd-fonts.iosevka
+    # nerd-fonts.fira-code
+    # nerd-fonts.fira-mono
+    # nerd-fonts.noto
+    # nerd-fonts.iosevka
+    nerd-fonts.symbols-only
     noto-fonts
     noto-fonts-extra
     noto-fonts-monochrome-emoji

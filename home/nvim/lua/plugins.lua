@@ -96,6 +96,11 @@ return inject_all({
           show_on_insert_on_trigger_character = false,
         },
       },
+      fuzzy = {
+        prebuilt_binaries = {
+          force_version = "*",
+        },
+      },
       keymap = {
         preset = "enter",
         ["<tab>"] = { "select_next", "snippet_forward", "fallback" },

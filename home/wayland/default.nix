@@ -9,6 +9,7 @@
     # auxiliary services
     ./avizo.nix
     ./clipman.nix
+    ./ghostty.nix
     ./kanshi.nix
     ./kitty.nix
     ./mako.nix
