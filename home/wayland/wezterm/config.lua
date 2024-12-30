@@ -9,7 +9,7 @@ config.enable_wayland = true
 
 -- fonts
 config.font = wezterm.font_with_fallback({
-	"FiraCode Nerd Font",
+	"Fira Mono",
 	"Symbols Nerd Font Mono",
 })
 

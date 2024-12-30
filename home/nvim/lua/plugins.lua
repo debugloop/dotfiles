@@ -30,6 +30,43 @@ end
 
 return inject_all({
   {
+    "aaronik/treewalker.nvim",
+    keys = {
+      {
+        "<m-k>",
+        "<cmd>Treewalker Up<cr>",
+        { desc = "walk tree up", noremap = true, silent = true },
+      },
+      {
+        "<m-j>",
+        "<cmd>Treewalker Down<cr>",
+        { desc = "walk tree down", noremap = true, silent = true },
+      },
+      {
+        "<m-l>",
+        "<cmd>Treewalker Right<cr>",
+        { desc = "walk tree in", noremap = true, silent = true },
+      },
+      {
+        "<m-h>",
+        "<cmd>Treewalker Left<cr>",
+        { desc = "walk tree out", noremap = true, silent = true },
+      },
+      {
+        "<m-s-k>",
+        "<cmd>Treewalker SwapUp<cr>",
+        { desc = "swap tree up", noremap = true, silent = true },
+      },
+      {
+        "<m-s-j>",
+        "<cmd>Treewalker SwapDown<cr>",
+        { desc = "swap tree down", noremap = true, silent = true },
+      },
+    },
+    opts = {},
+  },
+
+  {
     "saghen/blink.cmp",
     lazy = false, -- it handles itself and is an integral part anyhow
     dependencies = {
@@ -1116,6 +1153,7 @@ return inject_all({
       preview = {
         winblend = 0,
         border = { "─", "─", "─", "", "─", "─", "─", "" },
+        show_scroll_bar = false,
       },
     },
   },

@@ -201,7 +201,7 @@
       #waybar {
         background: #${config.colors.dark_bg};
         color: #${config.colors.foreground};
-        font-family: "Fira Code Nerd Font";
+        font-family: "Fira Mono";
         font-size: 13px;
       }
       #workspaces button {

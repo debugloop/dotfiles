@@ -51,7 +51,6 @@
 
     font-family = "Symbols Nerd Font Mono"
 
-    minimum-contrast = 1.1
     auto-update = off
 
     # clipboard

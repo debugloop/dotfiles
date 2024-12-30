@@ -63,13 +63,13 @@
         ahead = "  $count";
         behind = "  $count";
         diverged = "  $ahead_count $behind_count";
-        conflicted = " $count";
+        conflicted = " 󱚟 $count";
         deleted = "  $count";
-        modified = " ✚ $count";
-        renamed = " 󰄾$count";
-        staged = " 󰧞$count";
-        stashed = " ✱$count";
-        untracked = " $count";
+        modified = "  $count";
+        renamed = " 󰶻 $count";
+        staged = " 󰘻 $count";
+        stashed = "  $count";
+        untracked = " … $count";
       };
 
       hostname = {

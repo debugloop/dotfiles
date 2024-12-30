@@ -38,7 +38,7 @@ vim.opt.laststatus = 3 -- global statusline
 
 -- virtual text
 vim.opt.listchars = "eol:¬,tab:»·,trail:~,space:·" -- list these chars if enabled
-vim.opt.showbreak = "↪" -- virtual text for wrapped lines
+vim.opt.showbreak = "" -- virtual text for wrapped lines
 
 -- lines
 vim.opt.cursorline = true -- show line highlight
@@ -68,4 +68,8 @@ vim.filetype.add({
 -- change diagnostic display
 vim.diagnostic.config({
   severity_sort = true,
+})
+
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+  border = { "▏", "", "▕", "▕", "▕", "", "▏", "▏" },
 })
