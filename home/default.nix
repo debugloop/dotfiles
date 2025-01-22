@@ -31,7 +31,7 @@
       MANPAGER = "nvim +Man!";
       HIGHLIGHT_STYLE = "base16/grayscale-dark";
       PAGER = "less -R --use-color -Dd+r -Du+b";
-      ZK_NOTEBOOK_DIR = "/home/danieln/documents/notes";
+      ZK_NOTEBOOK_DIR = "~/documents/notes";
       NODE_PATH = "${pkgs.typescript}/lib/node_modules";
     };
 
@@ -42,7 +42,8 @@
         .separator ROW "\n"
         .nullvalue NULL
       '';
-      ".rgignore".text = ''
+      ".ignore".text = ''
+        vendor/
         go.mod
         go.sum
       '';
@@ -163,6 +164,7 @@
   };
 
   programs = {
+    dircolors.enable = true;
     fzf.enable = true;
     gpg.enable = true;
     home-manager.enable = true;
