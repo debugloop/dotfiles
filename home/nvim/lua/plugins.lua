@@ -30,43 +30,6 @@ end
 
 return inject_all({
   {
-    "aaronik/treewalker.nvim",
-    keys = {
-      {
-        "<m-k>",
-        "<cmd>Treewalker Up<cr>",
-        { desc = "walk tree up", noremap = true, silent = true },
-      },
-      {
-        "<m-j>",
-        "<cmd>Treewalker Down<cr>",
-        { desc = "walk tree down", noremap = true, silent = true },
-      },
-      {
-        "<m-l>",
-        "<cmd>Treewalker Right<cr>",
-        { desc = "walk tree in", noremap = true, silent = true },
-      },
-      {
-        "<m-h>",
-        "<cmd>Treewalker Left<cr>",
-        { desc = "walk tree out", noremap = true, silent = true },
-      },
-      {
-        "<m-s-k>",
-        "<cmd>Treewalker SwapUp<cr>",
-        { desc = "swap tree up", noremap = true, silent = true },
-      },
-      {
-        "<m-s-j>",
-        "<cmd>Treewalker SwapDown<cr>",
-        { desc = "swap tree down", noremap = true, silent = true },
-      },
-    },
-    opts = {},
-  },
-
-  {
     "saghen/blink.cmp",
     lazy = false, -- it handles itself and is an integral part anyhow
     dependencies = {
@@ -728,63 +691,6 @@ return inject_all({
         ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\][%s%)%]}]", register = { cr = false } },
       },
     },
-  },
-
-  {
-    "echasnovski/mini.pick",
-    event = "VeryLazy", -- for overriding vim.ui.select at startup
-    dependencies = {
-      {
-        "echasnovski/mini.extra",
-      },
-    },
-    keys = {
-      {
-        "<leader>f",
-        function()
-          require("mini.pick").builtin.files()
-        end,
-        desc = "find files",
-      },
-      {
-        "<leader>F",
-        function()
-          require("mini.extra").pickers.visit_paths()
-        end,
-        desc = "find in visits",
-      },
-      {
-        "<leader>m",
-        function()
-          require("mini.extra").pickers.marks({ scope = "global" }, {})
-        end,
-        desc = "find in marks",
-      },
-      {
-        "<leader>T",
-        function()
-          require("mini.extra").pickers.hipatterns()
-        end,
-        desc = "find in TODOs",
-      },
-      {
-        "z=",
-        function()
-          require("mini.extra").pickers.spellsuggest()
-        end,
-        desc = "spell suggest",
-      },
-    },
-    opts = {
-      mappings = {
-        move_up = "<c-k>",
-        move_down = "<c-j>",
-      },
-    },
-    config = function(_, opts)
-      require("mini.pick").setup(opts)
-      vim.ui.select = require("mini.pick").ui_select
-    end,
   },
 
   {
@@ -2060,23 +1966,183 @@ return inject_all({
       { "echasnovski/mini.git" },
     },
     keys = {
+      -- open or select important things
+      {
+        "<leader>f",
+        function()
+          require("snacks").picker.files()
+        end,
+        desc = "find files",
+      },
+      {
+        "<leader>F",
+        function()
+          require("snacks").picker.recent()
+        end,
+        desc = "find resent files",
+      },
+      {
+        "<leader>,",
+        function()
+          Snacks.picker.buffers()
+        end,
+        desc = "Buffers",
+      },
+      {
+        "<leader>:",
+        function()
+          Snacks.picker.command_history()
+        end,
+        desc = "Command History",
+      },
+      -- grep
+      {
+        "<leader>/",
+        function()
+          Snacks.picker.grep()
+        end,
+        desc = "Grep",
+      },
+      {
+        "<leader>*",
+        mode = { "n", "x" },
+        function()
+          require("snacks").picker.grep_word()
+        end,
+        desc = "grep word",
+      },
+      -- git
       {
         "<leader>gb",
         mode = { "n" },
         function()
-          require("snacks").git.blame_line()
+          require("snacks").picker.git_log_line()
         end,
-        desc = "Show Git blame",
+        desc = "Show Git Blame",
       },
       {
         "gy",
         mode = { "n", "x" },
         function()
           require("snacks").gitbrowse({
-            branch = MiniGit.get_buf_data().head,
+            branch = MiniGit.get_buf_data(0).head,
           })
         end,
-        desc = "copy git url",
+        desc = "Copy Git URL",
+      },
+      {
+        "<leader>gl",
+        function()
+          Snacks.picker.git_log()
+        end,
+        desc = "Git Log",
+      },
+      {
+        "<leader>gs",
+        function()
+          Snacks.picker.git_status()
+        end,
+        desc = "Git Status",
+      },
+      -- search
+      {
+        '<leader>s"',
+        function()
+          Snacks.picker.registers()
+        end,
+        desc = "Registers",
+      },
+      {
+        "<leader>sa",
+        function()
+          Snacks.picker.autocmds()
+        end,
+        desc = "Autocmds",
+      },
+      {
+        "<leader>sc",
+        function()
+          require("snacks").picker.cliphist()
+        end,
+        desc = "Cliphist",
+      },
+      {
+        "<leader>sd",
+        function()
+          Snacks.picker.diagnostics()
+        end,
+        desc = "Diagnostics",
+      },
+      {
+        "<leader>sh",
+        function()
+          Snacks.picker.help()
+        end,
+        desc = "Help Pages",
+      },
+      {
+        "<leader>sH",
+        function()
+          Snacks.picker.highlights()
+        end,
+        desc = "Highlights",
+      },
+      {
+        "<leader>sj",
+        function()
+          Snacks.picker.jumps()
+        end,
+        desc = "Jumps",
+      },
+      {
+        "<leader>sk",
+        function()
+          Snacks.picker.keymaps()
+        end,
+        desc = "Keymaps",
+      },
+      {
+        "<leader>sl",
+        function()
+          Snacks.picker.loclist()
+        end,
+        desc = "Location List",
+      },
+      {
+        "<leader>sM",
+        function()
+          Snacks.picker.man()
+        end,
+        desc = "Man Pages",
+      },
+      {
+        "<leader>sm",
+        function()
+          Snacks.picker.marks()
+        end,
+        desc = "Marks",
+      },
+      {
+        "<leader>sr",
+        function()
+          Snacks.picker.resume()
+        end,
+        desc = "Resume",
+      },
+      {
+        "<leader>sq",
+        function()
+          Snacks.picker.qflist()
+        end,
+        desc = "Quickfix List",
+      },
+      -- lsp
+      {
+        "go",
+        function()
+          Snacks.picker.lsp_symbols()
+        end,
+        desc = "LSP Symbols",
       },
     },
     config = function(_, opts)
@@ -2099,6 +2165,48 @@ return inject_all({
       },
       input = { enabled = true },
       notifier = { enabled = true },
+      picker = {
+        layout = {
+          preset = function()
+            return vim.o.columns >= 120 and "ivy" or "vertical"
+          end,
+        },
+        layouts = {
+          bqflike = {
+            layout = {
+              box = "vertical",
+              backdrop = true,
+              row = -1,
+              width = 0,
+              height = 0.4,
+              border = "top",
+              title = " {source} {live}",
+              title_pos = "left",
+              {
+                win = "preview",
+                height = 0.6,
+              },
+              {
+                win = "list",
+                border = "top",
+              },
+              {
+                win = "input",
+                height = 1,
+                border = "none",
+              },
+            },
+          },
+        },
+        ui_select = true,
+        win = {
+          input = {
+            keys = {
+              ["<Esc>"] = { "close", mode = { "n", "i" } },
+            },
+          },
+        },
+      },
       quickfile = { enabled = false },
       scroll = {
         enabled = true,

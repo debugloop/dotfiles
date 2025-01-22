@@ -6,6 +6,7 @@
 }: {
   home.packages = [
     inputs.ghostty.packages.${pkgs.system}.default
+    pkgs.chafa
   ];
 
   xdg.configFile."ghostty/config".text = ''

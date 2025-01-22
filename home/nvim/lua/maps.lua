@@ -16,40 +16,10 @@ vim.keymap.set({ "o", "x" }, "H", "^", { desc = "go to start of line" })
 vim.keymap.set({ "n", "o", "x" }, "L", "$", { desc = "go to end of line" })
 
 -- better paste
-vim.keymap.set({ "n", "x" }, "<leader>p", '"+p', { desc = "paste system clipboard" })
-vim.keymap.set({ "n", "x" }, "<leader>P", function()
+vim.keymap.set({ "n", "x" }, "<leader>p", function()
   vim.fn.setreg("+", vim.fn.getreg("+"), "V")
   vim.cmd.normal('"+p')
-end, { desc = "paste system clipboard as lines" })
--- better paste
-vim.keymap.set({ "n", "x" }, "<leader>y", '"+y', { desc = "yank system clipboard" })
-
--- live grep
-vim.keymap.set("x", "<leader>*", function()
-  local a_orig = vim.fn.getreg("a")
-  local mode = vim.fn.mode()
-  if mode ~= "v" and mode ~= "V" then
-    vim.cmd([[normal! gv]])
-  end
-  vim.cmd([[silent! normal! "aygv]])
-  local input = vim.fn.getreg("a")
-  vim.fn.setreg("a", a_orig)
-  if #input > 0 and not string.find(input, "\n") then
-    vim.cmd('silent! grep! "' .. input .. '" | cwindow')
-  end
-end, { desc = "grep visual selection in project" })
-vim.keymap.set("n", "<leader>*", function()
-  local input = vim.fn.expand("<cword>")
-  if #input > 0 then
-    vim.cmd('silent! grep! "' .. input .. '" | cwindow')
-  end
-end, { desc = "grep cursor word in project" })
-vim.keymap.set("n", "<leader>/", function()
-  local input = vim.fn.input("grep: ")
-  if #input > 0 then
-    vim.cmd('silent! grep! "' .. input .. '" | cwindow')
-  end
-end, { desc = "grep in project" })
+end, { desc = "paste as lines" })
 
 -- jump back to last position
 vim.keymap.set("n", "<bs>", "<c-o>", { desc = "jump backwards" })
@@ -80,16 +50,16 @@ vim.keymap.set("x", ">", ">gv", { desc = "indent and reselect" })
 vim.keymap.set({ "n" }, "<esc>", "<cmd>nohl<cr><esc>", { desc = "escape and clear search" })
 
 -- window movement
-vim.keymap.set("n", "<c-h>", "<c-w>h", { desc = "move focus to left window" })
-vim.keymap.set("n", "<c-j>", "<c-w>j", { desc = "move focus to window below" })
-vim.keymap.set("n", "<c-k>", "<c-w>k", { desc = "move focus to window above" })
-vim.keymap.set("n", "<c-l>", "<c-w>l", { desc = "move focus to right window" })
+vim.keymap.set("n", "<m-h>", "<c-w>h", { desc = "move focus to left window" })
+vim.keymap.set("n", "<m-j>", "<c-w>j", { desc = "move focus to window below" })
+vim.keymap.set("n", "<m-k>", "<c-w>k", { desc = "move focus to window above" })
+vim.keymap.set("n", "<m-l>", "<c-w>l", { desc = "move focus to right window" })
 
 -- same for terminal and insert mode
-vim.keymap.set({ "i", "t" }, "<c-h>", "<c-\\><c-n><c-w>h", { desc = "move focus to left window" })
-vim.keymap.set({ "i", "t" }, "<c-j>", "<c-\\><c-n><c-w>j", { desc = "move focus to window below" })
-vim.keymap.set({ "i", "t" }, "<c-k>", "<c-\\><c-n><c-w>k", { desc = "move focus to window above" })
-vim.keymap.set({ "i", "t" }, "<c-l>", "<c-\\><c-n><c-w>l", { desc = "move focus to right window" })
+vim.keymap.set({ "i", "t" }, "<m-h>", "<c-\\><c-n><c-w>h", { desc = "move focus to left window" })
+vim.keymap.set({ "i", "t" }, "<m-j>", "<c-\\><c-n><c-w>j", { desc = "move focus to window below" })
+vim.keymap.set({ "i", "t" }, "<m-k>", "<c-\\><c-n><c-w>k", { desc = "move focus to window above" })
+vim.keymap.set({ "i", "t" }, "<m-l>", "<c-\\><c-n><c-w>l", { desc = "move focus to right window" })
 
 -- window control for terminals
 vim.keymap.set({ "t" }, "<c-w>", "<c-\\><c-n><c-w>", { desc = "window control" })
@@ -186,3 +156,8 @@ end, { desc = "open quickfix" })
 
 -- add undo state when inserting a newline
 vim.keymap.set("i", "<cr>", "<cr><c-g>u")
+
+-- zz on cr
+vim.keymap.set("n", "<c-l>", function()
+  vim.cmd("normal! zz")
+end, { desc = "center sceen" })

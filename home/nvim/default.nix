@@ -41,11 +41,13 @@
         "nui-nvim"
         "nvim-bqf"
         "nvim-dap"
+        "nvim-impairative"
         "nvim-lint"
         "nvim-tree-lua"
         "nvim-treesitter"
         "nvim-treesitter-context"
         "nvim-treesitter-textobjects"
+        "quicker-nvim"
         "render-markdown-nvim"
         "snacks-nvim"
       ]
@@ -98,14 +100,6 @@
       };
       "nvim/nixpkgs/fzf" = {
         source = "${pkgs.fzf}/share/vim-plugins/fzf";
-      };
-      "nvim/nixpkgs/nvim-impairative" = {
-        source = pkgs.fetchFromGitHub {
-          owner = "idanarye";
-          repo = "nvim-impairative";
-          rev = "v0.5.0";
-          sha256 = "sha256-YywI9ntLEmXAf788anlvaUFPLDBne7kmOIIe0GaaC+U=";
-        };
       };
     }
     // vimPlugins

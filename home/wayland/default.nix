@@ -101,6 +101,7 @@
   };
 
   services = {
+    cliphist.enable = true;
     blueman-applet.enable = true;
     gnome-keyring.enable = true;
   };
