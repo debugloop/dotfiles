@@ -65,9 +65,9 @@
       # files from index or from commits
       f = "!f() {
         if [ -z \"$1\" ]; then
-          git ls-files -dmo
+          git ls-files --modified --others --exclude-standard | grep -Ev '^(vendor/|go.(mod|sum)$)'
         else
-          git show -m --pretty=tformat: --name-only $1
+          git show -m --pretty=tformat: --name-only @ | grep -Ev '^(vendor/|go.(mod|sum)$)'
         fi
       }; f";
 
