@@ -55,7 +55,7 @@ vim.opt.splitbelow = true -- open horizontal splits below the current window
 vim.opt.splitright = true -- open vertical splits to the right of the current window
 
 -- diff
-vim.opt.diffopt:append({ "linematch:60" }) -- better diff algorithm
+vim.opt.diffopt = "internal,filler,closeoff,indent-heuristic,linematch:60,algorithm:histogram" -- better diff algorithm
 vim.opt.fillchars:append({ diff = "╱" }) -- blank indicator
 
 -- detect filetypes

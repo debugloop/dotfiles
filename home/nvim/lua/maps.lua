@@ -50,16 +50,16 @@ vim.keymap.set("x", ">", ">gv", { desc = "indent and reselect" })
 vim.keymap.set({ "n" }, "<esc>", "<cmd>nohl<cr><esc>", { desc = "escape and clear search" })
 
 -- window movement
-vim.keymap.set("n", "<m-h>", "<c-w>h", { desc = "move focus to left window" })
-vim.keymap.set("n", "<m-j>", "<c-w>j", { desc = "move focus to window below" })
-vim.keymap.set("n", "<m-k>", "<c-w>k", { desc = "move focus to window above" })
-vim.keymap.set("n", "<m-l>", "<c-w>l", { desc = "move focus to right window" })
+vim.keymap.set("n", "<c-h>", "<c-w>h", { desc = "move focus to left window" })
+vim.keymap.set("n", "<c-j>", "<c-w>j", { desc = "move focus to window below" })
+vim.keymap.set("n", "<c-k>", "<c-w>k", { desc = "move focus to window above" })
+vim.keymap.set("n", "<c-l>", "<c-w>l", { desc = "move focus to right window" })
 
 -- same for terminal and insert mode
-vim.keymap.set({ "i", "t" }, "<m-h>", "<c-\\><c-n><c-w>h", { desc = "move focus to left window" })
-vim.keymap.set({ "i", "t" }, "<m-j>", "<c-\\><c-n><c-w>j", { desc = "move focus to window below" })
-vim.keymap.set({ "i", "t" }, "<m-k>", "<c-\\><c-n><c-w>k", { desc = "move focus to window above" })
-vim.keymap.set({ "i", "t" }, "<m-l>", "<c-\\><c-n><c-w>l", { desc = "move focus to right window" })
+vim.keymap.set({ "i", "t" }, "<c-h>", "<c-\\><c-n><c-w>h", { desc = "move focus to left window" })
+vim.keymap.set({ "i", "t" }, "<c-j>", "<c-\\><c-n><c-w>j", { desc = "move focus to window below" })
+vim.keymap.set({ "i", "t" }, "<c-k>", "<c-\\><c-n><c-w>k", { desc = "move focus to window above" })
+vim.keymap.set({ "i", "t" }, "<c-l>", "<c-\\><c-n><c-w>l", { desc = "move focus to right window" })
 
 -- window control for terminals
 vim.keymap.set({ "t" }, "<c-w>", "<c-\\><c-n><c-w>", { desc = "window control" })
@@ -158,6 +158,6 @@ end, { desc = "open quickfix" })
 vim.keymap.set("i", "<cr>", "<cr><c-g>u")
 
 -- zz on cr
-vim.keymap.set("n", "<c-l>", function()
+vim.keymap.set("n", "<cr>", function()
   vim.cmd("normal! zz")
 end, { desc = "center sceen" })

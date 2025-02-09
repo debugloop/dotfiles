@@ -35,41 +35,23 @@ return inject_all({
     dependencies = {
       { "rafamadriz/friendly-snippets" },
     },
-    config = function(_, opts)
-      require("blink.cmp").setup(opts)
-      vim.api.nvim_create_autocmd("InsertEnter", {
-        group = vim.api.nvim_create_augroup("blink_signature_help", { clear = true }),
-        callback = function()
-          require("blink.cmp.signature.trigger").show()
-        end,
-      })
-    end,
     opts = {
       appearance = {
         use_nvim_cmp_as_default = true,
       },
       completion = {
-        accept = {
-          auto_brackets = {
-            enabled = true,
-          },
-        },
         documentation = {
           auto_show = true,
           auto_show_delay_ms = 50,
-          window = {
-            max_width = 82,
-            max_height = 16,
-          },
-        },
-        ghost_text = {
-          enabled = true,
         },
         keyword = {
           range = "full",
         },
         list = {
-          selection = "auto_insert",
+          selection = {
+            preselect = false,
+            auto_insert = true,
+          },
         },
         menu = {
           draw = {
@@ -98,7 +80,8 @@ return inject_all({
       },
       fuzzy = {
         prebuilt_binaries = {
-          force_version = "*",
+          download = false,
+          ignore_version_mismatch = true,
         },
       },
       keymap = {
@@ -112,6 +95,9 @@ return inject_all({
       },
       signature = {
         enabled = true,
+        trigger = {
+          show_on_insert = true,
+        },
         window = {
           direction_priority = { "s", "n" },
         },
@@ -193,10 +179,44 @@ return inject_all({
 
   {
     "sindrets/diffview.nvim",
-    cmd = { "DiffviewOpen", "DiffviewFileHistory", "PRDiff", "PRLog" },
+    cmd = { "DiffviewOpen", "DiffviewPR" },
+    keys = {
+      {
+        "<leader>gd",
+        "<cmd>DiffviewOpen<cr>",
+        desc = "Open Diffview",
+      },
+    },
     opts = {
+      use_icons = false,
       default_args = {
-        DiffviewOpen = { "--imply-local" },
+        DiffviewOpen = { "--imply-local", "--untracked-files=no" },
+      },
+      keymaps = {
+        view = {
+          ["<esc>"] = "<cmd>tabc<cr>",
+        },
+        diff1 = {
+          ["<esc>"] = "<cmd>tabc<cr>",
+        },
+        diff2 = {
+          ["<esc>"] = "<cmd>tabc<cr>",
+        },
+        diff3 = {
+          ["<esc>"] = "<cmd>tabc<cr>",
+        },
+        diff4 = {
+          ["<esc>"] = "<cmd>tabc<cr>",
+        },
+        file_panel = {
+          ["<esc>"] = "<cmd>tabc<cr>",
+        },
+        file_history_panel = {
+          ["<esc>"] = "<cmd>tabc<cr>",
+        },
+        option_panel = {
+          ["<esc>"] = "<cmd>tabc<cr>",
+        },
       },
       hooks = {
         diff_buf_read = function(_)
@@ -208,11 +228,8 @@ return inject_all({
     },
     config = function(_, opts)
       require("diffview").setup(opts)
-      vim.api.nvim_create_user_command("PRDiff", function()
-        vim.cmd("DiffviewOpen origin/HEAD...HEAD --untracked-files=no --imply-local")
-      end, { desc = "open diffview for current PR" })
-      vim.api.nvim_create_user_command("PRLog", function()
-        vim.cmd("DiffviewFileHistory --range=origin/HEAD...HEAD --base=LOCAL --right-only --no-merges")
+      vim.api.nvim_create_user_command("DiffviewPR", function()
+        vim.cmd("DiffviewOpen origin/HEAD...HEAD")
       end, { desc = "open diffview for current PR" })
     end,
   },
@@ -248,10 +265,6 @@ return inject_all({
           PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
           PmenuSbar = { bg = theme.ui.bg_p1 },
           PmenuThumb = { bg = theme.ui.bg_p2 },
-          -- nvim-tree
-          NvimTreeNormal = { bg = theme.ui.bg_dim },
-          NvimTreeGitDirty = { fg = theme.term[5], bg = "none" },
-          NvimTreeGitStaged = { fg = theme.term[4], bg = "none" },
           -- invisible window separator
           WinSeparator = { fg = theme.ui.bg_dim, bg = theme.ui.bg_dim },
           -- nice tabline
@@ -269,6 +282,10 @@ return inject_all({
           NoiceCmdlinePopupBorder = { fg = theme.diag.info, bg = theme.ui.bg },
           NoiceCmdlinePopupTitle = { fg = theme.diag.info, bg = theme.ui.bg },
           NoiceConfirmBorder = { fg = theme.diag.info, bg = theme.ui.bg },
+          -- document highlights
+          LspReferenceText = { link = "CurSearch" },
+          LspReferenceRead = { link = "CurSearch" },
+          LspReferenceWrite = { link = "IncSearch" },
         }
       end,
       colors = {
@@ -668,27 +685,6 @@ return inject_all({
       },
       sort = {
         prefix = "gs",
-      },
-    },
-  },
-
-  {
-    "echasnovski/mini.pairs",
-    event = "InsertEnter",
-    opts = {
-      mappings = {
-        -- do not auto create a pair when in front of word chars
-        ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\][^%w]" },
-        ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\][^%w]" },
-        ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\][^%w]" },
-        -- do not swallow closing brackets when after a space chars
-        [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\%s]." },
-        ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\%s]." },
-        ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\%s]." },
-        -- we use the default close actions
-        ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\][%s%)%]}]", register = { cr = false } },
-        ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\][%s%)%]}]", register = { cr = false } },
-        ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\][%s%)%]}]", register = { cr = false } },
       },
     },
   },
@@ -1169,6 +1165,7 @@ return inject_all({
             type = "go",
             name = "tests",
             request = "launch",
+            showLog = true,
             mode = "test",
             program = "./${relativeFileDirname}",
             buildFlags = "-tags=unit,integration,e2e",
@@ -1177,12 +1174,14 @@ return inject_all({
             type = "go",
             name = "main",
             request = "launch",
+            showLog = true,
             program = "${fileDirname}",
           },
           {
             type = "go",
             name = "main (with args)",
             request = "launch",
+            showLog = true,
             program = "${fileDirname}",
             args = function()
               local args = {}
@@ -1197,6 +1196,7 @@ return inject_all({
             name = "attach",
             mode = "local",
             request = "attach",
+            showLog = true,
             processId = function()
               return require("dap.utils").pick_process()
             end,
@@ -1206,6 +1206,7 @@ return inject_all({
             name = "remote",
             mode = "remote",
             request = "attach",
+            showLog = true,
             connect = {
               host = "127.0.0.1",
               port = "2345",
@@ -1219,6 +1220,7 @@ return inject_all({
       local dap = require("dap")
       dap.adapters = opts.adapters
       dap.configurations = opts.configurations
+      local debugger = require("debugger")
       -- ui tweaks
       vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "", linehl = "", numhl = "" })
       vim.fn.sign_define("DapBreakpointCondition", { text = "", texthl = "", linehl = "", numhl = "" })
@@ -1285,25 +1287,16 @@ return inject_all({
           { -- evaluate expression continuously
             "e",
             function()
-              local exp = vim.fn.input("Expression: ")
-              if exp == "" then
-                exp = vim.fn.expand("<cexpr>")
-              end
-              local prefix = exp:sub(-1) == ")" and "call " or ""
-              require("dap.ui.widgets").preview(prefix .. exp)
-              dap.listeners.after.event_stopped["refresh_expr"] = function()
-                require("dap.ui.widgets").preview(prefix .. exp)
-              end
+              debugger.add_expr()
             end,
             { desc = "auto eval" },
           },
           { -- clear evaluation watch
             "E",
             function()
-              dap.listeners.after.event_stopped["refresh_expr"] = nil
-              vim.cmd("pclose")
+              debugger.toggle()
             end,
-            { desc = "clear auto eval" },
+            { desc = "toggle dapview" },
           },
           { -- toggle breakpoint
             "b",
@@ -1456,12 +1449,6 @@ return inject_all({
           name = "todo highlights",
           table = vim.g,
           field = "minihipatterns_disable",
-        })
-        :field({
-          key = "D",
-          name = "highlight usages and definitions",
-          table = vim.g,
-          field = "disable_highlight_defs",
         })
         :field({
           key = "i",
@@ -1683,155 +1670,6 @@ return inject_all({
   },
 
   {
-    "nvim-tree/nvim-tree.lua",
-    keys = {
-      {
-        "-",
-        function()
-          require("nvim-tree.api").tree.toggle({ focus = false })
-        end,
-        desc = "toggle buffer tree",
-      },
-    },
-    opts = {
-      on_attach = function(bufnr)
-        vim.keymap.set("n", "<CR>", require("nvim-tree.api").node.open.edit, {
-          desc = "nvim-tree: open",
-          buffer = bufnr,
-          noremap = true,
-          silent = true,
-          nowait = true,
-        })
-      end,
-      hijack_netrw = false,
-      root_dirs = { "~", "/" },
-      update_focused_file = {
-        enable = true,
-        update_root = true,
-      },
-      view = {
-        width = 40,
-      },
-      modified = {
-        enable = true,
-      },
-      filters = {
-        no_buffer = true,
-        custom = { "^.git$" },
-      },
-      renderer = {
-        root_folder_label = ":~:s?$?",
-        group_empty = true,
-        indent_markers = {
-          enable = true,
-        },
-        icons = {
-          show = {
-            file = false,
-            folder = false,
-          },
-          git_placement = "signcolumn",
-          glyphs = {
-            git = {
-              unstaged = "✚",
-              staged = "●",
-              unmerged = "",
-              renamed = "»",
-              untracked = "…",
-              deleted = "✖",
-              ignored = "◌",
-            },
-          },
-        },
-      },
-    },
-    config = function(_, opts)
-      local api = require("nvim-tree.api")
-      local function get_buffers()
-        local current_buffer = require("nvim-tree.api").tree.get_node_under_cursor().absolute_path
-        local pos = 0
-        local bufferlist = {}
-        local function procNode(node)
-          if node.type ~= "file" then
-            for _, subnode in ipairs(node.nodes) do
-              procNode(subnode)
-            end
-          else
-            table.insert(bufferlist, node.absolute_path)
-            if node.absolute_path == current_buffer then
-              pos = #bufferlist
-            end
-          end
-        end
-        procNode(require("nvim-tree.api").tree.get_nodes())
-        return bufferlist, pos
-      end
-      -- conditional setup based on whether tree is showing
-      api.events.subscribe(api.events.Event.TreeOpen, function(_)
-        -- expand all folders
-        api.tree.expand_all()
-        -- hide bufferbar
-        vim.opt.showtabline = 0
-        vim.schedule(function()
-          vim.cmd.doautocmd("VimEnter")
-        end)
-        -- remap tab
-        vim.keymap.set("n", "<tab>", function()
-          api.tree.expand_all()
-          local bufferlist, pos = get_buffers()
-          if pos == #bufferlist then
-            vim.cmd("buffer " .. bufferlist[1])
-          else
-            vim.cmd("buffer " .. bufferlist[pos + 1])
-          end
-        end, { silent = true, desc = "go to next buffer" })
-        vim.keymap.set("n", "<s-tab>", function()
-          api.tree.expand_all()
-          local bufferlist, pos = get_buffers()
-          if pos == 1 then
-            vim.cmd("buffer " .. bufferlist[#bufferlist])
-          else
-            vim.cmd("buffer " .. bufferlist[pos - 1])
-          end
-        end, { silent = true, desc = "go to previous buffer" })
-      end)
-      api.events.subscribe(api.events.Event.TreeClose, function(_)
-        -- show bufferbar
-        vim.opt.showtabline = 2
-        vim.schedule(function()
-          vim.cmd.doautocmd("VimEnter")
-        end)
-        -- remap tab to their regular mappings
-        vim.keymap.set("n", "<tab>", function()
-          vim.cmd("bn")
-        end, { silent = true, desc = "go to next buffer" })
-        vim.keymap.set("n", "<s-tab>", function()
-          vim.cmd("bp")
-        end, { silent = true, desc = "go to previous buffer" })
-      end)
-      -- close buffer tree if we're the last window around
-      vim.api.nvim_create_autocmd({ "QuitPre" }, {
-        group = vim.api.nvim_create_augroup("autoclose_tree", { clear = true }),
-        callback = function()
-          local wins = vim.api.nvim_list_wins()
-          local realwins = #wins - 1 -- the one being closed has to be subtracted
-          for _, w in ipairs(wins) do
-            local bufname = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(w))
-            if bufname == "" or bufname:match("NvimTree_") ~= nil then
-              realwins = realwins - 1
-            end
-          end
-          if realwins < 1 then
-            vim.cmd("NvimTreeClose")
-          end
-        end,
-      })
-      -- finally, setup
-      require("nvim-tree").setup(opts)
-    end,
-  },
-
-  {
     "nvim-treesitter/nvim-treesitter",
     event = "BufReadPost",
     opts = {
@@ -1879,42 +1717,6 @@ return inject_all({
         local target_index = (index + delta + #usages - 1) % #usages + 1
         ts_utils.goto_node(usages[target_index])
       end
-      -- highlight definitions (adapted from nvim-treesitter-refactor)
-      vim.g.disable_highlight_defs = false
-      local highlight_defs_augroup = vim.api.nvim_create_augroup("highlight_defs", { clear = true })
-      local highlight_defs_ns = vim.api.nvim_create_namespace("nvim_treesitter_usages")
-      vim.api.nvim_create_autocmd({ "CursorHold" }, {
-        group = highlight_defs_augroup,
-        callback = function(event)
-          if vim.g.disable_highlight_defs then
-            return
-          end
-          -- get cursor node
-          local ts_utils = require("nvim-treesitter.ts_utils")
-          local locals = require("nvim-treesitter.locals")
-          local node = ts_utils.get_node_at_cursor()
-          if not node then
-            return
-          end
-          -- get and paint definition and usages
-          local definition, scope = locals.find_definition(node, event.buf)
-          local usages = locals.find_usages(definition, scope, event.buf)
-          for _, usage in ipairs(usages) do
-            if usage ~= node and usage ~= definition then
-              ts_utils.highlight_node(usage, event.buf, highlight_defs_ns, "CurSearch")
-            end
-          end
-          if definition ~= node then
-            ts_utils.highlight_node(definition, event.buf, highlight_defs_ns, "IncSearch")
-          end
-        end,
-      })
-      vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter" }, {
-        group = highlight_defs_augroup,
-        callback = function(event)
-          vim.api.nvim_buf_clear_namespace(event.buf, highlight_defs_ns, 0, -1)
-        end,
-      })
     end,
   },
 
@@ -1961,11 +1763,33 @@ return inject_all({
 
   {
     "folke/snacks.nvim",
+    -- picker stuff from snacks
     lazy = false,
-    dependencies = {
-      { "echasnovski/mini.git" },
-    },
     keys = {
+      -- lsp
+      {
+        "go",
+        function()
+          Snacks.picker.lsp_symbols()
+        end,
+        desc = "LSP Symbols",
+      },
+      -- tree explorer
+      {
+        "-",
+        function()
+          Snacks.picker.explorer()
+        end,
+        desc = "Tree",
+      },
+      -- undo
+      {
+        "<leader>u",
+        function()
+          Snacks.picker.undo()
+        end,
+        desc = "Undo",
+      },
       -- open or select important things
       {
         "<leader>f",
@@ -1977,9 +1801,9 @@ return inject_all({
       {
         "<leader>F",
         function()
-          require("snacks").picker.recent()
+          require("snacks").picker.smart()
         end,
-        desc = "find resent files",
+        desc = "find more files smartly",
       },
       {
         "<leader>,",
@@ -2010,39 +1834,6 @@ return inject_all({
           require("snacks").picker.grep_word()
         end,
         desc = "grep word",
-      },
-      -- git
-      {
-        "<leader>gb",
-        mode = { "n" },
-        function()
-          require("snacks").picker.git_log_line()
-        end,
-        desc = "Show Git Blame",
-      },
-      {
-        "gy",
-        mode = { "n", "x" },
-        function()
-          require("snacks").gitbrowse({
-            branch = MiniGit.get_buf_data(0).head,
-          })
-        end,
-        desc = "Copy Git URL",
-      },
-      {
-        "<leader>gl",
-        function()
-          Snacks.picker.git_log()
-        end,
-        desc = "Git Log",
-      },
-      {
-        "<leader>gs",
-        function()
-          Snacks.picker.git_status()
-        end,
-        desc = "Git Status",
       },
       -- search
       {
@@ -2086,6 +1877,13 @@ return inject_all({
           Snacks.picker.highlights()
         end,
         desc = "Highlights",
+      },
+      {
+        "<leader>si",
+        function()
+          Snacks.picker.icons()
+        end,
+        desc = "Icons",
       },
       {
         "<leader>sj",
@@ -2136,35 +1934,8 @@ return inject_all({
         end,
         desc = "Quickfix List",
       },
-      -- lsp
-      {
-        "go",
-        function()
-          Snacks.picker.lsp_symbols()
-        end,
-        desc = "LSP Symbols",
-      },
     },
-    config = function(_, opts)
-      require("snacks").setup(opts)
-      vim.print = require("snacks").debug.inspect
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "MiniFilesActionRename",
-        callback = function(event)
-          require("snacks").rename.on_rename_file(event.data.from, event.data.to)
-        end,
-      })
-    end,
     opts = {
-      bigfile = { enabled = true },
-      gitbrowse = {
-        notify = false,
-        open = function(url)
-          vim.fn.setreg("+", url, "v")
-        end,
-      },
-      input = { enabled = true },
-      notifier = { enabled = true },
       picker = {
         layout = {
           preset = function()
@@ -2207,6 +1978,172 @@ return inject_all({
           },
         },
       },
+    },
+  },
+
+  {
+    "folke/snacks.nvim",
+    -- git stuff from snacks
+    lazy = false,
+    dependencies = {
+      { "echasnovski/mini.git" },
+    },
+    keys = {
+      {
+        "<leader>gb",
+        mode = { "n" },
+        function()
+          require("snacks").picker.git_log_line()
+        end,
+        desc = "Show Git Blame",
+      },
+      {
+        "gy",
+        mode = { "n", "x" },
+        function()
+          require("snacks").gitbrowse({
+            branch = MiniGit.get_buf_data(0).head,
+          })
+        end,
+        desc = "Copy Git URL",
+      },
+      {
+        "<leader>gl",
+        function()
+          Snacks.picker.git_log()
+        end,
+        desc = "Git Log",
+      },
+      {
+        "<leader>gs",
+        function()
+          Snacks.picker.git_status()
+        end,
+        desc = "Git Status",
+      },
+    },
+    opts = {
+      gitbrowse = {
+        notify = false,
+        open = function(url)
+          vim.fn.setreg("+", url, "v")
+        end,
+      },
+    },
+  },
+
+  {
+    "folke/snacks.nvim",
+    -- other stuff from snacks
+    lazy = false,
+    keys = {
+      -- {
+      --   "<leader>ob",
+      --   function()
+      --     Snacks.toggle
+      --       .option("background", {
+      --         on = "light",
+      --         off = "dark",
+      --       })
+      --       :toggle()
+      --   end,
+      --   desc = "toggle background",
+      -- },
+      -- {
+      --   "<leader>od",
+      --   function()
+      --     Snacks.toggle.diagnostics():toggle()
+      --   end,
+      --   desc = "toggle diagnostics",
+      -- },
+      -- {
+      --   "<leader>oh",
+      --   function()
+      --     Snacks.toggle.inlay_hints():toggle()
+      --   end,
+      --   desc = "toggle inlay hints",
+      -- },
+      -- {
+      --   "<leader>oH",
+      --   function()
+      --     Snacks.toggle
+      --       .new({
+      --         id = "todo",
+      --         name = "todo highlights",
+      --         get = function()
+      --           return vim.g.minihipatterns_disable
+      --         end,
+      --         set = function(state)
+      --           vim.g.minihipatterns_disable = state
+      --         end,
+      --       })
+      --       :toggle()
+      --   end,
+      --   desc = "toggle todo highlights",
+      -- },
+      --   :field({
+      --     key = "i",
+      --     name = "indentscope",
+      --     table = vim.g,
+      --     field = "miniindentscope_disable",
+      --   })
+      --   :option({
+      --     key = "l",
+      --     option = "list",
+      --   })
+      --   :option({
+      --     key = "n",
+      --     option = "number",
+      --   })
+      --   :field({
+      --     key = "p",
+      --     name = "auto pairs",
+      --     table = vim.g,
+      --     field = "minipairs_disable",
+      --   })
+      --   :option({
+      --     key = "r",
+      --     option = "relativenumber",
+      --   })
+      --   :option({
+      --     key = "s",
+      --     option = "spell",
+      --   })
+      --   :manual({
+      --     key = "t",
+      --     name = "show context",
+      --     enable = "TSContextEnable",
+      --     disable = "TSContextDisable",
+      --     toggle = "TSContextToggle",
+      --   })
+      --   :option({
+      --     key = "v",
+      --     option = "virtualedit",
+      --     values = { [true] = "all", [false] = "block" },
+      --   })
+      --   :option({
+      --     key = "w",
+      --     option = "wrap",
+      --   })
+      --   :option({
+      --     key = "x",
+      --     option = "cursorcolumn",
+      --   })
+    },
+    config = function(_, opts)
+      require("snacks").setup(opts)
+      vim.print = require("snacks").debug.inspect
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "MiniFilesActionRename",
+        callback = function(event)
+          require("snacks").rename.on_rename_file(event.data.from, event.data.to)
+        end,
+      })
+    end,
+    opts = {
+      bigfile = { enabled = true },
+      input = { enabled = true },
+      notifier = { enabled = true },
       quickfile = { enabled = false },
       scroll = {
         enabled = true,
@@ -2219,6 +2156,9 @@ return inject_all({
         notification = {
           wo = { wrap = true },
         },
+      },
+      toggle = {
+        which_key = false,
       },
     },
   },
