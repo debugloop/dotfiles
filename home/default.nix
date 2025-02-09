@@ -50,6 +50,8 @@
     };
 
     packages = with pkgs; [
+      # tools
+      gmailctl
       # nix
       age
       alejandra
@@ -66,7 +68,7 @@
       dig
       dmidecode
       dogdns
-      dstat
+      dool
       du-dust
       dyff
       entr
