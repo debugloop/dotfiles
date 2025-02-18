@@ -25,9 +25,6 @@
     nvim-blink-cmp = {
       url = "github:Saghen/blink.cmp";
     };
-    ghostty = {
-      url = "github:ghostty-org/ghostty";
-    };
   };
 
   outputs = inputs @ {

@@ -44,9 +44,9 @@ return inject_all({
           auto_show = true,
           auto_show_delay_ms = 50,
         },
-        keyword = {
-          range = "full",
-        },
+        -- keyword = {
+        --   range = "full",
+        -- },
         list = {
           selection = {
             preselect = false,
@@ -102,9 +102,9 @@ return inject_all({
           direction_priority = { "s", "n" },
         },
       },
+      cmdline = {},
       sources = {
         default = { "lsp", "path", "snippets", "buffer", "lazydev" },
-        cmdline = {},
         providers = {
           lsp = {
             fallbacks = { "lazydev" },
@@ -130,10 +130,13 @@ return inject_all({
     cmd = { "ConformInfo" },
     opts = {
       formatters_by_ft = {
+        css = { "prettier" },
         go = { "gofumpt", "goimports", "goimports-reviser" },
+        html = { "prettier" },
         javascript = { "prettier" },
         lua = { "stylua" },
         nix = { "alejandra" },
+        templ = { "templ", "injected" },
         ["*"] = function(bufnr)
           if vim.fn.getbufvar(bufnr, "&filetype") == "terraform" then
             return {}
@@ -685,6 +688,27 @@ return inject_all({
       },
       sort = {
         prefix = "gs",
+      },
+    },
+  },
+
+  {
+    "echasnovski/mini.pairs",
+    event = "InsertEnter",
+    opts = {
+      mappings = {
+        -- do not auto create a pair when in front of word chars
+        ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\][^%w]" },
+        ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\][^%w]" },
+        ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\][^%w]" },
+        -- do not swallow closing brackets when after a space chars
+        [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\%s]." },
+        ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\%s]." },
+        ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\%s]." },
+        -- we use the default close actions
+        ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\][%s%)%]}]", register = { cr = false } },
+        ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\][%s%)%]}]", register = { cr = false } },
+        ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\][%s%)%]}]", register = { cr = false } },
       },
     },
   },

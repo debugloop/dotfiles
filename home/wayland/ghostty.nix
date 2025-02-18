@@ -1,11 +1,10 @@
 {
   config,
-  inputs,
   pkgs,
   ...
 }: {
   home.packages = [
-    inputs.ghostty.packages.${pkgs.system}.default
+    pkgs.ghostty
     pkgs.chafa
   ];
 

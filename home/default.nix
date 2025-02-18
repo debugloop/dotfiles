@@ -52,6 +52,7 @@
     packages = with pkgs; [
       # tools
       gmailctl
+      bitwarden-cli
       # nix
       age
       alejandra
