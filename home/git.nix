@@ -43,23 +43,55 @@
       dsc = "-c delta.side-by-side=true dc";
       fixup = "commit --fixup";
       fi = "commit --fixup";
-      l = "log --pretty=format:'%C(yellow)%h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative -32";
-      lg = "l --graph --boundary --cherry-mark";
-      ld = "log --cherry --pretty=format:'%m\ %C(yellow)%h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative -32";
-      lp = "-c delta.side-by-side=true log --pretty=format:'%C(yellow)commit %h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative -16 -p -- :^vendor :^go.mod :^go.sum"; # include "commit " for delta `n` navigation
-      new = "l @{u}..";
+      # base log
+      log-pretty = "log --pretty=format:'%C(yellow)%h\ %C(green)%ad%Cred%d\ %C(reset)%s%C(blue)\ [%an]' --date=relative";
+      # verbose log, i.e. with cherry marks
+      log-pretty-verbose = "log --cherry-mark --pretty=format:'%C(yellow)%h %C(cyan)%m %C(green)%ad%C(red)%d %C(reset)%s%C(blue) [%an]' --date=relative";
+      # aliases for use
+      l = "!f() {
+        if [ -z \"$1\" ]; then
+          if [ \"$(git main)\" = \"$(git rev-parse --abbrev-ref HEAD)\" ]; then
+            git log-pretty -32
+          else
+            git log-pretty $(git main)..
+          fi
+        else
+          git log-pretty $1
+        fi
+      }; f";
+      lv = "!f() {
+        if [ -z \"$1\" ]; then
+          if [ \"$(git main)\" = \"$(git rev-parse --abbrev-ref HEAD)\" ]; then
+            git log-pretty-verbose -32
+          else
+            git log-pretty-verbose --no-merges $(git main)...
+          fi
+        else
+          git log-pretty-verbose --no-merges $1
+        fi
+      }; f";
+      lg = "!f() {
+        if [ -z \"$1\" ]; then
+          git log-pretty-verbose --graph --boundary --cherry-mark $(git main)...
+        else
+          git log-pretty-verbose --graph --boundary --cherry-mark $1
+        fi
+      }; f";
+      new = "log-pretty @{u}...";
       p = "pull --prune --all --autostash";
       puf = "push --force-with-lease --force-if-includes";
-      rb = "rebase --autostash --autosquash";
+      rb = "rebase";
       rba = "rebase --abort";
       rbc = "rebase --continue";
+      ours = "restore --ours";
+      theirs = "restore --theirs";
       s = "status --short";
       sh = "show --stat";
       sw = "switch";
 
       # repo path
       root = "rev-parse --show-toplevel"; # print root
-      cr = "!f() {cd $(git rev-parse --show-toplevel)}"; # change to root
+      cd = "!f() {cd $(git rev-parse --show-toplevel)}"; # change to root
       exec = "!exec "; # make from wherever
 
       # files from index or from commits
@@ -75,23 +107,10 @@
       main = "!f() { git symbolic-ref refs/remotes/origin/HEAD --short | cut -d/ -f2; }; f";
 
       # fast ops on main/master
-      pm = "!f() { test $(git rev-parse --abbrev-ref HEAD) != $(git main) && git fetch origin $(git main):$(git main) || git p; }; f"; # pull main
-      bd = "!f() {
-        git pm || return;
-        for branch in $(git for-each-ref --format '%(refname:short)' refs/heads | grep -vE '^main$|^master$')
-        do
-          echo;
-          if git log --cherry --pretty=format:'%m\ %C(yellow)%h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative $(git main)...$branch | grep --silent -E '^>';
-          then
-            echo \"$branch is unmerged:\";
-            git log --cherry --pretty=format:'%m\ %C(yellow)%h\ %C(green)%ad%Cred%d\ %Creset%s%Cblue\ [%an]' --date=relative $(git main)...$branch;
-          else
-            git branch -D $branch;
-          fi
-        done
-      }; f";
-      rbmi = "!f() { git pm && git rb -i $(git main); }; f"; # rebase interactively on main
-      rbm = "!f() { git pm && git rb $(git main); }; f"; # rebase on main
+      pull-main = "!f() { test $(git rev-parse --abbrev-ref HEAD) != $(git main) && git fetch origin $(git main):$(git main) || git p; }; f"; # pull main
+      pm = "pull-main";
+      rbmi = "!f() { git pull-main && git rb -i $(git main); }; f"; # rebase interactively on main
+      rbm = "!f() { git pull-main && git rb $(git main); }; f"; # rebase on main
 
       # update PR with unstaged
       rekt = "!f() { git a -u; git amend; git puf; }; f"; # add updates to amend commit and force push
@@ -101,6 +120,9 @@
       "*.swp"
     ];
     extraConfig = {
+      advice = {
+        skippedCherryPicks = false;
+      };
       branch.sort = "-committerdate";
       commit.gpgsign = true;
       core = {
@@ -110,19 +132,24 @@
       gpg.format = "ssh";
       init.defaultBranch = "main";
       log.date = "local";
+      merge = {
+        autostash = true;
+        conflictStyle = "zdiff3";
+      };
       pull.rebase = true;
       push = {
         default = "current";
         autoSetupRemote = true;
       };
       rebase = {
+        stat = true;
         autosquash = true;
         autostash = true;
         updateRefs = true;
       };
-      merge.autostash = true;
       rerere.enabled = true;
       tag.sort = "version:refname";
+      trim.confirm = false;
       url."ssh://git@github.com/".insteadOf = "https://github.com/";
       user.signingkey = "~/.ssh/id_ed25519";
     };
