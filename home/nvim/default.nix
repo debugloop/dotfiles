@@ -9,7 +9,7 @@
     enable = true;
     viAlias = true;
     vimAlias = true;
-    # package = pkgs.neovim-nightly;
+    package = pkgs.neovim;
   };
 
   xdg.configFile = let
