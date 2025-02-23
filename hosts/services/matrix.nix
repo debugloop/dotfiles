@@ -1,7 +1,7 @@
-{config, ...}: {
+{...}: {
   services = {
     heisenbridge = {
-      enable = true;
+      enable = false;
       owner = "@d:bugpara.de";
       homeserver = "http://localhost:8008";
     };

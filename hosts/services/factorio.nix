@@ -1,6 +1,6 @@
 {config, ...}: {
   services.factorio = {
-    enable = true;
+    enable = false;
     openFirewall = true;
     loadLatestSave = true;
     requireUserVerification = false;
