@@ -48,6 +48,8 @@
       # tools
       gmailctl
       bitwarden-cli
+      tectonic
+      mermaid-cli
       # nix
       age
       alejandra

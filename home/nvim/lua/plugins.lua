@@ -2167,6 +2167,7 @@ return inject_all({
     opts = {
       bigfile = { enabled = true },
       input = { enabled = true },
+      image = { enabled = true },
       notifier = { enabled = true },
       quickfile = { enabled = false },
       scroll = {
