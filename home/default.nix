@@ -13,11 +13,6 @@
     ./starship.nix
   ];
 
-  nixpkgs.config = {
-    allowUnfree = true;
-    allowUnfreePredicate = _: true;
-  };
-
   home = {
     username = "danieln";
     homeDirectory = "/home/danieln";
