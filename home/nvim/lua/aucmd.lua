@@ -13,7 +13,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     -- mappings
     vim.keymap.set("n", "<cr>", function()
-      vim.cmd("normal! zz")
       vim.diagnostic.open_float()
     end, { buffer = event.buf, desc = "lsp: open diagnostic" })
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = event.buf, desc = "lsp: show definition" })

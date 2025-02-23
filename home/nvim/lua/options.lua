@@ -1,3 +1,6 @@
+-- nightly use monkey patches
+vim.tbl_islist = vim.islist
+
 -- general behavior
 vim.opt.updatetime = 500 -- faster CursorHold
 vim.opt.mouse = "" -- no mouse
@@ -68,6 +71,7 @@ vim.filetype.add({
 
 -- change diagnostic display
 vim.diagnostic.config({
+  virtual_lines = true,
   severity_sort = true,
 })
 

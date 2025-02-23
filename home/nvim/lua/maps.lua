@@ -157,7 +157,9 @@ end, { desc = "open quickfix" })
 -- add undo state when inserting a newline
 vim.keymap.set("i", "<cr>", "<cr><c-g>u")
 
--- zz on cr
-vim.keymap.set("n", "<cr>", function()
-  vim.cmd("normal! zz")
-end, { desc = "center sceen" })
+-- no lsp defaults
+vim.keymap.del("n", "gO")
+vim.keymap.del("n", "gra")
+vim.keymap.del("n", "gri")
+vim.keymap.del("n", "grn")
+vim.keymap.del("n", "grr")
