@@ -39,6 +39,20 @@ return inject_all({
       appearance = {
         use_nvim_cmp_as_default = true,
       },
+      cmdline = {
+        completion = {
+          menu = {
+            auto_show = false,
+          },
+        },
+        keymap = {
+          preset = "enter",
+          ["<tab>"] = { "show", "select_next", "fallback" },
+          ["<s-tab>"] = { "select_prev", "fallback" },
+          ["<c-e>"] = { "cancel", "fallback" },
+          ["<cr>"] = { "select_accept_and_enter", "fallback" },
+        },
+      },
       completion = {
         documentation = {
           auto_show = true,
@@ -91,7 +105,8 @@ return inject_all({
         ["<c-u>"] = { "scroll_documentation_up", "fallback" },
         ["<c-d>"] = { "scroll_documentation_down", "fallback" },
         ["("] = { "accept", "fallback" },
-        ["<C-e>"] = { "cancel", "fallback" },
+        ["<c-e>"] = { "cancel", "fallback" },
+        ["<cr>"] = { "select_accept_and_enter", "fallback" },
       },
       signature = {
         enabled = true,
@@ -102,7 +117,6 @@ return inject_all({
           direction_priority = { "s", "n" },
         },
       },
-      cmdline = {},
       sources = {
         default = { "lsp", "path", "snippets", "buffer", "lazydev" },
         providers = {
