@@ -34,7 +34,7 @@
     window-decoration = false
     resize-overlay = never
     window-padding-balance = true
-    window-padding-color = extend
+    window-padding-color = background
 
     font-synthetic-style = false
     font-family = "Iosevka"
