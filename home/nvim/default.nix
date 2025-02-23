@@ -24,7 +24,8 @@
     "nvim/init.lua".source = ./init.lua;
     # "nvim/lua".source = ./lua;
     "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/lua";
-    "nvim/ftplugin".source = ./ftplugin;
+    # "nvim/ftplugin".source = ./ftplugin;
+    "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/ftplugin";
     "nvim/parser".source = "${treesitterParsers}/parser";
     "nvim/after/queries/go/textobjects.scm".source = ./go-textobjects.scm;
     "nvim/after/queries/gotmpl/injections.scm".source = ./gotmpl-injections.scm;

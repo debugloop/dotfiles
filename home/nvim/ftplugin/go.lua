@@ -96,7 +96,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       if not ok or not inTestfile then
         return
       end
-      vim.lsp.buf_request_sync(0, "workspace/executeCommand", {
+      local result = vim.lsp.buf_request_sync(0, "workspace/executeCommand", {
         command = "gopls.run_tests",
         arguments = {
           {
@@ -105,6 +105,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
           },
         },
       }, 10000)
+      if not result or result[1].error then
+        vim.notify("Test failed", 4)
+      else
+        vim.notify("Test ok", 2)
+      end
     end, { desc = "lsp: run test at cursor", buffer = event.buf })
   end,
 })
