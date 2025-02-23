@@ -366,6 +366,16 @@ return inject_all({
         }),
         -- defaults include
         -- (, ), [, ], {, }, <, >, ", ', `, ?, t, <space>
+        -- subword
+        W = {
+          {
+            "%u[%l%d]+%f[^%l%d]",
+            "%f[%S][%l%d]+%f[^%l%d]",
+            "%f[%P][%l%d]+%f[^%l%d]",
+            "^[%l%d]+%f[^%l%d]",
+          },
+          "^().*()$",
+        },
       }
       require("mini.ai").setup(opts)
     end,
@@ -711,18 +721,57 @@ return inject_all({
     event = "InsertEnter",
     opts = {
       mappings = {
-        -- do not auto create a pair when in front of word chars
-        ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\][^%w]" },
-        ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\][^%w]" },
-        ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\][^%w]" },
-        -- do not swallow closing brackets when after a space chars
-        [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\%s]." },
-        ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\%s]." },
-        ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\%s]." },
-        -- we use the default close actions
-        ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\][%s%)%]}]", register = { cr = false } },
-        ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\][%s%)%]}]", register = { cr = false } },
-        ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\][%s%)%]}]", register = { cr = false } },
+        ["("] = {
+          action = "open",
+          pair = "()",
+          neigh_pattern = ".[%s%)]",
+          register = { cr = false },
+        },
+        ["["] = {
+          action = "open",
+          pair = "[]",
+          neigh_pattern = ".[%s%)}%]]",
+          register = { cr = false },
+        },
+        ["{"] = {
+          action = "open",
+          pair = "{}",
+          neigh_pattern = ".[%s%)}%]]",
+          register = { cr = false },
+        },
+        [")"] = {
+          action = "close",
+          pair = "()",
+          neigh_pattern = "[^\\%s].",
+        },
+        ["]"] = {
+          action = "close",
+          pair = "[]",
+          neigh_pattern = "[^\\%s].",
+        },
+        ["}"] = {
+          action = "close",
+          pair = "{}",
+          neigh_pattern = "[^\\%s].",
+        },
+        ['"'] = {
+          action = "closeopen",
+          pair = '""',
+          neigh_pattern = "[^%w\\][^%w]",
+          register = { cr = false },
+        },
+        ["'"] = {
+          action = "closeopen",
+          pair = "''",
+          neigh_pattern = "[^%w\\][^%w]",
+          register = { cr = false },
+        },
+        ["`"] = {
+          action = "closeopen",
+          pair = "``",
+          neigh_pattern = "[^%w\\][^%w]",
+          register = { cr = false },
+        },
       },
     },
   },
