@@ -29,6 +29,7 @@ local function inject_all(specs)
 end
 
 return inject_all({
+
   {
     "saghen/blink.cmp",
     lazy = false, -- it handles itself and is an integral part anyhow
@@ -39,21 +40,12 @@ return inject_all({
       appearance = {
         use_nvim_cmp_as_default = true,
       },
-      cmdline = {
-        completion = {
-          menu = {
-            auto_show = false,
+      completion = {
+        accept = {
+          auto_brackets = {
+            enabled = false,
           },
         },
-        keymap = {
-          preset = "enter",
-          ["<tab>"] = { "show", "select_next", "fallback" },
-          ["<s-tab>"] = { "select_prev", "fallback" },
-          ["<c-e>"] = { "cancel", "fallback" },
-          ["<cr>"] = { "select_accept_and_enter", "fallback" },
-        },
-      },
-      completion = {
         documentation = {
           auto_show = true,
           auto_show_delay_ms = 50,
@@ -93,10 +85,11 @@ return inject_all({
         },
       },
       fuzzy = {
-        prebuilt_binaries = {
-          download = false,
-          ignore_version_mismatch = true,
-        },
+        implementation = "rust",
+        -- prebuilt_binaries = {
+        --   download = false,
+        --   ignore_version_mismatch = true,
+        -- },
       },
       keymap = {
         preset = "enter",
@@ -104,9 +97,8 @@ return inject_all({
         ["<s-tab>"] = { "select_prev", "snippet_backward", "fallback" },
         ["<c-u>"] = { "scroll_documentation_up", "fallback" },
         ["<c-d>"] = { "scroll_documentation_down", "fallback" },
-        ["("] = { "accept", "fallback" },
         ["<c-e>"] = { "cancel", "fallback" },
-        ["<cr>"] = { "select_accept_and_enter", "fallback" },
+        ["<cr>"] = { "select_and_accept", "fallback" },
       },
       signature = {
         enabled = true,
@@ -122,7 +114,7 @@ return inject_all({
         providers = {
           lsp = {
             fallbacks = { "lazydev" },
-            score_offset = 10,
+            score_offset = 20,
           },
           lazydev = { name = "LazyDev", module = "lazydev.integrations.blink" },
           snippets = {
