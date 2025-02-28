@@ -42,19 +42,109 @@ vim.lsp.start({
   capabilities = require("blink.cmp").get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities()),
   settings = {
     gopls = {
+      -- Build: https://github.com/golang/tools/blob/master/gopls/doc/settings.md#build
       buildFlags = { "-tags=unit,integration,e2e" },
+      -- env = {},
+      directoryFilters = { "-.git" },
+      -- templateExtensions = {},
+      -- expandWorkspaceToModule = true,
+      -- standaloneTags = { "ignore" },
+      -- workspaceFiles = {},
+
+      -- Formatting: https://github.com/golang/tools/blob/master/gopls/doc/settings.md#formatting
+      -- local = "",
       gofumpt = true,
-      codelenses = {
-        gc_details = true,
-        generate = true,
-        regenerate_cgo = true,
-        run_govulncheck = true,
+      -- UI: https://github.com/golang/tools/blob/master/gopls/doc/settings.md#ui
+      codelenses = { -- https://github.com/golang/tools/blob/master/gopls/doc/codelenses.md
+        -- generate = true,
+        -- regenerate_cgo = true,
         test = true,
-        tidy = true,
-        upgrade_dependency = true,
-        vendor = true,
+        -- run_govulncheck = false,
+        -- tidy = true,
+        -- upgrade_dependency = true,
+        -- vendor = true,
+        vulncheck = true,
       },
-      hints = {
+      semanticTokens = true,
+      -- noSemanticString = false,
+      -- noSemanticNumber = false,
+      -- semanticTokenTypes = {},
+      -- semanticTokenModifiers = {},
+
+      -- Completion: https://github.com/golang/tools/blob/master/gopls/doc/codelenses.md
+      -- usePlaceholders = false,
+      -- experimentalPostfixCompletions = true,
+      -- completeFunctionCalls = true,
+
+      -- Diagnostic: https://github.com/golang/tools/blob/master/gopls/doc/settings.md#diagnostic
+      analyses = { -- https://github.com/golang/tools/blob/master/gopls/doc/analyzers.md
+        -- appends = true,
+        -- asmdecl = true,
+        -- assign = true,
+        -- atomic = true,
+        -- atomicalign = true,
+        -- bools = true,
+        -- buildtag = true,
+        -- cgocall = true,
+        -- composites = true,
+        -- copylocks = true,
+        -- deepequalerrors = true,
+        -- defers = true,
+        -- deprecated = true,
+        -- directive = true,
+        -- embed = true,
+        -- errorsas = true,
+        -- fillreturns = true,
+        -- framepointer = true,
+        -- gofix = true,
+        -- hostport = true,
+        -- httpresponse = true,
+        -- ifaceassert = true,
+        -- infertypeargs = true,
+        -- loopclosure = true,
+        -- lostcancel = true,
+        -- modernize = true,
+        -- nilfunc = true,
+        -- nilness = true,
+        -- nonewvars = true,
+        -- noresultvalues = true,
+        -- printf = true,
+        -- shadow = false, -- useful, but to spammy with `err`
+        -- shift = true,
+        -- sigchanyzer = true,
+        -- simplifycompositelit = true,
+        -- simplifyrange = true,
+        -- simplifyslice = true,
+        -- sortslice = true,
+        -- stdmethods = true,
+        -- stdversion = true,
+        -- stringintconv = true,
+        -- structag = true,
+        -- testinggoroutine = true,
+        -- tests = true,
+        -- timeformat = true,
+        -- unmarshal = true,
+        -- unreachable = true,
+        -- unsafeptr = true,
+        -- unusedfunc = true,
+        -- unusedparams = true,
+        -- unusedresult = true,
+        -- unusedvariable = true,
+        -- unusedwrite = true,
+        -- waitgroup = true,
+        -- yield = true,
+      },
+      staticcheck = true,
+      vulncheck = "Imports",
+
+      -- Documentations: https://github.com/golang/tools/blob/master/gopls/doc/settings.md#documentation
+      -- hoverKind = "FullDocumentation",
+      -- linkTarget = "pkg.go.dev",
+      -- linksInHover = true, -- default
+      -- linksInHover = "gopls", -- this enables offline doc links
+
+      -- Inlayhint: https://github.com/golang/tools/blob/master/gopls/doc/settings.md#inlayhint
+      hints = { -- https://github.com/golang/tools/blob/master/gopls/doc/inlayHints.md
         assignVariableTypes = true,
         compositeLiteralFields = true,
         compositeLiteralTypes = true,
@@ -63,19 +153,14 @@ vim.lsp.start({
         parameterNames = true,
         rangeVariableTypes = true,
       },
-      analyses = {
-        fieldalignment = false, -- useful, but better optimize for readability
-        shadow = false, -- useful, but to spammy with `err`
-        nilness = true,
-        unusedparams = true,
-        unusedwrite = true,
-        useany = true,
-      },
-      usePlaceholders = true,
+
+      -- Navigation: https://github.com/golang/tools/blob/master/gopls/doc/settings.md#navigation
+      -- importShortcut = "Both",
+      -- symbolScope = "all",
+
+      -- Internal
       completeUnimported = true,
-      staticcheck = true,
-      directoryFilters = { "-.git" },
-      semanticTokens = true,
+      deepCompletion = true,
     },
   },
 })
