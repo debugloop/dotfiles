@@ -61,13 +61,13 @@
     # usability
     keybind = ctrl+shift+n=new_window
     keybind = ctrl+shift+j=write_scrollback_file:paste
+    keybind = ctrl+shift+k=write_screen_file:paste
 
     keybind = ctrl+page_up=jump_to_prompt:-1
     keybind = ctrl+page_down=jump_to_prompt:1
     keybind = shift+page_down=scroll_page_down
     keybind = shift+page_up=scroll_page_up
     keybind = shift+end=scroll_to_bottom
-
 
     # goodies
     keybind = ctrl+shift+i=inspector:toggle

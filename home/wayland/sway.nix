@@ -33,7 +33,7 @@
     '';
     config = {
       modifier = "Mod4";
-      terminal = "ghostty";
+      terminal = "kitty";
       workspaceAutoBackAndForth = true;
       fonts = {
         names = ["Fira Mono"];
@@ -202,7 +202,7 @@
         "Mod4+Shift+Backspace" = "output eDP-1 disable";
 
         # run
-        "Mod4+Return" = "exec ghostty";
+        "Mod4+Return" = "exec kitty";
         "XF86Display" = "exec ${pkgs.wdisplays}/bin/wdisplays";
 
         # lock
