@@ -95,6 +95,7 @@
       cat = "bat";
       cloc = "tokei";
       dstat = "dool --color16";
+      debug_attachable = "sudo sysctl -w kernel.yama.ptrace_scope=0";
       ext_brightness = "sudo ddcutil -d 1 setvcp 10";
       kloc = "kubectl --context=local";
       tcurl = "curl -s -o /dev/null -w 'time_namelookup: %{time_namelookup}\ntime_connect: %{time_connect}\ntime_appconnect: %{time_appconnect}\ntime_pretransfer: %{time_pretransfer}\ntime_redirect: %{time_redirect}\ntime_starttransfer: %{time_starttransfer}\ntime_total: %{time_total}\n'";

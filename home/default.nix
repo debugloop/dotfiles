@@ -54,7 +54,6 @@
       age
       alejandra
       comma
-      devenv
       inputs.agenix.packages.${pkgs.system}.default
       nh
       nix-tree

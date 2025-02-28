@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   home = {
     packages = with pkgs; [
       git
@@ -18,11 +22,12 @@
     delta = {
       enable = true;
       options = {
+        file-style = "omit";
+        hunk-header-decoration-style = "blue ul box";
+        hunk-header-style = "file line-number syntax";
         navigate = "true";
         syntax-theme = "ansi";
-        file-style = "omit";
-        hunk-header-style = "file line-number syntax";
-        hunk-header-decoration-style = "blue ul box";
+        map-styles = "bold purple => syntax dim black, bold cyan => syntax #${config.colors.black}";
       };
     };
     difftastic = {
@@ -48,6 +53,7 @@
       # verbose log, i.e. with cherry marks
       log-pretty-verbose = "log --cherry-mark --pretty=format:'%C(yellow)%h %C(cyan)%m %C(green)%ad%C(red)%d %C(reset)%s%C(blue) [%an]' --date=relative";
       # aliases for use
+      ln = "log-pretty";
       l = "!f() {
         if [ -z \"$1\" ]; then
           if [ \"$(git main)\" = \"$(git rev-parse --abbrev-ref HEAD)\" ]; then
@@ -72,7 +78,11 @@
       }; f";
       lg = "!f() {
         if [ -z \"$1\" ]; then
-          git log-pretty-verbose --graph --boundary --cherry-mark $(git main)...
+          if [ \"$(git main)\" = \"$(git rev-parse --abbrev-ref HEAD)\" ]; then
+            git log-pretty-verbose --graph --boundary --cherry-mark -16
+          else
+            git log-pretty-verbose --graph --boundary --cherry-mark $(git main)...
+          fi
         else
           git log-pretty-verbose --graph --boundary --cherry-mark $1
         fi
@@ -124,12 +134,26 @@
         skippedCherryPicks = false;
       };
       branch.sort = "-committerdate";
-      commit.gpgsign = true;
+      commit = {
+        gpgsign = true;
+        verbose = true;
+      };
       core = {
         excludesfile = "~/.gitignore";
       };
-      diff.algorithm = "histogram";
+      diff = {
+        algorithm = "histogram";
+        colorMoved = "plain";
+        mnemonicPrefix = true;
+        renames = true;
+      };
+      fetch = {
+        prune = true;
+        pruneTags = true;
+        all = true;
+      };
       gpg.format = "ssh";
+      help.autocorrect = "prompt";
       init.defaultBranch = "main";
       log.date = "local";
       merge = {
@@ -138,16 +162,20 @@
       };
       pull.rebase = true;
       push = {
-        default = "current";
+        default = "simple";
         autoSetupRemote = true;
+        followTags = true;
       };
       rebase = {
-        stat = true;
         autosquash = true;
         autostash = true;
+        stat = true;
         updateRefs = true;
       };
-      rerere.enabled = true;
+      rerere = {
+        enabled = true;
+        autoupdate = true;
+      };
       tag.sort = "version:refname";
       trim.confirm = false;
       url."ssh://git@github.com/".insteadOf = "https://github.com/";
