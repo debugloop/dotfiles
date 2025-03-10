@@ -11,4 +11,5 @@ in {
   "grafana.age".publicKeys = all;
   "miniflux.age".publicKeys = all;
   "factorio.age".publicKeys = all;
+  "wunschkonzert.age".publicKeys = all;
 }

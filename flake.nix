@@ -25,6 +25,10 @@
     nvim-blink-cmp = {
       url = "github:Saghen/blink.cmp";
     };
+    wunschkonzert = {
+      url = "github:debugloop/wunschkonzert";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
