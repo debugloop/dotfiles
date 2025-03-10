@@ -50,12 +50,13 @@
       bitwarden-cli
       tectonic
       mermaid-cli
+      melt
+      posting
       # nix
       age
       alejandra
       comma
       inputs.agenix.packages.${pkgs.system}.default
-      nh
       nix-tree
       nixd
       nvd
@@ -212,6 +213,14 @@
     go = {
       enable = true;
       package = pkgs.go_1_22;
+    };
+    nh = {
+      enable = true;
+      clean = {
+        enable = true;
+        extraArgs = "--keep-since 5d --keep 3";
+      };
+      flake = "/etc/nixos";
     };
     ssh = {
       enable = true;
