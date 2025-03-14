@@ -1,4 +1,4 @@
-{...}: {
+{inputs, ...}: {
   imports = [
     ./boot.nix
     ../services/caddy.nix
@@ -8,5 +8,6 @@
     ../services/matrix.nix
     ../services/miniflux.nix
     ../services/prometheus.nix
+    inputs.wunschkonzert-install.include
   ];
 }

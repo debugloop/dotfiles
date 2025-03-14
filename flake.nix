@@ -28,9 +28,8 @@
     niri = {
       url = "github:sodiboo/niri-flake";
     };
-    wunschkonzert = {
-      url = "github:debugloop/wunschkonzert";
-      inputs.nixpkgs.follows = "nixpkgs";
+    wunschkonzert-install = {
+      url = "path:/home/danieln/code/wunschkonzert-install";
     };
   };
 

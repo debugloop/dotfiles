@@ -241,6 +241,7 @@
     "gitignore_2": {
       "inputs": {
         "nixpkgs": [
+          "wunschkonzert-install",
           "wunschkonzert",
           "pre-commit-hooks",
           "nixpkgs"
@@ -591,6 +592,22 @@
     },
     "nixpkgs_5": {
       "locked": {
+        "lastModified": 1740547748,
+        "narHash": "sha256-Ly2fBL1LscV+KyCqPRufUBuiw+zmWrlJzpWOWbahplg=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "3a05eebede89661660945da1f151959900903b6a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_6": {
+      "locked": {
         "lastModified": 1730768919,
         "narHash": "sha256-8AKquNnnSaJRXZxc5YmF/WfmxiHX6MMZZasRP6RRQkE=",
         "owner": "NixOS",
@@ -629,7 +646,7 @@
       "inputs": {
         "flake-compat": "flake-compat_3",
         "gitignore": "gitignore_2",
-        "nixpkgs": "nixpkgs_5"
+        "nixpkgs": "nixpkgs_6"
       },
       "locked": {
         "lastModified": 1737465171,
@@ -656,7 +673,7 @@
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_3",
         "nvim-blink-cmp": "nvim-blink-cmp",
-        "wunschkonzert": "wunschkonzert"
+        "wunschkonzert-install": "wunschkonzert-install"
       }
     },
     "rust-analyzer-src": {
@@ -729,23 +746,36 @@
     },
     "wunschkonzert": {
       "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
+        "nixpkgs": "nixpkgs_5",
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1740783112,
-        "narHash": "sha256-zqJqAurybBzRihhrQTIrEUJhFArKMFqugxeYSxdfje0=",
+        "lastModified": 1741966157,
+        "narHash": "sha256-lXEtTMgCC48fqpqTOUZ1rpK8GpGR/eU4yNasjO6Z9Ik=",
         "owner": "debugloop",
         "repo": "wunschkonzert",
-        "rev": "91e9579c40dd382ba3f8fe834d50b278d4a2a7e5",
+        "rev": "d10ba4fe560a855422278f51c0015d41f98ae439",
         "type": "github"
       },
       "original": {
         "owner": "debugloop",
         "repo": "wunschkonzert",
         "type": "github"
+      }
+    },
+    "wunschkonzert-install": {
+      "inputs": {
+        "wunschkonzert": "wunschkonzert"
+      },
+      "locked": {
+        "lastModified": 1741967920,
+        "narHash": "sha256-oxWenwd8eVza116IyxNokHWhT0Jhr03+6jacTQ/GRLA=",
+        "path": "/home/danieln/code/wunschkonzert-install",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/danieln/code/wunschkonzert-install",
+        "type": "path"
       }
     },
     "xwayland-satellite-stable": {
