@@ -1015,7 +1015,7 @@ return inject_all({
     dependencies = {
       {
         "debugloop/layers.nvim",
-        dev = true,
+        dev = false,
         opts = {},
       },
       {

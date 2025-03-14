@@ -768,14 +768,17 @@
         "wunschkonzert": "wunschkonzert"
       },
       "locked": {
-        "lastModified": 1741967920,
-        "narHash": "sha256-oxWenwd8eVza116IyxNokHWhT0Jhr03+6jacTQ/GRLA=",
-        "path": "/home/danieln/code/wunschkonzert-install",
-        "type": "path"
+        "lastModified": 1741976376,
+        "narHash": "sha256-yCRtI9ZAk9Gpo4rh0UetlUI4sYJJ+SGnvdRNDQfh0Fg=",
+        "ref": "refs/heads/main",
+        "rev": "55423cff95e8d61bd33a927e232db0d679685afb",
+        "revCount": 1,
+        "type": "git",
+        "url": "ssh://git@github.com/debugloop/wunschkonzert-install"
       },
       "original": {
-        "path": "/home/danieln/code/wunschkonzert-install",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@github.com/debugloop/wunschkonzert-install"
       }
     },
     "xwayland-satellite-stable": {

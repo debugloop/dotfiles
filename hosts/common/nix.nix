@@ -30,7 +30,10 @@
       allowUnfree = true;
       warnUndeclaredOptions = true;
     };
-    overlays = [inputs.niri.overlays.niri];
+    overlays = [
+      inputs.neovim-nightly-overlay.overlays.default
+      inputs.niri.overlays.niri
+    ];
   };
 
   age = {

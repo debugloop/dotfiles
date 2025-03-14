@@ -29,7 +29,7 @@
       url = "github:sodiboo/niri-flake";
     };
     wunschkonzert-install = {
-      url = "path:/home/danieln/code/wunschkonzert-install";
+      url = "git+ssh://git@github.com/debugloop/wunschkonzert-install";
     };
   };
 
@@ -74,9 +74,6 @@
                 ];
               }
             );
-            nixpkgs.overlays = [
-              inputs.neovim-nightly-overlay.overlays.default
-            ];
           })
         ];
       };
@@ -101,9 +98,6 @@
                 ];
               }
             );
-            nixpkgs.overlays = [
-              inputs.neovim-nightly-overlay.overlays.default
-            ];
           })
           inputs.niri.nixosModules.niri
         ];
