@@ -121,10 +121,13 @@
       ast-grep
       buf
       codespell
+      kulala-fmt
       nodePackages_latest.prettier
       proselint
       stylua
       tree-sitter
+      typos
+      typos-lsp
       vale
       yamllint
       # dev debug

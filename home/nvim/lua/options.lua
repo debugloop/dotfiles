@@ -6,6 +6,7 @@ vim.opt.updatetime = 500 -- faster CursorHold
 vim.opt.mouse = "" -- no mouse
 vim.opt.jumpoptions = "stack,view" -- discard jumps when diverging from an earlier position
 vim.opt.spelloptions = "camel,noplainbuffer" -- set some spell options for when I enable
+vim.opt.spellsuggest = "best,10" -- limit suggestions
 vim.opt.clipboard = "unnamedplus"
 
 -- indent and wrap defaults
@@ -71,7 +72,25 @@ vim.filetype.add({
 
 -- change diagnostic display
 vim.diagnostic.config({
-  virtual_lines = true,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "",
+      [vim.diagnostic.severity.WARN] = "",
+      [vim.diagnostic.severity.INFO] = "",
+      [vim.diagnostic.severity.HINT] = "",
+    },
+  },
+  virtual_text = {
+    format = function(d)
+      return d.source .. (d.code or "")
+    end,
+  },
+  virtual_lines = {
+    format = function(d)
+      return d.message
+    end,
+    current_line = true,
+  },
   severity_sort = true,
 })
 

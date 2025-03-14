@@ -29,6 +29,14 @@ local function inject_all(specs)
 end
 
 return inject_all({
+  {
+    "mistweaverco/kulala.nvim",
+    ft = { "http", "rest" },
+    opts = {
+      -- your configuration comes here
+      global_keymaps = true,
+    },
+  },
 
   {
     "saghen/blink.cmp",
@@ -84,13 +92,13 @@ return inject_all({
           show_on_insert_on_trigger_character = false,
         },
       },
-      fuzzy = {
-        implementation = "rust",
-        -- prebuilt_binaries = {
-        --   download = false,
-        --   ignore_version_mismatch = true,
-        -- },
-      },
+      -- fuzzy = {
+      --   implementation = "prefer_rust",
+      --   -- prebuilt_binaries = {
+      --   --   download = false,
+      --   --   ignore_version_mismatch = true,
+      --   -- },
+      -- },
       keymap = {
         preset = "enter",
         ["<tab>"] = { "select_next", "snippet_forward", "fallback" },
@@ -139,6 +147,7 @@ return inject_all({
         css = { "prettier" },
         go = { "gofumpt", "goimports", "goimports-reviser" },
         html = { "prettier" },
+        http = { "kulala-fmt" },
         javascript = { "prettier" },
         lua = { "stylua" },
         nix = { "alejandra" },
@@ -269,6 +278,10 @@ return inject_all({
           DiagnosticVirtualTextInfo = makeDiagnosticColor(theme.diag.info),
           DiagnosticVirtualTextWarn = makeDiagnosticColor(theme.diag.warning),
           DiagnosticVirtualTextError = makeDiagnosticColor(theme.diag.error),
+          DiagnosticUnderlineHint = { undercurl = false, underdashed = true },
+          DiagnosticUnderlineInfo = { undercurl = false, underdashed = true },
+          DiagnosticUnderlineWarn = { undercurl = false, underdashed = true },
+          DiagnosticUnderlineError = { undercurl = false, underdashed = true },
           -- dark completion
           Pmenu = { bg = theme.ui.bg_p1 },
           PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
@@ -286,7 +299,7 @@ return inject_all({
           -- visible MiniJump
           MiniJump = { link = "@comment.note" },
           -- less prominent qf title
-          BqfPreviewTitle = { link = "BqfPreviewBorder" },
+          -- BqfPreviewTitle = { link = "BqfPreviewBorder" },
           NoiceCmdlineIcon = { fg = theme.diag.info, bg = theme.ui.bg },
           NoiceCmdlinePopupBorder = { fg = theme.diag.info, bg = theme.ui.bg },
           NoiceCmdlinePopupTitle = { fg = theme.diag.info, bg = theme.ui.bg },
@@ -580,6 +593,7 @@ return inject_all({
   {
     "echasnovski/mini.hipatterns",
     event = "VeryLazy",
+    enabled = false,
     opts = {
       highlighters = {
         fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "@text.warning" },
@@ -915,6 +929,7 @@ return inject_all({
     },
     event = "UIEnter",
     opts = {
+      tabpage_section = "right",
       format = function(buf_id, label)
         local suffix = ""
         if vim.bo[buf_id].modified then
@@ -1003,6 +1018,20 @@ return inject_all({
         dev = true,
         opts = {},
       },
+      {
+        "igorlfs/nvim-dap-view",
+        opts = {
+          winbar = {
+            sections = { "watches", "breakpoints", "threads", "repl" },
+          },
+          windows = {
+            terminal = {
+              hide = { "go" },
+              start_hidden = true,
+            },
+          },
+        },
+      },
     },
     keys = {
       {
@@ -1016,10 +1045,6 @@ return inject_all({
           -- set breakpoint if there is none
           if #require("dap.breakpoints").to_qf_list(require("dap.breakpoints").get()) == 0 then
             dap.toggle_breakpoint()
-          end
-          -- if we're in a lua file, run the file
-          if vim.bo.filetype == "lua" then
-            return
           end
           -- if we're in a test file, run in test mode
           local ok, inTestfile, testName = pcall(SurroundingTestName)
@@ -1048,7 +1073,7 @@ return inject_all({
           -- lastly, just ask
           dap.continue()
         end,
-        desc = "auto launch (preference: test function > last > ask)",
+        desc = "auto launch (preference: test function > test file > last > ask)",
       },
       {
         "<leader>D",
@@ -1155,10 +1180,14 @@ return inject_all({
       local dap = require("dap")
       dap.adapters = opts.adapters
       dap.configurations = opts.configurations
-      local debugger = require("debugger")
       -- ui tweaks
-      vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "", linehl = "", numhl = "" })
-      vim.fn.sign_define("DapBreakpointCondition", { text = "", texthl = "", linehl = "", numhl = "" })
+      vim.fn.sign_define("DapBreakpoint", { text = "" })
+      vim.fn.sign_define("DapBreakpointCondition", { text = "" })
+      vim.fn.sign_define("DapBreakpointRejected", { text = "" })
+      vim.fn.sign_define("DapStopped", {
+        text = "",
+        linehl = "debugPC",
+      })
       -- treat dap-repl as a terminal
       vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("on_dap_repl", { clear = true }),
@@ -1167,6 +1196,9 @@ return inject_all({
           vim.cmd("startinsert")
         end,
       })
+      dap.listeners.after.event_initialized["hide-dap-view-buf"] = function()
+        vim.api.nvim_set_option_value("buflisted", false, { buf = require("dap-view.state").term_bufnr })
+      end
       -- debug mode map overlay
       DEBUG_MODE = Layers.mode.new("Debug Mode")
       DEBUG_MODE:auto_show_help()
@@ -1184,6 +1216,13 @@ return inject_all({
       end
       DEBUG_MODE:keymaps({
         n = {
+          { -- open dap-view
+            "e",
+            function()
+              require("dap-view").toggle(true)
+            end,
+            { desc = "open dap-view" },
+          },
           { -- step over/next
             "s",
             function()
@@ -1218,20 +1257,6 @@ return inject_all({
               require("dap.ui.widgets").centered_float(require("dap.ui.widgets").expression)
             end,
             { desc = "hover value" },
-          },
-          { -- evaluate expression continuously
-            "e",
-            function()
-              debugger.add_expr()
-            end,
-            { desc = "auto eval" },
-          },
-          { -- clear evaluation watch
-            "E",
-            function()
-              debugger.toggle()
-            end,
-            { desc = "toggle dapview" },
           },
           { -- toggle breakpoint
             "b",
@@ -1321,6 +1346,7 @@ return inject_all({
           { -- quit
             "q",
             function()
+              require("dap-view").close(true)
               dap.listeners.after.event_stopped["refresh_expr"] = nil
               vim.cmd("pclose")
               dap.terminate()
@@ -1331,6 +1357,7 @@ return inject_all({
           { -- quit and clear breakpoints
             "Q",
             function()
+              require("dap-view").close(true)
               dap.listeners.after.event_stopped["refresh_expr"] = nil
               vim.cmd("pclose")
               dap.terminate()
@@ -1345,6 +1372,513 @@ return inject_all({
   },
 
   {
+    "mfussenegger/nvim-lint",
+    event = "BufWritePre",
+    opts = {
+      bash = { "shellcheck" },
+      go = { "golangcilint" },
+      markdown = { "proselint" },
+      text = { "proselint" },
+      nix = { "nix" },
+      -- yaml = { "yamllint" },
+    },
+    config = function(_, opts)
+      require("lint").linters_by_ft = opts
+      vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+        callback = function()
+          require("lint").try_lint()
+        end,
+      })
+    end,
+  },
+
+  {
+    "folke/lazydev.nvim",
+    ft = { "lua" },
+    opts = {},
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter",
+    event = "BufReadPost",
+    opts = {
+      ensure_installed = {}, -- we get this from nix
+      highlight = {
+        enable = true,
+      },
+      incremental_selection = {
+        enable = false,
+        keymaps = {
+          init_selection = "<cr>",
+          node_incremental = "<cr>",
+          scope_incremental = "<s-cr>",
+          node_decremental = "<bs>",
+        },
+      },
+      indent = {
+        enable = true,
+      },
+    },
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+    end,
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter" },
+    },
+    event = "VeryLazy",
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    main = "nvim-treesitter.configs",
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter" },
+    },
+    keys = { "gz", "gF", "gT" },
+    opts = {
+      textobjects = {
+        lsp_interop = {
+          enable = true,
+          peek_definition_code = {
+            ["gz"] = "@peek", -- replaces both below for go
+            ["gF"] = "@function.outer",
+            ["gT"] = "@class.outer",
+          },
+        },
+        swap = {
+          enable = false, -- not needed
+        },
+        select = {
+          enable = false, -- done with mini.ai
+        },
+        move = {
+          enable = false, -- done with mini.ai and impairative
+        },
+      },
+    },
+  },
+
+  {
+    "folke/snacks.nvim",
+    -- picker stuff from snacks
+    lazy = false,
+    keys = {
+      -- restore lsp lookup quickfix
+      {
+        "<leader><leader>",
+        function()
+          Snacks.picker.qflist({
+            focus = "list",
+            layout = "bqflike",
+          })
+        end,
+        desc = "open quickfix",
+      },
+      -- spelling
+      {
+        "z=",
+        function()
+          require("snacks").picker.spelling({
+            focus = "list",
+          })
+        end,
+        desc = "spell suggest",
+      },
+      -- tree explorer
+      {
+        "-",
+        function()
+          Snacks.picker.explorer({
+            focus = "list",
+          })
+        end,
+        desc = "Tree",
+      },
+      -- undo
+      {
+        "<leader>u",
+        function()
+          Snacks.picker.undo({
+            focus = "list",
+          })
+        end,
+        desc = "Undo",
+      },
+      -- open or select important things
+      {
+        "<leader>f",
+        function()
+          require("snacks").picker.files()
+        end,
+        desc = "find files",
+      },
+      {
+        "<leader>F",
+        function()
+          require("snacks").picker.smart()
+        end,
+        desc = "find more files smartly",
+      },
+      {
+        "<leader>,",
+        function()
+          Snacks.picker.buffers()
+        end,
+        desc = "Buffers",
+      },
+      {
+        "<leader>:",
+        function()
+          Snacks.picker.command_history({
+            focus = "list",
+          })
+        end,
+        desc = "Command History",
+      },
+      -- grep
+      {
+        "<leader>/",
+        function()
+          Snacks.picker.grep()
+        end,
+        desc = "Grep",
+      },
+      {
+        "<leader>*",
+        mode = { "n", "x" },
+        function()
+          require("snacks").picker.grep_word({
+            focus = "list",
+          })
+        end,
+        desc = "grep word",
+      },
+      -- search
+      {
+        '<leader>s"',
+        function()
+          Snacks.picker.registers()
+        end,
+        desc = "Registers",
+      },
+      {
+        "<leader>sa",
+        function()
+          Snacks.picker.autocmds()
+        end,
+        desc = "Autocmds",
+      },
+      {
+        "<leader>sc",
+        function()
+          require("snacks").picker.cliphist({
+            focus = "list",
+          })
+        end,
+        desc = "Cliphist",
+      },
+      {
+        "<leader>sd",
+        function()
+          Snacks.picker.diagnostics({
+            focus = "list",
+          })
+        end,
+        desc = "Diagnostics",
+      },
+      {
+        "<leader>sh",
+        function()
+          Snacks.picker.help()
+        end,
+        desc = "Help Pages",
+      },
+      {
+        "<leader>sH",
+        function()
+          Snacks.picker.highlights()
+        end,
+        desc = "Highlights",
+      },
+      {
+        "<leader>si",
+        function()
+          Snacks.picker.icons()
+        end,
+        desc = "Icons",
+      },
+      {
+        "<leader>sk",
+        function()
+          Snacks.picker.keymaps()
+        end,
+        desc = "Keymaps",
+      },
+      {
+        "<leader>sl",
+        function()
+          Snacks.picker.loclist({
+            focus = "list",
+          })
+        end,
+        desc = "Location List",
+      },
+      {
+        "<leader>sM",
+        function()
+          Snacks.picker.man()
+        end,
+        desc = "Man Pages",
+      },
+      {
+        "<leader>sm",
+        function()
+          Snacks.picker.marks()
+        end,
+        desc = "Marks",
+      },
+      -- lsp overrides
+      {
+        "go",
+        function()
+          Snacks.picker.treesitter({
+            focus = "list",
+          })
+        end,
+        desc = "treesitter: show symbols",
+      },
+      {
+        "<leader>sr",
+        function()
+          Snacks.picker.resume({
+            focus = "list",
+          })
+        end,
+        desc = "Resume",
+      },
+      {
+        "go",
+        function()
+          Snacks.picker.lsp_symbols({
+            focus = "list",
+            layout = "bqflike",
+          })
+        end,
+        { desc = "lsp: show symbols" },
+      },
+      {
+        "gO",
+        function()
+          Snacks.picker.lsp_workspace_symbols({
+            focus = "list",
+            layout = "bqflike",
+          })
+        end,
+        { desc = "lsp: show all symbols" },
+      },
+      {
+        "gd",
+        function()
+          Snacks.picker.lsp_definitions({
+            focus = "list",
+            layout = "bqflike",
+            on_show = PickerQF,
+          })
+        end,
+        { desc = "lsp: show definition" },
+      },
+      {
+        "gD",
+        function()
+          Snacks.picker.lsp_type_definitions({
+            focus = "list",
+            layout = "bqflike",
+            on_show = PickerQF,
+          })
+        end,
+        { desc = "lsp: show type definition" },
+      },
+      {
+        "gi",
+        function()
+          Snacks.picker.lsp_implementations({
+            focus = "list",
+            layout = "bqflike",
+            on_show = PickerQF,
+          })
+        end,
+        { desc = "lsp: show implementations" },
+      },
+      {
+        "gr",
+        function()
+          Snacks.picker.lsp_references({
+            focus = "list",
+            layout = "bqflike",
+            on_show = PickerQF,
+          })
+        end,
+        { desc = "lsp: show refs" },
+      },
+    },
+    init = function()
+      function PickerQF(picker)
+        local qf = {}
+        for _, item in ipairs(picker:items()) do
+          qf[#qf + 1] = {
+            filename = Snacks.picker.util.path(item),
+            bufnr = item.buf,
+            lnum = item.pos and item.pos[1] or 1,
+            col = item.pos and item.pos[2] + 1 or 1,
+            end_lnum = item.end_pos and item.end_pos[1] or nil,
+            end_col = item.end_pos and item.end_pos[2] + 1 or nil,
+            text = item.line or item.comment or item.label or item.name or item.detail or item.text,
+            pattern = item.search,
+            valid = true,
+          }
+        end
+        vim.fn.setqflist(qf)
+      end
+    end,
+    config = function(_, opts)
+      require("snacks").setup(opts)
+    end,
+    opts = {
+      picker = {
+        layout = {
+          preset = function()
+            return vim.o.columns >= 120 and "ivy" or "vertical"
+          end,
+        },
+        layouts = {
+          bqflike = {
+            layout = {
+              box = "vertical",
+              backdrop = true,
+              row = -1,
+              width = 0,
+              height = 0.5,
+              border = "top",
+              title = " {source}",
+              title_pos = "left",
+              {
+                win = "preview",
+                height = 0.6,
+              },
+              {
+                win = "list",
+                border = "top",
+              },
+              {
+                win = "input",
+                height = 1,
+                border = "none",
+              },
+            },
+          },
+        },
+        ui_select = true,
+        win = {
+          input = {
+            keys = {
+              ["<Esc>"] = { "toggle_focus", mode = { "i" } },
+              -- unmap
+              ["<a-d>"] = nil,
+              ["<a-h>"] = nil,
+              ["<a-i>"] = nil,
+              -- replace
+              ["<a-m>"] = nil,
+              ["<c-m>"] = { "toggle_maximize", mode = { "i", "n" } },
+              ["<a-p>"] = nil,
+              ["<c-p>"] = { "toggle_preview", mode = { "i", "n" } },
+              ["<a-w>"] = nil,
+              ["<c-space>"] = "cycle_win",
+            },
+          },
+          list = {
+            keys = {
+              -- unmap
+              ["<a-d>"] = nil,
+              ["<a-f>"] = nil,
+              ["<a-h>"] = nil,
+              ["<a-i>"] = nil,
+              -- replace
+              ["<a-m>"] = nil,
+              ["<c-m>"] = "toggle_maximize",
+              ["<a-p>"] = nil,
+              ["<c-p>"] = "toggle_preview",
+              ["<a-w>"] = nil,
+              ["<c-space>"] = "cycle_win",
+            },
+          },
+          preview = {
+            keys = {
+              -- replace
+              ["<a-w>"] = nil,
+              ["<c-space>"] = "cycle_win",
+            },
+          },
+        },
+      },
+    },
+  },
+
+  {
+    "folke/snacks.nvim",
+    -- git stuff from snacks
+    lazy = false,
+    dependencies = {
+      { "echasnovski/mini.git" },
+    },
+    keys = {
+      {
+        "<leader>gb",
+        mode = { "n" },
+        function()
+          require("snacks").picker.git_log_line()
+        end,
+        desc = "Show Git Blame",
+      },
+      {
+        "gy",
+        mode = { "n", "x" },
+        function()
+          require("snacks").gitbrowse({
+            branch = MiniGit.get_buf_data(0).head,
+          })
+        end,
+        desc = "Copy Git URL",
+      },
+      {
+        "<leader>gl",
+        function()
+          Snacks.picker.git_log()
+        end,
+        desc = "Git Log",
+      },
+      {
+        "<leader>gs",
+        function()
+          Snacks.picker.git_status()
+        end,
+        desc = "Git Status",
+      },
+    },
+    opts = {
+      gitbrowse = {
+        notify = false,
+        open = function(url)
+          vim.fn.setreg("+", url, "v")
+        end,
+      },
+    },
+  },
+
+  {
     "idanarye/nvim-impairative",
     event = "VeryLazy",
     dependencies = {
@@ -1352,115 +1886,12 @@ return inject_all({
       { "echasnovski/mini.ai" },
     },
     config = function(_, _)
-      -- options
-      vim.keymap.set("n", "<leader>o", "<nop>", { desc = "+options" })
-      vim.keymap.set("n", "]o", "<nop>", { desc = "+enable options" })
-      vim.keymap.set("n", "[o", "<nop>", { desc = "+disable options" })
-      require("impairative")
-        .toggling({
-          enable = "]o",
-          disable = "[o",
-          toggle = "<leader>o",
-        })
-        :option({
-          key = "b",
-          option = "background",
-          values = { [true] = "dark", [false] = "light" },
-        })
-        :getter_setter({
-          key = "d",
-          name = "diagnostics",
-          get = vim.diagnostic.is_enabled,
-          set = vim.diagnostic.enable,
-        })
-        :getter_setter({
-          key = "h",
-          name = "inlay hints",
-          get = vim.lsp.inlay_hint.is_enabled,
-          set = vim.lsp.inlay_hint.enable,
-        })
-        :field({
-          key = "H",
-          name = "todo highlights",
-          table = vim.g,
-          field = "minihipatterns_disable",
-        })
-        :field({
-          key = "i",
-          name = "indentscope",
-          table = vim.g,
-          field = "miniindentscope_disable",
-        })
-        :option({
-          key = "l",
-          option = "list",
-        })
-        :option({
-          key = "n",
-          option = "number",
-        })
-        :field({
-          key = "p",
-          name = "auto pairs",
-          table = vim.g,
-          field = "minipairs_disable",
-        })
-        :option({
-          key = "r",
-          option = "relativenumber",
-        })
-        :option({
-          key = "s",
-          option = "spell",
-        })
-        :manual({
-          key = "t",
-          name = "show context",
-          enable = "TSContextEnable",
-          disable = "TSContextDisable",
-          toggle = "TSContextToggle",
-        })
-        :option({
-          key = "v",
-          option = "virtualedit",
-          values = { [true] = "all", [false] = "block" },
-        })
-        :option({
-          key = "w",
-          option = "wrap",
-        })
-        :option({
-          key = "x",
-          option = "cursorcolumn",
-        })
-      -- textobject navigation
       vim.keymap.set("n", "]", "<nop>", { desc = "+forward goto " })
       vim.keymap.set("n", "[", "<nop>", { desc = "+backward goto" })
-      local base = require("impairative")
-        .operations({
-          backward = "[",
-          forward = "]",
-        })
-        :function_pair({
-          key = "]",
-          desc = "reference",
-          backward = function()
-            pcall(GotoTSUsage, -vim.v.count1)
-          end,
-          forward = function()
-            pcall(GotoTSUsage, vim.v.count1)
-          end,
-        })
-        :function_pair({
-          key = "[",
-          desc = "reference",
-          backward = function()
-            pcall(GotoTSUsage, -vim.v.count1)
-          end,
-          forward = function()
-            pcall(GotoTSUsage, vim.v.count1)
-          end,
-        })
+      local base = require("impairative").operations({
+        backward = "[",
+        forward = "]",
+      })
       for key, obj in pairs({
         a = {
           name = "arguments",
@@ -1578,492 +2009,205 @@ return inject_all({
   },
 
   {
-    "mfussenegger/nvim-lint",
-    event = "BufWritePre",
-    opts = {
-      bash = { "shellcheck" },
-      go = { "golangcilint", "codespell" },
-      markdown = { "proselint" },
-      text = { "proselint" },
-      nix = { "nix" },
-      -- yaml = { "yamllint" },
-    },
-    config = function(_, opts)
-      require("lint").linters_by_ft = opts
-      vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-        callback = function()
-          require("lint").try_lint()
-        end,
-      })
-    end,
-  },
-
-  {
-    "folke/lazydev.nvim",
-    ft = { "lua" },
-    opts = {},
-  },
-
-  {
-    "nvim-treesitter/nvim-treesitter",
-    event = "BufReadPost",
-    opts = {
-      ensure_installed = {}, -- we get this from nix
-      highlight = {
-        enable = true,
-      },
-      incremental_selection = {
-        enable = false,
-        keymaps = {
-          init_selection = "<cr>",
-          node_incremental = "<cr>",
-          scope_incremental = "<s-cr>",
-          node_decremental = "<bs>",
-        },
-      },
-      indent = {
-        enable = true,
-      },
-    },
-    config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
-      -- ts navigation of usages (adapted from nvim-treesitter-refactor, used in impairative config)
-      local function index_of(tbl, obj)
-        for i, o in ipairs(tbl) do
-          if o == obj then
-            return i
-          end
-        end
-      end
-      function GotoTSUsage(delta)
-        local ts_utils = require("nvim-treesitter.ts_utils")
-        local locals = require("nvim-treesitter.locals")
-        local bufnr = vim.api.nvim_get_current_buf()
-        local node_at_point = ts_utils.get_node_at_cursor()
-        if not node_at_point then
-          return
-        end
-        local def_node, scope = locals.find_definition(node_at_point, bufnr)
-        local usages = locals.find_usages(def_node, scope, bufnr)
-        local index = index_of(usages, node_at_point)
-        if not index then
-          return
-        end
-        local target_index = (index + delta + #usages - 1) % #usages + 1
-        ts_utils.goto_node(usages[target_index])
-      end
-    end,
-  },
-
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    dependencies = {
-      { "nvim-treesitter/nvim-treesitter" },
-    },
-    event = "VeryLazy",
-    opts = {
-      enable = false,
-    },
-  },
-
-  {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    main = "nvim-treesitter.configs",
-    dependencies = {
-      { "nvim-treesitter/nvim-treesitter" },
-    },
-    keys = { "gz", "gF", "gT" },
-    opts = {
-      textobjects = {
-        lsp_interop = {
-          enable = true,
-          peek_definition_code = {
-            ["gz"] = "@peek", -- replaces both below for go
-            ["gF"] = "@function.outer",
-            ["gT"] = "@class.outer",
-          },
-        },
-        swap = {
-          enable = false, -- not needed
-        },
-        select = {
-          enable = false, -- done with mini.ai
-        },
-        move = {
-          enable = false, -- done with mini.ai and impairative
-        },
-      },
-    },
-  },
-
-  {
-    "folke/snacks.nvim",
-    -- picker stuff from snacks
-    lazy = false,
-    keys = {
-      -- lsp
-      {
-        "go",
-        function()
-          Snacks.picker.lsp_symbols()
-        end,
-        desc = "LSP Symbols",
-      },
-      -- tree explorer
-      {
-        "-",
-        function()
-          Snacks.picker.explorer()
-        end,
-        desc = "Tree",
-      },
-      -- undo
-      {
-        "<leader>u",
-        function()
-          Snacks.picker.undo()
-        end,
-        desc = "Undo",
-      },
-      -- open or select important things
-      {
-        "<leader>f",
-        function()
-          require("snacks").picker.files()
-        end,
-        desc = "find files",
-      },
-      {
-        "<leader>F",
-        function()
-          require("snacks").picker.smart()
-        end,
-        desc = "find more files smartly",
-      },
-      {
-        "<leader>,",
-        function()
-          Snacks.picker.buffers()
-        end,
-        desc = "Buffers",
-      },
-      {
-        "<leader>:",
-        function()
-          Snacks.picker.command_history()
-        end,
-        desc = "Command History",
-      },
-      -- grep
-      {
-        "<leader>/",
-        function()
-          Snacks.picker.grep()
-        end,
-        desc = "Grep",
-      },
-      {
-        "<leader>*",
-        mode = { "n", "x" },
-        function()
-          require("snacks").picker.grep_word()
-        end,
-        desc = "grep word",
-      },
-      -- search
-      {
-        '<leader>s"',
-        function()
-          Snacks.picker.registers()
-        end,
-        desc = "Registers",
-      },
-      {
-        "<leader>sa",
-        function()
-          Snacks.picker.autocmds()
-        end,
-        desc = "Autocmds",
-      },
-      {
-        "<leader>sc",
-        function()
-          require("snacks").picker.cliphist()
-        end,
-        desc = "Cliphist",
-      },
-      {
-        "<leader>sd",
-        function()
-          Snacks.picker.diagnostics()
-        end,
-        desc = "Diagnostics",
-      },
-      {
-        "<leader>sh",
-        function()
-          Snacks.picker.help()
-        end,
-        desc = "Help Pages",
-      },
-      {
-        "<leader>sH",
-        function()
-          Snacks.picker.highlights()
-        end,
-        desc = "Highlights",
-      },
-      {
-        "<leader>si",
-        function()
-          Snacks.picker.icons()
-        end,
-        desc = "Icons",
-      },
-      {
-        "<leader>sj",
-        function()
-          Snacks.picker.jumps()
-        end,
-        desc = "Jumps",
-      },
-      {
-        "<leader>sk",
-        function()
-          Snacks.picker.keymaps()
-        end,
-        desc = "Keymaps",
-      },
-      {
-        "<leader>sl",
-        function()
-          Snacks.picker.loclist()
-        end,
-        desc = "Location List",
-      },
-      {
-        "<leader>sM",
-        function()
-          Snacks.picker.man()
-        end,
-        desc = "Man Pages",
-      },
-      {
-        "<leader>sm",
-        function()
-          Snacks.picker.marks()
-        end,
-        desc = "Marks",
-      },
-      {
-        "<leader>sr",
-        function()
-          Snacks.picker.resume()
-        end,
-        desc = "Resume",
-      },
-      {
-        "<leader>sq",
-        function()
-          Snacks.picker.qflist()
-        end,
-        desc = "Quickfix List",
-      },
-    },
-    opts = {
-      picker = {
-        layout = {
-          preset = function()
-            return vim.o.columns >= 120 and "ivy" or "vertical"
-          end,
-        },
-        layouts = {
-          bqflike = {
-            layout = {
-              box = "vertical",
-              backdrop = true,
-              row = -1,
-              width = 0,
-              height = 0.4,
-              border = "top",
-              title = " {source} {live}",
-              title_pos = "left",
-              {
-                win = "preview",
-                height = 0.6,
-              },
-              {
-                win = "list",
-                border = "top",
-              },
-              {
-                win = "input",
-                height = 1,
-                border = "none",
-              },
-            },
-          },
-        },
-        ui_select = true,
-        win = {
-          input = {
-            keys = {
-              ["<Esc>"] = { "close", mode = { "n", "i" } },
-            },
-          },
-        },
-      },
-    },
-  },
-
-  {
-    "folke/snacks.nvim",
-    -- git stuff from snacks
-    lazy = false,
-    dependencies = {
-      { "echasnovski/mini.git" },
-    },
-    keys = {
-      {
-        "<leader>gb",
-        mode = { "n" },
-        function()
-          require("snacks").picker.git_log_line()
-        end,
-        desc = "Show Git Blame",
-      },
-      {
-        "gy",
-        mode = { "n", "x" },
-        function()
-          require("snacks").gitbrowse({
-            branch = MiniGit.get_buf_data(0).head,
-          })
-        end,
-        desc = "Copy Git URL",
-      },
-      {
-        "<leader>gl",
-        function()
-          Snacks.picker.git_log()
-        end,
-        desc = "Git Log",
-      },
-      {
-        "<leader>gs",
-        function()
-          Snacks.picker.git_status()
-        end,
-        desc = "Git Status",
-      },
-    },
-    opts = {
-      gitbrowse = {
-        notify = false,
-        open = function(url)
-          vim.fn.setreg("+", url, "v")
-        end,
-      },
-    },
-  },
-
-  {
     "folke/snacks.nvim",
     -- other stuff from snacks
     lazy = false,
     keys = {
-      -- {
-      --   "<leader>ob",
-      --   function()
-      --     Snacks.toggle
-      --       .option("background", {
-      --         on = "light",
-      --         off = "dark",
-      --       })
-      --       :toggle()
-      --   end,
-      --   desc = "toggle background",
-      -- },
-      -- {
-      --   "<leader>od",
-      --   function()
-      --     Snacks.toggle.diagnostics():toggle()
-      --   end,
-      --   desc = "toggle diagnostics",
-      -- },
-      -- {
-      --   "<leader>oh",
-      --   function()
-      --     Snacks.toggle.inlay_hints():toggle()
-      --   end,
-      --   desc = "toggle inlay hints",
-      -- },
-      -- {
-      --   "<leader>oH",
-      --   function()
-      --     Snacks.toggle
-      --       .new({
-      --         id = "todo",
-      --         name = "todo highlights",
-      --         get = function()
-      --           return vim.g.minihipatterns_disable
-      --         end,
-      --         set = function(state)
-      --           vim.g.minihipatterns_disable = state
-      --         end,
-      --       })
-      --       :toggle()
-      --   end,
-      --   desc = "toggle todo highlights",
-      -- },
-      --   :field({
-      --     key = "i",
-      --     name = "indentscope",
-      --     table = vim.g,
-      --     field = "miniindentscope_disable",
-      --   })
-      --   :option({
-      --     key = "l",
-      --     option = "list",
-      --   })
-      --   :option({
-      --     key = "n",
-      --     option = "number",
-      --   })
-      --   :field({
-      --     key = "p",
-      --     name = "auto pairs",
-      --     table = vim.g,
-      --     field = "minipairs_disable",
-      --   })
-      --   :option({
-      --     key = "r",
-      --     option = "relativenumber",
-      --   })
-      --   :option({
-      --     key = "s",
-      --     option = "spell",
-      --   })
-      --   :manual({
-      --     key = "t",
-      --     name = "show context",
-      --     enable = "TSContextEnable",
-      --     disable = "TSContextDisable",
-      --     toggle = "TSContextToggle",
-      --   })
-      --   :option({
-      --     key = "v",
-      --     option = "virtualedit",
-      --     values = { [true] = "all", [false] = "block" },
-      --   })
-      --   :option({
-      --     key = "w",
-      --     option = "wrap",
-      --   })
-      --   :option({
-      --     key = "x",
-      --     option = "cursorcolumn",
-      --   })
+      {
+        "]]",
+        function()
+          Snacks.words.jump(vim.v.count1, true)
+        end,
+      },
+      {
+        "[[",
+        function()
+          Snacks.words.jump(-vim.v.count1, true)
+        end,
+      },
+      {
+        "<leader>ob",
+        function()
+          Snacks.toggle
+            .option("background", {
+              on = "light",
+              off = "dark",
+            })
+            :toggle()
+        end,
+        desc = "toggle background",
+      },
+      {
+        "<leader>oc",
+        function()
+          Snacks.toggle
+            .new({
+              id = "tscontext",
+              name = "treesitter context",
+              get = function()
+                return require("treesitter-context").enabled()
+              end,
+              set = function(_)
+                require("treesitter-context").toggle()
+              end,
+            })
+            :toggle()
+        end,
+        desc = "toggle context",
+      },
+      {
+        "<leader>od",
+        function()
+          Snacks.toggle.diagnostics():toggle()
+        end,
+        desc = "toggle diagnostics",
+      },
+      {
+        "<leader>oD",
+        function()
+          Snacks.toggle.dim():toggle()
+        end,
+        desc = "toggle dimming",
+      },
+      {
+        "<leader>oh",
+        function()
+          Snacks.toggle.inlay_hints():toggle()
+        end,
+        desc = "toggle inlay hints",
+      },
+      {
+        "<leader>oi",
+        function()
+          local toggle = Snacks.toggle.get("indentscope")
+          if not toggle then
+            toggle = Snacks.toggle.new({
+              id = "indentscope",
+              name = "indentscope",
+              get = function()
+                return not vim.g.miniindentscope_disable
+              end,
+              set = function(state)
+                vim.g.miniindentscope_disable = not state
+              end,
+            })
+          end
+          toggle:toggle()
+        end,
+        desc = "toggle indentscope",
+      },
+      {
+        "<leader>oI",
+        function()
+          Snacks.toggle.words():toggle()
+        end,
+        desc = "toggle illumination",
+      },
+      {
+        "<leader>ol",
+        function()
+          Snacks.toggle.option("list"):toggle()
+        end,
+        desc = "toggle list",
+      },
+      {
+        "<leader>on",
+        function()
+          Snacks.toggle.option("number"):toggle()
+        end,
+        desc = "toggle number",
+      },
+      {
+        "<leader>op",
+        function()
+          Snacks.toggle
+            .new({
+              id = "pairs",
+              name = "pairs",
+              get = function()
+                return not vim.g.minipairs_disable
+              end,
+              set = function(state)
+                vim.g.minipairs_disable = not state
+              end,
+            })
+            :toggle()
+        end,
+        desc = "toggle auto pairs",
+      },
+      {
+        "<leader>or",
+        function()
+          Snacks.toggle.option("relativenumber"):toggle()
+        end,
+        desc = "toggle relativenumber",
+      },
+      {
+        "<leader>os",
+        function()
+          Snacks.toggle.scroll():toggle()
+        end,
+        desc = "toggle smooth scroll",
+      },
+      {
+        "<leader>oS",
+        function()
+          Snacks.toggle.option("spell"):toggle()
+        end,
+        desc = "toggle spell",
+      },
+      {
+        "<leader>ot",
+        function()
+          Snacks.toggle.treesitter():toggle()
+        end,
+        desc = "toggle treesitter",
+      },
+      {
+        "<leader>ov",
+        function()
+          local toggle = Snacks.toggle.get("virtualedit")
+          if not toggle then
+            toggle = Snacks.toggle.new({
+              id = "virtualedit",
+              name = "virtualedit",
+              get = function()
+                return vim.o.virtualedit == "all"
+              end,
+              set = function(state)
+                if state then
+                  vim.opt.virtualedit = "all"
+                else
+                  vim.opt.virtualedit = "block"
+                end
+              end,
+            })
+          end
+          toggle:toggle()
+        end,
+        desc = "toggle virtualedit",
+      },
+      {
+        "<leader>ow",
+        function()
+          Snacks.toggle.option("wrap"):toggle()
+        end,
+        desc = "toggle wrap",
+      },
+      {
+        "<leader>ox",
+        function()
+          Snacks.toggle.option("cursorcolumn"):toggle()
+        end,
+        desc = "toggle cursorcolumn",
+      },
+      {
+        "<leader>oz",
+        function()
+          Snacks.toggle.zen():toggle()
+        end,
+        desc = "toggle zen mode",
+      },
     },
     config = function(_, opts)
       require("snacks").setup(opts)
@@ -2080,7 +2224,7 @@ return inject_all({
       input = { enabled = true },
       image = { enabled = true },
       notifier = { enabled = true },
-      quickfile = { enabled = false },
+      quickfile = { enabled = true },
       scroll = {
         enabled = true,
         animate = {
@@ -2092,10 +2236,16 @@ return inject_all({
         notification = {
           wo = { wrap = true },
         },
+        zen = {
+          backdrop = {
+            transparent = false,
+          },
+        },
       },
       toggle = {
         which_key = false,
       },
+      words = { enabled = true },
     },
   },
 

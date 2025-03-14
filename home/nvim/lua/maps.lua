@@ -108,8 +108,23 @@ vim.keymap.set("n", "dd", function()
   end
 end, { desc = "delete line", expr = true })
 
+-- add undo state when inserting a newline
+vim.keymap.set("i", "<cr>", "<cr><c-g>u")
+
+-- no lsp defaults
+vim.keymap.del("n", "gO")
+vim.keymap.del("n", "gra")
+vim.keymap.del("n", "gri")
+vim.keymap.del("n", "grn")
+vim.keymap.del("n", "grr")
+
 -- open jumplist
-vim.keymap.set("n", "<leader>qj", function()
+vim.keymap.set("n", "<leader>sj", function()
+  local has_snacks = pcall(require, "snacks")
+  if has_snacks then
+    Snacks.picker.jumps()
+    return
+  end
   local jumplist = vim.fn.getjumplist()[1]
   local qf_list = {}
   for _, v in ipairs(jumplist) do
@@ -124,9 +139,10 @@ vim.keymap.set("n", "<leader>qj", function()
   end
   vim.fn.setqflist(qf_list, " ")
   vim.cmd.cwindow()
-end, { desc = "list jumplist" })
+end, { desc = "Jumplist" })
 
-vim.keymap.set("n", "<leader>qc", function()
+-- open changelist
+vim.keymap.set("n", "<leader>sC", function()
   local qf_list = {}
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_loaded(buf) then
@@ -146,20 +162,26 @@ vim.keymap.set("n", "<leader>qc", function()
     end
   end
   vim.fn.setqflist(qf_list, " ")
-  vim.cmd.cwindow()
-end, { desc = "list changelist" })
+  local has_snacks = pcall(require, "snacks")
+  if has_snacks then
+    Snacks.picker.qflist({ title = "Changelist" })
+  else
+    vim.cmd.cwindow()
+  end
+end, { desc = "Changelist" })
 
 -- toggle quickfix
 vim.keymap.set("n", "<leader><leader>", function()
   vim.cmd.cwindow()
 end, { desc = "open quickfix" })
 
--- add undo state when inserting a newline
-vim.keymap.set("i", "<cr>", "<cr><c-g>u")
-
--- no lsp defaults
-vim.keymap.del("n", "gO")
-vim.keymap.del("n", "gra")
-vim.keymap.del("n", "gri")
-vim.keymap.del("n", "grn")
-vim.keymap.del("n", "grr")
+-- lsp
+vim.keymap.set("n", "<cr>", vim.diagnostic.open_float, { desc = "lsp: open diagnostic" })
+vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { desc = "lsp: rename symbol" })
+vim.keymap.set("n", "<leader>?", vim.lsp.buf.code_action, { desc = "lsp: run code action" })
+vim.keymap.set("n", "go", vim.lsp.buf.document_symbol, { desc = "lsp: show symbols" })
+vim.keymap.set("n", "gO", vim.lsp.buf.workspace_symbol, { desc = "lsp: show workspacesymbols" })
+vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "lsp: show definition" })
+vim.keymap.set("n", "gD", vim.lsp.buf.type_definition, { desc = "lsp: show type definition" })
+vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "lsp: show implementations" })
+vim.keymap.set("n", "<leader>sd", vim.diagnostic.setqflist, { desc = "lsp: list diagnostics" })

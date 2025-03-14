@@ -22,10 +22,10 @@
     };
   in {
     "nvim/init.lua".source = ./init.lua;
-    "nvim/lua".source = ./lua;
-    # "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/lua";
-    "nvim/ftplugin".source = ./ftplugin;
-    # "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/ftplugin";
+    # "nvim/lua".source = ./lua;
+    "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/lua";
+    # "nvim/ftplugin".source = ./ftplugin;
+    "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/ftplugin";
     "nvim/parser".source = "${treesitterParsers}/parser";
     "nvim/after/queries/go/textobjects.scm".source = ./go-textobjects.scm;
     "nvim/after/queries/gotmpl/injections.scm".source = ./gotmpl-injections.scm;
@@ -38,12 +38,14 @@
         "diffview-nvim"
         "friendly-snippets"
         "kanagawa-nvim"
+        "kulala-nvim"
         "lazy-nvim"
         "lazydev-nvim"
         "noice-nvim"
         "nui-nvim"
         "nvim-bqf"
         "nvim-dap"
+        # "nvim-dap-view"
         "nvim-impairative"
         "nvim-lint"
         "nvim-tree-lua"

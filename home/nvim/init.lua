@@ -1,6 +1,7 @@
 require("aucmd")
 require("options")
 require("maps")
+require("lsp")
 
 local lazypath = vim.fn.stdpath("data") .. "/nixpkgs/lazy-nvim"
 vim.opt.rtp:prepend(lazypath)

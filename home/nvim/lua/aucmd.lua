@@ -1,49 +1,3 @@
--- add this functionality when LSP attaches
-vim.api.nvim_create_autocmd("LspAttach", {
-  group = vim.api.nvim_create_augroup("on_lsp_attach", {}),
-  callback = function(event)
-    -- commands
-    vim.api.nvim_buf_create_user_command(event.buf, "LspFormat", function(_)
-      vim.lsp.buf.format()
-    end, { desc = "Format current buffer with LSP" })
-    vim.api.nvim_buf_create_user_command(event.buf, "LspRestart", function(_)
-      vim.lsp.stop_client(vim.lsp.get_clients(), true)
-      vim.cmd("edit")
-    end, { desc = "Restart all active LSP clients" })
-
-    -- mappings
-    vim.keymap.set("n", "<cr>", function()
-      vim.diagnostic.open_float()
-    end, { buffer = event.buf, desc = "lsp: open diagnostic" })
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = event.buf, desc = "lsp: show definition" })
-    vim.keymap.set("n", "gD", vim.lsp.buf.type_definition, { buffer = event.buf, desc = "lsp: show type definition" })
-    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = event.buf, desc = "lsp: show implementations" })
-    vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { buffer = event.buf, desc = "lsp: rename symbol" })
-    vim.keymap.set("n", "<leader>?", vim.lsp.buf.code_action, { buffer = event.buf, desc = "lsp: run code action" })
-    vim.keymap.set("n", "<leader>qd", vim.diagnostic.setqflist, { buffer = event.buf, desc = "lsp: list diagnostics" })
-    vim.keymap.set("n", "<leader>qD", function()
-      vim.diagnostic.setqflist({
-        severity = vim.diagnostic.severity.ERROR,
-      })
-    end, { buffer = event.buf, desc = "lsp: list serious diagnostics" })
-    vim.keymap.set("n", "gr", function()
-      vim.lsp.buf.references({
-        includeDeclaration = false,
-      })
-    end, { buffer = event.buf, desc = "lsp: show refs" })
-
-    -- autocmds
-    vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-      group = vim.api.nvim_create_augroup("draw_references_document_highlight", { clear = true }),
-      callback = vim.lsp.buf.document_highlight,
-    })
-    vim.api.nvim_create_autocmd("CursorMoved", {
-      group = vim.api.nvim_create_augroup("clear_references_document_highlight", { clear = true }),
-      callback = vim.lsp.buf.clear_references,
-    })
-  end,
-})
-
 -- display help in a vertical split
 vim.api.nvim_create_autocmd("BufWinEnter", {
   group = vim.api.nvim_create_augroup("vertical_help", { clear = true }),
@@ -89,6 +43,15 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
   pattern = "*",
   callback = function()
     vim.cmd("clearjumps")
+
+    vim.lsp.start({
+      cmd = { "typos-lsp" },
+      root_dir = vim.fs.dirname(vim.fs.find({ "README.md", ".git/" }, { upward = true })[1]),
+      single_file_support = true,
+      init_options = {
+        diagnosticSeverity = "hint",
+      },
+    })
   end,
 })
 
@@ -96,7 +59,10 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
 vim.api.nvim_create_autocmd({ "InsertEnter" }, {
   group = vim.api.nvim_create_augroup("on_insert_enter", { clear = true }),
   pattern = "*",
-  callback = function()
+  callback = function(event)
+    if vim.bo[event.buf].ft:match("snacks.*") then
+      return
+    end
     vim.opt.relativenumber = false -- switch to real line numbers
   end,
 })
@@ -106,6 +72,9 @@ vim.api.nvim_create_autocmd({ "InsertLeave" }, {
   group = vim.api.nvim_create_augroup("on_insert_leave", { clear = true }),
   pattern = "*",
   callback = function(event)
+    if vim.bo[event.buf].ft:match("snacks.*") or vim.bo[event.buf].ft == "minifiles" then
+      return
+    end
     if vim.bo[event.buf].ft == "qf" then
       vim.opt.relativenumber = false
       return
