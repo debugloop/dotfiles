@@ -30,6 +30,7 @@
       allowUnfree = true;
       warnUndeclaredOptions = true;
     };
+    overlays = [inputs.niri.overlays.niri];
   };
 
   age = {

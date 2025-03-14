@@ -33,7 +33,7 @@
       set fish_cursor_visual block
 
       # connect to gnome-keyring in graphical terminals
-      if test -n "$DISPLAY"
+      if test -n "$WAYLAND_DISPLAY"
         for env_var in (gnome-keyring-daemon --start 2>/dev/null);
           set -x (echo $env_var | string split "=")
         end
@@ -42,7 +42,7 @@
     loginShellInit = ''
       # start wm on tty1
       if test (tty) = /dev/tty1
-        sway
+        alias startx=exec niri-session
       end
     '';
     shellAbbrs = {

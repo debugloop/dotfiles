@@ -4,7 +4,7 @@
   ...
 }: {
   wayland.windowManager.sway = {
-    enable = true;
+    enable = false;
     extraConfigEarly = ''
       set $workspace1 "1:web"
       set $workspace2 "2:com"

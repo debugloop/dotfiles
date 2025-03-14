@@ -25,6 +25,9 @@
     nvim-blink-cmp = {
       url = "github:Saghen/blink.cmp";
     };
+    niri = {
+      url = "github:sodiboo/niri-flake";
+    };
     wunschkonzert = {
       url = "github:debugloop/wunschkonzert";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -103,6 +106,7 @@
               inputs.neovim-nightly-overlay.overlays.default
             ];
           })
+          inputs.niri.nixosModules.niri
         ];
       };
 

@@ -5,7 +5,7 @@
 }: {
   imports = [
     # our windowmanager
-    ./sway.nix
+    ./niri.nix
     # auxiliary services
     ./avizo.nix
     ./clipman.nix

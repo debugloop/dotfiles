@@ -166,8 +166,12 @@
     light.enable = true;
     nm-applet.enable = true;
     sway = {
-      enable = true;
+      enable = false;
       extraPackages = [];
+    };
+    niri = {
+      enable = true;
+      package = pkgs.niri-unstable;
     };
   };
 }

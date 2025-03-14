@@ -17,6 +17,8 @@
         "layer" = "top";
         "output" = "!HEADLESS-1";
         "modules-left" = [
+          "niri/workspaces"
+          "niri/window"
           "sway/workspaces"
           "sway/mode"
           "sway/window"
@@ -138,6 +140,17 @@
           "on-click-middle" = "${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list sinks short | ${pkgs.gnugrep}/bin/grep -v $(${pkgs.pulseaudio}/bin/pactl get-default-sink) | ${pkgs.coreutils}/bin/cut -f 1 | ${pkgs.coreutils}/bin/head -1)";
           "on-click-right" = "${pkgs.easyeffects}/bin/easyeffects";
         };
+        "niri/workspaces" = {
+          "format" = "{icon} {value}";
+          "format-icons" = {
+            "active" = "";
+            "default" = "";
+          };
+        };
+        "niri/window" = {
+          "format" = "{}";
+          "separate-outputs" = true;
+        };
         "sway/mode" = {
           "format" = " {}";
           "tooltip" = false;
@@ -210,20 +223,29 @@
         background-color: #${config.colors.background};
         border-top: 1px solid #${config.colors.background};
       }
+      #workspaces button.empty {
+        color: #${config.colors.bright-black};
+      }
       #workspaces button.visible {
         border-top: 1px solid #${config.colors.foreground};
       }
       #workspaces button:hover {
         background-color: #${config.colors.background};
+        color: #${config.colors.foreground};
         border-top: 1px solid #${config.colors.cyan};
       }
       #workspaces button.focused {
         background-color: #${config.colors.light_bg};
+        color: #${config.colors.foreground};
         border-top: 1px solid #${config.colors.blue};
       }
       #workspaces button.urgent {
         border-top: 1px solid #${config.colors.red};
       }
+      /* single window matcher
+      window#waybar.solo #workspaces button {
+        background-color: #${config.colors.purple};
+      } */
       tooltip {
         background: #${config.colors.background};
         color: #${config.colors.foreground};
