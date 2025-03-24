@@ -6,6 +6,15 @@
   programs.niri = {
     package = pkgs.niri-unstable;
     settings = {
+      spawn-at-startup = [
+        {
+          command = ["${pkgs.xwayland-satellite}/bin/xwayland-satellite" ":42"];
+        }
+      ];
+      environment = {
+        DISPLAY = ":42";
+      };
+      screenshot-path = "~/pictures/screenshot-%d-%m-%Y-%T.png";
       input = {
         workspace-auto-back-and-forth = true;
         focus-follows-mouse = {
@@ -22,14 +31,16 @@
         };
         touchpad = {
           accel-profile = "adaptive";
-          accel-speed = 0.6;
+          accel-speed = 0.4;
           tap = true;
           dwt = true;
           middle-emulation = true;
+          natural-scroll = false;
         };
       };
       outputs = {
         "eDP-1" = {
+          scale = 1.0;
           background-color = "#${config.colors.dark_bg}";
         };
         "DP-1" = {
@@ -41,10 +52,21 @@
       layout = {
         # empty-workspace-above-first = true;
         gaps = 0;
-        focus-ring = {
+        shadow = {
           enable = false;
+          color = "#${config.colors.blue}";
+          inactive-color = "#${config.colors.light_bg}00"; # transparent
+          spread = 1;
+          softness = 15;
+          offset = {
+            x = 0;
+            y = 0;
+          };
+        };
+        focus-ring = {
+          enable = true;
           width = 1;
-          active.color = "#${config.colors.blue}";
+          active.color = "#${config.colors.blue}00";
           inactive.color = "#${config.colors.cyan}";
         };
         border = {
@@ -53,18 +75,17 @@
           active.color = "#${config.colors.blue}";
           inactive.color = "#${config.colors.light_bg}";
         };
-        default-column-width.proportion = 0.33333;
+        default-column-width.proportion = 0.3333;
         preset-column-widths = [
-          {proportion = 0.33333;}
+          {proportion = 0.3333;}
           {proportion = 0.5;}
-          {proportion = 0.66667;}
+          {proportion = 0.6667;}
         ];
         preset-window-heights = [
           {proportion = 0.2;}
           {proportion = 0.4;}
           {proportion = 0.6;}
           {proportion = 0.8;}
-          {proportion = 1.0;}
         ];
         tab-indicator = {
           position = "right";
@@ -73,18 +94,19 @@
           gaps-between-tabs = 5;
           length.total-proportion = 0.1;
           corner-radius = 5;
-          active.color = "#${config.colors.blue}";
-          inactive.color = "#${config.colors.light_bg}";
+          active.color = "#${config.colors.blue}88";
+          inactive.color = "#${config.colors.light_bg}88";
         };
+        insert-hint.display.color = "#${config.colors.green}88";
       };
       window-rules = [
         {
           clip-to-geometry = true;
           geometry-corner-radius = {
-            bottom-left = 8.0;
-            bottom-right = 0.0;
-            top-left = 0.0;
-            top-right = 8.0;
+            bottom-left = 1.0;
+            bottom-right = 1.0;
+            top-left = 1.0;
+            top-right = 1.0;
           };
         }
         {
@@ -100,17 +122,34 @@
             color = "#${config.colors.red}";
           };
         }
+        {
+          matches = [
+            {is-floating = true;}
+          ];
+          shadow = {
+            enable = true;
+            color = "#${config.colors.blue}";
+          };
+        }
       ];
-      workspaces = {
-        "1-web" = {
-          name = "web";
-        };
-        "2-com" = {
-          name = "com";
-        };
-      };
+      layer-rules = [
+        {
+          matches = [
+            {namespace = "notifications";}
+          ];
+          block-out-from = "screen-capture";
+        }
+      ];
+      # workspaces = {
+      #   "1-web" = {
+      #     name = "web";
+      #   };
+      #   "2-com" = {
+      #     name = "com";
+      #   };
+      # };
       binds = with config.lib.niri.actions; {
-        "Mod+D".action = spawn "${pkgs.wofi}/bin/wofi" "-G" "-S" "run";
+        "Mod+D".action = spawn "${pkgs.wofi}/bin/wofi" "-aGS" "drun";
         "Mod+Return".action = spawn "${pkgs.kitty}/bin/kitty";
 
         # Keys consist of modifiers separated by + signs, followed by an XKB key name
@@ -154,19 +193,19 @@
 
         "XF86AudioPlay" = {
           allow-when-locked = true;
-          action = spawn "${pkgs.playerctl}/bin/playerctl -p spotify play-pause";
+          action = spawn "${pkgs.playerctl}/bin/playerctl" "-p" "spotify" "play-pause";
         };
         "XF86AudioNext" = {
           allow-when-locked = true;
-          action = spawn "${pkgs.playerctl}/bin/playerctl -p spotify next";
+          action = spawn "${pkgs.playerctl}/bin/playerctl" "-p" "spotify" "next";
         };
         "XF86AudioPrev" = {
           allow-when-locked = true;
-          action = spawn "${pkgs.playerctl}/bin/playerctl -p spotify previous";
+          action = spawn "${pkgs.playerctl}/bin/playerctl" "-p" "spotify" "previous";
         };
         "XF86AudioStop" = {
           allow-when-locked = true;
-          action = spawn "${pkgs.playerctl}/bin/playerctl -p spotify stop";
+          action = spawn "${pkgs.playerctl}/bin/playerctl" "-p" "spotify" "stop";
         };
 
         "Mod+XF86AudioRaiseVolume".action = set-column-width "+1%";
@@ -182,25 +221,28 @@
         # "Mod+Right".action = focus-column-right;
         # focus
 
+        "Mod+H".action = focus-column-left-or-last;
         # "Mod+H".action = focus-column-or-monitor-left;
-        # "Mod+H".action = focus-column-left-or-last;
         # combined:
-        "Mod+H".action = spawn "fish" "-c" "niri msg -j outputs | jq -r '[.[]|select(.current_mode!=null)]|length' | grep 1; and niri msg action focus-column-left-or-last; or niri msg action focus-column-or-monitor-left";
+        # "Mod+H".action = spawn "fish" "-c" "niri msg -j outputs | jq -r '[.[]|select(.current_mode!=null)]|length' | grep 1; and niri msg action focus-column-left-or-last; or niri msg action focus-column-or-monitor-left";
+        "Mod+Semicolon".action = spawn "fish" "-c" "niri msg action focus-window --id (niri msg -j windows | jq -r '.[] | (.id|tostring) + \" \" + .app_id + \": \" + .title' | ${pkgs.wofi}/bin/wofi -di | cut -d' ' -f1)";
 
         # "Mod+J".action = focus-window-down-or-top;
         # "Mod+J".action = focus-window-or-monitor-down;
+        "Mod+J".action = focus-window-or-workspace-down;
         # combined:
-        "Mod+J".action = spawn "fish" "-c" "niri msg -j outputs | jq -r '[.[]|select(.current_mode!=null)]|length' | grep 1; and niri msg action focus-window-down-or-top; or niri msg action focus-window-or-monitor-down";
+        # "Mod+J".action = spawn "fish" "-c" "niri msg -j outputs | jq -r '[.[]|select(.current_mode!=null)]|length' | grep 1; and niri msg action focus-window-down-or-top; or niri msg action focus-window-or-monitor-down";
 
         # "Mod+K".action = focus-window-up-or-bottom;
         # "Mod+K".action = focus-window-or-monitor-up;
+        "Mod+K".action = focus-window-or-workspace-up;
         # combined:
-        "Mod+K".action = spawn "fish" "-c" "niri msg -j outputs | jq -r '[.[]|select(.current_mode!=null)]|length' | grep 1; and niri msg action focus-window-up-or-bottom; or niri msg action focus-window-or-monitor-up";
+        # "Mod+K".action = spawn "fish" "-c" "niri msg -j outputs | jq -r '[.[]|select(.current_mode!=null)]|length' | grep 1; and niri msg action focus-window-up-or-bottom; or niri msg action focus-window-or-monitor-up";
 
-        # "Mod+L".action = focus-column-right-or-first;
+        "Mod+L".action = focus-column-right-or-first;
         # "Mod+L".action = focus-column-or-monitor-right;
         # combined:
-        "Mod+L".action = spawn "fish" "-c" "niri msg -j outputs | jq -r '[.[]|select(.current_mode!=null)]|length' | grep 1; and niri msg action focus-column-right-or-first; or niri msg action focus-column-or-monitor-right";
+        # "Mod+L".action = spawn "fish" "-c" "niri msg -j outputs | jq -r '[.[]|select(.current_mode!=null)]|length' | grep 1; and niri msg action focus-column-right-or-first; or niri msg action focus-column-or-monitor-right";
 
         # move
         "Mod+Shift+H".action = consume-or-expel-window-left;
@@ -211,8 +253,12 @@
         # workspaces
         "Mod+Ctrl+H".action = move-workspace-up;
         "Mod+Ctrl+L".action = move-workspace-down;
-        "Mod+Ctrl+J".action = focus-workspace-down;
-        "Mod+Ctrl+K".action = focus-workspace-up;
+        # "Mod+Ctrl+J".action = focus-workspace-down;
+        # "Mod+Ctrl+K".action = focus-workspace-up;
+        "Mod+Ctrl+J".action = spawn "fish" "-c" "niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].is_focused' | grep true; and niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[0].idx'); or niri msg action focus-workspace-down";
+        "Mod+Ctrl+K".action = spawn "fish" "-c" "niri msg -j workspaces | jq -r 'sort_by(.idx).[0].is_focused' | grep true; and niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx'); or niri msg action focus-workspace-up";
+        # "Mod+Ctrl+J".action = move-column-left-or-to-monitor-left;
+        # "Mod+Ctrl+K".action = move-column-right-or-to-monitor-right;
 
         # monitors
         "Mod+Shift+Ctrl+H".action = move-workspace-to-monitor-left;
@@ -301,6 +347,22 @@
           cooldown-ms = 150;
           action = focus-workspace-up;
         };
+        "Mod+Shift+TouchpadScrollDown" = {
+          cooldown-ms = 150;
+          action = focus-column-right;
+        };
+        "Mod+Shift+TouchpadScrollUp" = {
+          cooldown-ms = 150;
+          action = focus-column-left;
+        };
+        "Mod+TouchpadScrollDown" = {
+          cooldown-ms = 150;
+          action = focus-workspace-down;
+        };
+        "Mod+TouchpadScrollUp" = {
+          cooldown-ms = 150;
+          action = focus-workspace-up;
+        };
 
         # Similarly, you can bind touchpad scroll "ticks".
         # Touchpad scrolling is continuous, so for these binds it is split into
@@ -357,7 +419,7 @@
         # Mod+Ctrl+1 { move-window-to-workspace 1; }
 
         # Switches focus between the current and the previous workspace.
-        # Mod+Tab { focus-workspace-previous; }
+        "Mod+Tab".action = focus-monitor-next;
 
         # Consume one window from the right to the bottom of the focused column.
         # "Mod+Comma".action = consume-window-into-column;
@@ -366,14 +428,15 @@
 
         "Mod+R".action = switch-preset-column-width;
         "Mod+Shift+R".action = switch-preset-window-height;
-        "Mod+Ctrl+R".action = reset-window-height;
         "Mod+M".action = maximize-column;
+        "Mod+Shift+M".action = reset-window-height;
+        "Mod+Comma".action = set-column-width "33.33%";
+        "Mod+Period".action = set-column-width "66.67%";
+        "Mod+Slash".action = set-column-width "50%";
+
         "Mod+F".action = fullscreen-window;
-
-        # Expand the focused column to space not taken up by other fully visible columns.
-        # Makes the column "fill the rest of the space".
-        "Mod+Ctrl+M".action = expand-column-to-available-width;
-
+        "Mod+Ctrl+F".action = toggle-windowed-fullscreen;
+        "Mod+Shift+F".action = toggle-windowed-fullscreen;
         "Mod+C".action = center-column;
 
         # Finer width adjustments.
@@ -394,6 +457,10 @@
         # Move the focused window between the floating and the tiling layout.
         "Mod+V".action = toggle-window-floating;
         "Mod+Space".action = switch-focus-between-floating-and-tiling;
+
+        "Mod+S".action = set-dynamic-cast-window;
+        "Mod+Ctrl+S".action = set-dynamic-cast-monitor;
+        "Mod+Shift+S".action = clear-dynamic-cast-target;
 
         # Toggle tabbed column display mode.
         # Windows in this column will appear as vertical tabs,
@@ -426,12 +493,10 @@
         };
 
         # The quit action will show a confirmation dialog to avoid accidental exits.
-        "Mod+Shift+E".action = quit;
-        "Ctrl+Alt+Delete".action = quit;
-
-        # Powers off the monitors. To turn them back on, do any input like
-        # moving the mouse or pressing any other key.
-        "Mod+Shift+P".action = power-off-monitors;
+        "Ctrl+Alt+Delete" = {
+          allow-inhibiting = false;
+          action = quit;
+        };
       };
     };
   };

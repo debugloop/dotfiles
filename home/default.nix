@@ -52,6 +52,7 @@
       mermaid-cli
       melt
       posting
+      yt-dlp
       # nix
       age
       alejandra

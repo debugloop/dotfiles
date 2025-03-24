@@ -14,6 +14,7 @@
     };
     settings = [
       {
+        # "position" = "left";
         "layer" = "top";
         "output" = "!HEADLESS-1";
         "modules-left" = [
@@ -64,6 +65,7 @@
           "tooltip-format" = "<tt>{calendar}</tt>";
           "calendar" = {
             "mode" = "month";
+            "mode-mon-col" = 3;
             "weeks-pos" = "left";
             "on-scroll" = 1;
             "format" = {
@@ -129,7 +131,7 @@
         "pulseaudio" = {
           "format" = "{format_source}{icon} {volume}%";
           "format-bluetooth" = "{format_source} {icon} {volume}%";
-          "format-source" = "<span color=\"#${config.colors.red}\"></span> ";
+          "format-source" = "<span color=\"#${config.colors.red}\"></span>  ";
           "format-source-muted" = "";
           "format-muted" = "{format_source} {volume}%";
           "format-icons" = {
@@ -146,10 +148,14 @@
             "active" = "";
             "default" = "";
           };
+          "on-scroll-down" = "niri msg action focus-workspace-down";
+          "on-scroll-up" = "niri msg action focus-workspace-up";
         };
         "niri/window" = {
           "format" = "{}";
           "separate-outputs" = true;
+          "on-scroll-down" = "niri msg action focus-column-right";
+          "on-scroll-up" = "niri msg action focus-column-left";
         };
         "sway/mode" = {
           "format" = " {}";
@@ -202,25 +208,20 @@
         border: none;
         border-radius: 0;
         min-height: 0;
-        margin: 0;
-        padding: 0;
-      }
-      button:hover {
-        box-shadow: none; /* Remove predefined box-shadow */
-        text-shadow: none; /* Remove predefined text-shadow */
-        background: none; /* Remove predefined background color (white) */
-        transition: none; /* Disable predefined animations */
       }
       #waybar {
         background: #${config.colors.dark_bg};
         color: #${config.colors.foreground};
         font-family: "Fira Mono";
-        font-size: 13px;
+        font-size: 13;
+      }
+      #workspaces {
+        background-color: #${config.colors.background};
+        padding: 0;
       }
       #workspaces button {
-        padding: 4px 10px;
+        padding: 0.3em 0.7em;
         color: #${config.colors.foreground};
-        background-color: #${config.colors.background};
         border-top: 1px solid #${config.colors.background};
       }
       #workspaces button.empty {
@@ -238,14 +239,11 @@
         background-color: #${config.colors.light_bg};
         color: #${config.colors.foreground};
         border-top: 1px solid #${config.colors.blue};
+        border-bottom-right-radius: 1em;
       }
       #workspaces button.urgent {
         border-top: 1px solid #${config.colors.red};
       }
-      /* single window matcher
-      window#waybar.solo #workspaces button {
-        background-color: #${config.colors.purple};
-      } */
       tooltip {
         background: #${config.colors.background};
         color: #${config.colors.foreground};
@@ -254,15 +252,11 @@
       .modules-left > * > *,
       .modules-center > * > *,
       .modules-right > * > * {
-        padding: 0px 8px;
-      }
-      /* no padding in front */
-      .modules-left > widget:first-child > #workspaces {
-        padding: 0;
+        padding: 0px 0.5em;
       }
       /* all right hand modules */
       .modules-right > * > * {
-        margin: 0 2px 0 2px;
+        margin: 0 0.2em;
       }
       /* settings modules */
       #idle_inhibitor,
@@ -298,11 +292,6 @@
       #custom-media {
         color: rgb(102, 220, 105);
         background-color: #${config.colors.dark_bg};
-      }
-      #custom-mic {
-        color: #${config.colors.background};
-        background-color: #${config.colors.red};
-        padding: 0px 8px;
       }
       #mode {
         background: #${config.colors.purple};
