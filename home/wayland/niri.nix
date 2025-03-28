@@ -111,6 +111,12 @@
         }
         {
           matches = [
+            {title = "^\\[private\\] .*$";}
+          ];
+          block-out-from = "screencast";
+        }
+        {
+          matches = [
             {is-window-cast-target = true;}
           ];
           border = {
@@ -149,188 +155,105 @@
       #   };
       # };
       binds = with config.lib.niri.actions; {
+        # launch
         "Mod+D".action = spawn "${pkgs.wofi}/bin/wofi" "-aGS" "drun";
         "Mod+Return".action = spawn "${pkgs.kitty}/bin/kitty";
 
-        # Keys consist of modifiers separated by + signs, followed by an XKB key name
-        # in the end. To find an XKB name for a particular key, you may use a program
-        # like wev.
-        #
-        # "Mod" is a special modifier equal to Super when running on a TTY, and to Alt
-        # when running as a winit window.
-        #
-        # Most actions that you can bind here can also be invoked programmatically with
-        # `niri msg action do-something`.
+        # notifications
+        "Mod+N".action = spawn "${pkgs.mako}/bin/makoctl" "dismiss" "-a";
 
+        # lock and suspend
         "Mod+Backslash".action = spawn "${pkgs.swaylock-effects}/bin/swaylock" "-f";
         "Mod+Ctrl+Shift+Backslash".action = spawn "systemctl" "suspend";
         "Cancel".action = spawn "${pkgs.swaylock-effects}/bin/swaylock" "-f";
 
-        "XF86AudioRaiseVolume" = {
-          allow-when-locked = true;
-          action = spawn "bash" "-c" "${pkgs.avizo}/bin/volumectl -M0 up 1 && pkill -SIGRTMIN+4 waybar";
-        };
-        "XF86AudioLowerVolume" = {
-          allow-when-locked = true;
-          action = spawn "bash" "-c" "${pkgs.avizo}/bin/volumectl -M0 down 1 && pkill -SIGRTMIN+4 waybar";
-        };
-        "Shift+XF86AudioRaiseVolume" = {
-          allow-when-locked = true;
-          action = spawn "bash" "-c" "${pkgs.avizo}/bin/volumectl -M0 up 5 && pkill -SIGRTMIN+4 waybar";
-        };
-        "Shift+XF86AudioLowerVolume" = {
-          allow-when-locked = true;
-          action = spawn "bash" "-c" "${pkgs.avizo}/bin/volumectl -M0 down 5 && pkill -SIGRTMIN+4 waybar";
-        };
-        "XF86AudioMute" = {
-          allow-when-locked = true;
-          action = spawn "bash" "-c" "${pkgs.avizo}/bin/volumectl -M0 toggle-mute && pkill -SIGRTMIN+4 waybar";
-        };
-        "XF86AudioMicMute" = {
-          allow-when-locked = true;
-          action = spawn "bash" "-c" "${pkgs.avizo}/bin/volumectl -M0 -m toggle-mute && pkill -SIGRTMIN+4 waybar";
-        };
+        # window actions
+        "Mod+Q".action = close-window;
+        "Mod+F".action = fullscreen-window;
+        "Mod+Ctrl+F".action = toggle-windowed-fullscreen;
+        "Mod+Shift+F".action = toggle-windowed-fullscreen;
+        "Mod+C".action = center-column;
+        "Mod+W".action = toggle-column-tabbed-display;
+        "Mod+Ctrl+V".action = toggle-window-floating;
+        "Mod+V".action = switch-focus-between-floating-and-tiling;
+        "Mod+Space".action = spawn "${pkgs.writeScript "consume_next.py" ''
+          #!/usr/bin/env python
+          import subprocess
 
-        "XF86AudioPlay" = {
-          allow-when-locked = true;
-          action = spawn "${pkgs.playerctl}/bin/playerctl" "-p" "spotify" "play-pause";
-        };
-        "XF86AudioNext" = {
-          allow-when-locked = true;
-          action = spawn "${pkgs.playerctl}/bin/playerctl" "-p" "spotify" "next";
-        };
-        "XF86AudioPrev" = {
-          allow-when-locked = true;
-          action = spawn "${pkgs.playerctl}/bin/playerctl" "-p" "spotify" "previous";
-        };
-        "XF86AudioStop" = {
-          allow-when-locked = true;
-          action = spawn "${pkgs.playerctl}/bin/playerctl" "-p" "spotify" "stop";
-        };
+          p = subprocess.Popen(['niri', 'msg', '-j', 'event-stream'], stdout=subprocess.PIPE)
 
+          for line in p.stdout:
+              line = line.decode('utf-8')
+              if 'WindowOpenedOrChanged' in line:
+                  subprocess.call(['niri', 'msg', 'action', 'consume-or-expel-window-left'])
+                  break
+        ''}";
+
+        # window width
+        "Mod+R".action = switch-preset-column-width;
+        "Mod+Comma".action = set-column-width "33.33%";
+        "Mod+Period".action = set-column-width "66.67%";
+        "Mod+Slash".action = set-column-width "50%";
+        "Mod+M".action = maximize-column;
         "Mod+XF86AudioRaiseVolume".action = set-column-width "+1%";
         "Mod+XF86AudioLowerVolume".action = set-column-width "-1%";
+
+        # window height
+        "Mod+Shift+R".action = switch-preset-window-height;
+        "Mod+Shift+M".action = reset-window-height;
         "Mod+Shift+XF86AudioRaiseVolume".action = set-window-height "+1%";
         "Mod+Shift+XF86AudioLowerVolume".action = set-window-height "-1%";
 
-        "Mod+Q".action = close-window;
+        # window casting
+        "Mod+S".action = set-dynamic-cast-window;
+        "Mod+Ctrl+S".action = set-dynamic-cast-monitor;
+        "Mod+Shift+S".action = clear-dynamic-cast-target;
 
-        # "Mod+Left".action = focus-column-left;
-        # "Mod+Down".action = focus-window-down;
-        # "Mod+Up".action = focus-window-up;
-        # "Mod+Right".action = focus-column-right;
-        # focus
-
-        "Mod+H".action = focus-column-left-or-last;
-        # "Mod+H".action = focus-column-or-monitor-left;
-        # combined:
-        # "Mod+H".action = spawn "fish" "-c" "niri msg -j outputs | jq -r '[.[]|select(.current_mode!=null)]|length' | grep 1; and niri msg action focus-column-left-or-last; or niri msg action focus-column-or-monitor-left";
+        # find windows
         "Mod+Semicolon".action = spawn "fish" "-c" "niri msg action focus-window --id (niri msg -j windows | jq -r '.[] | (.id|tostring) + \" \" + .app_id + \": \" + .title' | ${pkgs.wofi}/bin/wofi -di | cut -d' ' -f1)";
 
-        # "Mod+J".action = focus-window-down-or-top;
-        # "Mod+J".action = focus-window-or-monitor-down;
+        # screenshots
+        "Print".action = screenshot;
+        "Ctrl+Print".action = screenshot-window;
+
+        # focus
+        "Mod+H".action = focus-column-left-or-last;
         "Mod+J".action = focus-window-or-workspace-down;
-        # combined:
-        # "Mod+J".action = spawn "fish" "-c" "niri msg -j outputs | jq -r '[.[]|select(.current_mode!=null)]|length' | grep 1; and niri msg action focus-window-down-or-top; or niri msg action focus-window-or-monitor-down";
-
-        # "Mod+K".action = focus-window-up-or-bottom;
-        # "Mod+K".action = focus-window-or-monitor-up;
         "Mod+K".action = focus-window-or-workspace-up;
-        # combined:
-        # "Mod+K".action = spawn "fish" "-c" "niri msg -j outputs | jq -r '[.[]|select(.current_mode!=null)]|length' | grep 1; and niri msg action focus-window-up-or-bottom; or niri msg action focus-window-or-monitor-up";
-
         "Mod+L".action = focus-column-right-or-first;
-        # "Mod+L".action = focus-column-or-monitor-right;
-        # combined:
-        # "Mod+L".action = spawn "fish" "-c" "niri msg -j outputs | jq -r '[.[]|select(.current_mode!=null)]|length' | grep 1; and niri msg action focus-column-right-or-first; or niri msg action focus-column-or-monitor-right";
 
-        # move
+        # small move
         "Mod+Shift+H".action = consume-or-expel-window-left;
         "Mod+Shift+L".action = consume-or-expel-window-right;
         "Mod+Shift+J".action = move-window-down-or-to-workspace-down;
         "Mod+Shift+K".action = move-window-up-or-to-workspace-up;
 
-        # workspaces
-        "Mod+Ctrl+H".action = move-workspace-up;
-        "Mod+Ctrl+L".action = move-workspace-down;
-        # "Mod+Ctrl+J".action = focus-workspace-down;
-        # "Mod+Ctrl+K".action = focus-workspace-up;
-        "Mod+Ctrl+J".action = spawn "fish" "-c" "niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].is_focused' | grep true; and niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[0].idx'); or niri msg action focus-workspace-down";
-        "Mod+Ctrl+K".action = spawn "fish" "-c" "niri msg -j workspaces | jq -r 'sort_by(.idx).[0].is_focused' | grep true; and niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx'); or niri msg action focus-workspace-up";
-        # "Mod+Ctrl+J".action = move-column-left-or-to-monitor-left;
-        # "Mod+Ctrl+K".action = move-column-right-or-to-monitor-right;
+        # large move
+        "Mod+Ctrl+H".action = move-column-left;
+        "Mod+Ctrl+J".action = move-workspace-down;
+        "Mod+Ctrl+K".action = move-workspace-up;
+        "Mod+Ctrl+L".action = move-column-right;
+
+        # swaylike workspace focus with wrapping
+        # "Mod+Ctrl+J".action = spawn "fish" "-c" "niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].is_focused' | grep true; and niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[0].idx'); or niri msg action focus-workspace-down";
+        # "Mod+Ctrl+K".action = spawn "fish" "-c" "niri msg -j workspaces | jq -r 'sort_by(.idx).[0].is_focused' | grep true; and niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx'); or niri msg action focus-workspace-up";
 
         # monitors
-        "Mod+Shift+Ctrl+H".action = move-workspace-to-monitor-left;
-        "Mod+Shift+Ctrl+J".action = move-workspace-to-monitor-down;
-        "Mod+Shift+Ctrl+K".action = move-workspace-to-monitor-up;
-        "Mod+Shift+Ctrl+L".action = move-workspace-to-monitor-right;
+        "Mod+Tab".action = focus-monitor-next;
+        "Mod+Shift+Tab".action = move-window-to-monitor-next;
+        "Mod+Ctrl+Tab".action = move-workspace-to-monitor-next;
 
-        # swap columns
-        "Mod+BracketRight".action = move-column-right-or-to-monitor-right;
-        "Mod+BracketLeft".action = move-column-left-or-to-monitor-left;
+        # special focus
+        "Mod+BracketLeft".action = focus-column-first;
+        "Mod+Shift+BracketLeft".action = move-column-to-first;
+        "Mod+BracketRight".action = focus-column-last;
+        "Mod+Shift+BracketRight".action = move-column-to-last;
 
-        # special focus and movement large
-        "Mod+Backspace".action = focus-column-first;
-        "Mod+Ctrl+Backspace".action = move-column-to-first;
-        "Mod+Delete".action = focus-column-last;
-        "Mod+Ctrl+Delete".action = move-column-to-last;
-
+        # laptop screen
         "Mod+Equal".action = spawn "niri" "msg" "output" "eDP-1" "on";
         "Mod+Shift+Equal".action = spawn "niri" "msg" "output" "eDP-1" "off";
 
-        # "Mod+Ctrl+Page_Down".action = move-column-to-workspace-down;
-        # "Mod+Ctrl+Page_Up".action = move-column-to-workspace-up;
-
-        # Alternative commands that move across workspaces when reaching
-        # the first or last window in a column.
-
-        # "Mod+Shift+Left".action = focus-monitor-left;
-        # "Mod+Shift+Down".action = focus-monitor-down;
-        # "Mod+Shift+Up".action = focus-monitor-up;
-        # "Mod+Shift+Right".action = focus-monitor-right;
-        # "Mod+Shift+H".action = focus-monitor-left;
-        # "Mod+Shift+J".action = focus-monitor-down;
-        # "Mod+Shift+K".action = focus-monitor-up;
-        # "Mod+Shift+L".action = focus-monitor-right;
-
-        # "Mod+Shift+Ctrl+Left".action = move-column-to-monitor-left;
-        # "Mod+Shift+Ctrl+Down".action = move-column-to-monitor-down;
-        # "Mod+Shift+Ctrl+Up".action = move-column-to-monitor-up;
-        # "Mod+Shift+Ctrl+Right".action = move-column-to-monitor-right;
-
-        # Alternatively, there are commands to move just a single window:
-        # Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
-        # ...
-
-        # And you can also move a whole workspace to another monitor:
-        # Mod+Shift+Ctrl+Left  { move-workspace-to-monitor-left; }
-        # ...
-
-        # "Mod+Page_Down".action = focus-workspace-down;
-        # "Mod+Page_Up".action = focus-workspace-up;
-        # "Mod+U".action = focus-workspace-down;
-        # "Mod+I".action = focus-workspace-up;
-        # "Mod+Ctrl+Page_Down".action = move-column-to-workspace-down;
-        # "Mod+Ctrl+Page_Up".action = move-column-to-workspace-up;
-        # "Mod+Ctrl+U".action = move-column-to-workspace-down;
-        # "Mod+Ctrl+I".action = move-column-to-workspace-up;
-
-        # Alternatively, there are commands to move just a single window:
-        # Mod+Ctrl+Page_Down { move-window-to-workspace-down; }
-        # ...
-
-        # "Mod+Shift+Page_Down".action = move-workspace-down;
-        # "Mod+Shift+Page_Up".action = move-workspace-up;
-        # "Mod+Shift+U".action = move-workspace-down;
-        # "Mod+Shift+I".action = move-workspace-up;
-
-        # You can bind mouse wheel scroll ticks using the following syntax.
-        # These binds will change direction based on the natural-scroll setting.
-        #
-        # To avoid scrolling through workspaces really fast, you can use
-        # the cooldown-ms property. The bind will be rate-limited to this value.
-        # You can set a cooldown on any bind, but it's most useful for the wheel.
+        # scrolling focus
         "Mod+Shift+WheelScrollDown" = {
           cooldown-ms = 150;
           action = focus-column-right;
@@ -347,155 +270,137 @@
           cooldown-ms = 150;
           action = focus-workspace-up;
         };
-        "Mod+Shift+TouchpadScrollDown" = {
-          cooldown-ms = 150;
-          action = focus-column-right;
-        };
-        "Mod+Shift+TouchpadScrollUp" = {
-          cooldown-ms = 150;
-          action = focus-column-left;
-        };
-        "Mod+TouchpadScrollDown" = {
-          cooldown-ms = 150;
-          action = focus-workspace-down;
-        };
-        "Mod+TouchpadScrollUp" = {
-          cooldown-ms = 150;
-          action = focus-workspace-up;
-        };
 
-        # Similarly, you can bind touchpad scroll "ticks".
-        # Touchpad scrolling is continuous, so for these binds it is split into
-        # discrete intervals.
-        # These binds are also affected by touchpad's natural-scroll, so these
-        # example binds are "inverted", since we have natural-scroll enabled for
-        # touchpads by default.
-        # Mod+TouchpadScrollDown { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.02+"; }
-        # Mod+TouchpadScrollUp   { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.02-"; }
-
-        # You can refer to workspaces by index. However, keep in mind that
-        # niri is a dynamic workspace system, so these commands are kind of
-        # "best effort". Trying to refer to a workspace index bigger than
-        # the current workspace count will instead refer to the bottommost
-        # (empty) workspace.
-        #
-        # For example, with 2 workspaces + 1 empty, indices 3, 4, 5 and so on
-        # will all refer to the 3rd workspace.
-        "Mod+1".action = focus-workspace 1;
-        "Mod+2".action = focus-workspace 2;
-        "Mod+3".action = focus-workspace 3;
-        "Mod+4".action = focus-workspace 4;
-        "Mod+5".action = focus-workspace 5;
-        "Mod+6".action = focus-workspace 6;
-        "Mod+7".action = focus-workspace 7;
-        "Mod+8".action = focus-workspace 8;
-        "Mod+9".action = focus-workspace 9;
-        "Mod+0".action = spawn "fish" "-c" "niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx')";
-        "Mod+Minus".action = focus-workspace 42;
-        "Mod+Ctrl+1".action = move-column-to-workspace 1;
-        "Mod+Ctrl+2".action = move-column-to-workspace 2;
-        "Mod+Ctrl+3".action = move-column-to-workspace 3;
-        "Mod+Ctrl+4".action = move-column-to-workspace 4;
-        "Mod+Ctrl+5".action = move-column-to-workspace 5;
-        "Mod+Ctrl+6".action = move-column-to-workspace 6;
-        "Mod+Ctrl+7".action = move-column-to-workspace 7;
-        "Mod+Ctrl+8".action = move-column-to-workspace 8;
-        "Mod+Ctrl+9".action = move-column-to-workspace 9;
-        "Mod+Ctrl+0".action = spawn "fish" "-c" "niri msg action move-column-to-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx')";
-        "Mod+Ctrl+Minus".action = move-column-to-workspace 42;
-        "Mod+Shift+1".action = move-window-to-workspace 1;
-        "Mod+Shift+2".action = move-window-to-workspace 2;
-        "Mod+Shift+3".action = move-window-to-workspace 3;
-        "Mod+Shift+4".action = move-window-to-workspace 4;
-        "Mod+Shift+5".action = move-window-to-workspace 5;
-        "Mod+Shift+6".action = move-window-to-workspace 6;
-        "Mod+Shift+7".action = move-window-to-workspace 7;
-        "Mod+Shift+8".action = move-window-to-workspace 8;
-        "Mod+Shift+9".action = move-window-to-workspace 9;
-        "Mod+Shift+0".action = spawn "fish" "-c" "niri msg action move-window-to-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx')";
+        # colorcode workspaces
+        # "Mod+Ctrl+Grave".action = unset-workspace-name;
+        "Mod+Ctrl+1".action = set-workspace-name "red";
+        "Mod+Ctrl+2".action = set-workspace-name "green";
+        "Mod+Ctrl+3".action = set-workspace-name "blue";
+        "Mod+Ctrl+4".action = set-workspace-name "orange";
+        "Mod+Ctrl+7".action = set-workspace-name "pink";
+        "Mod+Ctrl+8".action = set-workspace-name "cyan";
+        "Mod+Ctrl+9".action = set-workspace-name "purple";
+        "Mod+Ctrl+0".action = set-workspace-name "yellow";
+        "Mod+Ctrl+Minus".action = unset-workspace-name;
+        # "Mod+Shift+Grave".action = move-window-to-workspace 0;
+        "Mod+Shift+1".action = move-window-to-workspace "red";
+        "Mod+Shift+2".action = move-window-to-workspace "green";
+        "Mod+Shift+3".action = move-window-to-workspace "blue";
+        "Mod+Shift+4".action = move-window-to-workspace "orange";
+        "Mod+Shift+7".action = move-window-to-workspace "pink";
+        "Mod+Shift+8".action = move-window-to-workspace "cyan";
+        "Mod+Shift+9".action = move-window-to-workspace "purple";
+        "Mod+Shift+0".action = move-window-to-workspace "yellow";
         "Mod+Shift+Minus".action = move-window-to-workspace 42;
+        # "Mod+Grave".action = focus-workspace 0;
+        "Mod+1".action = focus-workspace "red";
+        "Mod+2".action = focus-workspace "green";
+        "Mod+3".action = focus-workspace "blue";
+        "Mod+4".action = focus-workspace "orange";
+        "Mod+7".action = focus-workspace "pink";
+        "Mod+8".action = focus-workspace "cyan";
+        "Mod+9".action = focus-workspace "purple";
+        "Mod+0".action = focus-workspace "yellow";
+        "Mod+Minus".action = focus-workspace 42;
 
-        # Alternatively, there are commands to move just a single window:
-        # Mod+Ctrl+1 { move-window-to-workspace 1; }
-
-        # Switches focus between the current and the previous workspace.
-        "Mod+Tab".action = focus-monitor-next;
-
-        # Consume one window from the right to the bottom of the focused column.
-        # "Mod+Comma".action = consume-window-into-column;
-        # Expel the bottom window from the focused column to the right.
-        # "Mod+Period".action = expel-window-from-column;
-
-        "Mod+R".action = switch-preset-column-width;
-        "Mod+Shift+R".action = switch-preset-window-height;
-        "Mod+M".action = maximize-column;
-        "Mod+Shift+M".action = reset-window-height;
-        "Mod+Comma".action = set-column-width "33.33%";
-        "Mod+Period".action = set-column-width "66.67%";
-        "Mod+Slash".action = set-column-width "50%";
-
-        "Mod+F".action = fullscreen-window;
-        "Mod+Ctrl+F".action = toggle-windowed-fullscreen;
-        "Mod+Shift+F".action = toggle-windowed-fullscreen;
-        "Mod+C".action = center-column;
-
-        # Finer width adjustments.
-        # This command can also:
-        # * set width in pixels: "1000"
-        # * adjust width in pixels: "-5" or "+5"
-        # * set width as a percentage of screen width: "25%"
-        # * adjust width as a percentage of screen width: "-10%" or "+10%"
-        # Pixel sizes use logical, or scaled, pixels. I.e. on an output with scale 2.0,
-        # set-column-width "100" will make the column occupy 200 physical screen pixels.
-        # "Mod+Minus".action = set-column-width "-10%";
-        # "Mod+Equal".action = set-column-width "+10%";
-
-        # Finer height adjustments when in column with other windows.
-        # "Mod+Shift+Minus".action = set-window-height "-10%";
-        # "Mod+Shift+Equal".action = set-window-height "+10%";
-
-        # Move the focused window between the floating and the tiling layout.
-        "Mod+V".action = toggle-window-floating;
-        "Mod+Space".action = switch-focus-between-floating-and-tiling;
-
-        "Mod+S".action = set-dynamic-cast-window;
-        "Mod+Ctrl+S".action = set-dynamic-cast-monitor;
-        "Mod+Shift+S".action = clear-dynamic-cast-target;
-
-        # Toggle tabbed column display mode.
-        # Windows in this column will appear as vertical tabs,
-        # rather than stacked on top of each other.
-        "Mod+W".action = toggle-column-tabbed-display;
-
-        # Actions to switch keyboard layouts.
-        # Note: if you uncomment these, make sure you do NOT have
-        # a matching layout switch hotkey configured in xkb options above.
-        # Having both at once on the same hotkey will break the switching,
-        # since it will switch twice upon pressing the hotkey (once by xkb, once by niri).
-        # Mod+Space       { switch-layout "next"; }
-        # Mod+Shift+Space { switch-layout "prev"; }
-
-        "Print".action = screenshot;
-        # "Ctrl+Print".action = screenshot-screen true;
-        "Alt+Print".action = screenshot-window;
-
-        # Applications such as remote-desktop clients and software KVM switches may
-        # request that niri stops processing the keyboard shortcuts defined here
-        # so they may, for example, forward the key presses as-is to a remote machine.
-        # It's a good idea to bind an escape hatch to toggle the inhibitor,
-        # so a buggy application can't hold your session hostage.
+        # # workspace addresses, 0 is last with window, minus is the empty workspace
+        # # focus
+        # "Mod+1".action = focus-workspace 1;
+        # "Mod+2".action = focus-workspace 2;
+        # "Mod+3".action = focus-workspace 3;
+        # "Mod+4".action = focus-workspace 4;
+        # "Mod+5".action = focus-workspace 5;
+        # "Mod+6".action = focus-workspace 6;
+        # "Mod+7".action = focus-workspace 7;
+        # "Mod+8".action = focus-workspace 8;
+        # "Mod+9".action = focus-workspace 9;
+        # "Mod+0".action = spawn "fish" "-c" "niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx')";
+        # "Mod+Minus".action = focus-workspace 42;
         #
-        # The allow-inhibiting=false property can be applied to other binds as well,
-        # which ensures niri always processes them, even when an inhibitor is active.
+        # # small move
+        # "Mod+Shift+1".action = move-window-to-workspace 1;
+        # "Mod+Shift+2".action = move-window-to-workspace 2;
+        # "Mod+Shift+3".action = move-window-to-workspace 3;
+        # "Mod+Shift+4".action = move-window-to-workspace 4;
+        # "Mod+Shift+5".action = move-window-to-workspace 5;
+        # "Mod+Shift+6".action = move-window-to-workspace 6;
+        # "Mod+Shift+7".action = move-window-to-workspace 7;
+        # "Mod+Shift+8".action = move-window-to-workspace 8;
+        # "Mod+Shift+9".action = move-window-to-workspace 9;
+        # "Mod+Shift+0".action = spawn "fish" "-c" "niri msg action move-window-to-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx')";
+        # "Mod+Shift+Minus".action = move-window-to-workspace 42;
+        #
+        # # large move
+        # "Mod+Ctrl+1".action = move-column-to-workspace 1;
+        # "Mod+Ctrl+2".action = move-column-to-workspace 2;
+        # "Mod+Ctrl+3".action = move-column-to-workspace 3;
+        # "Mod+Ctrl+4".action = move-column-to-workspace 4;
+        # "Mod+Ctrl+5".action = move-column-to-workspace 5;
+        # "Mod+Ctrl+6".action = move-column-to-workspace 6;
+        # "Mod+Ctrl+7".action = move-column-to-workspace 7;
+        # "Mod+Ctrl+8".action = move-column-to-workspace 8;
+        # "Mod+Ctrl+9".action = move-column-to-workspace 9;
+        # "Mod+Ctrl+0".action = spawn "fish" "-c" "niri msg action move-column-to-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx')";
+        # "Mod+Ctrl+Minus".action = move-column-to-workspace 42;
+
+        # escape from keylocks
         "Mod+Escape" = {
           allow-inhibiting = false;
           action = toggle-keyboard-shortcuts-inhibit;
         };
 
-        # The quit action will show a confirmation dialog to avoid accidental exits.
+        # quit
         "Ctrl+Alt+Delete" = {
           allow-inhibiting = false;
           action = quit;
+        };
+
+        # media and brightness
+        "XF86AudioRaiseVolume" = {
+          allow-when-locked = true;
+          action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=1 && pkill -SIGRTMIN+4 waybar";
+        };
+        "XF86AudioLowerVolume" = {
+          allow-when-locked = true;
+          action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=-1 && pkill -SIGRTMIN+4 waybar";
+        };
+        "Shift+XF86AudioRaiseVolume" = {
+          allow-when-locked = true;
+          action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=5 && pkill -SIGRTMIN+4 waybar";
+        };
+        "Shift+XF86AudioLowerVolume" = {
+          allow-when-locked = true;
+          action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=-5 && pkill -SIGRTMIN+4 waybar";
+        };
+        "XF86AudioMute" = {
+          allow-when-locked = true;
+          action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=mute-toggle && pkill -SIGRTMIN+4 waybar";
+        };
+        "XF86AudioMicMute" = {
+          allow-when-locked = true;
+          action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume=mute-toggle && pkill -SIGRTMIN+4 waybar";
+        };
+        "XF86AudioPlay" = {
+          allow-when-locked = true;
+          action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--playerctl=play-pause";
+        };
+        "XF86AudioNext" = {
+          allow-when-locked = true;
+          action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--playerctl=next";
+        };
+        "XF86AudioPrev" = {
+          allow-when-locked = true;
+          action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--playerctl=prev";
+        };
+        "XF86AudioStop" = {
+          allow-when-locked = true;
+          action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--playerctl=play-pause";
+        };
+        "XF86MonBrightnessUp" = {
+          action = spawn "${pkgs.swayosd}/bin/swayosd-client --brightness=raise";
+        };
+        "XF86MonBrightnessDown" = {
+          action = spawn "${pkgs.swayosd}/bin/swayosd-client --brightness=lower";
         };
       };
     };

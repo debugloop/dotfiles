@@ -230,7 +230,7 @@
       enable = true;
       extraConfig = ''
         PermitLocalCommand yes
-        LocalCommand ${pkgs.libnotify}/bin/notify-send "%r@%h" "Connected to %h."
+        LocalCommand ${pkgs.libnotify}/bin/notify-send --category=ssh "%r@%h" "Connected to %h."
       '';
     };
   };

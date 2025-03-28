@@ -25,6 +25,8 @@ with lib; let
         light_bg = mkOption {type = colorType;};
         foreground = mkOption {type = colorType;};
         dark_fg = mkOption {type = colorType;};
+        orange = mkOption {type = colorType;};
+        pink = mkOption {type = colorType;};
       };
     };
   };
@@ -125,10 +127,10 @@ in {
         # boatYellow1 = "938056"; #938056
         boatYellow2 = "c0a36e"; #c0a36e
         carpYellow = "e6c384"; #e6c384
-        # sakuraPink = "d27e99"; #d27e99
+        sakuraPink = "d27e99"; #d27e99
         # waveRed = "e46876"; #e46876
         # peachRed = "ff5d62"; #ff5d62
-        # surimiOrange = "ffa066"; #ffa066
+        surimiOrange = "ffa066"; #ffa066
         # katanaGray = "717c7c"; #717c7c
       in {
         black = sumiInk0;
@@ -152,6 +154,8 @@ in {
         light_bg = sumiInk5;
         foreground = fujiWhite;
         dark_fg = oldWhite;
+        orange = surimiOrange;
+        pink = sakuraPink;
       };
     };
   };

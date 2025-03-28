@@ -7,7 +7,7 @@
     # our windowmanager
     ./niri.nix
     # auxiliary services
-    ./avizo.nix
+    ./osd.nix
     ./clipman.nix
     ./ghostty.nix
     ./kanshi.nix
@@ -15,7 +15,8 @@
     ./mako.nix
     ./swayidle.nix
     ./swaylock.nix
-    ./waybar.nix
+    # ./waybar.nix
+    ./waybar_new.nix
     ./wezterm
   ];
 
@@ -118,7 +119,7 @@
       style = ''
         window {
           border: 0px;
-          border-radius: 10px;
+          border-radius: 2em;
           font-family: monospace;
           font-size: 15px;
         }
@@ -126,6 +127,10 @@
         #outer-box {
           margin: 0px;
           color: #${config.colors.foreground};
+          background: transparent;
+        }
+
+        #scroll {
           background-color: #${config.colors.background};
         }
 
@@ -140,6 +145,10 @@
 
         #text {
           padding: 2px 2px 2px 10px;
+        }
+
+        #entry:selected {
+          background-color: #${config.colors.blue};
         }
       '';
     };
