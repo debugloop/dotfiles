@@ -161,7 +161,6 @@
       protoc-gen-go
       protoc-gen-go-grpc
       # hardware (TODO: are those installed system-wide?)
-      simple-scan
       powertop
       pulseaudio # TODO: should be installed by services
     ];

@@ -41,19 +41,25 @@
     packages = with pkgs; [
       # applications
       # cutter
-      easyeffects
-      eog
-      evince
-      filezilla
+      # eog
+      qview
+      # evince
+      zathura
+      # filezilla
       gimp
       google-chrome
       inkscape
-      libreoffice
-      nemo
+      # libreoffice
+      abiword
+      gnumeric
+      # nemo
+      xfce.thunar
+      xfce.thunar-volman
+      xfce.thunar-archive-plugin
       pavucontrol
       spotify
       teamspeak_client
-      vlc
+      # vlc
       wdisplays
       wev
       wireshark
@@ -76,10 +82,9 @@
       slurp
       xdg-utils
       # not precisely graphical, but require physical access
-      dfu-util
-      gcc-arm-embedded
-      qmk
-      jmtpfs
+      # dfu-util
+      # gcc-arm-embedded
+      # qmk
     ];
   };
 
@@ -103,6 +108,7 @@
 
   services = {
     cliphist.enable = true;
+    network-manager-applet.enable = true;
     blueman-applet.enable = true;
     gnome-keyring.enable = true;
   };
@@ -110,7 +116,7 @@
   programs = {
     firefox.enable = true;
     mpv.enable = true;
-    qutebrowser.enable = true;
+    qutebrowser.enable = false;
     wofi = {
       enable = true;
       settings = {

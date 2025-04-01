@@ -1,7 +1,12 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   networking = {
     networkmanager = {
       enable = true;
+      plugins = lib.mkForce [];
       # logLevel = "DEBUG";
       wifi = {
         scanRandMacAddress = false;
@@ -82,7 +87,9 @@
   };
 
   environment.systemPackages = with pkgs; [
-    ddcutil # see above sudo rule
+    # brightness control
+    light # better commands
+    ddcutil # external displays
     networkmanagerapplet # required system-wide for icons
   ];
 
@@ -109,17 +116,17 @@
   xdg.portal = {
     enable = true;
     wlr.enable = true;
+    config.common = {
+      "org.freedesktop.impl.portal.FileChooser" = "gtk";
+    };
+    extraPortals = [pkgs.xdg-desktop-portal-gtk];
   };
 
   services = {
+    avahi.enable = true;
     blueman.enable = true;
     gnome.gnome-keyring = {
       enable = true;
-    };
-    k3s = {
-      enable = false;
-      role = "server";
-      extraFlags = toString [];
     };
     pipewire = {
       enable = true;
@@ -128,47 +135,27 @@
     };
     printing.enable = true;
     tlp.enable = true;
-    udev.extraRules = ''
-      # generic stm32 keyboard flashing
-      SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE:="0666"
+    udev = {
+      packages = [pkgs.light];
+      extraRules = ''
+        # generic stm32 keyboard flashing
+        SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE:="0666"
 
-      # fazua ebike integration
-      SUBSYSTEM!="usb|usb_device", GOTO="ebike_rules_end"
-      ACTION!="add", GOTO="ebike_rules_end"
-      # 10c4:1000 for E-Bike Bootloader mode
-      ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="1000", MODE="0666", SYMLINK+="ebike-bootloader-%n"
-      # 10c4:100X for E-Bikes regular operation
-      ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="1001", MODE="0666", SYMLINK+="ebike-brain-%n"
-      # 10c4:100X for Lola device
-      ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="1002", MODE="0666", SYMLINK+="lola-%n"
-      LABEL="ebike_rules_end"
-    '';
-  };
-
-  systemd.services.shutdown-k3s = {
-    enable = true;
-    description = "ensure k3s shuts down correctly";
-    unitConfig = {
-      DefaultDependencies = false;
-      Before = [
-        "shutdown.target"
-        "umount.target"
-      ];
+        # fazua ebike integration
+        SUBSYSTEM!="usb|usb_device", GOTO="ebike_rules_end"
+        ACTION!="add", GOTO="ebike_rules_end"
+        # 10c4:1000 for E-Bike Bootloader mode
+        ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="1000", MODE="0666", SYMLINK+="ebike-bootloader-%n"
+        # 10c4:100X for E-Bikes regular operation
+        ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="1001", MODE="0666", SYMLINK+="ebike-brain-%n"
+        # 10c4:100X for Lola device
+        ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="1002", MODE="0666", SYMLINK+="lola-%n"
+        LABEL="ebike_rules_end"
+      '';
     };
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.k3s}/bin/k3s-killall.sh";
-    };
-    wantedBy = ["shutdown.target"];
   };
 
   programs = {
-    light.enable = true;
-    nm-applet.enable = true;
-    sway = {
-      enable = false;
-      extraPackages = [];
-    };
     niri = {
       enable = true;
       package = pkgs.niri-unstable;
