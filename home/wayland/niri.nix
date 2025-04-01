@@ -132,6 +132,7 @@
           matches = [
             {is-floating = true;}
           ];
+          # baba-is-float = true;
           shadow = {
             enable = true;
             color = "#${config.colors.blue}";

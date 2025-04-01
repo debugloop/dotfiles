@@ -182,9 +182,8 @@
           "format-bluetooth-muted" = "{icon}\n ";
           "format-source" = "";
           "format-source-muted" = "";
-          "on-click" = "/nix/store/wldirh6lhkcqq4dn15684zv6kf1s36ag-pavucontrol-6.1/bin/pavucontrol";
-          "on-click-middle" = "/nix/store/6s56qn0hmxcpm803cs8a3ms0acw97kl2-pulseaudio-17.0/bin/pactl set-default-sink $(/nix/store/6s56qn0hmxcpm803cs8a3ms0acw97kl2-pulseaudio-17.0/bin/pactl list sinks short | /nix/store/h3xhfhg0vv3k3hvkcwkmdg99r4zm9mcl-gnugrep-3.11/bin/grep -v $(/nix/store/6s56qn0hmxcpm803cs8a3ms0acw97kl2-pulseaudio-17.0/bin/pactl get-default-sink) | /nix/store/vz67zaqyfln2jcqwar682kdlrxfx9vq1-coreutils-9.6/bin/cut -f 1 | /nix/store/vz67zaqyfln2jcqwar682kdlrxfx9vq1-coreutils-9.6/bin/head -1)";
-          "on-click-right" = "/nix/store/xnbvvznhrykhr8a4jrvw65bzh371k2g1-easyeffects-7.2.3/bin/easyeffects";
+          "on-click" = "${pkgs.pavucontrol}/bin/pavucontrol";
+          "on-click-middle" = "${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list sinks short | ${pkgs.gnugrep}/bin/grep -v $(${pkgs.pulseaudio}/bin/pactl get-default-sink) | ${pkgs.coreutils}/bin/cut -f 1 | ${pkgs.coreutils}/bin/head -1)";
         };
         "pulseaudio#mic" = {
           "format" = "{format_source}";
