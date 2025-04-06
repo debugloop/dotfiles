@@ -1,5 +1,3 @@
 builds:
-  exclude:
-  - homeConfigurations.*
-  - nixosConfigurations.lusus.config.system.build.toplevel
-  - nixosConfigurations.hyperion.config.system.build.toplevel
+  include:
+  - nixosConfigurations.simmons.*
