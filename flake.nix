@@ -75,6 +75,7 @@
               }
             );
           })
+          inputs.niri.nixosModules.niri
         ];
       };
 
