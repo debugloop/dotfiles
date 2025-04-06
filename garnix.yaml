@@ -1,5 +1,5 @@
 builds:
   exclude:
-  - 'homeConfigurations.*'
-  - 'nixosConfigurations.lusus.*'
-  - 'nixosConfigurations.hyperion.*'
+  - homeConfigurations.*
+  - nixosConfigurations.lusus.config.system.build.toplevel
+  - nixosConfigurations.hyperion.config.system.build.toplevel
