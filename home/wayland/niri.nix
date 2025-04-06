@@ -19,7 +19,7 @@
         workspace-auto-back-and-forth = true;
         focus-follows-mouse = {
           enable = true;
-          max-scroll-amount = "0%";
+          max-scroll-amount = "100%";
         };
         keyboard = {
           xkb = {
@@ -196,6 +196,7 @@
         "Mod+Period".action = set-column-width "66.67%";
         "Mod+Slash".action = set-column-width "50%";
         "Mod+M".action = maximize-column;
+        "Mod+Ctrl+M".action = expand-column-to-available-width;
         "Mod+XF86AudioRaiseVolume".action = set-column-width "+1%";
         "Mod+XF86AudioLowerVolume".action = set-column-width "-1%";
 
@@ -283,17 +284,16 @@
         "Mod+Ctrl+9".action = set-workspace-name "purple";
         "Mod+Ctrl+0".action = set-workspace-name "yellow";
         "Mod+Ctrl+Minus".action = unset-workspace-name;
-        # "Mod+Shift+Grave".action = move-window-to-workspace 0;
-        # "Mod+Shift+1".action = move-window-to-workspace "red";
-        # "Mod+Shift+2".action = move-window-to-workspace "green";
-        # "Mod+Shift+3".action = move-window-to-workspace "blue";
-        # "Mod+Shift+4".action = move-window-to-workspace "orange";
-        # "Mod+Shift+7".action = move-window-to-workspace "pink";
-        # "Mod+Shift+8".action = move-window-to-workspace "cyan";
-        # "Mod+Shift+9".action = move-window-to-workspace "purple";
-        # "Mod+Shift+0".action = move-window-to-workspace "yellow";
-        # "Mod+Shift+Minus".action = move-window-to-workspace 42;
-        # "Mod+Grave".action = focus-workspace 0;
+        # TODO: flake support for these?
+        "Mod+Shift+1".action = spawn "fish" "-c" "niri msg action move-window-to-workspace red";
+        "Mod+Shift+2".action = spawn "fish" "-c" "niri msg action move-window-to-workspace green";
+        "Mod+Shift+3".action = spawn "fish" "-c" "niri msg action move-window-to-workspace blue";
+        "Mod+Shift+4".action = spawn "fish" "-c" "niri msg action move-window-to-workspace orange";
+        "Mod+Shift+7".action = spawn "fish" "-c" "niri msg action move-window-to-workspace pink";
+        "Mod+Shift+8".action = spawn "fish" "-c" "niri msg action move-window-to-workspace cyan";
+        "Mod+Shift+9".action = spawn "fish" "-c" "niri msg action move-window-to-workspace purple";
+        "Mod+Shift+0".action = spawn "fish" "-c" "niri msg action move-window-to-workspace yellow";
+        "Mod+Shift+Minus".action = spawn "fish" "-c" "niri msg action move-window-to-workspace 42";
         "Mod+1".action = focus-workspace "red";
         "Mod+2".action = focus-workspace "green";
         "Mod+3".action = focus-workspace "blue";
