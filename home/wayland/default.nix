@@ -85,6 +85,7 @@
       # dfu-util
       # gcc-arm-embedded
       # qmk
+      simple-mtpfs
     ];
   };
 

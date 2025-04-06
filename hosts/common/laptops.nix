@@ -136,7 +136,10 @@
     printing.enable = true;
     tlp.enable = true;
     udev = {
-      packages = [pkgs.light];
+      packages = [
+        pkgs.light
+        pkgs.libmtp.out
+      ];
       extraRules = ''
         # generic stm32 keyboard flashing
         SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE:="0666"
