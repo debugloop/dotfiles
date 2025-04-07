@@ -215,14 +215,9 @@
     };
     go = {
       enable = true;
-      package = pkgs.go_1_22;
     };
     nh = {
       enable = true;
-      clean = {
-        enable = true;
-        extraArgs = "--keep-since 5d --keep 3";
-      };
       flake = "/etc/nixos";
     };
     ssh = {
