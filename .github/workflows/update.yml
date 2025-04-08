@@ -7,9 +7,6 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    outputs:
-      sha: ${{ steps.create-pr.outputs.pull-request-head-sha }}
-      check_id: ${{ steps.create-check.outputs.check_id }}
     permissions:
       checks: write
       contents: write
@@ -21,9 +18,12 @@ jobs:
         run: |
           nix flake update nixpkgs
           nix flake update home-manager
-          nix flake update nh
+          nix flake update nix-index-database
           nix flake update impermanence
           nix flake update agenix
+          nix flake update neovim-nightly-overlay
+          nix flake update nvim-blink-cmp
+          nix flake update niri
       - name: Create PR
         uses: peter-evans/create-pull-request@v5
         id: create-pr
@@ -35,37 +35,8 @@ jobs:
             Automatically created by [this](https://github.com/debugloop/dotfiles/actions/runs/${{ github.run_id }}) run.
           delete-branch: true
           draft: false
-      # - name: Create PR check
-      #   id: create-check
-      #   uses: LouisBrunner/checks-action@v1.6.1
-      #   if: ${{ steps.create-pr.outputs.pull-request-head-sha }}
-      #   with:
-      #     name: Build System Flake
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     sha: ${{ steps.create-pr.outputs.pull-request-head-sha }}
-      #     details_url: https://github.com/debugloop/dotfiles/actions/runs/${{ github.run_id }}
-      #     output: '{ "summary": "https://github.com/debugloop/dotfiles/actions/runs/${{ github.run_id }}" }'
-      #     status: in_progress
-      - run: gh pr merge --auto --rebase --delete-branch ${{ steps.create-pr.outputs.pull-request-number }}
+      - name: Set auto merge
+        run: gh pr merge --auto --rebase --delete-branch ${{ steps.create-pr.outputs.pull-request-number }}
         if: ${{ steps.create-pr.outputs.pull-request-head-sha }}
         env:
           GH_TOKEN: ${{ github.token }}
-  # run-check:
-  #   needs: update
-  #   if: ${{ needs.update.outputs.sha }}
-  #   uses: debugloop/dotfiles/.github/workflows/build.yml@main
-  #   with:
-  #     sha: ${{ needs.update.outputs.sha }}
-  # set-check-result:
-  #   needs:
-  #     - update
-  #     - run-check
-  #   if: ${{ needs.update.outputs.sha }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Update PR check
-  #       uses: LouisBrunner/checks-action@v1.6.1
-  #       with:
-  #         check_id: ${{ needs.update.outputs.check_id }}
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         conclusion: ${{ needs.run-check.result }}
