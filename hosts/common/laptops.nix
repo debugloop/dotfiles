@@ -137,6 +137,7 @@
     gnome.gnome-keyring = {
       enable = true;
     };
+    gvfs.enable = true;
     pipewire = {
       enable = true;
       alsa.enable = true;
@@ -171,6 +172,13 @@
     niri = {
       enable = true;
       package = pkgs.niri-unstable;
+    };
+    thunar = {
+      enable = false;
+      plugins = with pkgs.xfce; [
+        thunar-archive-plugin
+        thunar-volman
+      ];
     };
   };
 }
