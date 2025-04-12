@@ -103,6 +103,8 @@
         "x-scheme-handler/http" = "org.firefox.firefox.desktop";
         "x-scheme-handler/https" = "org.firefox.firefox.desktop";
         "x-scheme-handler/unknown" = "org.firefox.firefox.desktop";
+        "image/svg+xml" = "org.inkscape.Inkscape.desktop";
+        "application/pdf" = "org.pwmt.zathura-pdf-mupdf.desktop";
       };
     };
   };
