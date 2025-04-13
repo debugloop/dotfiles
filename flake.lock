@@ -769,11 +769,11 @@
         "wunschkonzert": "wunschkonzert"
       },
       "locked": {
-        "lastModified": 1744573534,
-        "narHash": "sha256-FiMQ1/rwp20Y/nnRyhJ9eFIgQQfO+EQICIzrqEXeXP0=",
+        "lastModified": 1744574488,
+        "narHash": "sha256-Eiy2HefT0SiNtmMdA8CS6636fB/dsTOL8Qb9fO5aHV4=",
         "ref": "refs/heads/main",
-        "rev": "968648d0624559695a3754f20a209e336de1afcc",
-        "revCount": 4,
+        "rev": "f95b9e1f7fec83c59667f435cd352f8c029a7664",
+        "revCount": 5,
         "type": "git",
         "url": "ssh://git@github.com/debugloop/wunschkonzert-install"
       },
