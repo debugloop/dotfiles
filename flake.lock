@@ -751,11 +751,11 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1744535185,
-        "narHash": "sha256-kjqzzGs0xRlNEhVNSeyDdMNWK5+KmY0REVQE0S5+jdM=",
+        "lastModified": 1744573195,
+        "narHash": "sha256-nn2TPG53eb6LHnwSIUuqXkEcU4JC0puKpj6ltpLfcuY=",
         "owner": "debugloop",
         "repo": "wunschkonzert",
-        "rev": "3e8a96c9a6cf199b01fa6a574f529469f2f430dc",
+        "rev": "0643f320ab8ee311f276a515bc5a3d1de3b7c6cf",
         "type": "github"
       },
       "original": {
@@ -769,11 +769,11 @@
         "wunschkonzert": "wunschkonzert"
       },
       "locked": {
-        "lastModified": 1744535240,
-        "narHash": "sha256-yvA2zQcwjqq3w/yQ0cBtb1BoJn9ZLjp7vpIbRTt95oI=",
+        "lastModified": 1744573534,
+        "narHash": "sha256-FiMQ1/rwp20Y/nnRyhJ9eFIgQQfO+EQICIzrqEXeXP0=",
         "ref": "refs/heads/main",
-        "rev": "f7cbbefefa47baf15ef886353233add6b026744d",
-        "revCount": 2,
+        "rev": "968648d0624559695a3754f20a209e336de1afcc",
+        "revCount": 4,
         "type": "git",
         "url": "ssh://git@github.com/debugloop/wunschkonzert-install"
       },
