@@ -28,9 +28,12 @@ vim.opt.title = true -- use custom title
 vim.opt.titlestring = [[vim %{substitute(getcwd(), '/home/danieln', '~', 0)}]] -- show cwd only
 
 -- folds
-vim.opt.foldenable = false -- no folding unless I close one myself
-vim.opt.foldlevel = 1024 -- if I close one, don't close any others
-vim.opt.foldmethod = "indent" -- use indent for folding
+vim.opt.foldenable = true
+vim.opt.foldlevel = 99
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldtext = ""
+vim.opt.foldcolumn = "0"
 
 -- finding stuff
 vim.opt.gdefault = true -- show multiple matches per line without specifying global
