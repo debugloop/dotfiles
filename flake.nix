@@ -30,9 +30,6 @@
       # url = "path:/home/danieln/code/gridx";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nvim-blink-cmp = {
-      url = "github:Saghen/blink.cmp";
-    };
     wunschkonzert-install = {
       url = "git+ssh://git@github.com/debugloop/wunschkonzert-install";
     };

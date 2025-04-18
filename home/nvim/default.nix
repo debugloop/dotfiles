@@ -34,6 +34,7 @@
   xdg.dataFile = let
     vimPlugins = builtins.listToAttrs (
       lib.lists.forEach [
+        "blink-cmp"
         "conform-nvim"
         "diffview-nvim"
         "friendly-snippets"
@@ -99,14 +100,5 @@
       )
     );
   in
-    {
-      "nvim/nixpkgs/blink-cmp" = {
-        source = inputs.nvim-blink-cmp.packages.${pkgs.system}.default;
-      };
-      "nvim/nixpkgs/fzf" = {
-        source = "${pkgs.fzf}/share/vim-plugins/fzf";
-      };
-    }
-    // vimPlugins
-    // miniPlugins;
+    vimPlugins // miniPlugins;
 }
