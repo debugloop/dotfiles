@@ -3,9 +3,6 @@
   config,
   ...
 }: {
-  home.packages = with pkgs; [
-    playerctl
-  ];
   programs.waybar = {
     enable = true;
     systemd = {
@@ -14,79 +11,77 @@
     };
     settings = [
       {
-        "layer" = "top";
-        "position" = "left";
-        "reload_style_on_change" = true;
-        "modules-left" = [
-          "group/top"
-          "idle_inhibitor"
-          "group/audio"
-          "pulseaudio#mic"
-        ];
-        "modules-center" = [
+        layer = "top";
+        position = "left";
+        reload_style_on_change = true;
+        modules-left = [
           "niri/workspaces"
         ];
-        "modules-right" = [
+        modules-center = [
+          "pulseaudio#mic"
+        ];
+        modules-right = [
+          "group/audio"
           "systemd-failed-units"
           "tray"
           "battery"
-          "clock"
+          "idle_inhibitor"
+          "group/bottom"
         ];
-        "battery" = {
-          "rotate" = 90;
-          "format" = "";
-          "format-discharging" = "{icon} {capacity}% ({time})";
-          "format-full" = "";
-          "format-icons" = [
+        battery = {
+          rotate = 90;
+          format = "";
+          format-discharging = "{icon} {capacity}% ({time})";
+          format-full = "";
+          format-icons = [
             ""
             ""
             ""
             ""
             ""
           ];
-          "format-time" = "{H}h {m}m";
-          "interval" = 10;
-          "states" = {
-            "critical" = 10;
-            "full" = 95;
-            "warning" = 30;
+          format-time = "{H}h {m}m";
+          interval = 10;
+          states = {
+            critical = 10;
+            full = 95;
+            warning = 30;
           };
-          "tooltip" = true;
+          tooltip = true;
         };
-        "clock" = {
-          "actions" = {
-            "on-click-right" = "mode";
-            "on-scroll-down" = "shift_up";
-            "on-scroll-up" = "shift_down";
+        clock = {
+          actions = {
+            # on-click-right = "mode";
+            # on-scroll-down = "shift_up";
+            # on-scroll-up = "shift_down";
           };
-          "calendar" = {
-            "format" = {
-              "days" = "<span color='#dcd7ba'>{}</span>";
-              "months" = "<span color='#dcd7ba'>{}</span>";
-              "today" = "<span color='#c34043'><b>{}</b></span>";
-              "weekdays" = "<span color='#dcd7ba'>{}</span>";
-              "weeks" = "<span color='#727169'>W{}</span>";
+          calendar = {
+            format = {
+              days = "<span color='#dcd7ba'>{}</span>";
+              months = "<span color='#dcd7ba'>{}</span>";
+              today = "<span color='#c34043'><b>{}</b></span>";
+              weekdays = "<span color='#dcd7ba'>{}</span>";
+              weeks = "<span color='#727169'>W{}</span>";
             };
-            "mode" = "month";
-            "mode-mon-col" = 3;
-            "on-scroll" = 1;
-            "weeks-pos" = "left";
+            mode = "year";
+            mode-mon-col = 3;
+            weeks-pos = "left";
           };
-          "format" = "{:%H\n%M\n%S}";
-          "interval" = 1;
-          "tooltip-format" = "<tt>{calendar}</tt>";
+          format = "{:%H\n%M\n%S}";
+          interval = 1;
+          tooltip-format = "<tt>{calendar}</tt>";
         };
-        "cpu" = {
-          "rotate" = 90;
-          "format" = "󰊚 {usage}%";
-          "interval" = 5;
-          "states" = {
-            "critical" = 90;
-            "warning" = 70;
+        cpu = {
+          rotate = 90;
+          format = "󰊚 {usage}%";
+          interval = 5;
+          states = {
+            critical = 90;
+            warning = 70;
           };
         };
         "custom/wincount" = {
-          "exec" = pkgs.writeScript "./wincount.sh" ''
+          exec = pkgs.writeScript "./wincount.sh" ''
             #!/bin/sh
 
             idfocused="$(niri msg -j workspaces | jq ".[] | select(.is_focused == true ) | .id")"
@@ -105,101 +100,103 @@
                     esac
                 done
           '';
-          "on-scroll-down" = "niri msg action focus-column-right-or-first";
-          "on-scroll-up" = "niri msg action focus-column-left-or-last";
+          on-scroll-down = "niri msg action focus-column-right-or-first";
+          on-scroll-up = "niri msg action focus-column-left-or-last";
         };
-        "disk" = {
-          "rotate" = 90;
-          "format" = "󰋊 {percentage_used}%";
-          "interval" = 60;
-          "path" = "/nix";
+        disk = {
+          rotate = 90;
+          format = "󰋊 {percentage_used}%";
+          interval = 60;
+          path = "/nix";
         };
-        "idle_inhibitor" = {
-          "format" = "{icon}";
-          "format-icons" = {
-            "activated" = "";
-            "deactivated" = "󰒲";
+        idle_inhibitor = {
+          format = "{icon}";
+          format-icons = {
+            activated = "";
+            deactivated = "󰒲";
           };
         };
         "group/audio" = {
-          "orientation" = "inherit";
-          "drawer" = {
-            "children-class" = "in-group";
+          orientation = "inherit";
+          drawer = {
+            children-class = "in-group";
+            transition-left-to-right = false;
           };
-          "modules" = [
+          modules = [
             "pulseaudio"
             "pulseaudio/slider"
           ];
         };
-        "group/top" = {
-          "orientation" = "inherit";
-          "drawer" = {
-            "click-to-reveal" = true;
-            "children-class" = "in-group";
+        "group/bottom" = {
+          orientation = "inherit";
+          drawer = {
+            click-to-reveal = true;
+            transition-left-to-right = false;
+            children-class = "in-group";
           };
-          "modules" = [
-            "custom/wincount"
+          modules = [
+            "clock"
             "cpu"
             "memory"
             "disk"
           ];
         };
-        "memory" = {
-          "rotate" = 90;
-          "format" = " {percentage}%";
-          "interval" = 5;
-          "states" = {
-            "critical" = 90;
-            "warning" = 85;
+        memory = {
+          rotate = 90;
+          format = " {percentage}%";
+          interval = 5;
+          states = {
+            critical = 90;
+            warning = 85;
           };
         };
         "niri/window" = {
-          "rotate" = 90;
-          "format" = "{}";
-          "on-scroll-down" = "niri msg action focus-column-right";
-          "on-scroll-up" = "niri msg action focus-column-left";
-          "separate-outputs" = true;
+          rotate = 90;
+          format = "{}";
+          on-scroll-down = "niri msg action focus-column-right";
+          on-scroll-up = "niri msg action focus-column-left";
+          separate-outputs = true;
         };
         "niri/workspaces" = {
-          "format" = "<span weight='1000'>{icon}</span>";
-          "format-icons" = {
-            "active" = "󰄯"; #󰄯  󰬪
-            "default" = "󰄰"; #󰺕  󰄰  󰻂  󰻃
+          format = "<span weight='1000'>{icon}</span>";
+          format-icons = {
+            active = "󰄯"; #󰄯  󰬪
+            default = "󰄰"; #󰺕  󰄰  󰻂  󰻃
           };
-          "on-scroll-down" = "niri msg action focus-workspace-down";
-          "on-scroll-up" = "niri msg action focus-workspace-up";
-          "on-update" = "niri msg -j workspaces | jq -r '.[]|select(.name!=null)|select(.active_window_id==null)|select(.is_active==false).name' | xargs -I{} niri msg action unset-workspace-name {}";
+          on-scroll-down = "niri msg action focus-workspace-down";
+          on-scroll-up = "niri msg action focus-workspace-up";
+          on-update = "niri msg -j workspaces | jq -r '.[]|select(.name!=null)|select(.active_window_id==null)|select(.is_active==false).name' | xargs -I{} niri msg action unset-workspace-name {}";
         };
-        "pulseaudio" = {
-          "format" = "{icon}";
-          "format-bluetooth" = "{icon}\n ";
-          "format-icons" = {
-            "default" = "";
-            "speaker" = "";
-            "speaker-muted" = "";
+        pulseaudio = {
+          format = "{icon}";
+          format-bluetooth = "{icon}\n ";
+          format-icons = {
+            default = "";
+            speaker = "";
+            speaker-muted = "";
           };
-          "format-muted" = "{icon}";
-          "format-bluetooth-muted" = "{icon}\n ";
-          "format-source" = "";
-          "format-source-muted" = "";
-          "on-click" = "${pkgs.pavucontrol}/bin/pavucontrol";
-          "on-click-middle" = "${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list sinks short | ${pkgs.gnugrep}/bin/grep -v $(${pkgs.pulseaudio}/bin/pactl get-default-sink) | ${pkgs.coreutils}/bin/cut -f 1 | ${pkgs.coreutils}/bin/head -1)";
+          format-muted = "{icon}";
+          format-bluetooth-muted = "{icon}\n ";
+          format-source = "";
+          format-source-muted = "";
+          on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
+          on-click-middle = "${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list sinks short | ${pkgs.gnugrep}/bin/grep -v $(${pkgs.pulseaudio}/bin/pactl get-default-sink) | ${pkgs.coreutils}/bin/cut -f 1 | ${pkgs.coreutils}/bin/head -1)";
         };
         "pulseaudio#mic" = {
-          "format" = "{format_source}";
-          "format-source" = "";
-          "format-source-muted" = "";
-          "tooltip" = false;
-          "on-click" = "bash -c '${pkgs.swayosd}/bin/swayosd-client --input-volume=mute-toggle && pkill -SIGRTMIN+4 waybar'";
+          format = "{format_source}";
+          format-source = "";
+          format-source-muted = "";
+          tooltip = false;
+          on-click = "bash -c '${pkgs.swayosd}/bin/swayosd-client --input-volume=mute-toggle && pkill -SIGRTMIN+4 waybar'";
         };
         "pulseaudio/slider" = {
-          "orientation" = "vertical";
+          orientation = "vertical";
         };
-        "systemd-failed-units" = {
-          "hide-on-ok" = true;
-          "format" = "";
-          "system" = true;
-          "user" = true;
+        systemd-failed-units = {
+          hide-on-ok = true;
+          format = "";
+          system = true;
+          user = true;
         };
       }
     ];
@@ -233,7 +230,7 @@
 
       /* workspaces */
       #workspaces {
-          padding: 3em 0em;
+          padding: 0em 0em 12em 0em;
       }
       #workspaces button {
           color: inherit; /* needed for some reason */
@@ -292,6 +289,7 @@
           color: #${config.colors.background};
           background-color: #${config.colors.red};
       }
+
       #systemd-failed-units {
           color: #${config.colors.red};
       }
