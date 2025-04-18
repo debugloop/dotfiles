@@ -11,11 +11,11 @@
       url = "github:Mic92/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    impermanence.url = "github:nix-community/impermanence";
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    impermanence.url = "github:nix-community/impermanence";
     niri-unstable = {
       url = "github:YaLTeR/niri/2761922210a6c92dc22bbc5c8dce8c3771b02a54";
       flake = false;
@@ -25,6 +25,7 @@
       inputs.niri-unstable.follows = "niri-unstable";
     };
     # neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    # private flakes
     gridx = {
       url = "git+ssh://git@github.com/debugloop/gridx";
       # url = "path:/home/danieln/code/gridx";
@@ -32,29 +33,13 @@
     };
     wunschkonzert-install = {
       url = "git+ssh://git@github.com/debugloop/wunschkonzert-install";
+      # url = "path:/home/danieln/code/wunschkonzert-install";
     };
   };
 
-  outputs = inputs @ {
-    nixpkgs,
-    home-manager,
-    ...
-  }: {
+  outputs = inputs @ {nixpkgs, ...}: {
     formatter = {
-      x86_64-linux = nixpkgs.legacyPackages.${nixpkgs.system}.alejandra;
-    };
-    homeConfigurations = let
-      pkgs = nixpkgs.legacyPackages.${nixpkgs.system};
-    in {
-      "danieln" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [
-          ./home
-        ];
-        extraSpecialArgs = {
-          inherit inputs;
-        };
-      };
+      x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
     };
     nixosConfigurations = {
       simmons = nixpkgs.lib.nixosSystem {
@@ -67,17 +52,6 @@
           ./hosts/common
           ./hosts/common/laptops.nix
           ./hosts/simmons
-          ({...}: {
-            home-manager.users.danieln = (
-              {...}: {
-                imports = [
-                  ./home
-                  ./home/wayland
-                ];
-              }
-            );
-          })
-          inputs.niri.nixosModules.niri
         ];
       };
 
@@ -92,17 +66,12 @@
           ./hosts/common/laptops.nix
           ./hosts/lusus
           ({...}: {
-            home-manager.users.danieln = (
-              {...}: {
-                imports = [
-                  ./home
-                  ./home/wayland
-                  inputs.gridx.home-module
-                ];
-              }
-            );
+            home-manager.users.danieln = {
+              imports = [
+                inputs.gridx.home-module
+              ];
+            };
           })
-          inputs.niri.nixosModules.niri
         ];
       };
 
@@ -116,16 +85,6 @@
           ./hosts/common
           ./hosts/common/servers.nix
           ./hosts/hyperion
-          ({...}: {
-            home-manager.users.danieln = (
-              {...}: {
-                imports = [
-                  ./home
-                  ./home/headless.nix
-                ];
-              }
-            );
-          })
         ];
       };
     };

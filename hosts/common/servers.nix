@@ -1,4 +1,11 @@
 {lib, ...}: {
+  home-manager.users.danieln = {
+    imports = [
+      ../../home
+      ../../home/headless.nix
+    ];
+  };
+
   services = {
     prometheus.exporters = {
       node = {
