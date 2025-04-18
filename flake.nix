@@ -16,6 +16,14 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    niri-unstable = {
+      url = "github:YaLTeR/niri/2761922210a6c92dc22bbc5c8dce8c3771b02a54";
+      flake = false;
+    };
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.niri-unstable.follows = "niri-unstable";
+    };
     # neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     gridx = {
       url = "git+ssh://git@github.com/debugloop/gridx";
@@ -24,9 +32,6 @@
     };
     nvim-blink-cmp = {
       url = "github:Saghen/blink.cmp";
-    };
-    niri = {
-      url = "github:sodiboo/niri-flake";
     };
     wunschkonzert-install = {
       url = "git+ssh://git@github.com/debugloop/wunschkonzert-install";

@@ -19,7 +19,7 @@
         workspace-auto-back-and-forth = true;
         focus-follows-mouse = {
           enable = true;
-          max-scroll-amount = "100%";
+          max-scroll-amount = "0%";
         };
         keyboard = {
           xkb = {
@@ -71,7 +71,7 @@
         };
         border = {
           enable = true;
-          width = 1;
+          width = 2;
           active.color = "#${config.colors.blue}";
           inactive.color = "#${config.colors.light_bg}";
         };
@@ -177,18 +177,19 @@
         "Mod+W".action = toggle-column-tabbed-display;
         "Mod+Ctrl+V".action = toggle-window-floating;
         "Mod+V".action = switch-focus-between-floating-and-tiling;
-        "Mod+Space".action = spawn "${pkgs.writeScript "consume_next.py" ''
-          #!/usr/bin/env python
-          import subprocess
-
-          p = subprocess.Popen(['niri', 'msg', '-j', 'event-stream'], stdout=subprocess.PIPE)
-
-          for line in p.stdout:
-              line = line.decode('utf-8')
-              if 'WindowOpenedOrChanged' in line:
-                  subprocess.call(['niri', 'msg', 'action', 'consume-or-expel-window-left'])
-                  break
-        ''}";
+        # "Mod+Space".action = spawn "${pkgs.writeScript "consume_next.py" ''
+        #   #!/usr/bin/env python
+        #   import subprocess
+        #
+        #   p = subprocess.Popen(['niri', 'msg', '-j', 'event-stream'], stdout=subprocess.PIPE)
+        #
+        #   for line in p.stdout:
+        #       line = line.decode('utf-8')
+        #       if 'WindowOpenedOrChanged' in line:
+        #           subprocess.call(['niri', 'msg', 'action', 'consume-or-expel-window-left'])
+        #           break
+        # ''}";
+        "Mod+Space".action = spawn "fish" "-c" "niri msg action toggle-overview";
 
         # window width
         "Mod+R".action = switch-preset-column-width;
