@@ -33,7 +33,7 @@
       warnUndeclaredOptions = true;
     };
     overlays = [
-      inputs.neovim-nightly-overlay.overlays.default
+      # inputs.neovim-nightly-overlay.overlays.default
       inputs.niri.overlays.niri
     ];
   };
