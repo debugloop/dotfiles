@@ -105,9 +105,7 @@
     "gridx": {
       "inputs": {
         "gxctl": "gxctl",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
+        "nixpkgs": "nixpkgs"
       },
       "locked": {
         "lastModified": 1742197761,
@@ -208,7 +206,7 @@
         "niri-unstable": [
           "niri-unstable"
         ],
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": "nixpkgs_2",
         "nixpkgs-stable": "nixpkgs-stable",
         "xwayland-satellite-stable": "xwayland-satellite-stable",
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
@@ -291,8 +289,7 @@
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
+        "owner": "nixos",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -329,7 +326,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_3": {
+    "nixpkgs_4": {
       "locked": {
         "lastModified": 1744502386,
         "narHash": "sha256-QAd1L37eU7ktL2WeLLLTmI6P9moz9+a/ONO8qNBYJgM=",
@@ -345,7 +342,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_4": {
+    "nixpkgs_5": {
       "locked": {
         "lastModified": 1730768919,
         "narHash": "sha256-8AKquNnnSaJRXZxc5YmF/WfmxiHX6MMZZasRP6RRQkE=",
@@ -365,7 +362,7 @@
       "inputs": {
         "flake-compat": "flake-compat",
         "gitignore": "gitignore",
-        "nixpkgs": "nixpkgs_4"
+        "nixpkgs": "nixpkgs_5"
       },
       "locked": {
         "lastModified": 1742649964,
@@ -390,7 +387,7 @@
         "niri": "niri",
         "niri-unstable": "niri-unstable",
         "nix-index-database": "nix-index-database",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs_3",
         "wunschkonzert-install": "wunschkonzert-install"
       }
     },
@@ -426,7 +423,7 @@
     },
     "wunschkonzert": {
       "inputs": {
-        "nixpkgs": "nixpkgs_3",
+        "nixpkgs": "nixpkgs_4",
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {

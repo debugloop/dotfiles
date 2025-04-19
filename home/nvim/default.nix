@@ -1,8 +1,6 @@
 {
   pkgs,
   lib,
-  inputs,
-  config,
   ...
 }: {
   programs.neovim = {
@@ -22,13 +20,12 @@
     };
   in {
     "nvim/init.lua".source = ./init.lua;
-    # "nvim/lua".source = ./lua;
-    "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/lua";
-    # "nvim/ftplugin".source = ./ftplugin;
-    "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/ftplugin";
+    "nvim/lua".source = ./lua;
+    # "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/lua";
+    "nvim/ftplugin".source = ./ftplugin;
+    # "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/ftplugin";
     "nvim/parser".source = "${treesitterParsers}/parser";
-    "nvim/after/queries/go/textobjects.scm".source = ./go-textobjects.scm;
-    "nvim/after/queries/gotmpl/injections.scm".source = ./gotmpl-injections.scm;
+    "nvim/after".source = ./after;
   };
 
   xdg.dataFile = let
@@ -66,7 +63,6 @@
         }
       )
     );
-    miniPlugin = builtins.getAttr "mini-nvim" pkgs.vimPlugins;
     miniPlugins = builtins.listToAttrs (
       lib.lists.forEach [
         "mini-ai"
@@ -94,7 +90,7 @@
         name: {
           name = "nvim/nixpkgs/${name}";
           value = {
-            source = miniPlugin;
+            source = builtins.getAttr "mini-nvim" pkgs.vimPlugins;
           };
         }
       )

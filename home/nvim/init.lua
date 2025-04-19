@@ -3,7 +3,9 @@ require("options")
 require("maps")
 require("lsp")
 
-local lazypath = vim.fn.stdpath("data") .. "/nixpkgs/lazy-nvim"
+NIXPLUG_PATH = vim.fn.stdpath("data") .. "/nixpkgs"
+
+local lazypath = NIXPLUG_PATH .. "/lazy-nvim"
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
@@ -34,4 +36,3 @@ require("lazy").setup({
     },
   },
 })
-vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Manage plugins" })

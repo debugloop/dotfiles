@@ -185,3 +185,5 @@ vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "lsp: show definition
 vim.keymap.set("n", "gD", vim.lsp.buf.type_definition, { desc = "lsp: show type definition" })
 vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "lsp: show implementations" })
 vim.keymap.set("n", "<leader>sd", vim.diagnostic.setqflist, { desc = "lsp: list diagnostics" })
+
+vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Manage plugins" })

@@ -19,7 +19,7 @@
     networkmanager = {
       enable = true;
       plugins = lib.mkForce [];
-      # logLevel = "DEBUG";
+      logLevel = "INFO";
       wifi = {
         scanRandMacAddress = false;
         # backend = "iwd";

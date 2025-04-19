@@ -10,7 +10,7 @@ local function inject(spec)
 
   if spec["dir"] == nil and spec["dev"] ~= true then
     local plugin_name = spec[1]:match("[^/]+$")
-    local nixpkgs_dir = vim.fn.stdpath("data") .. "/nixpkgs/" .. plugin_name:gsub("%.", "-")
+    local nixpkgs_dir = NIXPLUG_PATH .. "/" .. plugin_name:gsub("%.", "-")
     if vim.fn.isdirectory(nixpkgs_dir) == 1 then
       spec["dir"] = nixpkgs_dir
     end
@@ -576,7 +576,8 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.git",
+    "echasnovski/mini-git",
+    name = "mini.git",
     keys = {
       {
         "<leader>gi",
@@ -823,7 +824,8 @@ return inject_all({
         "echasnovski/mini.icons",
       },
       {
-        "echasnovski/mini.git",
+        "echasnovski/mini-git",
+        name = "mini.git",
       },
       {
         "echasnovski/mini.diff",
@@ -1832,7 +1834,10 @@ return inject_all({
     -- git stuff from snacks
     lazy = false,
     dependencies = {
-      { "echasnovski/mini.git" },
+      {
+        "echasnovski/mini-git",
+        name = "mini.git",
+      },
     },
     keys = {
       {
