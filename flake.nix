@@ -19,7 +19,7 @@
     # neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
     niri-unstable = {
-      url = "github:YaLTeR/niri/2761922210a6c92dc22bbc5c8dce8c3771b02a54";
+      url = "github:YaLTeR/niri/0bef1c6c3b44039dac2d858d57d49d8f0ca32c23";
       flake = false;
     };
     niri = {
