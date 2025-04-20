@@ -5,6 +5,237 @@
 }: {
   programs.niri = {
     package = pkgs.niri-unstable;
+    config = ''
+      overview {
+          zoom 0.5
+      }
+      gestures {
+          hot-corners {
+              off
+          }
+      }
+      input {
+          keyboard {
+              xkb {
+                  layout "us"
+                  model "pc105"
+                  rules ""
+                  variant "altgr-intl"
+                  options "compose:rctrl,lv3:caps_switch"
+              }
+              repeat-delay 600
+              repeat-rate 25
+              track-layout "global"
+          }
+          touchpad {
+              tap
+              dwt
+              middle-emulation
+              accel-speed 0.400000
+              accel-profile "adaptive"
+          }
+          mouse { accel-speed 0.000000; }
+          trackpoint { accel-speed 0.000000; }
+          trackball { accel-speed 0.000000; }
+          tablet
+          touch
+          focus-follows-mouse max-scroll-amount="0%"
+          workspace-auto-back-and-forth
+      }
+      output "DP-1" {
+          background-color "#16161d"
+          transform "normal"
+      }
+      output "eDP-1" {
+          background-color "#16161d"
+          scale 1.000000
+          transform "normal"
+      }
+      screenshot-path "~/pictures/screenshot-%d-%m-%Y-%T.png"
+      prefer-no-csd
+      layout {
+          gaps 0
+          struts {
+              left 0
+              right 0
+              top 0
+              bottom 0
+          }
+          focus-ring {
+              width 1
+              active-color "#7e9cd800"
+              inactive-color "#6a9589"
+          }
+          border {
+              width 2
+              active-color "#7e9cd8"
+              inactive-color "#363646"
+          }
+          tab-indicator {
+              gap -8.000000
+              width 5
+              length total-proportion=0.100000
+              position "right"
+              gaps-between-tabs 5
+              corner-radius 5
+              active-color "#7e9cd888"
+              inactive-color "#36364688"
+          }
+          insert-hint { color "#76946a88"; }
+          default-column-width { proportion 0.333300; }
+          preset-column-widths {
+              proportion 0.333300
+              proportion 0.500000
+              proportion 0.666700
+          }
+          preset-window-heights {
+              proportion 0.200000
+              proportion 0.400000
+              proportion 0.600000
+              proportion 0.800000
+          }
+          center-focused-column "never"
+      }
+      cursor {
+          xcursor-theme "default"
+          xcursor-size 24
+      }
+      hotkey-overlay { skip-at-startup; }
+      environment { DISPLAY ":42"; }
+      binds {
+          Cancel { spawn "/nix/store/q0fc3igzic4j2qw6zqbszakkmhw9y0xn-swaylock-effects-1.7.0.0/bin/swaylock" "-f"; }
+          Ctrl+Alt+Delete allow-inhibiting=false { quit; }
+          Ctrl+Print { screenshot-window; }
+          Mod+0 { focus-workspace "yellow"; }
+          Mod+1 { focus-workspace "red"; }
+          Mod+2 { focus-workspace "green"; }
+          Mod+3 { focus-workspace "blue"; }
+          Mod+4 { focus-workspace "orange"; }
+          Mod+7 { focus-workspace "pink"; }
+          Mod+8 { focus-workspace "cyan"; }
+          Mod+9 { focus-workspace "purple"; }
+          Mod+Backslash { spawn "/nix/store/q0fc3igzic4j2qw6zqbszakkmhw9y0xn-swaylock-effects-1.7.0.0/bin/swaylock" "-f"; }
+          Mod+BracketLeft { focus-column-first; }
+          Mod+BracketRight { focus-column-last; }
+          Mod+C { center-column; }
+          Mod+Comma { set-column-width "33.33%"; }
+          Mod+Ctrl+0 { set-workspace-name "yellow"; }
+          Mod+Ctrl+1 { set-workspace-name "red"; }
+          Mod+Ctrl+2 { set-workspace-name "green"; }
+          Mod+Ctrl+3 { set-workspace-name "blue"; }
+          Mod+Ctrl+4 { set-workspace-name "orange"; }
+          Mod+Ctrl+7 { set-workspace-name "pink"; }
+          Mod+Ctrl+8 { set-workspace-name "cyan"; }
+          Mod+Ctrl+9 { set-workspace-name "purple"; }
+          Mod+Ctrl+F { toggle-windowed-fullscreen; }
+          Mod+Ctrl+H { move-column-left; }
+          Mod+Ctrl+J { move-workspace-down; }
+          Mod+Ctrl+K { move-workspace-up; }
+          Mod+Ctrl+L { move-column-right; }
+          Mod+Ctrl+M { expand-column-to-available-width; }
+          Mod+Ctrl+Minus { unset-workspace-name; }
+          Mod+Ctrl+S { set-dynamic-cast-monitor; }
+          Mod+Ctrl+Shift+Backslash { spawn "systemctl" "suspend"; }
+          Mod+Ctrl+Tab { move-workspace-to-monitor-next; }
+          Mod+Ctrl+V { toggle-window-floating; }
+          Mod+D { spawn "/nix/store/w1sm854ilhiw793nq64bgp6s0p416a6a-wofi-1.4.1/bin/wofi" "-aGS" "drun"; }
+          Mod+Equal { spawn "niri" "msg" "output" "eDP-1" "on"; }
+          Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+          Mod+F { fullscreen-window; }
+          Mod+H { focus-column-left-or-last; }
+          Mod+J { focus-window-or-workspace-down; }
+          Mod+K { focus-window-or-workspace-up; }
+          Mod+L { focus-column-right-or-first; }
+          Mod+M { maximize-column; }
+          Mod+Minus { focus-workspace 42; }
+          Mod+N { spawn "/nix/store/dhflc7gyj5kxn14q8jc74nbgdag7n30m-mako-1.10.0/bin/makoctl" "dismiss" "-a"; }
+          Mod+Period { set-column-width "66.67%"; }
+          Mod+Q { close-window; }
+          Mod+R { switch-preset-column-width; }
+          Mod+Return { spawn "/nix/store/jkya41rx8azpjcxi72z4rnm180pihkhl-kitty-0.41.1/bin/kitty"; }
+          Mod+S { set-dynamic-cast-window; }
+          Mod+Semicolon { spawn "fish" "-c" "niri msg action focus-window --id (niri msg -j windows | jq -r '.[] | (.id|tostring) + \" \" + .app_id + \": \" + .title' | /nix/store/w1sm854ilhiw793nq64bgp6s0p416a6a-wofi-1.4.1/bin/wofi -di | cut -d' ' -f1)"; }
+          Mod+Shift+0 { spawn "fish" "-c" "niri msg action move-window-to-workspace yellow"; }
+          Mod+Shift+1 { spawn "fish" "-c" "niri msg action move-window-to-workspace red"; }
+          Mod+Shift+2 { spawn "fish" "-c" "niri msg action move-window-to-workspace green"; }
+          Mod+Shift+3 { spawn "fish" "-c" "niri msg action move-window-to-workspace blue"; }
+          Mod+Shift+4 { spawn "fish" "-c" "niri msg action move-window-to-workspace orange"; }
+          Mod+Shift+7 { spawn "fish" "-c" "niri msg action move-window-to-workspace pink"; }
+          Mod+Shift+8 { spawn "fish" "-c" "niri msg action move-window-to-workspace cyan"; }
+          Mod+Shift+9 { spawn "fish" "-c" "niri msg action move-window-to-workspace purple"; }
+          Mod+Shift+BracketLeft { move-column-to-first; }
+          Mod+Shift+BracketRight { move-column-to-last; }
+          Mod+Shift+Equal { spawn "niri" "msg" "output" "eDP-1" "off"; }
+          Mod+Shift+F { toggle-windowed-fullscreen; }
+          Mod+Shift+H { consume-or-expel-window-left; }
+          Mod+Shift+J { move-window-down-or-to-workspace-down; }
+          Mod+Shift+K { move-window-up-or-to-workspace-up; }
+          Mod+Shift+L { consume-or-expel-window-right; }
+          Mod+Shift+M { reset-window-height; }
+          Mod+Shift+Minus { spawn "fish" "-c" "niri msg action move-window-to-workspace 42"; }
+          Mod+Shift+R { switch-preset-window-height; }
+          Mod+Shift+S { clear-dynamic-cast-target; }
+          Mod+Shift+Tab { move-window-to-monitor-next; }
+          Mod+Shift+WheelScrollDown cooldown-ms=150 { focus-column-right; }
+          Mod+Shift+WheelScrollUp cooldown-ms=150 { focus-column-left; }
+          Mod+Shift+XF86AudioLowerVolume { set-window-height "-1%"; }
+          Mod+Shift+XF86AudioRaiseVolume { set-window-height "+1%"; }
+          Mod+Slash { set-column-width "50%"; }
+          Mod+Space { spawn "fish" "-c" "niri msg action toggle-overview"; }
+          Mod+Tab { focus-monitor-next; }
+          Mod+V { switch-focus-between-floating-and-tiling; }
+          Mod+W { toggle-column-tabbed-display; }
+          Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+          Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
+          Mod+XF86AudioLowerVolume { set-column-width "-1%"; }
+          Mod+XF86AudioRaiseVolume { set-column-width "+1%"; }
+          Print { screenshot; }
+          Shift+XF86AudioLowerVolume allow-when-locked=true { spawn "bash" "-c" "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client --output-volume=-5 && pkill -SIGRTMIN+4 waybar"; }
+          Shift+XF86AudioRaiseVolume allow-when-locked=true { spawn "bash" "-c" "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client --output-volume=5 && pkill -SIGRTMIN+4 waybar"; }
+          XF86AudioLowerVolume allow-when-locked=true { spawn "bash" "-c" "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client --output-volume=-1 && pkill -SIGRTMIN+4 waybar"; }
+          XF86AudioMicMute allow-when-locked=true { spawn "bash" "-c" "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client --input-volume=mute-toggle && pkill -SIGRTMIN+4 waybar"; }
+          XF86AudioMute allow-when-locked=true { spawn "bash" "-c" "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client --output-volume=mute-toggle && pkill -SIGRTMIN+4 waybar"; }
+          XF86AudioNext allow-when-locked=true { spawn "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client" "--playerctl=next"; }
+          XF86AudioPlay allow-when-locked=true { spawn "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client" "--playerctl=play-pause"; }
+          XF86AudioPrev allow-when-locked=true { spawn "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client" "--playerctl=prev"; }
+          XF86AudioRaiseVolume allow-when-locked=true { spawn "bash" "-c" "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client --output-volume=1 && pkill -SIGRTMIN+4 waybar"; }
+          XF86AudioStop allow-when-locked=true { spawn "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client" "--playerctl=play-pause"; }
+          XF86MonBrightnessDown { spawn "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client --brightness=lower"; }
+          XF86MonBrightnessUp { spawn "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client --brightness=raise"; }
+      }
+      spawn-at-startup "/nix/store/vzh35c419zivp27zaxxr9yzsaymb0fsf-xwayland-satellite-0.5.1/bin/xwayland-satellite" ":42"
+      window-rule {
+          geometry-corner-radius 1.000000 1.000000 1.000000 1.000000
+          clip-to-geometry true
+      }
+      window-rule {
+          match title="^\\[private\\] .*$"
+          block-out-from "screencast"
+      }
+      window-rule {
+          match is-window-cast-target=true
+          border {
+              active-color "#e82424"
+              inactive-color "#c34043"
+          }
+          shadow {
+              on
+              color "#c34043"
+          }
+      }
+      window-rule {
+          match is-floating=true
+          shadow {
+              on
+              color "#7e9cd8"
+          }
+      }
+      layer-rule {
+          match namespace="notifications"
+          block-out-from "screen-capture"
+      }
+      animations { slowdown 1.000000; }
+    '';
     settings = {
       spawn-at-startup = [
         {
