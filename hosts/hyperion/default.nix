@@ -8,6 +8,7 @@
     ../services/matrix.nix
     ../services/miniflux.nix
     ../services/prometheus.nix
+    ../services/restic-rest.nix
     inputs.wunschkonzert-install.include
   ];
 }

@@ -75,6 +75,19 @@
           }
         ];
       }
+      {
+        job_name = "restic-server";
+        static_configs = [
+          {
+            targets = [
+              "localhost:8000"
+            ];
+            labels = {
+              host = "${hostname}";
+            };
+          }
+        ];
+      }
     ];
   };
 

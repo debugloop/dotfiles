@@ -22,7 +22,6 @@
       "/var/lib/bluetooth" # blueman connections
       "/var/lib/nixos" # uid and gid mappings
       "/var/log" # logs
-      "/var/lib/rancher/k3s" # k3s cluster
       "/var/lib/docker" # docker rootful
     ];
     files = [

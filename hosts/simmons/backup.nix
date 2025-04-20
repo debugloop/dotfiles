@@ -3,17 +3,18 @@
   pkgs,
   ...
 }: {
-  environment.systemPackages = with pkgs; [
-    restic
-  ];
+  age.secrets.restic_password = {
+    file = ../../secrets/restic_password.age;
+    owner = "danieln";
+  };
 
   services.restic.backups.daily = {
     initialize = true;
-    rcloneConfigFile = config.age.secrets.restic_rclone_config.path;
     passwordFile = config.age.secrets.restic_password.path;
     paths = ["/nix/persist"];
     exclude = [
       "var/log"
+      "home/danieln/go" # golang cache
       "home/danieln/scratch" # random repos
       "home/danieln/downloads" # random crap
       "home/danieln/.local/share/Steam" # steam and its games
@@ -23,8 +24,13 @@
       "home/danieln/.config/Slack" # slack syncs itself
       "home/danieln/.mozilla" # nothing that firefox sync won't cover
       "home/danieln/.config/TeamSpeak" # nothing of value
+      "home/danieln/code/*/.cache" # direnv caches etc
+      # huge repo that I don't care about
+      "home/danieln/code/qmk"
+      "home/danieln/code/qmk_firmware"
+      "home/danieln/code/Garmin"
     ];
-    repository = "rclone:b2:danieln-backups/simmons";
+    repository = "rest:http://hyperion.squirrel-emperor.ts.net:8000/${config.networking.hostName}";
     timerConfig = {
       OnCalendar = "daily";
       Persistent = true;
@@ -34,10 +40,5 @@
       "--keep-weekly 5"
       "--keep-yearly 10"
     ];
-  };
-
-  systemd.services.restic-backups-daily = {
-    wants = ["network.target"];
-    after = ["network.target"];
   };
 }
