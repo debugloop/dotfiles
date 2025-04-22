@@ -222,6 +222,12 @@
     };
     ssh = {
       enable = true;
+      matchBlocks = {
+        "hyperion" = {
+          hostname = "hyperion";
+          forwardAgent = true;
+        };
+      };
       extraConfig = ''
         PermitLocalCommand yes
         LocalCommand ${pkgs.libnotify}/bin/notify-send --category=ssh "%r@%h" "Connected to %h."
