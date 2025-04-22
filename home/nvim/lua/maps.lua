@@ -108,9 +108,6 @@ vim.keymap.set("n", "dd", function()
   end
 end, { desc = "delete line", expr = true })
 
--- add undo state when inserting a newline
-vim.keymap.set("i", "<cr>", "<cr><c-g>u")
-
 -- no lsp defaults
 vim.keymap.del("n", "gO")
 vim.keymap.del("n", "gra")

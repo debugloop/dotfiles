@@ -732,19 +732,16 @@ return inject_all({
           action = "open",
           pair = "()",
           neigh_pattern = ".[%s%)]",
-          register = { cr = false },
         },
         ["["] = {
           action = "open",
           pair = "[]",
           neigh_pattern = ".[%s%)}%]]",
-          register = { cr = false },
         },
         ["{"] = {
           action = "open",
           pair = "{}",
           neigh_pattern = ".[%s%)}%]]",
-          register = { cr = false },
         },
         [")"] = {
           action = "close",
@@ -994,6 +991,14 @@ return inject_all({
             event = "msg_show",
             kind = "",
             find = "bytes",
+          },
+          opts = { skip = true },
+        },
+        {
+          filter = {
+            event = "msg_show",
+            kind = "echomsg",
+            find = "deprecated",
           },
           opts = { skip = true },
         },

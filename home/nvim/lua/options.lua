@@ -8,6 +8,8 @@ vim.opt.jumpoptions = "stack,view" -- discard jumps when diverging from an earli
 vim.opt.spelloptions = "camel,noplainbuffer" -- set some spell options for when I enable
 vim.opt.spellsuggest = "best,10" -- limit suggestions
 vim.opt.clipboard = "unnamedplus"
+-- vim.opt.formatoptions = "jcroqlnt" -- default: tcqj
+vim.opt.formatoptions = "tcr/qnj"
 
 -- indent and wrap defaults
 vim.opt.shiftwidth = 0 -- look at tabstop, no sense in two settings
