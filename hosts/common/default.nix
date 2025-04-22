@@ -80,11 +80,7 @@
       memorySize = 2048;
       cores = 2;
       diskImage = null;
-      # launch in a useable and graphical window
-      qemu.options = [
-        "-vga virtio"
-        "-display gtk,zoom-to-fit=false"
-      ];
+      qemu.options = [];
     };
     environment.persistence = lib.mkForce {};
     # empty password for myself
