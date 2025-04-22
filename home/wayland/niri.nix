@@ -307,17 +307,16 @@
           active.color = "#${config.colors.blue}";
           inactive.color = "#${config.colors.light_bg}";
         };
-        default-column-width.proportion = 0.3333;
+        default-column-width.proportion = 0.333;
         preset-column-widths = [
-          {proportion = 0.3333;}
+          {proportion = 0.333;}
           {proportion = 0.5;}
-          {proportion = 0.6667;}
+          {proportion = 0.667;}
         ];
         preset-window-heights = [
-          {proportion = 0.2;}
-          {proportion = 0.4;}
-          {proportion = 0.6;}
-          {proportion = 0.8;}
+          {proportion = 0.333;}
+          {proportion = 0.5;}
+          {proportion = 0.667;}
         ];
         tab-indicator = {
           position = "right";
@@ -346,6 +345,15 @@
             {title = "^\\[private\\] .*$";}
           ];
           block-out-from = "screencast";
+        }
+        {
+          matches = [
+            {
+              title = "Picture-in-Picture";
+              app-id = "firefox";
+            }
+          ];
+          open-floating = true;
         }
         {
           matches = [
@@ -425,8 +433,8 @@
 
         # window width
         "Mod+R".action = switch-preset-column-width;
-        "Mod+Comma".action = set-column-width "33.33%";
-        "Mod+Period".action = set-column-width "66.67%";
+        "Mod+Comma".action = set-column-width "33.3%";
+        "Mod+Period".action = set-column-width "66.7%";
         "Mod+Slash".action = set-column-width "50%";
         "Mod+M".action = maximize-column;
         "Mod+Ctrl+M".action = expand-column-to-available-width;
@@ -452,22 +460,26 @@
         "Ctrl+Print".action = screenshot-window;
 
         # focus
-        "Mod+H".action = focus-column-left-or-last;
+        # "Mod+H".action = focus-column-left-or-last;
+        # "Mod+L".action = focus-column-right-or-first;
+        "Mod+H".action = focus-column-or-monitor-left;
         "Mod+J".action = focus-window-or-workspace-down;
         "Mod+K".action = focus-window-or-workspace-up;
-        "Mod+L".action = focus-column-right-or-first;
+        "Mod+L".action = focus-column-or-monitor-right;
 
         # small move
         "Mod+Shift+H".action = consume-or-expel-window-left;
         "Mod+Shift+L".action = consume-or-expel-window-right;
-        "Mod+Shift+J".action = move-window-down-or-to-workspace-down;
-        "Mod+Shift+K".action = move-window-up-or-to-workspace-up;
+        "Mod+Shift+J".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-workspace-down || niri msg action move-window-down-or-to-workspace-down";
+        "Mod+Shift+K".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-workspace-up || niri msg action move-window-up-or-to-workspace-up";
 
         # large move
-        "Mod+Ctrl+H".action = move-column-left;
+        # "Mod+Ctrl+H".action = move-column-left-or-to-monitor-left;
         "Mod+Ctrl+J".action = move-workspace-down;
         "Mod+Ctrl+K".action = move-workspace-up;
-        "Mod+Ctrl+L".action = move-column-right;
+        # "Mod+Ctrl+L".action = move-column-right-or-to-monitor-right;
+        "Mod+Ctrl+H".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-monitor-left || niri msg action move-column-left-or-to-monitor-left";
+        "Mod+Ctrl+L".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-monitor-right || niri msg action move-column-right-or-to-monitor-right";
 
         # swaylike workspace focus with wrapping
         # "Mod+Ctrl+J".action = spawn "fish" "-c" "niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].is_focused' | grep true; and niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[0].idx'); or niri msg action focus-workspace-down";
