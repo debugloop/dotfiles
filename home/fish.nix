@@ -42,7 +42,7 @@
     loginShellInit = ''
       # start wm on tty1
       if test (tty) = /dev/tty1
-        alias startx=exec niri-session
+        alias startx=niri-session
       end
     '';
     shellAbbrs = {

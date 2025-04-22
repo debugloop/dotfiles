@@ -31,6 +31,7 @@
               tap
               dwt
               middle-emulation
+              natural-scroll
               accel-speed 0.400000
               accel-profile "adaptive"
           }
@@ -67,7 +68,7 @@
               inactive-color "#6a9589"
           }
           border {
-              width 2
+              width 1
               active-color "#7e9cd8"
               inactive-color "#363646"
           }
@@ -266,7 +267,7 @@
           tap = true;
           dwt = true;
           middle-emulation = true;
-          natural-scroll = false;
+          natural-scroll = true;
         };
       };
       outputs = {
