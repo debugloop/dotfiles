@@ -11,6 +11,7 @@
               off
           }
       }
+      spawn-at-startup "${pkgs.xwayland-satellite}/bin/xwayland-satellite" ":42"
       input {
           keyboard {
               xkb {
@@ -56,6 +57,7 @@
       screenshot-path "~/pictures/screenshot-%d-%m-%Y-%T.png"
       prefer-no-csd
       layout {
+          empty-workspace-above-first
           gaps 0
           struts {
               left 0
@@ -64,6 +66,7 @@
               bottom 0
           }
           focus-ring {
+              off
               width 1
               active-color "#7e9cd800"
               inactive-color "#6a9589"
@@ -74,14 +77,15 @@
               inactive-color "#363646"
           }
           tab-indicator {
-              gap -8.000000
+              gap 0
+              place-within-column
               width 5
-              length total-proportion=0.100000
+              length total-proportion=0.200000
               position "right"
-              gaps-between-tabs 5
+              gaps-between-tabs 10
               corner-radius 5
-              active-color "#7e9cd888"
-              inactive-color "#36364688"
+              active-color "#7e9cd8ff"
+              inactive-color "#363646ff"
           }
           insert-hint { color "#76946a88"; }
           default-column-width { proportion 0.333000; }
@@ -107,14 +111,14 @@
           Cancel { spawn "/nix/store/q0fc3igzic4j2qw6zqbszakkmhw9y0xn-swaylock-effects-1.7.0.0/bin/swaylock" "-f"; }
           Ctrl+Alt+Delete allow-inhibiting=false { quit; }
           Ctrl+Print { screenshot-window; }
-          Mod+0 { focus-workspace "yellow"; }
-          Mod+1 { focus-workspace "red"; }
-          Mod+2 { focus-workspace "green"; }
-          Mod+3 { focus-workspace "blue"; }
-          Mod+4 { focus-workspace "orange"; }
-          Mod+7 { focus-workspace "pink"; }
-          Mod+8 { focus-workspace "cyan"; }
-          Mod+9 { focus-workspace "purple"; }
+          Mod+0 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action focus-workspace yellow || niri msg action focus-workspace 42 && niri msg action set-workspace-name yellow"; }
+          Mod+1 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action focus-workspace red || niri msg action focus-workspace 42 && niri msg action set-workspace-name red"; }
+          Mod+2 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action focus-workspace green || niri msg action focus-workspace 42 && niri msg action set-workspace-name green"; }
+          Mod+3 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action focus-workspace blue || niri msg action focus-workspace 42 && niri msg action set-workspace-name blue"; }
+          Mod+4 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action focus-workspace orange || niri msg action focus-workspace 42 && niri msg action set-workspace-name orange"; }
+          Mod+7 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"pink\")' && niri msg action focus-workspace pink || niri msg action focus-workspace 42 && niri msg action set-workspace-name pink"; }
+          Mod+8 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"cyan\")' && niri msg action focus-workspace cyan || niri msg action focus-workspace 42 && niri msg action set-workspace-name cyan"; }
+          Mod+9 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action focus-workspace purple || niri msg action focus-workspace 42 && niri msg action set-workspace-name purple"; }
           Mod+Backslash { spawn "/nix/store/q0fc3igzic4j2qw6zqbszakkmhw9y0xn-swaylock-effects-1.7.0.0/bin/swaylock" "-f"; }
           Mod+BracketLeft { focus-column-first; }
           Mod+BracketRight { focus-column-last; }
@@ -156,14 +160,14 @@
           Mod+Return { spawn "/nix/store/r8xiqydgjbxixvqa092ag18zmnvlnbyc-kitty-0.41.1/bin/kitty"; }
           Mod+S { set-dynamic-cast-window; }
           Mod+Semicolon { spawn "fish" "-c" "niri msg action focus-window --id (niri msg -j windows | jq -r '.[] | (.id|tostring) + \" \" + .app_id + \": \" + .title' | /nix/store/w1sm854ilhiw793nq64bgp6s0p416a6a-wofi-1.4.1/bin/wofi -di | cut -d' ' -f1)"; }
-          Mod+Shift+0 { spawn "fish" "-c" "niri msg action move-window-to-workspace yellow"; }
-          Mod+Shift+1 { spawn "fish" "-c" "niri msg action move-window-to-workspace red"; }
-          Mod+Shift+2 { spawn "fish" "-c" "niri msg action move-window-to-workspace green"; }
-          Mod+Shift+3 { spawn "fish" "-c" "niri msg action move-window-to-workspace blue"; }
-          Mod+Shift+4 { spawn "fish" "-c" "niri msg action move-window-to-workspace orange"; }
-          Mod+Shift+7 { spawn "fish" "-c" "niri msg action move-window-to-workspace pink"; }
-          Mod+Shift+8 { spawn "fish" "-c" "niri msg action move-window-to-workspace cyan"; }
-          Mod+Shift+9 { spawn "fish" "-c" "niri msg action move-window-to-workspace purple"; }
+          Mod+Shift+0 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action move-window-to-workspace yellow || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name yellow"; }
+          Mod+Shift+1 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action move-window-to-workspace red || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name red"; }
+          Mod+Shift+2 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action move-window-to-workspace green || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name green"; }
+          Mod+Shift+3 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action move-window-to-workspace blue || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name blue"; }
+          Mod+Shift+4 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action move-window-to-workspace orange || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name orange"; }
+          Mod+Shift+7 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"pink\")' && niri msg action move-window-to-workspace pink || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name pink"; }
+          Mod+Shift+8 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"cyan\")' && niri msg action move-window-to-workspace cyan || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name cyan"; }
+          Mod+Shift+9 { spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action move-window-to-workspace purple || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name purple"; }
           Mod+Shift+BracketLeft { move-column-to-first; }
           Mod+Shift+BracketRight { move-column-to-last; }
           Mod+Shift+Equal { spawn "niri" "msg" "output" "eDP-1" "off"; }
@@ -289,7 +293,7 @@
       hotkey-overlay.skip-at-startup = true;
       prefer-no-csd = true;
       layout = {
-        # empty-workspace-above-first = true;
+        empty-workspace-above-first = true;
         gaps = 0;
         shadow = {
           enable = false;
@@ -327,13 +331,14 @@
         ];
         tab-indicator = {
           position = "right";
-          gap = -8.0;
+          place-within-column = true;
+          gap = 0;
           width = 5;
           gaps-between-tabs = 5;
-          length.total-proportion = 0.1;
+          length.total-proportion = 0.2;
           corner-radius = 5;
-          active.color = "#${config.colors.blue}88";
-          inactive.color = "#${config.colors.light_bg}88";
+          active.color = "#${config.colors.blue}ff";
+          inactive.color = "#${config.colors.light_bg}ff";
         };
         insert-hint.display.color = "#${config.colors.green}88";
       };
@@ -537,23 +542,24 @@
         "Mod+Ctrl+0".action = set-workspace-name "yellow";
         "Mod+Ctrl+Minus".action = unset-workspace-name;
         # TODO: flake support for these?
-        "Mod+Shift+1".action = spawn "fish" "-c" "niri msg action move-window-to-workspace red";
-        "Mod+Shift+2".action = spawn "fish" "-c" "niri msg action move-window-to-workspace green";
-        "Mod+Shift+3".action = spawn "fish" "-c" "niri msg action move-window-to-workspace blue";
-        "Mod+Shift+4".action = spawn "fish" "-c" "niri msg action move-window-to-workspace orange";
-        "Mod+Shift+7".action = spawn "fish" "-c" "niri msg action move-window-to-workspace pink";
-        "Mod+Shift+8".action = spawn "fish" "-c" "niri msg action move-window-to-workspace cyan";
-        "Mod+Shift+9".action = spawn "fish" "-c" "niri msg action move-window-to-workspace purple";
-        "Mod+Shift+0".action = spawn "fish" "-c" "niri msg action move-window-to-workspace yellow";
+        "Mod+Shift+1".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action move-window-to-workspace red || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name red";
+        "Mod+Shift+2".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action move-window-to-workspace green || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name green";
+        "Mod+Shift+3".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action move-window-to-workspace blue || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name blue";
+        "Mod+Shift+4".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action move-window-to-workspace orange || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name orange";
+        "Mod+Shift+7".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"pink\")' && niri msg action move-window-to-workspace pink || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name pink";
+        "Mod+Shift+8".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"cyan\")' && niri msg action move-window-to-workspace cyan || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name cyan";
+        "Mod+Shift+9".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action move-window-to-workspace purple || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name purple";
+        "Mod+Shift+0".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action move-window-to-workspace yellow || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name yellow";
         "Mod+Shift+Minus".action = spawn "fish" "-c" "niri msg action move-window-to-workspace 42";
-        "Mod+1".action = focus-workspace "red";
-        "Mod+2".action = focus-workspace "green";
-        "Mod+3".action = focus-workspace "blue";
-        "Mod+4".action = focus-workspace "orange";
-        "Mod+7".action = focus-workspace "pink";
-        "Mod+8".action = focus-workspace "cyan";
-        "Mod+9".action = focus-workspace "purple";
-        "Mod+0".action = focus-workspace "yellow";
+        # "Mod+1".action = focus-workspace "red";
+        "Mod+1".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action focus-workspace red || niri msg action focus-workspace 42 && niri msg action set-workspace-name red";
+        "Mod+2".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action focus-workspace green || niri msg action focus-workspace 42 && niri msg action set-workspace-name green";
+        "Mod+3".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action focus-workspace blue || niri msg action focus-workspace 42 && niri msg action set-workspace-name blue";
+        "Mod+4".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action focus-workspace orange || niri msg action focus-workspace 42 && niri msg action set-workspace-name orange";
+        "Mod+7".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"pink\")' && niri msg action focus-workspace pink || niri msg action focus-workspace 42 && niri msg action set-workspace-name pink";
+        "Mod+8".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"cyan\")' && niri msg action focus-workspace cyan || niri msg action focus-workspace 42 && niri msg action set-workspace-name cyan";
+        "Mod+9".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action focus-workspace purple || niri msg action focus-workspace 42 && niri msg action set-workspace-name purple";
+        "Mod+0".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action focus-workspace yellow || niri msg action focus-workspace 42 && niri msg action set-workspace-name yellow";
         "Mod+Minus".action = focus-workspace 42;
 
         # # workspace addresses, 0 is last with window, minus is the empty workspace

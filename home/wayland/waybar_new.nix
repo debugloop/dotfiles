@@ -230,11 +230,11 @@
 
       /* workspaces */
       #workspaces {
-          padding: 0em 0em 12em 0em;
+          padding: 0.5em 0em;
       }
       #workspaces button {
           color: inherit; /* needed for some reason */
-          padding: 0.5em 0.5em;
+          padding: 0.5em;
       }
 
       #workspaces button.visible {
