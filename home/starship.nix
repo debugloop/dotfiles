@@ -104,8 +104,8 @@
         format = "[$symbol](green)";
         repeat = true;
         symbol = "❯";
-        repeat_offset = 2;
-        threshold = 3;
+        repeat_offset = 3;
+        threshold = 4;
       };
     };
   };

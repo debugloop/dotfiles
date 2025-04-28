@@ -59,6 +59,8 @@
       pavucontrol
       spotify
       teamspeak_client
+      transmission_4-gtk
+      audacity
       # vlc
       wdisplays
       wev

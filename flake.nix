@@ -19,13 +19,13 @@
     impermanence.url = "github:nix-community/impermanence";
     # neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
-    niri-unstable = {
-      url = "github:YaLTeR/niri/a11fe23cbf6ba01ae4c23679aa2f7d7d8b44baf4";
-      flake = false;
-    };
+    # niri-unstable = {
+    #   url = "github:YaLTeR/niri/a11fe23cbf6ba01ae4c23679aa2f7d7d8b44baf4";
+    #   flake = false;
+    # };
     niri = {
       url = "github:sodiboo/niri-flake";
-      inputs.niri-unstable.follows = "niri-unstable";
+      # inputs.niri-unstable.follows = "niri-unstable";
     };
 
     # private flakes

@@ -6,9 +6,6 @@
   programs.niri = {
     package = pkgs.niri-unstable;
     config = ''
-      overview {
-          zoom 0.5
-      }
       gestures {
           hot-corners {
               off
@@ -30,8 +27,8 @@
           touchpad {
               tap
               dwt
-              middle-emulation
               natural-scroll
+              middle-emulation
               accel-speed 0.400000
               accel-profile "adaptive"
           }
@@ -44,6 +41,10 @@
           workspace-auto-back-and-forth
       }
       output "DP-1" {
+          background-color "#16161d"
+          transform "normal"
+      }
+      output "DP-2" {
           background-color "#16161d"
           transform "normal"
       }
@@ -68,7 +69,7 @@
               inactive-color "#6a9589"
           }
           border {
-              width 1
+              width 2
               active-color "#7e9cd8"
               inactive-color "#363646"
           }
@@ -83,17 +84,16 @@
               inactive-color "#36364688"
           }
           insert-hint { color "#76946a88"; }
-          default-column-width { proportion 0.333300; }
+          default-column-width { proportion 0.333000; }
           preset-column-widths {
-              proportion 0.333300
+              proportion 0.333000
               proportion 0.500000
-              proportion 0.666700
+              proportion 0.667000
           }
           preset-window-heights {
-              proportion 0.200000
-              proportion 0.400000
-              proportion 0.600000
-              proportion 0.800000
+              proportion 0.333000
+              proportion 0.500000
+              proportion 0.667000
           }
           center-focused-column "never"
       }
@@ -119,7 +119,7 @@
           Mod+BracketLeft { focus-column-first; }
           Mod+BracketRight { focus-column-last; }
           Mod+C { center-column; }
-          Mod+Comma { set-column-width "33.33%"; }
+          Mod+Comma { set-column-width "33.3%"; }
           Mod+Ctrl+0 { set-workspace-name "yellow"; }
           Mod+Ctrl+1 { set-workspace-name "red"; }
           Mod+Ctrl+2 { set-workspace-name "green"; }
@@ -129,10 +129,10 @@
           Mod+Ctrl+8 { set-workspace-name "cyan"; }
           Mod+Ctrl+9 { set-workspace-name "purple"; }
           Mod+Ctrl+F { toggle-windowed-fullscreen; }
-          Mod+Ctrl+H { move-column-left; }
+          Mod+Ctrl+H { spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-monitor-left || niri msg action move-column-left-or-to-monitor-left"; }
           Mod+Ctrl+J { move-workspace-down; }
           Mod+Ctrl+K { move-workspace-up; }
-          Mod+Ctrl+L { move-column-right; }
+          Mod+Ctrl+L { spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-monitor-right || niri msg action move-column-right-or-to-monitor-right"; }
           Mod+Ctrl+M { expand-column-to-available-width; }
           Mod+Ctrl+Minus { unset-workspace-name; }
           Mod+Ctrl+S { set-dynamic-cast-monitor; }
@@ -143,17 +143,17 @@
           Mod+Equal { spawn "niri" "msg" "output" "eDP-1" "on"; }
           Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
           Mod+F { fullscreen-window; }
-          Mod+H { focus-column-left-or-last; }
+          Mod+H { focus-column-or-monitor-left; }
           Mod+J { focus-window-or-workspace-down; }
           Mod+K { focus-window-or-workspace-up; }
-          Mod+L { focus-column-right-or-first; }
+          Mod+L { focus-column-or-monitor-right; }
           Mod+M { maximize-column; }
           Mod+Minus { focus-workspace 42; }
           Mod+N { spawn "/nix/store/dhflc7gyj5kxn14q8jc74nbgdag7n30m-mako-1.10.0/bin/makoctl" "dismiss" "-a"; }
-          Mod+Period { set-column-width "66.67%"; }
+          Mod+Period { set-column-width "66.7%"; }
           Mod+Q { close-window; }
           Mod+R { switch-preset-column-width; }
-          Mod+Return { spawn "/nix/store/jkya41rx8azpjcxi72z4rnm180pihkhl-kitty-0.41.1/bin/kitty"; }
+          Mod+Return { spawn "/nix/store/r8xiqydgjbxixvqa092ag18zmnvlnbyc-kitty-0.41.1/bin/kitty"; }
           Mod+S { set-dynamic-cast-window; }
           Mod+Semicolon { spawn "fish" "-c" "niri msg action focus-window --id (niri msg -j windows | jq -r '.[] | (.id|tostring) + \" \" + .app_id + \": \" + .title' | /nix/store/w1sm854ilhiw793nq64bgp6s0p416a6a-wofi-1.4.1/bin/wofi -di | cut -d' ' -f1)"; }
           Mod+Shift+0 { spawn "fish" "-c" "niri msg action move-window-to-workspace yellow"; }
@@ -169,8 +169,8 @@
           Mod+Shift+Equal { spawn "niri" "msg" "output" "eDP-1" "off"; }
           Mod+Shift+F { toggle-windowed-fullscreen; }
           Mod+Shift+H { consume-or-expel-window-left; }
-          Mod+Shift+J { move-window-down-or-to-workspace-down; }
-          Mod+Shift+K { move-window-up-or-to-workspace-up; }
+          Mod+Shift+J { spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-workspace-down || niri msg action move-window-down-or-to-workspace-down"; }
+          Mod+Shift+K { spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-workspace-up || niri msg action move-window-up-or-to-workspace-up"; }
           Mod+Shift+L { consume-or-expel-window-right; }
           Mod+Shift+M { reset-window-height; }
           Mod+Shift+Minus { spawn "fish" "-c" "niri msg action move-window-to-workspace 42"; }
@@ -182,7 +182,7 @@
           Mod+Shift+XF86AudioLowerVolume { set-window-height "-1%"; }
           Mod+Shift+XF86AudioRaiseVolume { set-window-height "+1%"; }
           Mod+Slash { set-column-width "50%"; }
-          Mod+Space { spawn "fish" "-c" "niri msg action toggle-overview"; }
+          Mod+Space { toggle-overview; }
           Mod+Tab { focus-monitor-next; }
           Mod+V { switch-focus-between-floating-and-tiling; }
           Mod+W { toggle-column-tabbed-display; }
@@ -204,7 +204,7 @@
           XF86MonBrightnessDown { spawn "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client --brightness=lower"; }
           XF86MonBrightnessUp { spawn "/nix/store/9vvyad1zvfh6yjgcm9q0lv2car16spfz-swayosd-0.2.0/bin/swayosd-client --brightness=raise"; }
       }
-      spawn-at-startup "/nix/store/vzh35c419zivp27zaxxr9yzsaymb0fsf-xwayland-satellite-0.5.1/bin/xwayland-satellite" ":42"
+      spawn-at-startup "${pkgs.xwayland-satellite}/bin/xwayland-satellite" ":42"
       window-rule {
           geometry-corner-radius 1.000000 1.000000 1.000000 1.000000
           clip-to-geometry true
@@ -212,6 +212,10 @@
       window-rule {
           match title="^\\[private\\] .*$"
           block-out-from "screencast"
+      }
+      window-rule {
+          match app-id="firefox" title="Picture-in-Picture"
+          open-floating true
       }
       window-rule {
           match is-window-cast-target=true
@@ -276,6 +280,9 @@
           background-color = "#${config.colors.dark_bg}";
         };
         "DP-1" = {
+          background-color = "#${config.colors.dark_bg}";
+        };
+        "DP-2" = {
           background-color = "#${config.colors.dark_bg}";
         };
       };
@@ -429,7 +436,7 @@
         #           subprocess.call(['niri', 'msg', 'action', 'consume-or-expel-window-left'])
         #           break
         # ''}";
-        "Mod+Space".action = spawn "fish" "-c" "niri msg action toggle-overview";
+        "Mod+Space".action = toggle-overview;
 
         # window width
         "Mod+R".action = switch-preset-column-width;
