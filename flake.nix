@@ -121,6 +121,7 @@
               vim.opt.rtp:prepend(lazypath)
 
               require("lazy").setup({
+                lockfile = root .. "/lazy-lock.json",
                 spec = {
                   { import = "plugins" },
                 },
@@ -161,7 +162,6 @@
           cp -r ${pkgs.vimPlugins.lazydev-nvim} $out/local/nvim/nixpkgs/lazydev-nvim
           cp -r ${pkgs.vimPlugins.noice-nvim} $out/local/nvim/nixpkgs/noice-nvim
           cp -r ${pkgs.vimPlugins.nui-nvim} $out/local/nvim/nixpkgs/nui-nvim
-          cp -r ${pkgs.vimPlugins.nvim-bqf} $out/local/nvim/nixpkgs/nvim-bqf
           cp -r ${pkgs.vimPlugins.nvim-dap} $out/local/nvim/nixpkgs/nvim-dap
           cp -r ${pkgs.vimPlugins.nvim-impairative} $out/local/nvim/nixpkgs/nvim-impairative
           cp -r ${pkgs.vimPlugins.nvim-lint} $out/local/nvim/nixpkgs/nvim-lint
@@ -169,7 +169,6 @@
           cp -r ${pkgs.vimPlugins.nvim-treesitter} $out/local/nvim/nixpkgs/nvim-treesitter
           cp -r ${pkgs.vimPlugins.nvim-treesitter-context} $out/local/nvim/nixpkgs/nvim-treesitter-context
           cp -r ${pkgs.vimPlugins.nvim-treesitter-textobjects} $out/local/nvim/nixpkgs/nvim-treesitter-textobjects
-          cp -r ${pkgs.vimPlugins.quicker-nvim} $out/local/nvim/nixpkgs/quicker-nvim
           cp -r ${pkgs.vimPlugins.render-markdown-nvim} $out/local/nvim/nixpkgs/render-markdown-nvim
           cp -r ${pkgs.vimPlugins.snacks-nvim} $out/local/nvim/nixpkgs/snacks-nvim
 

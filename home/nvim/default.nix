@@ -41,7 +41,6 @@
         "lazydev-nvim"
         "noice-nvim"
         "nui-nvim"
-        "nvim-bqf"
         "nvim-dap"
         # "nvim-dap-view"
         "nvim-impairative"
@@ -50,7 +49,6 @@
         "nvim-treesitter"
         "nvim-treesitter-context"
         "nvim-treesitter-textobjects"
-        "quicker-nvim"
         "render-markdown-nvim"
         "snacks-nvim"
       ]
@@ -96,5 +94,23 @@
       )
     );
   in
-    vimPlugins // miniPlugins;
+    {
+      # "nvim/nixpkgs/nvim-treesitter-textobjects" = {
+      #   source = pkgs.fetchFromGitHub {
+      #     owner = "nvim-treesitter";
+      #     repo = "nvim-treesitter-textobjects";
+      #     rev = "main";
+      #     sha256 = "sha256-sJdKVaGNXW4HEi6NXEqUhelr8T7/M216m7bPKHAd1do=";
+      #   };
+      # };
+      # "nvim/nixpkgs/nvim-treesitter" = {
+      #   source = pkgs.fetchFromGitHub {
+      #     owner = "nvim-treesitter";
+      #     repo = "nvim-treesitter";
+      #     rev = "main";
+      #     sha256 = "sha256-m3ShsTug4wSee89K+GaTKodC1cWsskR35y9SjDtVRgU=";
+      #   };
+      # };
+    }
+    // vimPlugins // miniPlugins;
 }

@@ -102,12 +102,18 @@
     mimeApps = {
       enable = true;
       defaultApplications = {
-        "text/html" = "org.firefox.firefox.desktop";
-        "x-scheme-handler/http" = "org.firefox.firefox.desktop";
-        "x-scheme-handler/https" = "org.firefox.firefox.desktop";
-        "x-scheme-handler/unknown" = "org.firefox.firefox.desktop";
-        "image/svg+xml" = "org.inkscape.Inkscape.desktop";
         "application/pdf" = "org.pwmt.zathura-pdf-mupdf.desktop";
+        "application/x-extension-htm" = "firefox.desktop";
+        "application/x-extension-html" = "firefox.desktop";
+        "application/x-extension-shtml" = "firefox.desktop";
+        "application/x-extension-xht" = "firefox.desktop";
+        "application/x-extension-xhtml" = "firefox.desktop";
+        "application/xhtml+xml" = "firefox.desktop";
+        "image/svg+xml" = "org.inkscape.Inkscape.desktop";
+        "text/html" = "firefox.desktop";
+        "x-scheme-handler/chrome" = "firefox.desktop";
+        "x-scheme-handler/http" = "firefox.desktop";
+        "x-scheme-handler/https" = "firefox.desktop";
       };
     };
   };

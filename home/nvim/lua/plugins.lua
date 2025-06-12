@@ -344,22 +344,38 @@ return inject_all({
     config = function(_, opts)
       opts.custom_textobjects = {
         -- arg
-        a = require("mini.ai").gen_spec.treesitter({ a = "@parameter.outer", i = "@parameter.inner" }),
+        -- TODO: parameter.outer broke? make-range seems broken, wait for main TS
+        a = require("mini.ai").gen_spec.treesitter(
+          { a = "@parameter.outer", i = "@parameter.inner" },
+          { use_nvim_treesitter = true }
+        ),
         -- braces
         b = { { "%b()", "%b[]", "%b{}" }, "^.().*().$" },
         -- block
-        B = require("mini.ai").gen_spec.treesitter({ a = "@block.outer", i = "@block.inner" }),
+        B = require("mini.ai").gen_spec.treesitter(
+          { a = "@block.outer", i = "@block.inner" },
+          { use_nvim_treesitter = true }
+        ),
         -- call
-        c = require("mini.ai").gen_spec.treesitter({ a = "@call.outer", i = "@call.inner" }),
+        c = require("mini.ai").gen_spec.treesitter(
+          { a = "@call.outer", i = "@call.inner" },
+          { use_nvim_treesitter = true }
+        ),
         -- function / method
-        f = require("mini.ai").gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
+        f = require("mini.ai").gen_spec.treesitter(
+          { a = "@function.outer", i = "@function.inner" },
+          { use_nvim_treesitter = true }
+        ),
         -- if
-        i = require("mini.ai").gen_spec.treesitter({
-          a = "@conditional.outer",
-          i = "@conditional.inner",
-        }),
+        i = require("mini.ai").gen_spec.treesitter(
+          { a = "@conditional.outer", i = "@conditional.inner" },
+          { use_nvim_treesitter = true }
+        ),
         -- loop
-        L = require("mini.ai").gen_spec.treesitter({ a = "@loop.outer", i = "@loop.inner" }),
+        L = require("mini.ai").gen_spec.treesitter(
+          { a = "@loop.outer", i = "@loop.inner" },
+          { use_nvim_treesitter = true }
+        ),
         -- disable quote, I use string
         q = false,
         -- string
@@ -368,7 +384,7 @@ return inject_all({
         t = require("mini.ai").gen_spec.treesitter({
           a = { "@customtype.outer", "@type.outer" },
           i = { "@customtype.inner", "@type.inner" },
-        }),
+        }, { use_nvim_treesitter = true }),
         -- defaults include
         -- (, ), [, ], {, }, <, >, ", ', `, ?, t, <space>
         -- subword

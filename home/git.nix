@@ -26,13 +26,10 @@
         hunk-header-decoration-style = "blue ul box";
         hunk-header-style = "file line-number syntax";
         navigate = "true";
+        tabs = "4";
         syntax-theme = "ansi";
         map-styles = "bold purple => syntax dim black, bold cyan => syntax #${config.colors.black}";
       };
-    };
-    difftastic = {
-      enable = false;
-      background = "dark";
     };
     aliases = {
       # shorthands for daily stuff
@@ -42,7 +39,7 @@
       bv = "branch --color='always' --sort=-authordate --format='%(color:yellow)%(refname:short)\ %(color:green)%(committerdate:relative)\ %(color:blue)%(authorname)\ %(color:reset)%(contents:subject)'";
       ci = "commit";
       ch = "cherry -v";
-      d = "diff -w";
+      d = "diff";
       ds = "-c delta.side-by-side=true d";
       dc = "d -- :^vendor :^go.mod :^go.sum";
       dsc = "-c delta.side-by-side=true dc";
@@ -50,47 +47,53 @@
       fi = "commit --fixup";
       # base log
       log-pretty = "log --pretty=format:'%C(yellow)%h\ %C(green)%ad%Cred%d\ %C(reset)%s%C(blue)\ [%an]' --date=relative";
-      # verbose log, i.e. with cherry marks
-      log-pretty-verbose = "log --cherry-mark --pretty=format:'%C(yellow)%h %C(cyan)%m %C(green)%ad%C(red)%d %C(reset)%s%C(blue) [%an]' --date=relative";
+      log-cherry = "log --cherry-mark --pretty=format:'%C(yellow)%h\ %C(cyan)%m\ %C(green)%ad%Cred%d\ %C(reset)%s%C(blue)\ [%an]' --date=relative";
       # aliases for use
-      ln = "log-pretty";
       l = "!f() {
-        if [ -z \"$1\" ]; then
+        if [ $# -eq 0 ]; then
           if [ \"$(git main)\" = \"$(git rev-parse --abbrev-ref HEAD)\" ]; then
-            git log-pretty -32
+            set - -32
           else
-            git log-pretty $(git main)..
+            set -- $(git main)..
           fi
-        else
-          git log-pretty $1
         fi
-      }; f";
-      lv = "!f() {
-        if [ -z \"$1\" ]; then
-          if [ \"$(git main)\" = \"$(git rev-parse --abbrev-ref HEAD)\" ]; then
-            git log-pretty-verbose -32
-          else
-            git log-pretty-verbose --no-merges $(git main)...
-          fi
+        if [[ \"$@\" == *\"...\"* ]]; then
+          git log-cherry \"$@\"
         else
-          git log-pretty-verbose --no-merges $1
+          git log-pretty \"$@\"
         fi
       }; f";
       lg = "!f() {
-        if [ -z \"$1\" ]; then
+        if [ $# -eq 0 ]; then
           if [ \"$(git main)\" = \"$(git rev-parse --abbrev-ref HEAD)\" ]; then
-            git log-pretty-verbose --graph --boundary --cherry-mark -16
+            set - -16
           else
-            git log-pretty-verbose --graph --boundary --cherry-mark $(git main)...
+            set -- $(git main)..
           fi
+        fi
+        if [[ \"$@\" == *\"...\"* ]]; then
+          git log-cherry --graph --boundary \"$@\"
         else
-          git log-pretty-verbose --graph --boundary --cherry-mark $1
+          git log-pretty --graph --boundary \"$@\"
         fi
       }; f";
       new = "log-pretty @{u}...";
       p = "pull --prune --all --autostash";
-      puf = "push --force-with-lease --force-if-includes";
-      rb = "rebase";
+      pm = "!git fetch origin $(git main):$(git main) 2>/dev/null";
+      stack = "!git log --decorate=short --pretty='format:%D' origin/$(git main).. | sed 's/, /\\n/g; s/HEAD -> //'  | grep -Ev '^$'";
+      puf = "!git log --decorate=short --pretty='format:%D' origin/$(git main).. | sed 's/, /\\n/g; s/HEAD -> //'  | grep -Ev '^$' | xargs git push --force-with-lease --force-if-includes origin";
+      rb = "!f() {
+        if [ $# -eq 0 ]; then
+          git fetch origin $(git main):$(git main)
+          set -- $(git main);
+        fi && git rebase \"$@\";
+      }; f";
+      rbi = "!f() {
+        if [ $# -eq 0 ]; then
+          set -- $(git main);
+        fi;
+        git rebase --interactive --keep-base \"$@\";
+      }; f";
       rba = "rebase --abort";
       rbc = "rebase --continue";
       ours = "restore --ours";
@@ -101,12 +104,12 @@
 
       # repo path
       root = "rev-parse --show-toplevel"; # print root
-      cd = "!f() {cd $(git rev-parse --show-toplevel)}"; # change to root
+      cd = "!cd $(git rev-parse --show-toplevel)"; # change to root
       exec = "!exec "; # make from wherever
 
       # files from index or from commits
       f = "!f() {
-        if [ -z \"$1\" ]; then
+        if [ $# -eq 0 ]; then
           git ls-files --modified --others --exclude-standard | grep -Ev '^(vendor/|go.(mod|sum)$)'
         else
           git show -m --pretty=tformat: --name-only @ | grep -Ev '^(vendor/|go.(mod|sum)$)'
@@ -114,13 +117,13 @@
       }; f";
 
       # repo main/master disambiguation
-      main = "!f() { git symbolic-ref refs/remotes/origin/HEAD --short | cut -d/ -f2; }; f";
-
-      # fast ops on main/master
-      pull-main = "!f() { test $(git rev-parse --abbrev-ref HEAD) != $(git main) && git fetch origin $(git main):$(git main) || git p; }; f"; # pull main
-      pm = "pull-main";
-      rbmi = "!f() { git pull-main && git rb -i $(git main); }; f"; # rebase interactively on main
-      rbm = "!f() { git pull-main && git rb $(git main); }; f"; # rebase on main
+      main = "!f() {
+        if git remote | grep -qE '.+'; then
+          git symbolic-ref refs/remotes/origin/HEAD --short | cut -d/ -f2;
+        else
+          echo main
+        fi
+      }; f";
 
       # update PR with unstaged
       rekt = "!f() { git a -u; git amend; git puf; }; f"; # add updates to amend commit and force push
