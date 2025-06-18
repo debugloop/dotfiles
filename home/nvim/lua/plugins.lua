@@ -30,15 +30,6 @@ end
 
 return inject_all({
   {
-    "mistweaverco/kulala.nvim",
-    ft = { "http", "rest" },
-    opts = {
-      -- your configuration comes here
-      global_keymaps = true,
-    },
-  },
-
-  {
     "saghen/blink.cmp",
     lazy = false, -- it handles itself and is an integral part anyhow
     dependencies = {

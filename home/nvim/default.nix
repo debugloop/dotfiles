@@ -36,7 +36,6 @@
         "diffview-nvim"
         "friendly-snippets"
         "kanagawa-nvim"
-        "kulala-nvim"
         "lazy-nvim"
         "lazydev-nvim"
         "noice-nvim"
