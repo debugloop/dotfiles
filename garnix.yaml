@@ -1,3 +1,5 @@
 builds:
-  exclude:
-  - 'nixosConfigurations.lusus.*'
+  exclude: []
+  include:
+  - 'nixosConfigurations.simmons.*'
+  - nixosConfigurations.simmons
