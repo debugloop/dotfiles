@@ -1,5 +1,4 @@
 builds:
   exclude: []
   include:
-  - 'nixosConfigurations.simmons.*'
   - nixosConfigurations.simmons
