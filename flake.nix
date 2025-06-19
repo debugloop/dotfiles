@@ -2,8 +2,8 @@
   description = "debugloop/dotfiles";
 
   inputs = {
-    # nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs.url = "git+https://github.com/nixos/nixpkgs?shallow=1&ref=nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    oldnixpkgs.url = "github:nixos/nixpkgs/6c64dabd3aa85e0c02ef1cdcb6e1213de64baee3";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";

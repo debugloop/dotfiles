@@ -87,7 +87,6 @@
       # dfu-util
       # gcc-arm-embedded
       # qmk
-      somafm-cli
       simple-mtpfs
     ];
   };

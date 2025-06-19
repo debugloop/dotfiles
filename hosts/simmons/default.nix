@@ -4,6 +4,4 @@
     ./boot.nix
     ./steam.nix
   ];
-
-  services.mullvad-vpn.enable = true;
 }

@@ -26,7 +26,6 @@
       MANPAGER = "nvim +Man!";
       HIGHLIGHT_STYLE = "base16/grayscale-dark";
       PAGER = "less -R --use-color -Dd+r -Du+b";
-      ZK_NOTEBOOK_DIR = "~/documents/notes";
       NODE_PATH = "${pkgs.typescript}/lib/node_modules";
     };
 
@@ -98,7 +97,6 @@
       wget
       whois
       zip
-      zk
       # networking
       gping
       miniserve
@@ -157,7 +155,7 @@
       gotests
       gotestsum
       go-tools
-      gotools
+      inputs.oldnixpkgs.legacyPackages.${pkgs.system}.gotools # until gopls is backported
       protoc-gen-go
       protoc-gen-go-grpc
       # hardware (TODO: are those installed system-wide?)
