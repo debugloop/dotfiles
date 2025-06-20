@@ -1,6 +1,11 @@
 {hostname, ...}: {
   services.caddy = {
     enable = true;
+    globalConfig = ''
+      metrics {
+        per_host
+      }
+    '';
     virtualHosts."${hostname}.danieln.de".extraConfig = ''
       metrics /metrics
     '';

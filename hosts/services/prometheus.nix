@@ -63,19 +63,6 @@
         ];
       }
       {
-        job_name = "wunschkonzert";
-        static_configs = [
-          {
-            targets = [
-              "localhost:9999"
-            ];
-            labels = {
-              host = "${hostname}";
-            };
-          }
-        ];
-      }
-      {
         job_name = "restic-server";
         static_configs = [
           {

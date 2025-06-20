@@ -31,8 +31,6 @@
     # private flakes
     gridx.url = "git+ssh://git@github.com/debugloop/gridx";
     # gridx.url = "path:/home/danieln/code/gridx";
-    wunschkonzert-install.url = "git+ssh://git@github.com/debugloop/wunschkonzert-install";
-    # wunschkonzert-install.url = "path:/home/danieln/code/wunschkonzert-install";
   };
 
   outputs = inputs @ {nixpkgs, ...}: {
