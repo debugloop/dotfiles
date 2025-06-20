@@ -417,10 +417,10 @@
           action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--playerctl=play-pause";
         };
         "XF86MonBrightnessUp" = {
-          action = spawn "${pkgs.swayosd}/bin/swayosd-client --brightness=raise";
+          action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--brightness=raise";
         };
         "XF86MonBrightnessDown" = {
-          action = spawn "${pkgs.swayosd}/bin/swayosd-client --brightness=lower";
+          action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--brightness=lower";
         };
       };
     };
