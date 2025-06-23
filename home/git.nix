@@ -80,8 +80,8 @@
       new = "log-pretty @{u}...";
       p = "pull --prune --all --autostash";
       pm = "!git fetch origin $(git main):$(git main) 2>/dev/null";
-      stack = "!git log --decorate=short --pretty='format:%D' origin/$(git main).. | sed 's/, /\\n/g; s/HEAD -> //'  | grep -Ev '^$'";
-      puf = "!git log --decorate=short --pretty='format:%D' origin/$(git main).. | sed 's/, /\\n/g; s/HEAD -> //'  | grep -Ev '^$' | xargs git push --set-upstream --force-with-lease --force-if-includes origin";
+      stack = "!git log --pretty='format:%D' $(git main).. | cut -d' ' -f3";
+      puf = "!git stack | xargs git push --set-upstream --force-with-lease --force-if-includes origin";
       rb = "!f() {
         if [ $# -eq 0 ]; then
           git fetch origin $(git main):$(git main)
