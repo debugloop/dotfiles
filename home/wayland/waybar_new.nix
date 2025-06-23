@@ -27,6 +27,7 @@
           "battery"
           "idle_inhibitor"
           "group/bottom"
+          "clock"
         ];
         battery = {
           rotate = 90;
@@ -69,6 +70,22 @@
           };
           format = "{:%H\n%M\n%S}";
           interval = 1;
+          tooltip-format = "<tt>{calendar}</tt>";
+        };
+        "clock#date" = {
+          calendar = {
+            format = {
+              days = "<span color='#dcd7ba'>{}</span>";
+              months = "<span color='#dcd7ba'>{}</span>";
+              today = "<span color='#c34043'><b>{}</b></span>";
+              weekdays = "<span color='#dcd7ba'>{}</span>";
+              weeks = "<span color='#727169'>W{}</span>";
+            };
+            mode = "year";
+            mode-mon-col = 3;
+            weeks-pos = "left";
+          };
+          format = "{:%d\n%m}";
           tooltip-format = "<tt>{calendar}</tt>";
         };
         cpu = {
@@ -135,7 +152,7 @@
             children-class = "in-group";
           };
           modules = [
-            "clock"
+            "clock#date"
             "cpu"
             "memory"
             "disk"
@@ -283,6 +300,10 @@
 
       .module {
           padding: 0.6em 0em;
+      }
+
+      #clock {
+          padding-top: 0em;
       }
 
       #pulseaudio.mic {
