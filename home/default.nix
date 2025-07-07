@@ -214,6 +214,17 @@
     go = {
       enable = true;
     };
+    lf = {
+      enable = true;
+      settings = {
+        previewer = "${pkgs.writeScript "./previewer.sh" ''
+          #!/bin/sh
+          git log --pretty=format:'%an, %ad: %s' --date=relative -- $@
+        ''}";
+        cursorpreviewfmt = "";
+        ratios = [1 1];
+      };
+    };
     nh = {
       enable = true;
       flake = "/etc/nixos";

@@ -18,6 +18,7 @@
     };
     impermanence.url = "github:nix-community/impermanence";
     # neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    helix.url = "github:helix-editor/helix";
 
     # niri-unstable = {
     #   url = "github:YaLTeR/niri/a11fe23cbf6ba01ae4c23679aa2f7d7d8b44baf4";
