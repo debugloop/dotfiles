@@ -31,7 +31,13 @@
   };
 
   hardware = {
-    bluetooth.enable = true;
+    bluetooth = {
+      enable = true;
+      powerOnBoot = true;
+      settings.General = {
+        Enable = "Source,Sink,Media,Socket";
+      };
+    };
     graphics.enable = true;
     sane.enable = true;
   };
@@ -152,8 +158,12 @@
     gvfs.enable = true;
     pipewire = {
       enable = true;
-      alsa.enable = true;
+      alsa = {
+        enable = true;
+        support32Bit = true;
+      };
       pulse.enable = true;
+      wireplumber.enable = true;
     };
     printing.enable = true;
     tlp.enable = true;

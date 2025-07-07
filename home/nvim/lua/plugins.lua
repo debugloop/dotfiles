@@ -1036,7 +1036,7 @@ return inject_all({
         "igorlfs/nvim-dap-view",
         opts = {
           winbar = {
-            sections = { "watches", "breakpoints", "threads", "repl" },
+            sections = { "watches", "scopes", "breakpoints", "threads", "repl" },
           },
           windows = {
             terminal = {

@@ -79,7 +79,7 @@
           active.color = "#${config.colors.blue}";
           inactive.color = "#${config.colors.light_bg}";
         };
-        default-column-width.proportion = 0.5;
+        default-column-width.proportion = 0.333;
         preset-column-widths = [
           {proportion = 0.333;}
           {proportion = 0.5;}

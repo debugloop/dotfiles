@@ -44,6 +44,7 @@
         ".config/google-chrome"
         ".config/Slack"
         ".config/Postman"
+        ".config/qView"
         ".local/share/docker"
         ".ts3client"
         ".local/share/Steam"
