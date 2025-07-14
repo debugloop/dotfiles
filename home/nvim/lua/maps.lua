@@ -28,12 +28,16 @@ vim.keymap.set("n", "gl", function()
   local lcount = vim.api.nvim_buf_line_count(0)
   local last_change = vim.api.nvim_buf_get_mark(0, ".")
   if last_change[1] > 0 and last_change[1] <= lcount then
-    pcall(vim.api.nvim_win_set_cursor, 0, last_change)
+    if pcall(vim.api.nvim_win_set_cursor, 0, last_change) then
+      vim.cmd.normal("m'")
+    end
     return
   end
   local last_leave = vim.api.nvim_buf_get_mark(0, '"')
   if last_leave[1] > 0 and last_leave[1] <= lcount then
-    pcall(vim.api.nvim_win_set_cursor, 0, last_leave)
+    if pcall(vim.api.nvim_win_set_cursor, 0, last_leave) then
+      vim.cmd.normal("m'")
+    end
     return
   end
 end, { desc = "jump to last leave or last edit" })
@@ -71,6 +75,8 @@ end, { silent = true, desc = "go to next buffer" })
 vim.keymap.set("n", "<s-tab>", function()
   vim.cmd("bp")
 end, { silent = true, desc = "go to previous buffer" })
+
+-- clear accumulated buffers
 vim.keymap.set("n", "<leader>x", function()
   vim.notify("Clearing buffers...")
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
@@ -107,13 +113,6 @@ vim.keymap.set("n", "dd", function()
     return "dd"
   end
 end, { desc = "delete line", expr = true })
-
--- no lsp defaults
-vim.keymap.del("n", "gO")
-vim.keymap.del("n", "gra")
-vim.keymap.del("n", "gri")
-vim.keymap.del("n", "grn")
-vim.keymap.del("n", "grr")
 
 -- open jumplist
 vim.keymap.set("n", "<leader>sj", function()
@@ -167,20 +166,7 @@ vim.keymap.set("n", "<leader>sC", function()
   end
 end, { desc = "Changelist" })
 
--- toggle quickfix
+-- toggle quickfix (overwritten by snacks plugin)
 vim.keymap.set("n", "<leader><leader>", function()
   vim.cmd.cwindow()
 end, { desc = "open quickfix" })
-
--- lsp
-vim.keymap.set("n", "<cr>", vim.diagnostic.open_float, { desc = "lsp: open diagnostic" })
-vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { desc = "lsp: rename symbol" })
-vim.keymap.set("n", "<leader>?", vim.lsp.buf.code_action, { desc = "lsp: run code action" })
-vim.keymap.set("n", "go", vim.lsp.buf.document_symbol, { desc = "lsp: show symbols" })
-vim.keymap.set("n", "gO", vim.lsp.buf.workspace_symbol, { desc = "lsp: show workspacesymbols" })
-vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "lsp: show definition" })
-vim.keymap.set("n", "gD", vim.lsp.buf.type_definition, { desc = "lsp: show type definition" })
-vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "lsp: show implementations" })
-vim.keymap.set("n", "<leader>sd", vim.diagnostic.setqflist, { desc = "lsp: list diagnostics" })
-
-vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Manage plugins" })

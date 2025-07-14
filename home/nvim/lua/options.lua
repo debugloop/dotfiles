@@ -1,6 +1,3 @@
--- nightly use monkey patches
-vim.tbl_islist = vim.islist
-
 -- general behavior
 vim.opt.updatetime = 500 -- faster CursorHold
 vim.opt.mouse = "" -- no mouse
@@ -8,14 +5,15 @@ vim.opt.jumpoptions = "stack,view" -- discard jumps when diverging from an earli
 vim.opt.spelloptions = "camel,noplainbuffer" -- set some spell options for when I enable
 vim.opt.spellsuggest = "best,10" -- limit suggestions
 vim.opt.clipboard = "unnamedplus"
--- vim.opt.formatoptions = "jcroqlnt" -- default: tcqj
 vim.opt.formatoptions = "tcr/qnj"
+vim.opt.nrformats = "unsigned,bin,hex"
 
 -- indent and wrap defaults
 vim.opt.shiftwidth = 0 -- look at tabstop, no sense in two settings
 vim.opt.tabstop = 4 -- sane default for most things
 vim.opt.expandtab = true -- use spaces instead of tabs
 vim.opt.textwidth = 120 -- text width, format comments to this
+vim.opt.linebreak = true -- prefer wrap at spaces
 
 -- file safety
 vim.opt.backup = true -- enable backup files
@@ -45,10 +43,10 @@ vim.opt.smartcase = true -- search case-sensitive when capital letters are searc
 -- ui
 vim.opt.cmdheight = 0 -- more space on the bottom
 vim.opt.laststatus = 3 -- global statusline
+vim.opt.showmode = false -- less data in invisible cmd area
 
 -- virtual text
 vim.opt.listchars = "eol:¬,tab:»·,trail:~,space:·" -- list these chars if enabled
-vim.opt.showbreak = "" -- virtual text for wrapped lines
 
 -- lines
 vim.opt.cursorline = true -- show line highlight
@@ -97,8 +95,4 @@ vim.diagnostic.config({
     current_line = true,
   },
   severity_sort = true,
-})
-
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-  border = { "▏", "", "▕", "▕", "▕", "", "▏", "▏" },
 })

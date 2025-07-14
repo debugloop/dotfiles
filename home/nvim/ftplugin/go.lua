@@ -6,13 +6,6 @@ vim.opt.expandtab = false
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("lsp_user_bindings_gopls", {}),
   callback = function(event)
-    -- get gc details
-    vim.keymap.set("n", "<leader>G", function()
-      vim.lsp.buf_request_sync(0, "workspace/executeCommand", {
-        command = "gopls.gc_details",
-        arguments = { "file://" .. vim.api.nvim_buf_get_name(0) },
-      }, 2000)
-    end, { desc = "lsp: show GC details", buffer = event.buf })
     -- run current test
     vim.keymap.set("n", "<leader>t", function()
       local ok, inTestfile, testName = pcall(SurroundingTestName)
@@ -29,9 +22,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
         },
       }, 10000)
       if not result or result[1].error then
-        vim.notify("Test failed", 4)
+        vim.notify("Test failed", vim.log.levels.ERROR)
       else
-        vim.notify("Test ok", 2)
+        vim.notify("Test ok", vim.log.levels.INFO)
       end
     end, { desc = "lsp: run test at cursor", buffer = event.buf })
   end,

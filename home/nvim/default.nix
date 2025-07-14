@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  config,
   ...
 }: {
   programs.neovim = {
@@ -19,13 +20,17 @@
       #   pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies;
     };
   in {
-    "nvim/init.lua".source = ./init.lua;
-    "nvim/lua".source = ./lua;
-    # "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/lua";
-    "nvim/ftplugin".source = ./ftplugin;
-    # "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/ftplugin";
-    "nvim/parser".source = "${treesitterParsers}/parser";
-    "nvim/after".source = ./after;
+    # "nvim/init.lua".source = ./init.lua;
+    # "nvim/lua".source = ./lua;
+    # "nvim/ftplugin".source = ./ftplugin;
+    # "nvim/after".source = ./after;
+
+    "nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/init.lua";
+    "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/lua";
+    "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/ftplugin";
+    "nvim/after".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/after";
+
+    "nvim/parser".source = "${treesitterParsers}/parser"; # treesitter master only
   };
 
   xdg.dataFile = let
@@ -41,14 +46,12 @@
         "noice-nvim"
         "nui-nvim"
         "nvim-dap"
-        # "nvim-dap-view"
-        "nvim-impairative"
+        # "nvim-dap-view" # not in nixpkgs
         "nvim-lint"
-        "nvim-tree-lua"
-        "nvim-treesitter"
+        "nvim-treesitter" # uses master
         "nvim-treesitter-context"
-        "nvim-treesitter-textobjects"
-        "render-markdown-nvim"
+        "nvim-treesitter-textobjects" # uses master
+        "quicker-nvim"
         "snacks-nvim"
       ]
       (
@@ -77,6 +80,7 @@
         "mini-operators"
         "mini-pairs"
         "mini-pick"
+        "mini-sessions"
         "mini-splitjoin"
         "mini-statusline"
         "mini-surround"
@@ -94,6 +98,17 @@
     );
   in
     {
+      "nvim/nixpkgs/fzf" = {
+        source = "${pkgs.fzf}/share/vim-plugins/fzf";
+      };
+
+      # treesitter main parsers:
+      # "nvim/site/queries" = {
+      #   source = "${pkgs.vimPlugins.nvim-treesitter.withAllGrammars}/queries";
+      # };
+      # "nvim/site/parser".source = "${treesitterParsers}/parser";
+
+      # for switching to treesitter main:
       # "nvim/nixpkgs/nvim-treesitter-textobjects" = {
       #   source = pkgs.fetchFromGitHub {
       #     owner = "nvim-treesitter";

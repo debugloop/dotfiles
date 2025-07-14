@@ -43,15 +43,6 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
   pattern = "*",
   callback = function()
     vim.cmd("clearjumps")
-
-    vim.lsp.start({
-      cmd = { "typos-lsp" },
-      root_dir = vim.fs.dirname(vim.fs.find({ "README.md", ".git/" }, { upward = true })[1]),
-      single_file_support = true,
-      init_options = {
-        diagnosticSeverity = "hint",
-      },
-    })
   end,
 })
 
@@ -114,9 +105,9 @@ vim.api.nvim_create_autocmd({ "BufRead" }, {
   group = vim.api.nvim_create_augroup("add_autocmd_on_buf_enter", { clear = true }),
   pattern = { "*" },
   callback = function(_)
-    -- skip those on some filetypes
     if vim.o.filetype == "gitcommit" then
-      return
+      vim.cmd.normal("1G0") -- discard any position there might be on file
+      return -- skip the usual things
     end
     -- mark as persisted
     vim.api.nvim_create_autocmd({ "InsertEnter", "BufModifiedSet" }, {
@@ -147,13 +138,6 @@ vim.api.nvim_create_autocmd("TermOpen", {
   pattern = "*",
   callback = function(_)
     vim.opt.relativenumber = false
-  end,
-})
-vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "TermOpen" }, {
-  group = vim.api.nvim_create_augroup("on_term_enter", { clear = true }),
-  callback = function(event)
-    if vim.startswith(vim.api.nvim_buf_get_name(event.buf), "term://") then
-      vim.cmd.startinsert()
-    end
+    vim.cmd.startinsert()
   end,
 })

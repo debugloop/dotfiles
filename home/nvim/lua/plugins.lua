@@ -3,11 +3,6 @@ local function inject(spec)
     vim.notify("Encountered bad plugin spec. Must use a table, not string. Check config.", vim.log.levels.ERROR)
     return spec
   end
-
-  if spec["clone"] then
-    return spec
-  end
-
   if spec["dir"] == nil and spec["dev"] ~= true then
     local plugin_name = spec[1]:match("[^/]+$")
     local nixpkgs_dir = NIXPLUG_PATH .. "/" .. plugin_name:gsub("%.", "-")
@@ -136,7 +131,7 @@ return inject_all({
     opts = {
       formatters_by_ft = {
         css = { "prettier" },
-        go = { "gofumpt", "goimports", "goimports-reviser" },
+        go = { "golangci-lint", "gofumpt", "goimports", "goimports-reviser" },
         html = { "prettier" },
         http = { "kulala-fmt" },
         javascript = { "prettier" },
@@ -279,7 +274,7 @@ return inject_all({
           PmenuSbar = { bg = theme.ui.bg_p1 },
           PmenuThumb = { bg = theme.ui.bg_p2 },
           -- invisible window separator
-          WinSeparator = { fg = theme.ui.bg_dim, bg = theme.ui.bg_dim },
+          WinSeparator = { fg = theme.ui.nontext, bg = theme.ui.bg_gutter },
           -- nice tabline
           MiniTablineCurrent = { bg = theme.syn.fun, fg = theme.ui.bg },
           MiniTablineHidden = { link = "StatusLineNC" },
@@ -290,7 +285,7 @@ return inject_all({
           -- visible MiniJump
           MiniJump = { link = "@comment.note" },
           -- less prominent qf title
-          -- BqfPreviewTitle = { link = "BqfPreviewBorder" },
+          BqfPreviewBorder = { link = "WinSeparator" },
           NoiceCmdlineIcon = { fg = theme.diag.info, bg = theme.ui.bg },
           NoiceCmdlinePopupBorder = { fg = theme.diag.info, bg = theme.ui.bg },
           NoiceCmdlinePopupTitle = { fg = theme.diag.info, bg = theme.ui.bg },
@@ -314,70 +309,159 @@ return inject_all({
   },
 
   {
-    "MeanderingProgrammer/render-markdown.nvim",
-    ft = "markdown",
-    dependencies = {
-      { "nvim-treesitter/nvim-treesitter" },
-      { "echasnovski/mini.icons" },
-    },
+    "folke/lazydev.nvim",
+    ft = { "lua" },
     opts = {},
   },
 
   {
     "echasnovski/mini.ai",
     event = "VeryLazy",
+    keys = function(spec, keys)
+      table.insert(keys, {
+        ",",
+        function()
+          pcall(require("mini.ai").move_cursor, unpack(MINI_AI_PARAMS))
+        end,
+        desc = "repeat last mini.ai jump",
+      })
+      for name, config in pairs(spec.opts) do
+        if config.jump_target then
+          table.insert(keys, {
+            "]" .. config.letter,
+            function()
+              MINI_AI_PARAMS = {
+                "left",
+                config.jump_target,
+                config.letter,
+                {
+                  search_method = "next",
+                  n_times = vim.v.count1,
+                },
+              }
+              pcall(require("mini.ai").move_cursor, unpack(MINI_AI_PARAMS))
+            end,
+            desc = "jump to beginning of next " .. name,
+          })
+          table.insert(keys, {
+            "[" .. config.letter,
+            function()
+              MINI_AI_PARAMS = {
+                "left",
+                config.jump_target,
+                config.letter,
+                {
+                  search_method = "cover_or_prev",
+                  n_times = vim.v.count1,
+                },
+              }
+              pcall(require("mini.ai").move_cursor, unpack(MINI_AI_PARAMS))
+            end,
+            desc = "jump to beginning of current or previous " .. name,
+          })
+          if config.letter:match("%l") then
+            table.insert(keys, {
+              "]" .. config.letter:upper(),
+              function()
+                MINI_AI_PARAMS = {
+                  "right",
+                  config.jump_target,
+                  config.letter,
+                  {
+                    search_method = "cover_or_next",
+                    n_times = vim.v.count1,
+                  },
+                }
+                pcall(require("mini.ai").move_cursor, unpack(MINI_AI_PARAMS))
+              end,
+              desc = "jump to end of current or next " .. name,
+            })
+            table.insert(keys, {
+              "[" .. config.letter:upper(),
+              function()
+                MINI_AI_PARAMS = {
+                  "right",
+                  config.jump_target,
+                  config.letter,
+                  {
+                    search_method = "prev",
+                    n_times = vim.v.count1,
+                  },
+                }
+                pcall(require("mini.ai").move_cursor, MINI_AI_PARAMS)
+              end,
+              desc = "jump to end of previous " .. name,
+            })
+          end
+        end
+      end
+      return keys
+    end,
     dependencies = {
       { "nvim-treesitter/nvim-treesitter-textobjects" },
     },
     opts = {
-      n_lines = 200,
+      argument = {
+        letter = "a",
+        a = "@parameter.outer",
+        i = "@parameter.inner",
+        jump_target = "i",
+      },
+      brace = {
+        letter = "b",
+        jump_target = "a",
+      },
+      call = {
+        letter = "c",
+        a = "@call.outer",
+        i = "@call.inner",
+        jump_target = "a",
+      },
+      ["function"] = {
+        letter = "f",
+        a = "@function.outer",
+        i = "@function.inner",
+        jump_target = "a",
+      },
+      ["if"] = {
+        letter = "i",
+        a = "@conditional.outer",
+        i = "@conditional.inner",
+        jump_target = "a",
+      },
+      ["loop"] = {
+        letter = "l",
+        a = "@loop.outer",
+        i = "@loop.inner",
+        jump_target = "a",
+      },
+      string = {
+        letter = "s",
+        jump_target = "i",
+      },
+      type = {
+        letter = "t",
+        a = { "@class.outer" },
+        i = { "@class.inner" },
+        jump_target = "a",
+      },
+      subword = {
+        letter = "W",
+        jump_target = "a",
+      },
     },
     config = function(_, opts)
-      opts.custom_textobjects = {
-        -- arg
-        -- TODO: parameter.outer broke? make-range seems broken, wait for main TS
-        a = require("mini.ai").gen_spec.treesitter(
-          { a = "@parameter.outer", i = "@parameter.inner" },
-          { use_nvim_treesitter = true }
-        ),
+      MINI_AI_PARAMS = nil
+      local module_opts = {
+        silent = true,
+        n_lines = 200,
+      }
+      module_opts.custom_textobjects = {
         -- braces
         b = { { "%b()", "%b[]", "%b{}" }, "^.().*().$" },
-        -- block
-        B = require("mini.ai").gen_spec.treesitter(
-          { a = "@block.outer", i = "@block.inner" },
-          { use_nvim_treesitter = true }
-        ),
-        -- call
-        c = require("mini.ai").gen_spec.treesitter(
-          { a = "@call.outer", i = "@call.inner" },
-          { use_nvim_treesitter = true }
-        ),
-        -- function / method
-        f = require("mini.ai").gen_spec.treesitter(
-          { a = "@function.outer", i = "@function.inner" },
-          { use_nvim_treesitter = true }
-        ),
-        -- if
-        i = require("mini.ai").gen_spec.treesitter(
-          { a = "@conditional.outer", i = "@conditional.inner" },
-          { use_nvim_treesitter = true }
-        ),
-        -- loop
-        L = require("mini.ai").gen_spec.treesitter(
-          { a = "@loop.outer", i = "@loop.inner" },
-          { use_nvim_treesitter = true }
-        ),
-        -- disable quote, I use string
+        -- disable quote, use string to free up quickfix navigation
         q = false,
-        -- string
         s = { { "%b''", '%b""', "%b``" }, "^.().*().$" },
-        -- type
-        t = require("mini.ai").gen_spec.treesitter({
-          a = { "@customtype.outer", "@type.outer" },
-          i = { "@customtype.inner", "@type.inner" },
-        }, { use_nvim_treesitter = true }),
-        -- defaults include
-        -- (, ), [, ], {, }, <, >, ", ', `, ?, t, <space>
         -- subword
         W = {
           {
@@ -388,8 +472,36 @@ return inject_all({
           },
           "^().*()$",
         },
+        N = require("mini.extra").gen_ai_spec.number(),
+        F = function(ai, _, _)
+          if ai == "i" then
+            return require("mini.ai").gen_spec.treesitter({ i = "@function.name", a = "@function.name" }, {})(
+              "i",
+              "f",
+              {}
+            )
+          end
+          local func = require("mini.ai").find_textobject(ai, "f", {})
+          if not func then
+            return nil
+          end
+          while vim.treesitter.get_node({ pos = { func.from.line - 2, func.from.col } }):type() == "comment" do
+            func.from.line = func.from.line - 1
+          end
+          return { from = func.from, to = func.to, vis_mode = "V" }
+        end,
       }
-      require("mini.ai").setup(opts)
+      for _, config in pairs(opts) do
+        if config.a ~= nil and config.i ~= nil then
+          module_opts.custom_textobjects = vim.tbl_deep_extend("force", module_opts.custom_textobjects, {
+            [config.letter] = require("mini.ai").gen_spec.treesitter(
+              { a = config.a, i = config.i },
+              { use_nvim_treesitter = true }
+            ),
+          })
+        end
+      end
+      require("mini.ai").setup(module_opts)
     end,
   },
 
@@ -459,14 +571,12 @@ return inject_all({
         },
         triggers = {
           -- custom modes
-          { mode = "n", keys = "<leader>d" },
-          { mode = "x", keys = "<leader>d" },
           { mode = "n", keys = "<leader>g" },
           { mode = "x", keys = "<leader>g" },
           { mode = "n", keys = "<leader>o" },
           { mode = "x", keys = "<leader>o" },
-          { mode = "n", keys = "<leader>q" },
-          { mode = "x", keys = "<leader>q" },
+          { mode = "n", keys = "s" },
+          { mode = "x", keys = "s" },
           -- mini.bracketed
           { mode = "n", keys = "]" },
           { mode = "n", keys = "[" },
@@ -585,23 +695,12 @@ return inject_all({
   {
     "echasnovski/mini-git",
     name = "mini.git",
-    keys = {
-      {
-        "<leader>gi",
-        mode = { "n", "x" },
-        function()
-          require("mini.git").show_at_cursor()
-        end,
-        desc = "Show Git info",
-      },
-    },
     opts = {},
   },
 
   {
     "echasnovski/mini.hipatterns",
     event = "VeryLazy",
-    enabled = false,
     opts = {
       highlighters = {
         fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "@text.warning" },
@@ -668,10 +767,10 @@ return inject_all({
         try_as_border = true,
       },
       mappings = {
-        object_scope = "i<tab>",
-        object_scope_with_border = "a<tab>",
-        goto_top = "[<tab>",
-        goto_bottom = "]<tab>",
+        object_scope = "i<space>",
+        object_scope_with_border = "a<space>",
+        goto_top = "[<space>",
+        goto_bottom = "]<space>",
       },
     },
     config = function(_, opts)
@@ -784,6 +883,25 @@ return inject_all({
           register = { cr = false },
         },
       },
+    },
+  },
+
+  {
+    "echasnovski/mini.sessions",
+    lazy = false,
+    keys = {
+      {
+        "<leader>S",
+        function()
+          require("mini.sessions").write(".session.nvim", { force = true })
+        end,
+        desc = "save session",
+      },
+    },
+    opts = {
+      autoread = true,
+      autowrite = true,
+      file = ".session.nvim",
     },
   },
 
@@ -949,12 +1067,6 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini.visits",
-    event = "VeryLazy",
-    opts = {},
-  },
-
-  {
     "folke/noice.nvim",
     main = "noice",
     event = "VeryLazy",
@@ -974,6 +1086,10 @@ return inject_all({
       lsp = {
         hover = {
           silent = true,
+          opts = {
+            border = "solid",
+            max_width = 100,
+          },
         },
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
@@ -1020,6 +1136,75 @@ return inject_all({
           },
           view = "mini",
         },
+      },
+    },
+  },
+
+  {
+    "kevinhwang91/nvim-bqf",
+    ft = "qf",
+    dependencies = {
+      {
+        "junegunn/fzf",
+        dir = vim.fn.stdpath("data") .. "/nixpkgs/fzf",
+        name = "fzf",
+        build = "./install --all",
+      },
+      {
+        "stevearc/quicker.nvim",
+        opts = {
+          highlight = {
+            load_buffers = true,
+          },
+          borders = {
+            vert = "│",
+          },
+          trim_leading_whitespace = "all",
+        },
+      },
+    },
+    opts = {
+      func_map = {
+        open = "o",
+        openc = "<cr>",
+        drop = "",
+        split = "<C-x>",
+        vsplit = "<C-v>",
+        tab = "",
+        tabb = "",
+        tabc = "",
+        tabdrop = "",
+        ptogglemode = "<tab>",
+        ptoggleitem = "",
+        ptoggleauto = "",
+        pscrollup = "",
+        pscrolldown = "",
+        pscrollorig = "zz",
+        prevfile = "K",
+        nextfile = "J",
+        prevhist = "<",
+        nexthist = ">",
+        lastleave = "",
+        stoggleup = "",
+        stoggledown = "",
+        stogglevm = "",
+        stogglebuf = "",
+        sclear = "",
+        filter = "",
+        filterr = "",
+        fzffilter = "f",
+      },
+      filter = {
+        fzf = {
+          action_for = {},
+          extra_opts = { "--multi", "--bind", "enter:toggle-all+accept" },
+        },
+      },
+      preview = {
+        winblend = 0,
+        border = { "─", "─", "─", "", "", "", "", "" },
+        show_scroll_bar = false,
+        show_title = false,
       },
     },
   },
@@ -1394,7 +1579,6 @@ return inject_all({
       markdown = { "proselint" },
       text = { "proselint" },
       nix = { "nix" },
-      -- yaml = { "yamllint" },
     },
     config = function(_, opts)
       require("lint").linters_by_ft = opts
@@ -1406,15 +1590,38 @@ return inject_all({
     end,
   },
 
-  {
-    "folke/lazydev.nvim",
-    ft = { "lua" },
-    opts = {},
-  },
+  -- {
+  --   "nvim-treesitter/nvim-treesitter",
+  --   branch = "main",
+  --   lazy = false,
+  --   dependencies = {
+  --     {
+  --       "nvim-treesitter/nvim-treesitter-textobjects",
+  --       branch = "main",
+  --     },
+  --   },
+  --   config = function(_, _)
+  --     vim.api.nvim_create_autocmd("FileType", {
+  --       pattern = { "*" },
+  --       callback = function()
+  --         local ok = pcall(vim.treesitter.start)
+  --         if ok then
+  --           vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+  --           vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+  --         end
+  --       end,
+  --     })
+  --   end,
+  -- },
 
   {
     "nvim-treesitter/nvim-treesitter",
-    event = "BufReadPost",
+    lazy = false,
+    dependencies = {
+      {
+        "nvim-treesitter/nvim-treesitter-textobjects",
+      },
+    },
     opts = {
       ensure_installed = {}, -- we get this from nix
       highlight = {
@@ -1447,51 +1654,10 @@ return inject_all({
   },
 
   {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    main = "nvim-treesitter.configs",
-    dependencies = {
-      { "nvim-treesitter/nvim-treesitter" },
-    },
-    keys = { "gz", "gF", "gT" },
-    opts = {
-      textobjects = {
-        lsp_interop = {
-          enable = true,
-          peek_definition_code = {
-            ["gz"] = "@peek", -- replaces both below for go
-            ["gF"] = "@function.outer",
-            ["gT"] = "@class.outer",
-          },
-        },
-        swap = {
-          enable = false, -- not needed
-        },
-        select = {
-          enable = false, -- done with mini.ai
-        },
-        move = {
-          enable = false, -- done with mini.ai and impairative
-        },
-      },
-    },
-  },
-
-  {
     "folke/snacks.nvim",
     -- picker stuff from snacks
     lazy = false,
     keys = {
-      -- restore lsp lookup quickfix
-      {
-        "<leader><leader>",
-        function()
-          Snacks.picker.qflist({
-            focus = "list",
-            layout = "bqflike",
-          })
-        end,
-        desc = "open quickfix",
-      },
       -- spelling
       {
         "z=",
@@ -1612,6 +1778,13 @@ return inject_all({
         desc = "Help Pages",
       },
       {
+        "<leader>sp",
+        function()
+          Snacks.picker.pickers()
+        end,
+        desc = "Pickers",
+      },
+      {
         "<leader>sH",
         function()
           Snacks.picker.highlights()
@@ -1633,15 +1806,6 @@ return inject_all({
         desc = "Keymaps",
       },
       {
-        "<leader>sl",
-        function()
-          Snacks.picker.loclist({
-            focus = "list",
-          })
-        end,
-        desc = "Location List",
-      },
-      {
         "<leader>sM",
         function()
           Snacks.picker.man()
@@ -1655,88 +1819,21 @@ return inject_all({
         end,
         desc = "Marks",
       },
-      -- lsp overrides
-      {
-        "go",
-        function()
-          Snacks.picker.treesitter({
-            focus = "list",
-          })
-        end,
-        desc = "treesitter: show symbols",
-      },
       {
         "<leader>sr",
+        function()
+          Snacks.picker.recent()
+        end,
+        desc = "Revent",
+      },
+      {
+        "<leader>ss",
         function()
           Snacks.picker.resume({
             focus = "list",
           })
         end,
-        desc = "Resume",
-      },
-      {
-        "go",
-        function()
-          Snacks.picker.lsp_symbols({
-            focus = "list",
-            layout = "bqflike",
-          })
-        end,
-        { desc = "lsp: show symbols" },
-      },
-      {
-        "gO",
-        function()
-          Snacks.picker.lsp_workspace_symbols({
-            focus = "list",
-            layout = "bqflike",
-          })
-        end,
-        { desc = "lsp: show all symbols" },
-      },
-      {
-        "gd",
-        function()
-          Snacks.picker.lsp_definitions({
-            focus = "list",
-            layout = "bqflike",
-            on_show = PickerQF,
-          })
-        end,
-        { desc = "lsp: show definition" },
-      },
-      {
-        "gD",
-        function()
-          Snacks.picker.lsp_type_definitions({
-            focus = "list",
-            layout = "bqflike",
-            on_show = PickerQF,
-          })
-        end,
-        { desc = "lsp: show type definition" },
-      },
-      {
-        "gi",
-        function()
-          Snacks.picker.lsp_implementations({
-            focus = "list",
-            layout = "bqflike",
-            on_show = PickerQF,
-          })
-        end,
-        { desc = "lsp: show implementations" },
-      },
-      {
-        "gr",
-        function()
-          Snacks.picker.lsp_references({
-            focus = "list",
-            layout = "bqflike",
-            on_show = PickerQF,
-          })
-        end,
-        { desc = "lsp: show refs" },
+        desc = "Same Search again",
       },
     },
     init = function()
@@ -1767,33 +1864,6 @@ return inject_all({
           preset = function()
             return vim.o.columns >= 120 and "ivy" or "vertical"
           end,
-        },
-        layouts = {
-          bqflike = {
-            layout = {
-              box = "vertical",
-              backdrop = true,
-              row = -1,
-              width = 0,
-              height = 0.5,
-              border = "top",
-              title = " {source}",
-              title_pos = "left",
-              {
-                win = "preview",
-                height = 0.6,
-              },
-              {
-                win = "list",
-                border = "top",
-              },
-              {
-                win = "input",
-                height = 1,
-                border = "none",
-              },
-            },
-          },
         },
         ui_select = true,
         win = {
@@ -1842,9 +1912,8 @@ return inject_all({
   },
 
   {
-    "folke/snacks.nvim",
     -- git stuff from snacks
-    lazy = false,
+    "folke/snacks.nvim",
     dependencies = {
       {
         "echasnovski/mini-git",
@@ -1861,11 +1930,19 @@ return inject_all({
         desc = "Show Git Blame",
       },
       {
+        "<leader>gB",
+        mode = { "n" },
+        function()
+          require("snacks").picker.git_branches()
+        end,
+        desc = "Show Git Branches",
+      },
+      {
         "gy",
         mode = { "n", "x" },
         function()
           require("snacks").gitbrowse({
-            branch = MiniGit.get_buf_data(0).head,
+            branch = require("mini.git").get_buf_data(0).head,
           })
         end,
         desc = "Copy Git URL",
@@ -1876,6 +1953,13 @@ return inject_all({
           Snacks.picker.git_log()
         end,
         desc = "Git Log",
+      },
+      {
+        "<leader>gL",
+        function()
+          Snacks.picker.git_log_file()
+        end,
+        desc = "Git Log for this file",
       },
       {
         "<leader>gs",
@@ -1896,136 +1980,6 @@ return inject_all({
   },
 
   {
-    "idanarye/nvim-impairative",
-    event = "VeryLazy",
-    dependencies = {
-      { "nvim-treesitter/nvim-treesitter" },
-      { "echasnovski/mini.ai" },
-    },
-    config = function(_, _)
-      vim.keymap.set("n", "]", "<nop>", { desc = "+forward goto " })
-      vim.keymap.set("n", "[", "<nop>", { desc = "+backward goto" })
-      local base = require("impairative").operations({
-        backward = "[",
-        forward = "]",
-      })
-      for key, obj in pairs({
-        a = {
-          name = "arguments",
-          scope = "i",
-          reverse = false,
-          textobject = "a",
-        },
-        A = {
-          name = "argmuments",
-          scope = "i",
-          reverse = true,
-          textobject = "a",
-        },
-        b = {
-          name = "braces",
-          scope = "i",
-          reverse = false,
-          textobject = "b",
-        },
-        B = {
-          name = "blocks",
-          scope = "i",
-          reverse = false,
-          textobject = "B",
-        },
-        s = {
-          name = "strings",
-          scope = "i",
-          reverse = false,
-          textobject = "s",
-        },
-        S = {
-          name = "strings",
-          scope = "i",
-          reverse = true,
-          textobject = "s",
-        },
-        f = {
-          name = "functions",
-          scope = "a",
-          reverse = false,
-          textobject = "f",
-        },
-        F = {
-          name = "functions",
-          scope = "a",
-          reverse = true,
-          textobject = "f",
-        },
-        c = {
-          name = "calls",
-          scope = "a",
-          reverse = false,
-          textobject = "c",
-        },
-        C = {
-          name = "calls",
-          scope = "i",
-          reverse = true,
-          textobject = "c",
-        },
-        i = {
-          name = "ifs",
-          scope = "a",
-          reverse = false,
-          textobject = "i",
-        },
-        I = {
-          name = "ifs",
-          scope = "a",
-          reverse = true,
-          textobject = "i",
-        },
-        L = {
-          name = "loops",
-          scope = "a",
-          reverse = false,
-          textobject = "L",
-        },
-        t = {
-          name = "types",
-          scope = "a",
-          reverse = false,
-          textobject = "t",
-        },
-      }) do
-        local edge = "left"
-        local target = "beginning"
-        local dirmap = {
-          backward = "cover_or_prev",
-          forward = "next",
-        }
-        if obj.reverse then
-          edge = "right"
-          target = "end"
-          dirmap = {
-            backward = "prev",
-            forward = "cover_or_next",
-          }
-        end
-        base:unified_function({
-          key = key,
-          desc = "jump to " .. target .. " of '" .. obj.textobject .. "' textobject",
-          fun = function(direction)
-            require("mini.ai").move_cursor(
-              edge,
-              obj.scope,
-              obj.textobject,
-              { search_method = dirmap[direction], n_times = vim.v.count1 }
-            )
-          end,
-        })
-      end
-    end,
-  },
-
-  {
     "folke/snacks.nvim",
     -- other stuff from snacks
     lazy = false,
@@ -2035,12 +1989,14 @@ return inject_all({
         function()
           Snacks.words.jump(vim.v.count1, true)
         end,
+        desc = "jump to next reference",
       },
       {
         "[[",
         function()
           Snacks.words.jump(-vim.v.count1, true)
         end,
+        desc = "jump to prev reference",
       },
       {
         "<leader>ob",
@@ -2264,66 +2220,5 @@ return inject_all({
       },
       words = { enabled = true },
     },
-  },
-
-  {
-    "debugloop/telescope-undo.nvim",
-    enabled = false,
-    dev = true,
-    dependencies = {
-      {
-        "nvim-telescope/telescope.nvim",
-        config = function() end,
-        dependencies = {
-          { "nvim-lua/plenary.nvim" },
-        },
-      },
-    },
-    keys = {
-      {
-        "<leader>u",
-        "<cmd>Telescope undo<cr>",
-        desc = "undo history",
-      },
-    },
-    opts = {
-      defaults = {
-        mappings = {
-          n = {
-            ["q"] = function(bufnr)
-              return require("telescope.actions").close(bufnr)
-            end,
-            ["<esc>"] = function(bufnr)
-              return require("telescope.actions").close(bufnr)
-            end,
-          },
-          i = {
-            ["<c-j>"] = function(bufnr)
-              return require("telescope.actions").move_selection_next(bufnr)
-            end,
-            ["<c-k>"] = function(bufnr)
-              return require("telescope.actions").move_selection_previous(bufnr)
-            end,
-          },
-        },
-      },
-      extensions = {
-        undo = {
-          side_by_side = true,
-          layout_strategy = "vertical",
-          vim_diff_opts = {
-            algorithm = "histogram",
-            ctxlen = 6,
-          },
-          layout_config = {
-            preview_height = 0.8,
-          },
-        },
-      },
-    },
-    config = function(_, opts)
-      require("telescope").setup(opts)
-      require("telescope").load_extension("undo")
-    end,
   },
 })

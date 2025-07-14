@@ -12,10 +12,33 @@ local function root_dir(patterns)
     upward = true,
   })[1])
 end
+
+-- remove defaults
+vim.keymap.del("n", "gO")
+vim.keymap.del("n", "gra")
+vim.keymap.del("n", "gri")
+vim.keymap.del("n", "grn")
+vim.keymap.del("n", "grr")
+
+-- add my own
+vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { desc = "lsp: rename symbol" })
+vim.keymap.set("n", "<leader>?", vim.lsp.buf.code_action, { desc = "lsp: run code action" })
+vim.keymap.set("n", "go", vim.lsp.buf.document_symbol, { desc = "lsp: show symbols" })
+vim.keymap.set("n", "gO", vim.lsp.buf.workspace_symbol, { desc = "lsp: show workspacesymbols" })
+vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "lsp: show definition" })
+vim.keymap.set("n", "gD", vim.lsp.buf.type_definition, { desc = "lsp: show type definition" })
+vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "lsp: show implementations" })
+vim.keymap.set("n", "gr", function()
+  vim.lsp.buf.references({ includeDeclaration = false })
+end, { desc = "lsp: show references" })
+vim.keymap.set("n", "gh", vim.lsp.buf.incoming_calls, { desc = "lsp: show callers" })
+vim.keymap.set("n", "gH", vim.lsp.buf.outgoing_calls, { desc = "lsp: show callees" })
+vim.keymap.set("n", "<leader>sd", vim.diagnostic.setqflist, { desc = "lsp: list diagnostics" })
+
 vim.lsp.config("gopls", {
   cmd = { "gopls" },
   filetypes = { "go", "gomod", "gowork", "gotmpl" },
-  on_attach = function(client, _)
+  on_attach = function(_, _)
     -- modify some semantic tokens
     vim.api.nvim_create_autocmd("LspTokenUpdate", {
       callback = function(args)
@@ -58,11 +81,13 @@ vim.lsp.config("gopls", {
     },
   },
 })
+
 vim.lsp.config("templ", {
   cmd = { "templ", "lsp" },
   filetypes = { "templ" },
   root_dir = root_dir({ "go.mod", "go.sum" }),
 })
+
 vim.lsp.config("javascript", {
   init_options = {
     hostInfo = "neovim",
@@ -79,6 +104,7 @@ vim.lsp.config("javascript", {
   root_dir = root_dir(),
   single_file_support = true,
 })
+
 vim.lsp.config("lua_ls", {
   cmd = { "lua-language-server" },
   filetypes = { "lua" },
@@ -94,6 +120,7 @@ vim.lsp.config("lua_ls", {
     },
   },
 })
+
 vim.lsp.config("nixd", {
   cmd = { "nixd" },
   filetypes = { "nix" },
@@ -101,15 +128,13 @@ vim.lsp.config("nixd", {
   root_dir = root_dir(),
 })
 
-vim.lsp.enable({ "gopls", "nixd", "templ", "javascript", "lua_ls" })
-
-vim.api.nvim_create_autocmd("LspAttach", {
-  group = vim.api.nvim_create_augroup("on_lsp_attach", {}),
-  callback = function(event)
-    -- commands
-    vim.api.nvim_buf_create_user_command(event.buf, "LspRestart", function(_)
-      vim.lsp.stop_client(vim.lsp.get_clients(), true)
-      vim.cmd("edit!")
-    end, { desc = "Restart all active LSP clients" })
-  end,
+vim.lsp.config("typos-lsp", {
+  cmd = { "typos-lsp" },
+  root_dir = root_dir(),
+  single_file_support = true,
+  init_options = {
+    diagnosticSeverity = "hint",
+  },
 })
+
+vim.lsp.enable({ "gopls", "typos-lsp", "nixd", "templ", "javascript", "lua_ls" })
