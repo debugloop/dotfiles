@@ -12,8 +12,8 @@
     settings = {
       symbol_map = "U+23fb-U+23fe,U+2665,U+26a1,U+2b58,U+e000-U+e00a,U+e0a0-U+e0a2,U+e0a3,U+e0b0-U+e0b3,U+e0b4-U+e0c8,U+e0ca,U+e0cc-U+e0d7,U+e200-U+e2a9,U+e300-U+e3e3,U+e5fa-U+e6b5,U+e700-U+e7c5,U+ea60-U+ec1e,U+ed00-U+efc1,U+f000-U+f2ff,U+f300-U+f372,U+f400-U+f533,U+f500-U+fd46,U+f0001-U+f1af0,U+276c-U+2771,U+2500-U+259f,U+274C Symbols Nerd Font Mono";
 
-      # make the font slightly wider
-      # modify_font = "cell_width 105%";
+      # increase line height a bit
+      modify_font = "cell_height 105%";
 
       # this is how to use opentype features
       font_features = "Iosevka cv99=6 cv85=8";
