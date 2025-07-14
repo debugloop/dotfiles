@@ -55,6 +55,7 @@
         ".undo" # nvim undo
         ".local/state/wireplumber" # volume settings
         # history for shells
+        ".local/share/direnv"
         ".local/share/zoxide"
         ".local/share/fish"
         ".local/share/atuin"
