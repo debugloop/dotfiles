@@ -1,16 +1,12 @@
 local function root_dir(patterns)
-  patterns = patterns or {}
+  patterns = patterns or { ".git/", "README.md", "flake.nix" }
   local matches = vim.fs.find(patterns, {
     upward = true,
   })
   if matches then
     return vim.fs.dirname(matches[1])
   end
-
-  local default_patterns = { ".git/", "README.md", "flake.nix" }
-  return vim.fs.dirname(vim.fs.find(default_patterns, {
-    upward = true,
-  })[1])
+  return "~"
 end
 
 -- remove defaults
@@ -22,8 +18,17 @@ vim.keymap.del("n", "grr")
 
 -- add my own
 vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { desc = "lsp: rename symbol" })
-vim.keymap.set("n", "<leader>?", vim.lsp.buf.code_action, { desc = "lsp: run code action" })
-vim.keymap.set("n", "go", vim.lsp.buf.document_symbol, { desc = "lsp: show symbols" })
+vim.keymap.set({ "n", "x" }, "<leader>?", function()
+  local line = vim.api.nvim_win_get_cursor(0)[1]
+  for _, lens in pairs(vim.lsp.codelens.get(0)) do
+    if lens.range.start.line == (line - 1) and lens.command and lens.command.command ~= "" then
+      vim.lsp.codelens.run()
+      return
+    end
+  end
+  vim.lsp.buf.code_action()
+end, { desc = "lsp: run codelens or code action" })
+vim.keymap.set({ "n", "x" }, "go", vim.lsp.buf.document_symbol, { desc = "lsp: show symbols" })
 vim.keymap.set("n", "gO", vim.lsp.buf.workspace_symbol, { desc = "lsp: show workspacesymbols" })
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "lsp: show definition" })
 vim.keymap.set("n", "gD", vim.lsp.buf.type_definition, { desc = "lsp: show type definition" })
@@ -39,6 +44,14 @@ vim.lsp.config("gopls", {
   cmd = { "gopls" },
   filetypes = { "go", "gomod", "gowork", "gotmpl" },
   on_attach = function(_, _)
+    vim.o.foldexpr = "v:lua.vim.lsp.foldexpr()"
+
+    -- display code lenses
+    vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+      callback = function(args)
+        vim.lsp.codelens.refresh({ bufnr = args.buf })
+      end,
+    })
     -- modify some semantic tokens
     vim.api.nvim_create_autocmd("LspTokenUpdate", {
       callback = function(args)
@@ -66,6 +79,9 @@ vim.lsp.config("gopls", {
       },
       semanticTokens = true,
       staticcheck = true,
+      analyses = {
+        ST1000 = false,
+      },
       vulncheck = "Imports",
       hints = {
         assignVariableTypes = true,
@@ -76,8 +92,6 @@ vim.lsp.config("gopls", {
         parameterNames = true,
         rangeVariableTypes = true,
       },
-      completeUnimported = true,
-      deepCompletion = true,
     },
   },
 })
@@ -137,4 +151,24 @@ vim.lsp.config("typos-lsp", {
   },
 })
 
-vim.lsp.enable({ "gopls", "typos-lsp", "nixd", "templ", "javascript", "lua_ls" })
+vim.lsp.config("harper", {
+  cmd = { "harper-ls", "--stdio" },
+  filetypes = { "markdown" },
+  root_dir = root_dir(),
+  settings = {
+    ["harper-ls"] = {
+      linters = {
+        SpellCheck = false,
+        ToDoHyphen = false,
+      },
+    },
+  },
+})
+
+vim.lsp.config("fish", {
+  cmd = { "fish-lsp", "start" },
+  filetypes = { "fish" },
+  root_dir = root_dir(),
+})
+
+vim.lsp.enable({ "gopls", "typos-lsp", "nixd", "templ", "javascript", "lua_ls", "harper", "fish" })

@@ -32,37 +32,24 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 -- surrounding test name
 function SurroundingTestName()
-  local inTestfile = false
+  -- return immediately if we're not in a test file
   if vim.fn.expand("%:t"):sub(-#"_test.go", -1) ~= "_test.go" then
-    return inTestfile, ""
-  else
-    inTestfile = true
+    return false, ""
   end
   -- see if we can find a specific test to run
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local lsp_response, lsp_err = vim.lsp.buf_request_sync(
-    0,
-    "textDocument/documentSymbol",
-    { textDocument = vim.lsp.util.make_text_document_params() },
-    1000
-  )
-  if lsp_err ~= nil or lsp_response == nil then
-    return inTestfile, ""
-  end
-
-  for _, symbol in pairs(lsp_response[1].result) do
-    if
-      symbol["detail"] ~= nil
-      and symbol.detail:sub(1, 4) == "func"
-      and symbol.name:sub(1, 4) == "Test"
-      and cursor[1] > symbol.range.start.line
-      and cursor[1] < symbol.range["end"].line
-    then
-      return inTestfile, symbol.name
+  local node = vim.treesitter.get_node()
+  while node do
+    if node:type() == "function_declaration" or node:type() == "method_declaration" then
+      local name = node:named_child(0)
+      if name then
+        return true, vim.treesitter.get_node_text(name, 0)
+      end
+      break
     end
+    node = node:parent()
   end
 
-  return inTestfile, ""
+  return true, ""
 end
 
 vim.keymap.set("n", "gY", function()

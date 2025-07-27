@@ -34,6 +34,13 @@ return inject_all({
       appearance = {
         use_nvim_cmp_as_default = true,
       },
+      cmdline = {
+        enabled = true,
+        keymap = {
+          preset = "cmdline",
+          ["<c-space>"] = { "select_and_accept" },
+        },
+      },
       completion = {
         accept = {
           auto_brackets = {
@@ -474,6 +481,7 @@ return inject_all({
         },
         N = require("mini.extra").gen_ai_spec.number(),
         F = function(ai, _, _)
+          -- TODO: write using lua ts api
           if ai == "i" then
             return require("mini.ai").gen_spec.treesitter({ i = "@function.name", a = "@function.name" }, {})(
               "i",
@@ -693,8 +701,7 @@ return inject_all({
   },
 
   {
-    "echasnovski/mini-git",
-    name = "mini.git",
+    "echasnovski/mini.git",
     opts = {},
   },
 
@@ -946,8 +953,7 @@ return inject_all({
         "echasnovski/mini.icons",
       },
       {
-        "echasnovski/mini-git",
-        name = "mini.git",
+        "echasnovski/mini.git",
       },
       {
         "echasnovski/mini.diff",
@@ -1083,7 +1089,28 @@ return inject_all({
       { "MunifTanjim/nui.nvim" },
     },
     opts = {
+      cmdline = {
+        enabled = true,
+      },
+      messages = {
+        enabled = true,
+        view_search = false,
+      },
+      popupmenu = {
+        enabled = false,
+        backend = "cmp",
+      },
+      notify = {
+        enabled = true,
+      },
       lsp = {
+        progress = {
+          enabled = true,
+        },
+        override = {
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true,
+        },
         hover = {
           silent = true,
           opts = {
@@ -1091,12 +1118,11 @@ return inject_all({
             max_width = 100,
           },
         },
-        override = {
-          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-          ["vim.lsp.util.stylize_markdown"] = true,
-        },
         signature = {
           enabled = false,
+        },
+        message = {
+          enabled = true,
         },
       },
       presets = {
@@ -1142,7 +1168,7 @@ return inject_all({
 
   {
     "kevinhwang91/nvim-bqf",
-    ft = "qf",
+    event = "VeryLazy",
     dependencies = {
       {
         "junegunn/fzf",
@@ -1423,14 +1449,14 @@ return inject_all({
             { desc = "open dap-view" },
           },
           { -- step over/next
-            "s",
+            "n",
             function()
               dap.step_over()
             end,
             { desc = "step forward" },
           },
           { -- step back
-            "S",
+            "N",
             function()
               dap.step_back()
             end,
@@ -1704,7 +1730,7 @@ return inject_all({
         desc = "find more files smartly",
       },
       {
-        "<leader>,",
+        "<leader>;",
         function()
           Snacks.picker.buffers()
         end,
@@ -1916,8 +1942,7 @@ return inject_all({
     "folke/snacks.nvim",
     dependencies = {
       {
-        "echasnovski/mini-git",
-        name = "mini.git",
+        "echasnovski/mini.git",
       },
     },
     keys = {
@@ -2196,7 +2221,6 @@ return inject_all({
       bigfile = { enabled = true },
       input = { enabled = true },
       image = { enabled = true },
-      notifier = { enabled = true },
       quickfile = { enabled = true },
       scroll = {
         enabled = true,
@@ -2206,9 +2230,6 @@ return inject_all({
       },
       statuscolumn = { enabled = true },
       styles = {
-        notification = {
-          wo = { wrap = true },
-        },
         zen = {
           backdrop = {
             transparent = false,
