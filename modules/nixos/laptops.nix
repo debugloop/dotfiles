@@ -8,13 +8,6 @@
     inputs.niri.nixosModules.niri
   ];
 
-  home-manager.users.danieln = {
-    imports = [
-      ../../home
-      ../../home/wayland
-    ];
-  };
-
   networking = {
     networkmanager = {
       enable = true;

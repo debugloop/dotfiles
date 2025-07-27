@@ -1,4 +1,4 @@
-{hostname, ...}: {
+{hostName, ...}: {
   services.prometheus = {
     enable = true;
     extraFlags = [
@@ -17,7 +17,7 @@
               "localhost:9100"
             ];
             labels = {
-              host = "${hostname}";
+              host = "${hostName}";
             };
           }
         ];
@@ -30,7 +30,7 @@
               "localhost:9090"
             ];
             labels = {
-              host = "${hostname}";
+              host = "${hostName}";
             };
           }
         ];
@@ -43,7 +43,7 @@
               "localhost:3000"
             ];
             labels = {
-              host = "${hostname}";
+              host = "${hostName}";
             };
           }
         ];
@@ -57,7 +57,7 @@
               "hyperion.danieln.de"
             ];
             labels = {
-              host = "${hostname}";
+              host = "${hostName}";
             };
           }
         ];
@@ -70,7 +70,7 @@
               "localhost:8000"
             ];
             labels = {
-              host = "${hostname}";
+              host = "${hostName}";
             };
           }
         ];

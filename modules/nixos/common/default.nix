@@ -3,7 +3,7 @@
   inputs,
   lib,
   pkgs,
-  hostname,
+  hostName,
   ...
 }: {
   imports = [
@@ -24,7 +24,7 @@
   };
 
   networking = {
-    hostName = hostname;
+    hostName = hostName;
     nftables.enable = true;
   };
 

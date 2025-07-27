@@ -25,10 +25,10 @@
     # "nvim/ftplugin".source = ./ftplugin;
     # "nvim/after".source = ./after;
 
-    "nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/init.lua";
-    "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/lua";
-    "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/ftplugin";
-    "nvim/after".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/nvim/after";
+    "nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/shared/nvim/init.lua";
+    "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/shared/nvim/lua";
+    "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/shared/nvim/ftplugin";
+    "nvim/after".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/shared/nvim/after";
 
     "nvim/parser".source = "${treesitterParsers}/parser"; # treesitter master only
   };
