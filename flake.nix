@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    oldnixpkgs.url = "github:nixos/nixpkgs/6c64dabd3aa85e0c02ef1cdcb6e1213de64baee3";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -64,6 +63,21 @@
           ./hosts/common/laptops.nix
           ./hosts/lusus
           ({...}: {
+            nixpkgs.overlays = [
+              # (final: prev: {
+              #   gopls = prev.gopls.overrideAttrs (oldAttrs: {
+              #     version = "95aad07923cb9d64eb951e4512c9e62bc3b8e275";
+              #     src = final.fetchFromGitHub {
+              #       owner = "golang";
+              #       repo = "tools";
+              #       rev = "95aad07923cb9d64eb951e4512c9e62bc3b8e275";
+              #       sha256 = "sha256-8BJ0bBOV6bK40ymTDAXRW09kGjDYHD+fcDIiCJrj0gk=";
+              #     };
+              #     vendorHash = "sha256-z/8LzfbddCkCaK/YXpW3zdY8LteN24Wyg+wBNfTzTK4=";
+              #     buildInputs = (oldAttrs.buildInputs or []) ++ [final.go];
+              #   });
+              # })
+            ];
             home-manager.users.danieln = {
               imports = [
                 inputs.gridx.home-module
