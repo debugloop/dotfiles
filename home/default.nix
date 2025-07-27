@@ -119,8 +119,10 @@
       # dev general linters
       ast-grep
       buf
+      tailspin
+      fish-lsp
       codespell
-      kulala-fmt
+      harper
       nodePackages_latest.prettier
       proselint
       stylua
@@ -155,10 +157,10 @@
       gotests
       gotestsum
       go-tools
-      inputs.oldnixpkgs.legacyPackages.${pkgs.system}.gotools # until gopls is backported
+      gotools
       protoc-gen-go
       protoc-gen-go-grpc
-      # hardware (TODO: are those installed system-wide?)
+      # Hardware related (TODO: are those installed system-wide?)
       powertop
       pulseaudio # TODO: should be installed by services
     ];
