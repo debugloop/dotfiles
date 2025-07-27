@@ -47,7 +47,8 @@
     '';
     shellAbbrs = {
       g = "git";
-      d = "dlv --headless -l 'localhost:2345'";
+      v = "vim";
+      d = "dlv --headless -l 'localhost:2345' debug";
     };
     functions = {
       fish_title = {
@@ -93,6 +94,8 @@
     shellAliases = {
       ag = "rg";
       cat = "bat";
+      cd = "z";
+      cdi = "zi";
       cloc = "tokei";
       dstat = "dool --color16";
       debug_attachable = "sudo sysctl -w kernel.yama.ptrace_scope=0";
@@ -105,7 +108,7 @@
       c = "cd (git rev-parse --show-toplevel)";
       sloc = "tokei";
       s = "kitten ssh";
-      v = "vim (git f)";
+      vs = "vim (git f)";
       vim = "nvim";
       vimdiff = "nvim -d";
     };
