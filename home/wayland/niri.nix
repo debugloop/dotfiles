@@ -94,12 +94,12 @@
           position = "right";
           place-within-column = true;
           gap = 0;
-          width = 5;
+          width = 7;
           gaps-between-tabs = 5;
           length.total-proportion = 0.2;
           corner-radius = 5;
-          active.color = "#${config.colors.blue}ff";
-          inactive.color = "#${config.colors.light_bg}ff";
+          active.color = "#${config.colors.blue}";
+          inactive.color = "#${config.colors.light_bg}";
         };
         insert-hint.display.color = "#${config.colors.green}88";
       };
@@ -313,14 +313,14 @@
         "Mod+Shift+0".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action move-window-to-workspace yellow || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name yellow";
         "Mod+Shift+Minus".action = spawn "fish" "-c" "niri msg action move-window-to-workspace 42";
         # "Mod+1".action = focus-workspace "red";
-        "Mod+1".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action focus-workspace red || niri msg action focus-workspace 42 && niri msg action set-workspace-name red";
-        "Mod+2".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action focus-workspace green || niri msg action focus-workspace 42 && niri msg action set-workspace-name green";
-        "Mod+3".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action focus-workspace blue || niri msg action focus-workspace 42 && niri msg action set-workspace-name blue";
-        "Mod+4".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action focus-workspace orange || niri msg action focus-workspace 42 && niri msg action set-workspace-name orange";
-        "Mod+7".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"pink\")' && niri msg action focus-workspace pink || niri msg action focus-workspace 42 && niri msg action set-workspace-name pink";
-        "Mod+8".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"cyan\")' && niri msg action focus-workspace cyan || niri msg action focus-workspace 42 && niri msg action set-workspace-name cyan";
-        "Mod+9".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action focus-workspace purple || niri msg action focus-workspace 42 && niri msg action set-workspace-name purple";
-        "Mod+0".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action focus-workspace yellow || niri msg action focus-workspace 42 && niri msg action set-workspace-name yellow";
+        "Mod+1".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action focus-workspace red || niri msg action focus-workspace 64 && niri msg action set-workspace-name red";
+        "Mod+2".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action focus-workspace green || niri msg action focus-workspace 64 && niri msg action set-workspace-name green";
+        "Mod+3".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action focus-workspace blue || niri msg action focus-workspace 64 && niri msg action set-workspace-name blue";
+        "Mod+4".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action focus-workspace orange || niri msg action focus-workspace 64 && niri msg action set-workspace-name orange";
+        "Mod+7".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"pink\")' && niri msg action focus-workspace pink || niri msg action focus-workspace 64 && niri msg action set-workspace-name pink";
+        "Mod+8".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"cyan\")' && niri msg action focus-workspace cyan || niri msg action focus-workspace 64 && niri msg action set-workspace-name cyan";
+        "Mod+9".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action focus-workspace purple || niri msg action focus-workspace 64 && niri msg action set-workspace-name purple";
+        "Mod+0".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action focus-workspace yellow || niri msg action focus-workspace 64 && niri msg action set-workspace-name yellow";
         "Mod+Minus".action = focus-workspace 42;
 
         # # workspace addresses, 0 is last with window, minus is the empty workspace
