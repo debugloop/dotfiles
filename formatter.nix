@@ -14,7 +14,7 @@
         set -- "$(git rev-parse --show-toplevel 2>/dev/null || echo .)"
       fi
 
-      alejandra "$@"
+      alejandra -q "$@"
     '';
 
     meta = {
