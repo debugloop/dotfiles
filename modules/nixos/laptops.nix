@@ -2,6 +2,7 @@
   pkgs,
   lib,
   inputs,
+  perSystem,
   ...
 }: {
   imports = [
@@ -186,7 +187,7 @@
   programs = {
     niri = {
       enable = true;
-      package = pkgs.niri-unstable;
+      package = perSystem.niri.niri-unstable;
     };
     thunar = {
       enable = false;

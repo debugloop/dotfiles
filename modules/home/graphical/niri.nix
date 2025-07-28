@@ -1,10 +1,11 @@
 {
   config,
   pkgs,
+  perSystem,
   ...
 }: {
   programs.niri = {
-    package = pkgs.niri-unstable;
+    package = perSystem.niri.niri-unstable;
     settings = {
       gestures.hot-corners.enable = false;
       spawn-at-startup = [
