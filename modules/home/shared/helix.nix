@@ -1,11 +1,6 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   programs.helix = {
     enable = true;
-    package = inputs.helix.packages.${pkgs.system}.default;
     themes = {
       mykanagawa = {
         inherits = "kanagawa";
