@@ -4,19 +4,16 @@
   ...
 }: {
   imports = [
-    # our windowmanager
-    ./niri.nix
-    # auxiliary services
-    ./osd.nix
     ./clipman.nix
     ./ghostty.nix
     ./kanshi.nix
     ./kitty.nix
     ./mako.nix
+    ./niri.nix
+    ./osd.nix
     ./swayidle.nix
     ./swaylock.nix
     ./waybar.nix
-    ./wezterm
   ];
 
   gtk.enable = true; # applies generated configs
