@@ -15,8 +15,7 @@
     ./mako.nix
     ./swayidle.nix
     ./swaylock.nix
-    # ./waybar.nix
-    ./waybar_new.nix
+    ./waybar.nix
     ./wezterm
   ];
 

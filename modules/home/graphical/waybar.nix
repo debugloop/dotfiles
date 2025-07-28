@@ -3,9 +3,6 @@
   config,
   ...
 }: {
-  home.packages = with pkgs; [
-    playerctl
-  ];
   programs.waybar = {
     enable = true;
     systemd = {
@@ -14,288 +11,320 @@
     };
     settings = [
       {
-        # "position" = "left";
-        "layer" = "top";
-        "output" = "!HEADLESS-1";
-        "modules-left" = [
+        layer = "top";
+        position = "left";
+        reload_style_on_change = true;
+        modules-left = [
           "niri/workspaces"
-          "niri/window"
-          "sway/workspaces"
-          "sway/mode"
-          "sway/window"
         ];
-        "modules-center" = [
-          "custom/media"
+        modules-center = [
+          "pulseaudio#mic"
         ];
-        "modules-right" = [
-          "pulseaudio"
-          "idle_inhibitor"
+        modules-right = [
+          "group/audio"
+          "systemd-failed-units"
           "tray"
-          "temperature"
-          "cpu"
-          "memory"
-          "disk"
           "battery"
-          "custom/weather"
+          "idle_inhibitor"
+          "group/bottom"
           "clock"
         ];
-        "battery" = {
-          "interval" = 10;
-          "states" = {
-            "full" = 95;
-            "warning" = 30;
-            "critical" = 10;
-          };
-          "format" = "";
-          "format-time" = "{H}h {m}m";
-          "format-discharging" = "{icon} {capacity}% ({time})";
-          "format-full" = "";
-          "format-icons" = [
+        battery = {
+          rotate = 90;
+          format = "";
+          format-discharging = "{icon} {capacity}% ({time})";
+          format-full = "";
+          format-icons = [
             ""
             ""
             ""
             ""
             ""
           ];
-          "tooltip" = true;
+          format-time = "{H}h {m}m";
+          interval = 10;
+          states = {
+            critical = 10;
+            full = 95;
+            warning = 30;
+          };
+          tooltip = true;
         };
-        "clock" = {
-          "interval" = 1;
-          "format" = "{:%a, %d.%m. %H:%M:%S}";
-          "tooltip-format" = "<tt>{calendar}</tt>";
-          "calendar" = {
-            "mode" = "month";
-            "mode-mon-col" = 3;
-            "weeks-pos" = "left";
-            "on-scroll" = 1;
-            "format" = {
-              "months" = "<span color='#${config.colors.foreground}'>{}</span>";
-              "days" = "<span color='#${config.colors.foreground}'>{}</span>";
-              "weeks" = "<span color='#${config.colors.bright-black}'>W{}</span>";
-              "weekdays" = "<span color='#${config.colors.foreground}'>{}</span>";
-              "today" = "<span color='#${config.colors.red}'><b>{}</b></span>";
+        clock = {
+          actions = {
+            # on-click-right = "mode";
+            # on-scroll-down = "shift_up";
+            # on-scroll-up = "shift_down";
+          };
+          calendar = {
+            format = {
+              days = "<span color='#dcd7ba'>{}</span>";
+              months = "<span color='#dcd7ba'>{}</span>";
+              today = "<span color='#c34043'><b>{}</b></span>";
+              weekdays = "<span color='#dcd7ba'>{}</span>";
+              weeks = "<span color='#727169'>W{}</span>";
             };
+            mode = "year";
+            mode-mon-col = 3;
+            weeks-pos = "left";
           };
-          "actions" = {
-            "on-click-right" = "mode";
-            "on-scroll-up" = "shift_down";
-            "on-scroll-down" = "shift_up";
+          format = "{:%H\n%M\n%S}";
+          interval = 1;
+          tooltip-format = "<tt>{calendar}</tt>";
+        };
+        "clock#date" = {
+          calendar = {
+            format = {
+              days = "<span color='#dcd7ba'>{}</span>";
+              months = "<span color='#dcd7ba'>{}</span>";
+              today = "<span color='#c34043'><b>{}</b></span>";
+              weekdays = "<span color='#dcd7ba'>{}</span>";
+              weeks = "<span color='#727169'>W{}</span>";
+            };
+            mode = "year";
+            mode-mon-col = 3;
+            weeks-pos = "left";
           };
-          "locale" = "en_GB.utf-8";
+          format = "{:%d\n%m}";
+          tooltip-format = "<tt>{calendar}</tt>";
         };
-        "custom/media" = {
-          "format" = " {icon}{} ";
-          "return-type" = "json";
-          "format-icons" = {
-            "Paused" = " ";
-          };
-          "max-length" = 80;
-          "exec" = ''${pkgs.playerctl}/bin/playerctl -p spotify,vlc metadata --format '{"text": "{{ markup_escape(artist) }} - {{ markup_escape(title) }} ({{duration(position)}}/{{duration(mpris:length)}})", "tooltip": "{{ markup_escape(artist) }} - {{ markup_escape(title) }} ({{duration(position)}}/{{duration(mpris:length)}})", "alt": "{{status}}", "class": "{{status}}"}' -F'';
-          "on-click" = "${pkgs.playerctl}/bin/playerctl -p spotify,vlc play-pause";
-          "on-click-right" = "${pkgs.playerctl}/bin/playerctl -p spotify,vlc next";
-          "on-scroll-down" = "${pkgs.playerctl}/bin/playerctl -p spotify,vlc next";
-          "on-scroll-up" = "${pkgs.playerctl}/bin/playerctl -p spotify,vlc previous";
-        };
-        "custom/weather" = {
-          "exec" = "${pkgs.curl}/bin/curl 'https://wttr.in/?format=1'";
-          "interval" = 3600;
-        };
-        "cpu" = {
-          "interval" = 5;
-          "format" = "󰊚 {usage}%";
-          "states" = {
-            "warning" = 70;
-            "critical" = 90;
-          };
-        };
-        "disk" = {
-          "interval" = 60;
-          "format" = "󰋊 {percentage_used}%";
-          "path" = "/nix";
-        };
-        "idle_inhibitor" = {
-          "format" = "{icon}";
-          "format-icons" = {
-            "activated" = "";
-            "deactivated" = "";
+        cpu = {
+          rotate = 90;
+          format = "󰊚 {usage}%";
+          interval = 5;
+          states = {
+            critical = 90;
+            warning = 70;
           };
         };
-        "memory" = {
-          "interval" = 5;
-          "format" = " {percentage}%";
-          "states" = {
-            "warning" = 85;
-            "critical" = 90;
+        "custom/wincount" = {
+          exec = pkgs.writeScript "./wincount.sh" ''
+            #!/bin/sh
+
+            idfocused="$(niri msg -j workspaces | jq ".[] | select(.is_focused == true ) | .id")"
+            num="$(niri msg -j windows | jq "[.[] | select(.workspace_id == $idfocused)] | length")"
+            echo $num
+
+            niri msg -j event-stream |\
+                while read -r line; do
+                    event="$(echo $line | jq --unbuffered -r 'keys.[0]')"
+                    case "$event" in
+                        "WindowOpenedOrChanged"|"WindowClosed"|"WorkspaceActivated")
+                            idfocused="$(niri msg -j workspaces | jq ".[] | select(.is_focused == true ) | .id")"
+                            num="$(niri msg -j windows | jq "[.[] | select(.workspace_id == $idfocused)] | length")"
+                            echo $num || exit
+                            ;;
+                    esac
+                done
+          '';
+          on-scroll-down = "niri msg action focus-column-right-or-first";
+          on-scroll-up = "niri msg action focus-column-left-or-last";
+        };
+        disk = {
+          rotate = 90;
+          format = "󰋊 {percentage_used}%";
+          interval = 60;
+          path = "/nix";
+        };
+        idle_inhibitor = {
+          format = "{icon}";
+          format-icons = {
+            activated = "";
+            deactivated = "󰒲";
           };
         };
-        "pulseaudio" = {
-          "format" = "{format_source}{icon} {volume}%";
-          "format-bluetooth" = "{format_source} {icon} {volume}%";
-          "format-source" = "<span color=\"#${config.colors.red}\"></span>  ";
-          "format-source-muted" = "";
-          "format-muted" = "{format_source} {volume}%";
-          "format-icons" = {
-            "speaker" = "";
-            "default" = "";
+        "group/audio" = {
+          orientation = "inherit";
+          drawer = {
+            children-class = "in-group";
+            transition-left-to-right = false;
           };
-          "on-click" = "${pkgs.pavucontrol}/bin/pavucontrol";
-          "on-click-middle" = "${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list sinks short | ${pkgs.gnugrep}/bin/grep -v $(${pkgs.pulseaudio}/bin/pactl get-default-sink) | ${pkgs.coreutils}/bin/cut -f 1 | ${pkgs.coreutils}/bin/head -1)";
-          "on-click-right" = "${pkgs.easyeffects}/bin/easyeffects";
+          modules = [
+            "pulseaudio"
+            "pulseaudio/slider"
+          ];
         };
-        "niri/workspaces" = {
-          "format" = "{icon} {value}";
-          "format-icons" = {
-            "active" = "";
-            "default" = "";
+        "group/bottom" = {
+          orientation = "inherit";
+          drawer = {
+            click-to-reveal = true;
+            transition-left-to-right = false;
+            children-class = "in-group";
           };
-          "on-scroll-down" = "niri msg action focus-workspace-down";
-          "on-scroll-up" = "niri msg action focus-workspace-up";
+          modules = [
+            "clock#date"
+            "cpu"
+            "memory"
+            "disk"
+          ];
+        };
+        memory = {
+          rotate = 90;
+          format = " {percentage}%";
+          interval = 5;
+          states = {
+            critical = 90;
+            warning = 85;
+          };
         };
         "niri/window" = {
-          "format" = "{}";
-          "separate-outputs" = true;
-          "on-scroll-down" = "niri msg action focus-column-right";
-          "on-scroll-up" = "niri msg action focus-column-left";
+          rotate = 90;
+          format = "{}";
+          on-scroll-down = "niri msg action focus-column-right";
+          on-scroll-up = "niri msg action focus-column-left";
+          separate-outputs = true;
         };
-        "sway/mode" = {
-          "format" = " {}";
-          "tooltip" = false;
-        };
-        "sway/window" = {
-          "format" = "{}";
-          "max-length" = 160;
-          #"rewrite" = {
-          #  "(.*) — Mozilla Firefox" = " $1";
-          #  "(.*) — Evolution" = " $1";
-          #  "vim (.*)" = " vim $1";
-          #  "fish (.*)" = " $1";
-          #};
-        };
-        "sway/workspaces" = {
-          "all-outputs" = false;
-          "format" = "{icon} {name}";
-          "format-icons" = {
-            "1:web" = "";
-            "2:com" = "";
-            "3:file" = "";
-            "4:music" = "";
-            "7:term" = "";
-            "8:term" = "";
-            "9:term" = "";
-            "10:term" = "";
-            "default" = "";
+        "niri/workspaces" = {
+          format = "<span weight='1000'>{icon}</span>";
+          format-icons = {
+            active = "󰄯"; #󰄯  󰬪
+            default = "󰄰"; #󰺕  󰄰  󰻂  󰻃
           };
+          on-scroll-down = "niri msg action focus-workspace-down";
+          on-scroll-up = "niri msg action focus-workspace-up";
+          on-update = "niri msg -j workspaces | jq -r '.[]|select(.name!=null)|select(.active_window_id==null)|select(.is_active==false).name' | xargs -I{} niri msg action unset-workspace-name {}";
         };
-        "temperature" = {
-          #"hwmon-path" = "/sys/class/hwmon/hwmon4/temp1_input";
-          "hwmon-path" = "/sys/class/hwmon/hwmon5/temp1_input";
-          "critical-threshold" = 99;
-          "interval" = 5;
-          "format" = "{icon} {temperatureC}°C";
-          "format-icons" = [
-            ""
-            ""
-            ""
-            ""
-            ""
-          ];
-          "tooltip" = true;
+        pulseaudio = {
+          format = "{icon}";
+          format-bluetooth = "{icon}\n ";
+          format-icons = {
+            default = "";
+            speaker = "";
+            speaker-muted = "";
+          };
+          format-muted = "{icon}";
+          format-bluetooth-muted = "{icon}\n ";
+          format-source = "";
+          format-source-muted = "";
+          on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
+          on-click-middle = "${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list sinks short | ${pkgs.gnugrep}/bin/grep -v $(${pkgs.pulseaudio}/bin/pactl get-default-sink) | ${pkgs.coreutils}/bin/cut -f 1 | ${pkgs.coreutils}/bin/head -1)";
+        };
+        "pulseaudio#mic" = {
+          format = "{format_source}";
+          format-source = "";
+          format-source-muted = "";
+          tooltip = false;
+          on-click = "bash -c '${pkgs.swayosd}/bin/swayosd-client --input-volume=mute-toggle && pkill -SIGRTMIN+4 waybar'";
+        };
+        "pulseaudio/slider" = {
+          orientation = "vertical";
+        };
+        systemd-failed-units = {
+          hide-on-ok = true;
+          format = "";
+          system = true;
+          user = true;
         };
       }
     ];
     style = ''
       * {
-        border: none;
-        border-radius: 0;
-        min-height: 0;
+          border: none;
+          border-radius: 0;
+          min-height: 0;
+          min-width: 0;
+          padding: 0;
+          margin: 0;
       }
+
+      /* the bar itself */
       #waybar {
-        background: #${config.colors.dark_bg};
-        color: #${config.colors.foreground};
-        font-family: "Fira Mono";
-        font-size: 13;
+          color: #${config.colors.foreground};
+          font-family: "Fira Mono";
+          font-size: 12px;
+          background: transparent;
+          /* exchange with below set */
+          background-color: #${config.colors.dark_bg};
       }
+      /* exchange with above line */
+      .modules-left,
+      .modules-center,
+      .modules-right {
+          background-color: #${config.colors.dark_bg};
+          border-radius: 1em;
+          /* margin: 0.3em 0.4em; */
+      }
+
+      /* workspaces */
       #workspaces {
-        background-color: #${config.colors.background};
-        padding: 0;
+          padding: 0.5em 0em;
       }
       #workspaces button {
-        padding: 0.3em 0.7em;
-        color: #${config.colors.foreground};
-        border-top: 1px solid #${config.colors.background};
+          color: inherit; /* needed for some reason */
+          padding: 0.5em;
       }
-      #workspaces button.empty {
-        color: #${config.colors.bright-black};
-      }
+
       #workspaces button.visible {
-        border-top: 1px solid #${config.colors.foreground};
       }
       #workspaces button:hover {
-        background-color: #${config.colors.background};
-        color: #${config.colors.foreground};
-        border-top: 1px solid #${config.colors.cyan};
+          background-color: #${config.colors.background};
       }
       #workspaces button.focused {
-        background-color: #${config.colors.light_bg};
-        color: #${config.colors.foreground};
-        border-top: 1px solid #${config.colors.blue};
-        border-bottom-right-radius: 1em;
       }
       #workspaces button.urgent {
-        border-top: 1px solid #${config.colors.red};
       }
+      #workspaces button.empty {
+          color: #${config.colors.bright-black};
+      }
+
+      #workspaces button#niri-workspace-red {
+          color: #${config.colors.red};
+      }
+      #workspaces button#niri-workspace-green {
+          color: #${config.colors.green};
+      }
+      #workspaces button#niri-workspace-blue {
+          color: #${config.colors.blue};
+      }
+      #workspaces button#niri-workspace-pink {
+          color: #${config.colors.pink};
+      }
+      #workspaces button#niri-workspace-orange {
+          color: #${config.colors.orange};
+      }
+      #workspaces button#niri-workspace-cyan {
+          color: #${config.colors.cyan};
+      }
+      #workspaces button#niri-workspace-purple {
+          color: #${config.colors.purple};
+      }
+      #workspaces button#niri-workspace-yellow {
+          color: #${config.colors.yellow};
+      }
+
+      /* darker tooltips */
       tooltip {
-        background: #${config.colors.background};
-        color: #${config.colors.foreground};
+          background: #${config.colors.background};
+          color: #${config.colors.bright-white};
       }
-      /* Each module */
-      .modules-left > * > *,
-      .modules-center > * > *,
-      .modules-right > * > * {
-        padding: 0px 0.5em;
+
+      .module {
+          padding: 0.6em 0em;
       }
-      /* all right hand modules */
-      .modules-right > * > * {
-        margin: 0 0.2em;
-      }
-      /* settings modules */
-      #idle_inhibitor,
-      #pulseaudio,
-      #tray {
-        border-top: 1px solid #${config.colors.dark_fg};
-      }
-      /* device status modules */
-      #battery,
-      #cpu,
-      #disk,
-      #memory,
-      #temperature {
-        border-top: 1px solid #${config.colors.cyan};
-      }
-      /* outside status modules */
-      #custom-weather,
+
       #clock {
-        border-top: 1px solid #${config.colors.blue};
+          padding-top: 0em;
       }
-      #window {
-        color: #${config.colors.bright-black};
-        background-color: #${config.colors.dark_bg};
+
+      #pulseaudio.mic {
+          color: #${config.colors.background};
+          background-color: #${config.colors.red};
       }
-      .warning {
-        color: #${config.colors.background};
-        background-color: #${config.colors.yellow};
+
+      #systemd-failed-units {
+          color: #${config.colors.red};
       }
-      .critical {
-        color: #${config.colors.background};
-        background-color: #${config.colors.red};
+
+      #pulseaudio-slider trough {
+          min-height: 8em;
+          min-width: 0.4em;
+          border-radius: 0.4em;
+          background-color: #${config.colors.light_bg};
       }
-      #custom-media {
-        color: rgb(102, 220, 105);
-        background-color: #${config.colors.dark_bg};
-      }
-      #mode {
-        background: #${config.colors.purple};
-        color: #${config.colors.background};
+      #pulseaudio-slider highlight {
+          border-bottom-left-radius: 0.4em;
+          border-bottom-right-radius: 0.4em;
+          background-color: #${config.colors.blue};
       }
     '';
   };
