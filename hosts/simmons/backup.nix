@@ -1,6 +1,6 @@
 {
   config,
-  pkgs,
+  hostName,
   ...
 }: {
   age.secrets.restic_password = {
@@ -30,7 +30,7 @@
       "home/danieln/code/qmk_firmware"
       "home/danieln/code/Garmin"
     ];
-    repository = "rest:http://hyperion.squirrel-emperor.ts.net:8000/${config.networking.hostName}";
+    repository = "rest:http://hyperion.squirrel-emperor.ts.net:8000/${hostName}";
     timerConfig = {
       OnCalendar = "daily";
       Persistent = true;
