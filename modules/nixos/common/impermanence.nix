@@ -60,6 +60,7 @@
         ".local/share/fish"
         ".local/share/atuin"
         ".local/share/nix"
+        ".local/share/posting"
         # secrets
         {
           directory = ".aws";

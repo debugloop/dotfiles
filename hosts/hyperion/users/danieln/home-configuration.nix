@@ -1,6 +1,6 @@
 {flake, ...}: {
   imports = [
-    flake.homeModules.shared
-    flake.homeModules.headless
+    flake.homeModules.common
+    flake.homeModules.class-server
   ];
 }

@@ -88,4 +88,12 @@
     users.users.danieln.hashedPasswordFile = lib.mkForce null;
     users.users.danieln.initialHashedPassword = "";
   };
+
+  security = {
+    sudo = {
+      extraConfig = ''
+        Defaults passprompt="[sudo] password for %p: "
+      '';
+    };
+  };
 }

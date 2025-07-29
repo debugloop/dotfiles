@@ -6,8 +6,10 @@
   home = {
     packages = with pkgs; [
       git
-      tig
+      gitAndTools.git-absorb
+      gitAndTools.git-trim
       mergiraf
+      tig
     ];
     file = {
       ".gitignore".text = ''

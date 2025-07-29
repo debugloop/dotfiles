@@ -8,7 +8,12 @@
     enable = true;
     viAlias = true;
     vimAlias = true;
+    defaultEditor = true;
     # package = pkgs.neovim;
+  };
+
+  home.sessionVariables = {
+    MANPAGER = "nvim +Man!";
   };
 
   xdg.configFile = let
@@ -25,10 +30,10 @@
     # "nvim/ftplugin".source = ./ftplugin;
     # "nvim/after".source = ./after;
 
-    "nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/shared/nvim/init.lua";
-    "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/shared/nvim/lua";
-    "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/shared/nvim/ftplugin";
-    "nvim/after".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/shared/nvim/after";
+    "nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/common/nvim/init.lua";
+    "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/common/nvim/lua";
+    "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/common/nvim/ftplugin";
+    "nvim/after".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/common/nvim/after";
 
     "nvim/parser".source = "${treesitterParsers}/parser"; # treesitter master only
   };

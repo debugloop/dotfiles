@@ -1,8 +1,4 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{config, ...}: {
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
@@ -109,7 +105,6 @@
       sloc = "tokei";
       s = "kitten ssh";
       vs = "vim (git f)";
-      vim = "nvim";
       vimdiff = "nvim -d";
     };
   };

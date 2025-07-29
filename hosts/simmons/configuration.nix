@@ -1,10 +1,9 @@
 {flake, ...}: {
   imports = [
+    ./hardware-configuration.nix
     flake.nixosModules.common
-    flake.nixosModules.laptops
-    ./backup.nix
-    ./boot.nix
-    ./steam.nix
+    flake.nixosModules.class-laptop
+    flake.nixosModules.has-backup
   ];
 
   programs = {

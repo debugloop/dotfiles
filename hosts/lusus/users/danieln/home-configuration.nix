@@ -4,8 +4,8 @@
   ...
 }: {
   imports = [
-    flake.homeModules.shared
-    flake.homeModules.graphical
+    flake.homeModules.common
+    flake.homeModules.class-laptop
     inputs.gridx.home-module
   ];
 }
