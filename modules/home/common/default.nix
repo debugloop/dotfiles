@@ -26,6 +26,7 @@
       PAGER = "less -R --use-color -Dd+r -Du+b";
     };
     packages = with pkgs; [
+      gavin-bc
       curl
       dig
       dmidecode

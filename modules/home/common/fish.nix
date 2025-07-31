@@ -89,6 +89,7 @@
     };
     shellAliases = {
       ag = "rg";
+      bc = "bc -l";
       cat = "bat";
       cd = "z";
       cdi = "zi";
