@@ -68,6 +68,11 @@
       redis
       ripgrep
       rr
+      rust-analyzer
+      cargo
+      gcc
+      rustfmt
+      rustc
       socat
       sqlite
       stylua
