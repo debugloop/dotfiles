@@ -144,6 +144,7 @@ return inject_all({
         javascript = { "prettier" },
         lua = { "stylua" },
         nix = { "alejandra" },
+        rust = { "rustfmt" },
         templ = { "templ", "injected" },
         ["*"] = function(bufnr)
           if vim.fn.getbufvar(bufnr, "&filetype") == "terraform" then

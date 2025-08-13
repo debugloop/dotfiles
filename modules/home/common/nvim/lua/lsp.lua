@@ -171,4 +171,30 @@ vim.lsp.config("fish", {
   root_dir = root_dir(),
 })
 
-vim.lsp.enable({ "gopls", "typos-lsp", "nixd", "templ", "javascript", "lua_ls", "harper", "fish" })
+vim.lsp.config("rust_analyzer", {
+  cmd = { "rust-analyzer" },
+  filetypes = { "rust" },
+  root_dir = root_dir({ "Cargo.toml" }),
+  capabilities = {
+    experimental = {
+      serverStatusNotification = true,
+    },
+  },
+  before_init = function(init_params, config)
+    if config.settings and config.settings["rust-analyzer"] then
+      init_params.initializationOptions = config.settings["rust-analyzer"]
+    end
+  end,
+})
+
+vim.lsp.enable({
+  "gopls",
+  "typos-lsp",
+  "nixd",
+  "templ",
+  "javascript",
+  "lua_ls",
+  "harper",
+  "fish",
+  "rust_analyzer",
+})
