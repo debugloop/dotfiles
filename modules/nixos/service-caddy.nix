@@ -1,9 +1,4 @@
-{
-  lib,
-  config,
-  hostName,
-  ...
-}: {
+{hostName, ...}: {
   services.caddy = {
     enable = true;
     globalConfig = ''

@@ -14,6 +14,7 @@
     directories = [
       "/etc/nixos" # our config
       "/etc/NetworkManager/system-connections" # network manager connections
+      "/etc/mullvad-vpn" # mullvad state
       "/var/lib/bluetooth" # blueman connections
       "/var/lib/nixos" # uid and gid mappings
       "/var/log" # logs

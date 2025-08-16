@@ -8,5 +8,9 @@
     };
   };
 
-  services.avahi.enable = true;
+  services = {
+    avahi.enable = true;
+    mullvad-vpn.enable = true;
+    jellyfin.enable = true;
+  };
 }
