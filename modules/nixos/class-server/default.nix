@@ -1,16 +1,10 @@
-{lib, ...}: {
+{...}: {
   services = {
     prometheus.exporters = {
       node = {
         enable = true;
         enabledCollectors = ["systemd"];
       };
-    };
-    tailscale = {
-      useRoutingFeatures = lib.mkForce "server";
-      extraUpFlags = [
-        "--advertise-exit-node"
-      ];
     };
   };
 
@@ -19,5 +13,14 @@
     persistent = false;
     flake = "github:debugloop/dotfiles";
     allowReboot = true;
+  };
+
+  programs.nh = {
+    enable = true;
+    clean = {
+      enable = true;
+      dates = "Mon *-*-* 06:00:00";
+      extraArgs = "--keep 5 --keep-since 3d";
+    };
   };
 }

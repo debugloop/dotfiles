@@ -11,6 +11,8 @@
     flake.nixosModules.service-miniflux
     flake.nixosModules.service-prometheus
     flake.nixosModules.service-restic-rest
+    flake.nixosModules.service-jellyfin
+    flake.nixosModules.service-rqbit
   ];
 
   networking = {
