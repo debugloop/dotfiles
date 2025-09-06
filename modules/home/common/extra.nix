@@ -42,19 +42,23 @@
     zoxide.enable = true;
   };
 
-  home.packages = with pkgs; [
-    bmon
-    dogdns
-    dool
-    du-dust
-    entr
-    fd
-    ffmpeg
-    gping
-    miniserve
-    nmap
-    ripgrep
-    tailspin
-    tcpdump
-  ];
+  home = {
+    sessionVariables.EZA_COLORS = "reset";
+    packages = with pkgs; [
+      bmon
+      dogdns
+      dool
+      du-dust
+      entr
+      fd
+      ffmpeg
+      gping
+      miniserve
+      nmap
+      ripgrep
+      tailspin
+      tcpdump
+      qsv
+    ];
+  };
 }

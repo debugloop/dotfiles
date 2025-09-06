@@ -11,6 +11,7 @@
     systemPackages = with pkgs; [
       # root stuff
       coreutils
+      file
       mkpasswd
       nettools
       pciutils
