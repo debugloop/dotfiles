@@ -31,6 +31,9 @@
     config = {
       allowUnfree = true;
       warnUndeclaredOptions = true;
+      permittedInsecurePackages = [
+        "qtwebengine-5.15.19"
+      ];
     };
     overlays = [
       # inputs.neovim-nightly-overlay.overlays.default
