@@ -16,6 +16,7 @@
         reload_style_on_change = true;
         modules-left = [
           "niri/workspaces"
+          # "custom/winpos"
         ];
         modules-center = [
           "pulseaudio#mic"
@@ -113,6 +114,31 @@
                             idfocused="$(niri msg -j workspaces | jq ".[] | select(.is_focused == true ) | .id")"
                             num="$(niri msg -j windows | jq "[.[] | select(.workspace_id == $idfocused)] | length")"
                             echo $num || exit
+                            ;;
+                    esac
+                done
+          '';
+          on-scroll-down = "niri msg action focus-column-right-or-first";
+          on-scroll-up = "niri msg action focus-column-left-or-last";
+        };
+        "custom/winpos" = {
+          exec = pkgs.writeScript "./winpos.sh" ''
+            #!/bin/sh
+
+            active_window_id="$(niri msg -j workspaces | jq -r '.[]|select(.is_focused==true).active_window_id')"
+            total_columns="$(niri msg -j windows | jq -r '[.[] | .layout.pos_in_scrolling_layout[0]] | max')"
+            current_column=$(niri msg -j windows | jq -r ".[]|select(.id==$active_window_id).layout.pos_in_scrolling_layout[0]")
+            echo $(( $current_column - 1 )) $(( $total_columns - $current_column ))
+
+            niri msg -j event-stream |\
+                while read -r line; do
+                    event="$(echo $line | jq --unbuffered -r 'keys.[0]')"
+                    case "$event" in
+                        "WindowFocusChanged"|"WindowLayoutsChanged"|"WorkspaceActivated"|"WorkspaceActiveWindowChanged"|"WindowOpenedOrChanged")
+                            active_window_id="$(niri msg -j workspaces | jq -r '.[]|select(.is_focused==true).active_window_id')"
+                            total_columns="$(niri msg -j windows | jq -r '[.[] | .layout.pos_in_scrolling_layout[0]] | max')"
+                            current_column=$(niri msg -j windows | jq -r ".[]|select(.id==$active_window_id).layout.pos_in_scrolling_layout[0]")
+                            echo $(( $current_column - 1 )) $(( $total_columns - $current_column )) || exit
                             ;;
                     esac
                 done

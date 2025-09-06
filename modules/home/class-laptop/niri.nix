@@ -4,18 +4,13 @@
   perSystem,
   ...
 }: {
+  home.packages = with pkgs; [
+    xwayland-satellite
+  ];
   programs.niri = {
     package = perSystem.niri.niri-unstable;
     settings = {
       gestures.hot-corners.enable = false;
-      spawn-at-startup = [
-        {
-          command = ["${pkgs.xwayland-satellite}/bin/xwayland-satellite" ":42"];
-        }
-      ];
-      environment = {
-        DISPLAY = ":42";
-      };
       screenshot-path = "~/pictures/screenshot-%d-%m-%Y-%T.png";
       input = {
         workspace-auto-back-and-forth = true;
@@ -40,6 +35,7 @@
           natural-scroll = true;
         };
       };
+      overview.backdrop-color = "#${config.colors.light_bg}";
       outputs = {
         "eDP-1" = {
           scale = 1.0;
@@ -56,51 +52,56 @@
       prefer-no-csd = true;
       layout = {
         empty-workspace-above-first = true;
-        gaps = 0;
+        gaps = 2;
+        # struts = {
+        #   top = -6;
+        #   bottom = -6;
+        #   left = -6;
+        #   right = -6;
+        # };
         shadow = {
           enable = false;
           color = "#${config.colors.blue}";
           inactive-color = "#${config.colors.light_bg}00"; # transparent
-          spread = 1;
-          softness = 15;
-          offset = {
-            x = 0;
-            y = 0;
-          };
         };
         focus-ring = {
           enable = true;
-          width = 1;
-          active.color = "#${config.colors.blue}00";
-          inactive.color = "#${config.colors.cyan}";
-        };
-        border = {
-          enable = true;
           width = 2;
           active.color = "#${config.colors.blue}";
-          inactive.color = "#${config.colors.light_bg}";
+          inactive.color = "#${config.colors.cyan}";
+          urgent.color = "#${config.colors.red}";
         };
-        default-column-width.proportion = 0.333;
+        border = {
+          enable = false;
+          width = 1;
+          active.color = "#${config.colors.blue}00";
+          inactive.color = "#${config.colors.light_bg}00";
+          urgent.color = "#${config.colors.red}";
+        };
+        default-column-width.proportion = 0.4;
         preset-column-widths = [
-          {proportion = 0.333;}
+          {proportion = 0.3;}
+          {proportion = 0.4;}
           {proportion = 0.5;}
-          {proportion = 0.667;}
+          {proportion = 0.6;}
+          {proportion = 0.7;}
         ];
         preset-window-heights = [
-          {proportion = 0.333;}
+          {proportion = 0.333333;}
           {proportion = 0.5;}
-          {proportion = 0.667;}
+          {proportion = 0.666667;}
         ];
         tab-indicator = {
-          position = "right";
+          position = "top";
           place-within-column = true;
-          gap = 0;
-          width = 7;
-          gaps-between-tabs = 5;
-          length.total-proportion = 0.2;
+          gap = 5;
+          width = 4;
+          gaps-between-tabs = 8;
+          length.total-proportion = 0.3;
           corner-radius = 5;
           active.color = "#${config.colors.blue}";
           inactive.color = "#${config.colors.light_bg}";
+          urgent.color = "#${config.colors.red}";
         };
         insert-hint.display.color = "#${config.colors.green}88";
       };
@@ -131,22 +132,50 @@
         }
         {
           matches = [
+            {app-id = "kitty";}
+          ];
+          default-column-width = {proportion = 0.3;};
+        }
+        {
+          matches = [
+            {is-urgent = true;}
+          ];
+          shadow = {
+            enable = true;
+            softness = 0;
+            spread = 2;
+            offset = {
+              x = 0;
+              y = 0;
+            };
+            color = "#${config.colors.bright-red}";
+          };
+        }
+        {
+          matches = [
             {is-window-cast-target = true;}
           ];
-          border = {
+          focus-ring = {
+            enable = true;
+            width = 2;
             active.color = "#${config.colors.bright-red}";
-            inactive.color = "#${config.colors.red}";
+            inactive.color = "#${config.colors.bright-red}";
           };
           shadow = {
             enable = true;
-            color = "#${config.colors.red}";
+            softness = 8;
+            spread = 3;
+            offset = {
+              x = 0;
+              y = 0;
+            };
+            color = "#${config.colors.bright-red}";
           };
         }
         {
           matches = [
             {is-floating = true;}
           ];
-          # baba-is-float = true;
           shadow = {
             enable = true;
             color = "#${config.colors.blue}";
@@ -207,13 +236,12 @@
 
         # window width
         "Mod+R".action = switch-preset-column-width;
-        "Mod+Comma".action = set-column-width "33.3%";
-        "Mod+Period".action = set-column-width "66.7%";
-        "Mod+Slash".action = set-column-width "50%";
+        "Mod+Period".action = switch-preset-column-width;
+        "Mod+Comma".action = switch-preset-column-width-back;
         "Mod+M".action = maximize-column;
         "Mod+Ctrl+M".action = expand-column-to-available-width;
-        "Mod+XF86AudioRaiseVolume".action = set-column-width "+1%";
-        "Mod+XF86AudioLowerVolume".action = set-column-width "-1%";
+        "Mod+XF86AudioRaiseVolume".action = switch-preset-column-width;
+        "Mod+XF86AudioLowerVolume".action = switch-preset-column-width-back;
 
         # window height
         "Mod+Shift+R".action = switch-preset-window-height;
@@ -234,8 +262,8 @@
         "Ctrl+Print".action = screenshot-window;
 
         # focus
-        # "Mod+H".action = focus-column-left-or-last;
-        # "Mod+L".action = focus-column-right-or-first;
+        "Mod+Backspace".action = focus-column-first;
+        "Mod+Shift+Backspace".action = focus-column-last;
         "Mod+H".action = focus-column-or-monitor-left;
         "Mod+J".action = focus-window-or-workspace-down;
         "Mod+K".action = focus-window-or-workspace-up;
@@ -263,12 +291,6 @@
         "Mod+Tab".action = focus-monitor-next;
         "Mod+Shift+Tab".action = move-window-to-monitor-next;
         "Mod+Ctrl+Tab".action = move-workspace-to-monitor-next;
-
-        # special focus
-        "Mod+BracketLeft".action = focus-column-first;
-        "Mod+Shift+BracketLeft".action = move-column-to-first;
-        "Mod+BracketRight".action = focus-column-last;
-        "Mod+Shift+BracketRight".action = move-column-to-last;
 
         # laptop screen
         "Mod+Equal".action = spawn "niri" "msg" "output" "eDP-1" "on";
