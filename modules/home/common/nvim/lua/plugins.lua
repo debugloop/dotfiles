@@ -1398,6 +1398,23 @@ return inject_all({
               port = "2345",
             },
           },
+          {
+            type = "go",
+            name = "container",
+            mode = "remote",
+            request = "attach",
+            showLog = true,
+            connect = {
+              host = "127.0.0.1",
+              port = "2345",
+            },
+            substitutePath = {
+              {
+                from = vim.fn.getcwd(),
+                to = "/app",
+              },
+            },
+          },
         },
       },
     },
@@ -1422,9 +1439,6 @@ return inject_all({
           vim.cmd("startinsert")
         end,
       })
-      dap.listeners.after.event_initialized["hide-dap-view-buf"] = function()
-        vim.api.nvim_set_option_value("buflisted", false, { buf = require("dap-view.state").term_bufnr })
-      end
       -- debug mode map overlay
       DEBUG_MODE = Layers.mode.new("Debug Mode")
       DEBUG_MODE:auto_show_help()

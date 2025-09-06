@@ -54,7 +54,7 @@ vim.opt.number = true -- enable line numbers
 vim.opt.relativenumber = true -- enable relative line numbers
 
 -- view
-vim.opt.scrolloff = 8 -- always show this many lines of context at the edges
+vim.opt.scrolloff = 16 -- always show this many lines of context at the edges
 vim.opt.sidescrolloff = 16 -- always show this many columns of context at the edges
 
 -- splits
