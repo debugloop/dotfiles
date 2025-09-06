@@ -15,6 +15,7 @@ vim.keymap.del("n", "gra")
 vim.keymap.del("n", "gri")
 vim.keymap.del("n", "grn")
 vim.keymap.del("n", "grr")
+vim.keymap.del("n", "grt")
 
 -- add my own
 vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { desc = "lsp: rename symbol" })
