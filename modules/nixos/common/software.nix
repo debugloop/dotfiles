@@ -10,6 +10,7 @@
     };
     systemPackages = with pkgs; [
       # root stuff
+      bridge-utils
       coreutils
       file
       mkpasswd

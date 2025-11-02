@@ -14,6 +14,7 @@
       screenshot-path = "~/pictures/screenshot-%d-%m-%Y-%T.png";
       input = {
         workspace-auto-back-and-forth = true;
+        # warp-mouse-to-focus.enable = true;
         focus-follows-mouse = {
           enable = true;
           max-scroll-amount = "0%";
@@ -23,7 +24,7 @@
             layout = "us";
             model = "pc105";
             variant = "altgr-intl";
-            options = "compose:rctrl,lv3:caps_switch";
+            options = "compose:rctrl,lv3:ralt_switch_multikey";
           };
         };
         touchpad = {
@@ -208,7 +209,7 @@
 
         # lock and suspend
         "Mod+Backslash".action = spawn "${pkgs.swaylock-effects}/bin/swaylock" "-f";
-        "Mod+Ctrl+Shift+Backslash".action = spawn "systemctl" "suspend";
+        "Mod+Ctrl+Backslash".action = spawn "systemctl" "suspend";
         "Cancel".action = spawn "${pkgs.swaylock-effects}/bin/swaylock" "-f";
 
         # window actions

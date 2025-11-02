@@ -50,6 +50,7 @@
         "go" # go libs
         ".undo" # nvim undo
         ".local/state/wireplumber" # volume settings
+        ".claude"
         # history for shells
         ".local/share/direnv"
         ".local/share/zoxide"

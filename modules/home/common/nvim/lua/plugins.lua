@@ -25,10 +25,101 @@ end
 
 return inject_all({
   {
+    "sourcegraph/amp.nvim",
+    branch = "main",
+    lazy = false,
+    opts = { auto_start = false, log_level = "info" },
+  },
+  {
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    event = "InsertEnter",
+    keys = {
+      {
+        "<leader>oa",
+        function()
+          require("copilot.suggestion").toggle_auto_trigger()
+        end,
+        desc = "toggle AI completion",
+      },
+    },
+    opts = {
+      server = {
+        type = "binary",
+        custom_server_filepath = "/etc/profiles/per-user/danieln/bin/copilot-language-server",
+      },
+      suggestion = {
+        trigger_on_accept = false,
+        auto_trigger = true,
+        keymap = {
+          accept = "<cr>",
+          accept_word = "<s-cr>",
+          accept_line = false,
+          next = "<c-cr>",
+          prev = false,
+          dismiss = "<space>",
+        },
+      },
+    },
+    config = function(_, opts)
+      require("copilot").setup(opts)
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "BlinkCmpMenuOpen",
+        callback = function()
+          vim.b.copilot_suggestion_hidden = true
+        end,
+      })
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "BlinkCmpMenuClose",
+        callback = function()
+          vim.b.copilot_suggestion_hidden = false
+        end,
+      })
+    end,
+  },
+  {
+    "coder/claudecode.nvim",
+    dependencies = {
+      { "folke/snacks.nvim" },
+    },
+    config = true,
+    opts = {
+      diff_opts = {
+        open_in_current_tab = false,
+      },
+      terminal = {
+        provider = "external",
+        provider_opts = {
+          external_terminal_cmd = "kitty --working-directory %s %s",
+        },
+      },
+    },
+    keys = {
+      { "<leader>a", nil, desc = "AI/Claude Code" },
+      { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+      { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+      { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+      { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+      { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+      { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+      { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+      {
+        "<leader>as",
+        "<cmd>ClaudeCodeTreeAdd<cr>",
+        desc = "Add file",
+        ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
+      },
+      -- Diff management
+      { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+      { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
+    },
+  },
+  {
     "saghen/blink.cmp",
     lazy = false, -- it handles itself and is an integral part anyhow
     dependencies = {
       { "rafamadriz/friendly-snippets" },
+      { "zbirenbaum/copilot.lua" },
     },
     opts = {
       appearance = {
@@ -112,6 +203,9 @@ return inject_all({
       },
       sources = {
         default = { "lsp", "path", "snippets", "buffer", "lazydev" },
+        per_filetype = {
+          codecompanion = { "codecompanion" },
+        },
         providers = {
           lsp = {
             fallbacks = { "lazydev" },
@@ -145,7 +239,7 @@ return inject_all({
         lua = { "stylua" },
         nix = { "alejandra" },
         rust = { "rustfmt" },
-        templ = { "templ", "injected" },
+        templ = { "templ" },
         ["*"] = function(bufnr)
           if vim.fn.getbufvar(bufnr, "&filetype") == "terraform" then
             return {}

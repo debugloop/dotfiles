@@ -6,6 +6,9 @@
   home = {
     packages = with pkgs; [
       git
+      jjui
+      jj-pre-push
+      jujutsu
       gitAndTools.git-absorb
       gitAndTools.git-trim
       mergiraf
@@ -15,6 +18,15 @@
       ".gitignore".text = ''
         .session.nvim
       '';
+    };
+  };
+  programs.jujutsu = {
+    enable = true;
+    settings = {
+      user = {
+        email = "git@danieln.de";
+        name = "Daniel Nägele";
+      };
     };
   };
   programs.git = {
@@ -114,7 +126,7 @@
         if [ $# -eq 0 ]; then
           git ls-files --modified --others --exclude-standard | grep -Ev '^(vendor/|go.(mod|sum)$)'
         else
-          git show -m --pretty=tformat: --name-only @ | grep -Ev '^(vendor/|go.(mod|sum)$)'
+          git diff --name-only $@ | grep -Ev '^(vendor/|go.(mod|sum)$)'
         fi
       }; f";
 

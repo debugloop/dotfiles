@@ -58,6 +58,9 @@
         "nvim-treesitter-textobjects" # uses master
         "quicker-nvim"
         "snacks-nvim"
+        # "amp-nvim"
+        "copilot-lua"
+        "claudecode-nvim"
       ]
       (
         name: {

@@ -106,8 +106,8 @@
     '';
     keybindings = {
       # os windows
-      "ctrl+shift+n" = "launch --type=os-window --cwd=current";
-      "ctrl+shift+r" = "set_window_title";
+      "alt+n" = "launch --type=os-window --cwd=current";
+      "alt+r" = "set_window_title";
 
       # clipboard
       "ctrl+shift+c" = "copy_to_clipboard";
@@ -116,33 +116,30 @@
       # scrolling
       "shift+page_up" = "scroll_page_up";
       "shift+page_down" = "scroll_page_down";
-      "shift+end" = "scroll_end";
-      "ctrl+shift+page_up" = "scroll_to_prompt -1";
-      "ctrl+shift+page_down" = "scroll_to_prompt +1";
+      "alt+page_up" = "scroll_to_prompt -1";
+      "alt+page_down" = "scroll_to_prompt +1";
 
       # font size
-      "ctrl+shift+equal" = "change_font_size current +2.0";
-      "ctrl+shift+minus" = "change_font_size current -2.0";
-      "ctrl+shift+0" = "change_font_size current 0";
+      "alt+plus" = "change_font_size current +2.0";
+      "alt+equal" = "change_font_size current +2.0";
+      "alt+minus" = "change_font_size current -2.0";
+      "alt+0" = "change_font_size current 0";
 
       # dump output to vim
-      "ctrl+shift+h" = "show_scrollback";
+      "alt+h" = "show_scrollback";
 
       # paste things
-      "ctrl+shift+g" = "kitten hints --hints-text-color=red --type hash --program -";
-      "ctrl+shift+w" = "kitten hints --hints-text-color=red --type word --program -";
-      "ctrl+shift+l" = "kitten hints --hints-text-color=red --type line --program -";
+      "alt+g" = "kitten hints --hints-text-color=red --type hash --program -";
+      "alt+w" = "kitten hints --hints-text-color=red --type word --program -";
+      "alt+f" = "kitten hints --hints-text-color=red --type path --program -";
 
-      # quick actions
-      "ctrl+shift+f" = "kitten hints --hints-text-color=red --type path";
-      "ctrl+shift+e" = "kitten hints --hints-text-color=red --type url --program default";
-      "ctrl+shift+u" = "kitten hints --hints-text-color=red --type url --program default";
-      "ctrl+shift+shift+u" = "kitten unicode_input";
+      # urls
+      "alt+e" = "kitten hints --hints-text-color=red --type url --program default";
+      "alt+u" = "kitten hints --hints-text-color=red --type url --program default";
 
       # markers
-      "ctrl+shift+m" = "create_marker";
-      "ctrl+shift+," = "remove_marker";
-      "ctrl+shift+f1" = "toggle_marker iregex 1 \\\\berr(or)?\\\\b 2 \\\\bwarn(ing)?\\\\b 3 \\\\b(info|debug|trace)\\\\b";
+      "alt+m" = "create_marker";
+      "alt+shift+m" = "remove_marker";
     };
   };
 }

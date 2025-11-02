@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   imports = [
+    ./ai.nix
     ./applications.nix
     ./clipman.nix
     ./ghostty.nix
@@ -47,6 +48,7 @@
       # cli apps with graphical deps
       imagemagick
       pdftk
+      qmk
     ];
   };
 

@@ -1,5 +1,8 @@
 vim.g.mapleader = " "
 
+vim.keymap.set("n", "<c-s>", ":w<cr>", { desc = "write" })
+vim.keymap.set("n", "<c-q>", ":wqa<cr>", { desc = "write and quit all" })
+
 -- better up/down
 vim.keymap.set("n", "j", [[ v:count > 1 ? "m'" . v:count . "j" : "gj" ]], { expr = true, silent = true })
 vim.keymap.set("n", "k", [[ v:count > 1 ? "m'" . v:count . "k" : "gk" ]], { expr = true, silent = true })
@@ -13,6 +16,7 @@ vim.keymap.set("n", "H", function()
   end
 end, { desc = "go to start of line" })
 vim.keymap.set({ "o", "x" }, "H", "^", { desc = "go to start of line" })
+-- TODO: add map to L before comment
 vim.keymap.set({ "n", "o", "x" }, "L", "$", { desc = "go to end of line" })
 
 -- better paste

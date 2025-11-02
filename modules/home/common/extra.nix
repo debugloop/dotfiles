@@ -58,7 +58,7 @@
       ripgrep
       tailspin
       tcpdump
-      qsv
+      xan
     ];
   };
 }

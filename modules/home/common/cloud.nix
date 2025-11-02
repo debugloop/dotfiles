@@ -9,6 +9,7 @@
   programs = {
     rbw.enable = true;
     tmate.enable = true;
+    granted.enable = true;
     gh = {
       enable = true;
       settings = {

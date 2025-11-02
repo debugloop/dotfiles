@@ -11,6 +11,5 @@
   services = {
     avahi.enable = true;
     mullvad-vpn.enable = true;
-    jellyfin.enable = true;
   };
 }
