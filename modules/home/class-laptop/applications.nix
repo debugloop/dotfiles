@@ -21,7 +21,7 @@
       xfce.thunar-volman
       wireshark
       zathura
-      teamspeak_client
+      teamspeak3
       transmission_4-gtk
       audacity
     ];

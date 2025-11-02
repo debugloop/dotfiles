@@ -35,7 +35,6 @@
     # nerd-fonts.iosevka
     nerd-fonts.symbols-only
     noto-fonts
-    noto-fonts-extra
     noto-fonts-monochrome-emoji
     noto-fonts-lgc-plus
     roboto

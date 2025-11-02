@@ -259,8 +259,8 @@
         "Mod+Semicolon".action = spawn "fish" "-c" "niri msg action focus-window --id (niri msg -j windows | jq -r '.[] | (.id|tostring) + \" \" + .app_id + \": \" + .title' | ${pkgs.wofi}/bin/wofi -di | cut -d' ' -f1)";
 
         # screenshots
-        "Print".action = screenshot;
-        "Ctrl+Print".action = screenshot-window;
+        "Print".action.screenshot = [];
+        "Ctrl+Print".action.screenshot-window = [];
 
         # focus
         "Mod+Backspace".action = focus-column-first;

@@ -8,7 +8,7 @@
       FLAKE = "/etc/nixos";
     };
     packages = with pkgs; [
-      inputs.agenix.packages.${pkgs.system}.default
+      inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
       age
       alejandra
       comma

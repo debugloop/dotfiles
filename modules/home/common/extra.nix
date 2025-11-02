@@ -48,7 +48,7 @@
       bmon
       dogdns
       dool
-      du-dust
+      dust
       entr
       fd
       ffmpeg
