@@ -24,59 +24,7 @@ local function inject_all(specs)
 end
 
 return inject_all({
-  {
-    "sourcegraph/amp.nvim",
-    branch = "main",
-    lazy = false,
-    opts = { auto_start = false, log_level = "info" },
-  },
-  {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    event = "InsertEnter",
-    keys = {
-      {
-        "<leader>oa",
-        function()
-          require("copilot.suggestion").toggle_auto_trigger()
-        end,
-        desc = "toggle AI completion",
-      },
-    },
-    opts = {
-      server = {
-        type = "binary",
-        custom_server_filepath = "/etc/profiles/per-user/danieln/bin/copilot-language-server",
-      },
-      suggestion = {
-        trigger_on_accept = false,
-        auto_trigger = true,
-        keymap = {
-          accept = "<cr>",
-          accept_word = "<s-cr>",
-          accept_line = false,
-          next = "<c-cr>",
-          prev = false,
-          dismiss = "<space>",
-        },
-      },
-    },
-    config = function(_, opts)
-      require("copilot").setup(opts)
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "BlinkCmpMenuOpen",
-        callback = function()
-          vim.b.copilot_suggestion_hidden = true
-        end,
-      })
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "BlinkCmpMenuClose",
-        callback = function()
-          vim.b.copilot_suggestion_hidden = false
-        end,
-      })
-    end,
-  },
+
   {
     "coder/claudecode.nvim",
     dependencies = {
@@ -114,12 +62,12 @@ return inject_all({
       { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
     },
   },
+
   {
     "saghen/blink.cmp",
     lazy = false, -- it handles itself and is an integral part anyhow
     dependencies = {
       { "rafamadriz/friendly-snippets" },
-      { "zbirenbaum/copilot.lua" },
     },
     opts = {
       appearance = {
@@ -203,9 +151,6 @@ return inject_all({
       },
       sources = {
         default = { "lsp", "path", "snippets", "buffer", "lazydev" },
-        per_filetype = {
-          codecompanion = { "codecompanion" },
-        },
         providers = {
           lsp = {
             fallbacks = { "lazydev" },
@@ -285,6 +230,7 @@ return inject_all({
 
   {
     "sindrets/diffview.nvim",
+    enabled = false,
     cmd = { "DiffviewOpen", "DiffviewPR" },
     keys = {
       {
@@ -764,7 +710,7 @@ return inject_all({
     opts = {
       view = {
         style = "sign",
-        signs = { add = "┃", change = "┃", delete = "_" },
+        signs = { add = "│", change = "│", delete = "_" },
         priority = 20,
       },
       mappings = {
@@ -793,6 +739,20 @@ return inject_all({
         desc = "browse files",
       },
     },
+    config = function(_, opts)
+      require("mini.files").setup(opts)
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "MiniFilesBufferCreate",
+        callback = function(args)
+          local buf_id = args.data.buf_id
+          vim.keymap.set("n", "<left>", MiniFiles.go_out, { buffer = buf_id })
+          vim.keymap.set("n", "<right>", function()
+            MiniFiles.go_in({ close_on_file = true })
+          end, { buffer = buf_id })
+          vim.keymap.set("n", "<s-right>", MiniFiles.go_in, { buffer = buf_id })
+        end,
+      })
+    end,
   },
 
   {
@@ -1725,60 +1685,60 @@ return inject_all({
     end,
   },
 
-  -- {
-  --   "nvim-treesitter/nvim-treesitter",
-  --   branch = "main",
-  --   lazy = false,
-  --   dependencies = {
-  --     {
-  --       "nvim-treesitter/nvim-treesitter-textobjects",
-  --       branch = "main",
-  --     },
-  --   },
-  --   config = function(_, _)
-  --     vim.api.nvim_create_autocmd("FileType", {
-  --       pattern = { "*" },
-  --       callback = function()
-  --         local ok = pcall(vim.treesitter.start)
-  --         if ok then
-  --           vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-  --           vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-  --         end
-  --       end,
-  --     })
-  --   end,
-  -- },
-
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
     lazy = false,
     dependencies = {
       {
         "nvim-treesitter/nvim-treesitter-textobjects",
+        branch = "main",
       },
     },
-    opts = {
-      ensure_installed = {}, -- we get this from nix
-      highlight = {
-        enable = true,
-      },
-      incremental_selection = {
-        enable = false,
-        keymaps = {
-          init_selection = "<cr>",
-          node_incremental = "<cr>",
-          scope_incremental = "<s-cr>",
-          node_decremental = "<bs>",
-        },
-      },
-      indent = {
-        enable = true,
-      },
-    },
-    config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
+    config = function(_, _)
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "*" },
+        callback = function()
+          local ok = pcall(vim.treesitter.start)
+          if ok then
+            vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
+        end,
+      })
     end,
   },
+
+  -- {
+  --   "nvim-treesitter/nvim-treesitter",
+  --   lazy = false,
+  --   dependencies = {
+  --     {
+  --       "nvim-treesitter/nvim-treesitter-textobjects",
+  --     },
+  --   },
+  --   opts = {
+  --     ensure_installed = {}, -- we get this from nix
+  --     highlight = {
+  --       enable = true,
+  --     },
+  --     incremental_selection = {
+  --       enable = false,
+  --       keymaps = {
+  --         init_selection = "<cr>",
+  --         node_incremental = "<cr>",
+  --         scope_incremental = "<s-cr>",
+  --         node_decremental = "<bs>",
+  --       },
+  --     },
+  --     indent = {
+  --       enable = true,
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require("nvim-treesitter.configs").setup(opts)
+  --   end,
+  -- },
 
   {
     "nvim-treesitter/nvim-treesitter-context",

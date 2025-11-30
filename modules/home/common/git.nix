@@ -87,7 +87,7 @@
       url."ssh://git@github.com/".insteadOf = "https://github.com/";
       user.signingkey = "~/.ssh/id_ed25519";
 
-      aliases = {
+      alias = {
         # shorthands for daily stuff
         a = "add";
         amend = "commit --amend --no-edit";
@@ -192,6 +192,8 @@
   };
   programs.delta = {
     enable = true;
+    enableJujutsuIntegration = true;
+    enableGitIntegration = true;
     options = {
       file-style = "omit";
       hunk-header-decoration-style = "blue ul box";

@@ -4,7 +4,7 @@
     settings = {
       margin = "10";
       font = "pango:Fira Mono 9";
-      anchor = "bottom-left";
+      anchor = "bottom-right";
       layer = "overlay";
       group-by = "category,summary,body";
       background-color = "#${config.colors.background}";

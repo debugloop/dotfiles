@@ -25,6 +25,7 @@
 
   networking = {
     hostName = hostName;
+    firewall.enable = true;
     nftables.enable = true;
   };
 

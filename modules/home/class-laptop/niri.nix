@@ -21,9 +21,7 @@
         };
         keyboard = {
           xkb = {
-            layout = "us";
-            model = "pc105";
-            variant = "altgr-intl";
+            layout = "eu";
             options = "compose:rctrl,lv3:ralt_switch_multikey";
           };
         };
@@ -269,12 +267,20 @@
         "Mod+J".action = focus-window-or-workspace-down;
         "Mod+K".action = focus-window-or-workspace-up;
         "Mod+L".action = focus-column-or-monitor-right;
+        "Mod+Left".action = focus-column-or-monitor-left;
+        "Mod+Down".action = focus-window-or-workspace-down;
+        "Mod+Up".action = focus-window-or-workspace-up;
+        "Mod+Right".action = focus-column-or-monitor-right;
 
         # small move
         "Mod+Shift+H".action = consume-or-expel-window-left;
         "Mod+Shift+L".action = consume-or-expel-window-right;
         "Mod+Shift+J".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-workspace-down || niri msg action move-window-down-or-to-workspace-down";
         "Mod+Shift+K".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-workspace-up || niri msg action move-window-up-or-to-workspace-up";
+        "Mod+Shift+Left".action = consume-or-expel-window-left;
+        "Mod+Shift+Right".action = consume-or-expel-window-right;
+        "Mod+Shift+Down".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-workspace-down || niri msg action move-window-down-or-to-workspace-down";
+        "Mod+Shift+Up".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-workspace-up || niri msg action move-window-up-or-to-workspace-up";
 
         # large move
         # "Mod+Ctrl+H".action = move-column-left-or-to-monitor-left;
@@ -283,6 +289,10 @@
         # "Mod+Ctrl+L".action = move-column-right-or-to-monitor-right;
         "Mod+Ctrl+H".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-monitor-left || niri msg action move-column-left-or-to-monitor-left";
         "Mod+Ctrl+L".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-monitor-right || niri msg action move-column-right-or-to-monitor-right";
+        "Mod+Ctrl+Down".action = move-workspace-down;
+        "Mod+Ctrl+Up".action = move-workspace-up;
+        "Mod+Ctrl+Left".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-monitor-left || niri msg action move-column-left-or-to-monitor-left";
+        "Mod+Ctrl+Right".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-monitor-right || niri msg action move-column-right-or-to-monitor-right";
 
         # swaylike workspace focus with wrapping
         # "Mod+Ctrl+J".action = spawn "fish" "-c" "niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].is_focused' | grep true; and niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[0].idx'); or niri msg action focus-workspace-down";

@@ -1,7 +1,31 @@
 vim.g.mapleader = " "
 
+vim.keymap.set({ "i", "c" }, "<c-bs>", "<c-w>")
+
 vim.keymap.set("n", "<c-s>", ":w<cr>", { desc = "write" })
 vim.keymap.set("n", "<c-q>", ":wqa<cr>", { desc = "write and quit all" })
+vim.keymap.set("n", "<pageup>", "<c-u>", { desc = "scroll half a page up" })
+vim.keymap.set("n", "<pagedown>", "<c-d>", { desc = "scroll half a page down" })
+vim.keymap.set("n", "<s-pageup>", "<c-b>", { desc = "scroll a page up" })
+vim.keymap.set("n", "<s-pagedown>", "<c-f>", { desc = "scroll a page down" })
+vim.keymap.set("n", "<s-left>", function()
+  local _, _, col, _ = unpack(vim.fn.getpos("."))
+  vim.cmd("normal! ^")
+  if col == vim.fn.getpos(".")[3] then
+    vim.cmd("normal! 0")
+  end
+end, { desc = "go to start of line" })
+vim.keymap.set({ "o", "x" }, "<s-left>", "^", { desc = "go to start of line" })
+vim.keymap.set({ "n", "o", "x" }, "<s-right>", "$", { desc = "go to end of line" })
+vim.keymap.set("n", "<home>", function()
+  local _, _, col, _ = unpack(vim.fn.getpos("."))
+  vim.cmd("normal! ^")
+  if col == vim.fn.getpos(".")[3] then
+    vim.cmd("normal! 0")
+  end
+end, { desc = "go to start of line" })
+vim.keymap.set({ "o", "x" }, "<home>", "^", { desc = "go to start of line" })
+vim.keymap.set({ "n", "o", "x" }, "<end>", "$", { desc = "go to end of line" })
 
 -- better up/down
 vim.keymap.set("n", "j", [[ v:count > 1 ? "m'" . v:count . "j" : "gj" ]], { expr = true, silent = true })
