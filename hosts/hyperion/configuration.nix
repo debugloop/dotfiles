@@ -17,8 +17,10 @@
 
   networking = {
     nameservers = [
-      "46.38.225.230"
-      "46.38.252.230"
+      "9.9.9.9"
+      "149.112.112.112"
+      "2620:fe::fe"
+      "2620:fe::9"
     ];
     useDHCP = false;
     interfaces.ens3 = {
