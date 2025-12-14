@@ -24,42 +24,98 @@ local function inject_all(specs)
 end
 
 return inject_all({
+  {
+    "chrisgrieser/nvim-spider",
+    keys = {
+      { "w", "<cmd>lua require('spider').motion('w')<cr>", mode = { "n", "o", "x" } },
+      { "e", "<cmd>lua require('spider').motion('e')<cr>", mode = { "n", "o", "x" } },
+      { "b", "<cmd>lua require('spider').motion('b')<cr>", mode = { "n", "o", "x" } },
+    },
+  },
 
   {
-    "coder/claudecode.nvim",
-    dependencies = {
-      { "folke/snacks.nvim" },
-    },
-    config = true,
+    "folke/sidekick.nvim",
+    lazy = false,
     opts = {
-      diff_opts = {
-        open_in_current_tab = false,
-      },
-      terminal = {
-        provider = "external",
-        provider_opts = {
-          external_terminal_cmd = "kitty --working-directory %s %s",
+      nes = {
+        debounce = 500,
+        diff = {
+          inline = "words",
         },
       },
     },
     keys = {
-      { "<leader>a", nil, desc = "AI/Claude Code" },
-      { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
-      { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
-      { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
-      { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
-      { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
-      { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
-      { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+      {
+        "<tab>",
+        function()
+          if not require("sidekick").nes_jump_or_apply() then
+            return "<Tab>" -- fallback to normal tab
+          end
+        end,
+        desc = "Goto/Apply Next Edit Suggestion",
+        expr = true,
+        mode = { "n" },
+      },
+      {
+        "<c-.>",
+        function()
+          require("sidekick.cli").toggle()
+        end,
+        desc = "Sidekick Toggle",
+        mode = { "n", "t", "i", "x" },
+      },
       {
         "<leader>as",
-        "<cmd>ClaudeCodeTreeAdd<cr>",
-        desc = "Add file",
-        ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
+        function()
+          require("sidekick.cli").select({ filter = { installed = true } })
+        end,
+        desc = "Select CLI",
       },
-      -- Diff management
-      { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
-      { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
+      {
+        "<leader>ad",
+        function()
+          require("sidekick.cli").close()
+        end,
+        desc = "Detach a CLI Session",
+      },
+      {
+        "<leader>at",
+        function()
+          require("sidekick.cli").send({ msg = "{this}" })
+        end,
+        mode = { "x", "n" },
+        desc = "Send This",
+      },
+      {
+        "<leader>af",
+        function()
+          require("sidekick.cli").send({ msg = "{file}" })
+        end,
+        desc = "Send File",
+      },
+      {
+        "<leader>av",
+        function()
+          require("sidekick.cli").send({ msg = "{selection}" })
+        end,
+        mode = { "x" },
+        desc = "Send Visual Selection",
+      },
+      {
+        "<leader>ap",
+        function()
+          require("sidekick.cli").prompt()
+        end,
+        mode = { "n", "x" },
+        desc = "Sidekick Select Prompt",
+      },
+      {
+        "<leader>ac",
+        function()
+          require("sidekick.cli").toggle({ name = "claude", focus = true })
+        end,
+        desc = "Sidekick Toggle Claude",
+      },
     },
   },
 
@@ -70,14 +126,37 @@ return inject_all({
       { "rafamadriz/friendly-snippets" },
     },
     opts = {
-      appearance = {
-        use_nvim_cmp_as_default = true,
+      keymap = {
+        preset = "none",
+        ["<tab>"] = {
+          function(cmp)
+            local has_words_before = function()
+              local col = vim.api.nvim_win_get_cursor(0)[2]
+              if col == 0 then
+                return false
+              end
+              local line = vim.api.nvim_get_current_line()
+              return line:sub(col, col):match("%s") == nil
+            end
+
+            if has_words_before() then
+              return cmp.show_and_insert()
+            end
+          end,
+          "fallback",
+        },
+        ["<enter>"] = { "select_and_accept", "fallback" },
+        -- ["<esc>"] = { "hide", "fallback" },
+        ["<left>"] = { "cancel", "fallback" },
+        ["<down>"] = { "show_and_insert", "select_next", "fallback" },
+        ["<up>"] = { "select_prev", "fallback" },
+        ["<right>"] = { "select_and_accept", "fallback" },
       },
       cmdline = {
         enabled = true,
         keymap = {
-          preset = "cmdline",
-          ["<c-space>"] = { "select_and_accept" },
+          preset = "inherit",
+          ["<enter>"] = { "fallback" },
         },
       },
       completion = {
@@ -90,6 +169,10 @@ return inject_all({
           auto_show = true,
           auto_show_delay_ms = 50,
         },
+        ghost_text = {
+          enabled = true,
+          show_without_selection = true,
+        },
         -- keyword = {
         --   range = "full",
         -- },
@@ -100,6 +183,7 @@ return inject_all({
           },
         },
         menu = {
+          auto_show = false,
           draw = {
             treesitter = { "lsp" },
             components = {
@@ -131,15 +215,6 @@ return inject_all({
       --   --   ignore_version_mismatch = true,
       --   -- },
       -- },
-      keymap = {
-        preset = "enter",
-        ["<tab>"] = { "select_next", "snippet_forward", "fallback" },
-        ["<s-tab>"] = { "select_prev", "snippet_backward", "fallback" },
-        ["<c-u>"] = { "scroll_documentation_up", "fallback" },
-        ["<c-d>"] = { "scroll_documentation_down", "fallback" },
-        ["<c-e>"] = { "cancel", "fallback" },
-        ["<cr>"] = { "select_and_accept", "fallback" },
-      },
       signature = {
         enabled = true,
         trigger = {
@@ -229,64 +304,6 @@ return inject_all({
   },
 
   {
-    "sindrets/diffview.nvim",
-    enabled = false,
-    cmd = { "DiffviewOpen", "DiffviewPR" },
-    keys = {
-      {
-        "<leader>gd",
-        "<cmd>DiffviewOpen<cr>",
-        desc = "Open Diffview",
-      },
-    },
-    opts = {
-      use_icons = false,
-      default_args = {
-        DiffviewOpen = { "--imply-local", "--untracked-files=no" },
-      },
-      keymaps = {
-        view = {
-          ["<esc>"] = "<cmd>tabc<cr>",
-        },
-        diff1 = {
-          ["<esc>"] = "<cmd>tabc<cr>",
-        },
-        diff2 = {
-          ["<esc>"] = "<cmd>tabc<cr>",
-        },
-        diff3 = {
-          ["<esc>"] = "<cmd>tabc<cr>",
-        },
-        diff4 = {
-          ["<esc>"] = "<cmd>tabc<cr>",
-        },
-        file_panel = {
-          ["<esc>"] = "<cmd>tabc<cr>",
-        },
-        file_history_panel = {
-          ["<esc>"] = "<cmd>tabc<cr>",
-        },
-        option_panel = {
-          ["<esc>"] = "<cmd>tabc<cr>",
-        },
-      },
-      hooks = {
-        diff_buf_read = function(_)
-          vim.opt_local.wrap = false
-          vim.opt_local.relativenumber = false
-          vim.opt_local.cursorline = false
-        end,
-      },
-    },
-    config = function(_, opts)
-      require("diffview").setup(opts)
-      vim.api.nvim_create_user_command("DiffviewPR", function()
-        vim.cmd("DiffviewOpen origin/HEAD...HEAD")
-      end, { desc = "open diffview for current PR" })
-    end,
-  },
-
-  {
     "rebelot/kanagawa.nvim",
     priority = 1000,
     event = "UIEnter",
@@ -332,16 +349,14 @@ return inject_all({
           MiniTablineModifiedVisible = { link = "MiniTablineVisible" },
           -- visible MiniJump
           MiniJump = { link = "@comment.note" },
-          -- less prominent qf title
-          BqfPreviewBorder = { link = "WinSeparator" },
           NoiceCmdlineIcon = { fg = theme.diag.info, bg = theme.ui.bg },
           NoiceCmdlinePopupBorder = { fg = theme.diag.info, bg = theme.ui.bg },
           NoiceCmdlinePopupTitle = { fg = theme.diag.info, bg = theme.ui.bg },
           NoiceConfirmBorder = { fg = theme.diag.info, bg = theme.ui.bg },
           -- document highlights
-          LspReferenceText = { link = "CurSearch" },
-          LspReferenceRead = { link = "CurSearch" },
-          LspReferenceWrite = { link = "IncSearch" },
+          LspReferenceRead = { bg = theme.diff.text },
+          LspReferenceWrite = { bg = theme.diff.text, fg = theme.diag.warning, underline = false },
+          LspReferenceText = { link = "None" },
         }
       end,
       colors = {
@@ -503,6 +518,10 @@ return inject_all({
       local module_opts = {
         silent = true,
         n_lines = 200,
+        mappings = {
+          goto_left = "[",
+          goto_right = "]",
+        },
       }
       module_opts.custom_textobjects = {
         -- braces
@@ -521,32 +540,11 @@ return inject_all({
           "^().*()$",
         },
         N = require("mini.extra").gen_ai_spec.number(),
-        F = function(ai, _, _)
-          -- TODO: write using lua ts api
-          if ai == "i" then
-            return require("mini.ai").gen_spec.treesitter({ i = "@function.name", a = "@function.name" }, {})(
-              "i",
-              "f",
-              {}
-            )
-          end
-          local func = require("mini.ai").find_textobject(ai, "f", {})
-          if not func then
-            return nil
-          end
-          while vim.treesitter.get_node({ pos = { func.from.line - 2, func.from.col } }):type() == "comment" do
-            func.from.line = func.from.line - 1
-          end
-          return { from = func.from, to = func.to, vis_mode = "V" }
-        end,
       }
       for _, config in pairs(opts) do
         if config.a ~= nil and config.i ~= nil then
           module_opts.custom_textobjects = vim.tbl_deep_extend("force", module_opts.custom_textobjects, {
-            [config.letter] = require("mini.ai").gen_spec.treesitter(
-              { a = config.a, i = config.i },
-              { use_nvim_treesitter = true }
-            ),
+            [config.letter] = require("mini.ai").gen_spec.treesitter({ a = config.a, i = config.i }, {}),
           })
         end
       end
@@ -586,7 +584,7 @@ return inject_all({
       indent = { suffix = "" },
       location = { suffix = "" },
       oldfile = { suffix = "" },
-      treesitter = { suffix = "" },
+      treesitter = { suffix = "n" },
       undo = { suffix = "" },
       window = { suffix = "" },
     },
@@ -596,7 +594,7 @@ return inject_all({
     "echasnovski/mini.bufremove",
     keys = {
       {
-        "<leader><tab>",
+        "<leader>w",
         function()
           require("mini.bufremove").delete(0, false)
         end,
@@ -673,39 +671,6 @@ return inject_all({
         end,
         desc = "Show details",
       },
-      {
-        "<leader>gc",
-        function()
-          require("mini.extra").pickers.git_branches({}, {
-            source = {
-              choose = function(item)
-                vim.fn.system("git read-tree " .. item:match("^%*?%s*(%S+)"))
-              end,
-            },
-          })
-        end,
-        desc = "Set git base to a branch",
-      },
-      {
-        "<leader>gC",
-        function()
-          require("mini.extra").pickers.git_commits({}, {
-            source = {
-              choose = function(item)
-                vim.fn.system("git read-tree " .. item:match("^(%S+)"))
-              end,
-            },
-          })
-        end,
-        desc = "Set git base to a commit",
-      },
-      {
-        "<leader>gr",
-        function()
-          vim.fn.system("git reset")
-        end,
-        desc = "Reset git base",
-      },
     },
     opts = {
       view = {
@@ -716,7 +681,7 @@ return inject_all({
       mappings = {
         apply = "ga",
         reset = "gR",
-        textobject = "gh",
+        textobject = "ig",
         goto_first = "[G",
         goto_prev = "[g",
         goto_next = "]g",
@@ -824,7 +789,7 @@ return inject_all({
           return 0
         end,
       },
-      symbol = "·",
+      symbol = "🞗",
       options = {
         try_as_border = true,
       },
@@ -835,30 +800,6 @@ return inject_all({
         goto_bottom = "]<space>",
       },
     },
-    config = function(_, opts)
-      require("mini.indentscope").setup(opts)
-      vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup("indentscope_python", {}),
-        pattern = "python",
-        callback = function()
-          require("mini.indentscope").config.options.border = "top"
-        end,
-      })
-      vim.api.nvim_create_autocmd({ "InsertEnter" }, {
-        group = vim.api.nvim_create_augroup("indentscope_insert_enter", { clear = true }),
-        pattern = "*",
-        callback = function()
-          vim.g.miniindentscope_disable = true
-        end,
-      })
-      vim.api.nvim_create_autocmd({ "InsertLeave" }, {
-        group = vim.api.nvim_create_augroup("indentscope_insert_leave", { clear = true }),
-        pattern = "*",
-        callback = function(event)
-          vim.g.miniindentscope_disable = false -- re-enable indent guides
-        end,
-      })
-    end,
   },
 
   {
@@ -1217,75 +1158,6 @@ return inject_all({
           },
           view = "mini",
         },
-      },
-    },
-  },
-
-  {
-    "kevinhwang91/nvim-bqf",
-    event = "VeryLazy",
-    dependencies = {
-      {
-        "junegunn/fzf",
-        dir = vim.fn.stdpath("data") .. "/nixpkgs/fzf",
-        name = "fzf",
-        build = "./install --all",
-      },
-      {
-        "stevearc/quicker.nvim",
-        opts = {
-          highlight = {
-            load_buffers = true,
-          },
-          borders = {
-            vert = "│",
-          },
-          trim_leading_whitespace = "all",
-        },
-      },
-    },
-    opts = {
-      func_map = {
-        open = "o",
-        openc = "<cr>",
-        drop = "",
-        split = "<C-x>",
-        vsplit = "<C-v>",
-        tab = "",
-        tabb = "",
-        tabc = "",
-        tabdrop = "",
-        ptogglemode = "<tab>",
-        ptoggleitem = "",
-        ptoggleauto = "",
-        pscrollup = "",
-        pscrolldown = "",
-        pscrollorig = "zz",
-        prevfile = "K",
-        nextfile = "J",
-        prevhist = "<",
-        nexthist = ">",
-        lastleave = "",
-        stoggleup = "",
-        stoggledown = "",
-        stogglevm = "",
-        stogglebuf = "",
-        sclear = "",
-        filter = "",
-        filterr = "",
-        fzffilter = "f",
-      },
-      filter = {
-        fzf = {
-          action_for = {},
-          extra_opts = { "--multi", "--bind", "enter:toggle-all+accept" },
-        },
-      },
-      preview = {
-        winblend = 0,
-        border = { "─", "─", "─", "", "", "", "", "" },
-        show_scroll_bar = false,
-        show_title = false,
       },
     },
   },
@@ -1709,45 +1581,6 @@ return inject_all({
     end,
   },
 
-  -- {
-  --   "nvim-treesitter/nvim-treesitter",
-  --   lazy = false,
-  --   dependencies = {
-  --     {
-  --       "nvim-treesitter/nvim-treesitter-textobjects",
-  --     },
-  --   },
-  --   opts = {
-  --     ensure_installed = {}, -- we get this from nix
-  --     highlight = {
-  --       enable = true,
-  --     },
-  --     incremental_selection = {
-  --       enable = false,
-  --       keymaps = {
-  --         init_selection = "<cr>",
-  --         node_incremental = "<cr>",
-  --         scope_incremental = "<s-cr>",
-  --         node_decremental = "<bs>",
-  --       },
-  --     },
-  --     indent = {
-  --       enable = true,
-  --     },
-  --   },
-  --   config = function(_, opts)
-  --     require("nvim-treesitter.configs").setup(opts)
-  --   end,
-  -- },
-
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    dependencies = {
-      { "nvim-treesitter/nvim-treesitter" },
-    },
-    event = "VeryLazy",
-  },
-
   {
     "folke/snacks.nvim",
     -- picker stuff from snacks
@@ -1757,9 +1590,7 @@ return inject_all({
       {
         "z=",
         function()
-          require("snacks").picker.spelling({
-            focus = "list",
-          })
+          require("snacks").picker.spelling()
         end,
         desc = "spell suggest",
       },
@@ -1767,9 +1598,7 @@ return inject_all({
       {
         "-",
         function()
-          Snacks.picker.explorer({
-            focus = "list",
-          })
+          Snacks.picker.explorer({})
         end,
         desc = "Tree",
       },
@@ -1777,9 +1606,7 @@ return inject_all({
       {
         "<leader>u",
         function()
-          Snacks.picker.undo({
-            focus = "list",
-          })
+          Snacks.picker.undo({})
         end,
         desc = "Undo",
       },
@@ -1799,18 +1626,27 @@ return inject_all({
         desc = "find more files smartly",
       },
       {
-        "<leader>;",
+        "<leader>t",
         function()
-          Snacks.picker.buffers()
+          Snacks.picker.buffers({
+            current = false,
+            layout = "buffers",
+            auto_confirm = true,
+            win = {
+              input = {
+                keys = {
+                  ["<c-space>"] = { "cancel", mode = { "i", "n" } },
+                },
+              },
+            },
+          })
         end,
         desc = "Buffers",
       },
       {
         "<leader>:",
         function()
-          Snacks.picker.command_history({
-            focus = "list",
-          })
+          Snacks.picker.command_history({})
         end,
         desc = "Command History",
       },
@@ -1826,9 +1662,7 @@ return inject_all({
         "<leader>*",
         mode = { "n", "x" },
         function()
-          require("snacks").picker.grep_word({
-            focus = "list",
-          })
+          require("snacks").picker.grep_word({})
         end,
         desc = "grep word",
       },
@@ -1850,18 +1684,14 @@ return inject_all({
       {
         "<leader>sc",
         function()
-          require("snacks").picker.cliphist({
-            focus = "list",
-          })
+          require("snacks").picker.cliphist({})
         end,
         desc = "Cliphist",
       },
       {
         "<leader>sd",
         function()
-          Snacks.picker.diagnostics({
-            focus = "list",
-          })
+          Snacks.picker.diagnostics({})
         end,
         desc = "Diagnostics",
       },
@@ -1922,34 +1752,102 @@ return inject_all({
         desc = "Revent",
       },
       {
-        "<leader>ss",
+        "<leader><leader>",
         function()
-          Snacks.picker.resume({
-            focus = "list",
-          })
+          Snacks.picker.resume({})
         end,
         desc = "Same Search again",
       },
+      {
+        "go",
+        function()
+          Snacks.picker.treesitter({})
+        end,
+        desc = "treesitter: show symbols",
+      },
+      {
+        "<leader>sr",
+        function()
+          Snacks.picker.recent()
+        end,
+        desc = "Revent",
+      },
+      {
+        "<leader>ss",
+        function()
+          Snacks.picker.resume({})
+        end,
+        desc = "Resume",
+      },
+      {
+        "go",
+        function()
+          Snacks.picker.lsp_symbols({
+            -- layout = "bqflike",
+          })
+        end,
+        { desc = "lsp: show symbols" },
+      },
+      {
+        "gO",
+        function()
+          Snacks.picker.lsp_workspace_symbols({
+            -- layout = "bqflike",
+          })
+        end,
+        { desc = "lsp: show all symbols" },
+      },
+      {
+        "gd",
+        function()
+          Snacks.picker.lsp_definitions({
+            -- layout = "bqflike",
+          })
+        end,
+        { desc = "lsp: show definition" },
+      },
+      {
+        "gD",
+        function()
+          Snacks.picker.lsp_type_definitions({
+            -- layout = "bqflike",
+          })
+        end,
+        { desc = "lsp: show type definition" },
+      },
+      {
+        "gi",
+        function()
+          Snacks.picker.lsp_implementations({
+            -- layout = "bqflike",
+          })
+        end,
+        { desc = "lsp: show implementations" },
+      },
+      {
+        "gr",
+        function()
+          Snacks.picker.lsp_references({
+            -- layout = "bqflike",
+          })
+        end,
+        { desc = "lsp: show refs" },
+      },
+      {
+        "gh",
+        function()
+          Snacks.picker.lsp_incoming_calls({})
+        end,
+        { desc = "lsp: show incoming" },
+      },
+      {
+        "gH",
+        function()
+          Snacks.picker.lsp_outgoing_calls({})
+        end,
+        { desc = "lsp: show outgoing" },
+      },
     },
-    init = function()
-      function PickerQF(picker)
-        local qf = {}
-        for _, item in ipairs(picker:items()) do
-          qf[#qf + 1] = {
-            filename = Snacks.picker.util.path(item),
-            bufnr = item.buf,
-            lnum = item.pos and item.pos[1] or 1,
-            col = item.pos and item.pos[2] + 1 or 1,
-            end_lnum = item.end_pos and item.end_pos[1] or nil,
-            end_col = item.end_pos and item.end_pos[2] + 1 or nil,
-            text = item.line or item.comment or item.label or item.name or item.detail or item.text,
-            pattern = item.search,
-            valid = true,
-          }
-        end
-        vim.fn.setqflist(qf)
-      end
-    end,
     config = function(_, opts)
       require("snacks").setup(opts)
     end,
@@ -1960,45 +1858,66 @@ return inject_all({
             return vim.o.columns >= 120 and "ivy" or "vertical"
           end,
         },
+        layouts = {
+          buffers = {
+            layout = {
+              backdrop = false,
+              width = 0.5,
+              min_width = 80,
+              height = 0.8,
+              min_height = 30,
+              box = "vertical",
+              border = true,
+              title = "{title} {live} {flags}",
+              title_pos = "center",
+              { win = "input", height = 1, border = "bottom" },
+              { win = "list", border = "none" },
+              { win = "preview", title = "{preview}", height = 0.7, border = "top" },
+            },
+          },
+          bqflike = {
+            layout = {
+              box = "vertical",
+              backdrop = true,
+              row = -1,
+              width = 0,
+              height = 0.5,
+              border = "top",
+              title = " {source}",
+              title_pos = "left",
+              {
+                win = "preview",
+                height = 0.6,
+              },
+              {
+                win = "list",
+                border = "top",
+              },
+              {
+                win = "input",
+                height = 1,
+                border = "none",
+              },
+            },
+          },
+        },
         ui_select = true,
         win = {
           input = {
             keys = {
-              ["<Esc>"] = { "toggle_focus", mode = { "i" } },
-              -- unmap
-              ["<a-d>"] = nil,
-              ["<a-h>"] = nil,
-              ["<a-i>"] = nil,
-              -- replace
-              ["<a-m>"] = nil,
-              ["<c-m>"] = { "toggle_maximize", mode = { "i", "n" } },
-              ["<a-p>"] = nil,
-              ["<c-p>"] = { "toggle_preview", mode = { "i", "n" } },
-              ["<a-w>"] = nil,
-              ["<c-space>"] = "cycle_win",
+              ["<c-space>"] = { "cycle_win", mode = { "i", "n" } },
+              ["<right>"] = { "focus_preview", mode = { "i", "n" } },
             },
           },
           list = {
             keys = {
-              -- unmap
-              ["<a-d>"] = nil,
-              ["<a-f>"] = nil,
-              ["<a-h>"] = nil,
-              ["<a-i>"] = nil,
-              -- replace
-              ["<a-m>"] = nil,
-              ["<c-m>"] = "toggle_maximize",
-              ["<a-p>"] = nil,
-              ["<c-p>"] = "toggle_preview",
-              ["<a-w>"] = nil,
               ["<c-space>"] = "cycle_win",
             },
           },
           preview = {
             keys = {
-              -- replace
-              ["<a-w>"] = nil,
               ["<c-space>"] = "cycle_win",
+              ["<left>"] = "focus_input",
             },
           },
         },
@@ -2015,6 +1934,22 @@ return inject_all({
       },
     },
     keys = {
+      {
+        "<leader>gp",
+        mode = { "n" },
+        function()
+          require("snacks").picker.gh_pr()
+        end,
+        desc = "Show GitHub Pull Requests",
+      },
+      {
+        "<leader>gd",
+        mode = { "n" },
+        function()
+          require("snacks").picker.git_diff()
+        end,
+        desc = "Show Git Diff",
+      },
       {
         "<leader>gb",
         mode = { "n" },
@@ -2062,6 +1997,41 @@ return inject_all({
         end,
         desc = "Git Status",
       },
+      {
+        "<leader>gc",
+        function()
+          Snacks.picker.git_branches({
+            confirm = function(picker, item)
+              picker:close()
+              if item then
+                vim.fn.system("git read-tree " .. item.text:match("^%*?%s*(%S+)"))
+              end
+            end,
+          })
+        end,
+        desc = "Set git base to a branch",
+      },
+      {
+        "<leader>gC",
+        function()
+          Snacks.picker.git_log({
+            confirm = function(picker, item)
+              picker:close()
+              if item then
+                vim.fn.system("git read-tree " .. item.text:match("^(%S+)"))
+              end
+            end,
+          })
+        end,
+        desc = "Set git base to a commit",
+      },
+      {
+        "<leader>gr",
+        function()
+          vim.fn.system("git reset")
+        end,
+        desc = "Reset git base",
+      },
     },
     opts = {
       gitbrowse = {
@@ -2103,24 +2073,6 @@ return inject_all({
             :toggle()
         end,
         desc = "toggle background",
-      },
-      {
-        "<leader>oc",
-        function()
-          Snacks.toggle
-            .new({
-              id = "tscontext",
-              name = "treesitter context",
-              get = function()
-                return require("treesitter-context").enabled()
-              end,
-              set = function(_)
-                require("treesitter-context").toggle()
-              end,
-            })
-            :toggle()
-        end,
-        desc = "toggle context",
       },
       {
         "<leader>od",

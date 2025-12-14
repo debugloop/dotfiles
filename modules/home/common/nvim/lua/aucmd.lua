@@ -43,6 +43,10 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
   pattern = "*",
   callback = function()
     vim.cmd("clearjumps")
+    if vim.fn.argc() > 1 then
+      vim.cmd.blast()
+      vim.cmd.bfirst()
+    end
   end,
 })
 
@@ -104,31 +108,31 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
 vim.api.nvim_create_autocmd({ "BufRead" }, {
   group = vim.api.nvim_create_augroup("add_autocmd_on_buf_enter", { clear = true }),
   pattern = { "*" },
-  callback = function(_)
+  callback = function(openEvent)
     if vim.o.filetype == "gitcommit" then
       vim.cmd.normal("1G0") -- discard any position there might be on file
       return -- skip the usual things
     end
     -- mark as persisted
     vim.api.nvim_create_autocmd({ "InsertEnter", "BufModifiedSet" }, {
-      buffer = 0,
+      buffer = openEvent.buf,
       once = true,
-      callback = function(_)
-        vim.fn.setbufvar(0, "bufpersist", 1)
+      callback = function(event)
+        vim.fn.setbufvar(event.buf, "bufpersist", 1)
       end,
     })
-    -- go to last loc when focusing a buffer the first time
-    vim.api.nvim_create_autocmd("BufWinEnter", {
-      buffer = 0,
-      once = true,
-      callback = function(_)
-        local mark = vim.api.nvim_buf_get_mark(0, '"')
-        local lcount = vim.api.nvim_buf_line_count(0)
-        if mark[1] > 0 and mark[1] < lcount then
-          pcall(vim.api.nvim_win_set_cursor, 0, mark)
-        end
-      end,
-    })
+  end,
+})
+
+-- go to last loc when focusing a buffer the first time
+vim.api.nvim_create_autocmd("BufReadPost", {
+  group = vim.api.nvim_create_augroup("restore_position", { clear = true }),
+  callback = function(event)
+    local mark = vim.api.nvim_buf_get_mark(event.buf, '"')
+    local lcount = vim.api.nvim_buf_line_count(event.buf)
+    if mark[1] > 0 and mark[1] < lcount then
+      pcall(vim.api.nvim_win_set_cursor, 0, mark)
+    end
   end,
 })
 

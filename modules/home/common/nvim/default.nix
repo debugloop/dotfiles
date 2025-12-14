@@ -16,15 +16,7 @@
     MANPAGER = "nvim +Man!";
   };
 
-  xdg.configFile = let
-    treesitterParsers = pkgs.symlinkJoin {
-      name = "treesitter-parsers";
-      paths = pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies;
-      # paths = builtins.filter
-      #   (x: (builtins.parseDrvName x.name).name != "vimplugin-treesitter-grammar-javascript")
-      #   pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies;
-    };
-  in {
+  xdg.configFile = {
     # "nvim/init.lua".source = ./init.lua;
     # "nvim/lua".source = ./lua;
     # "nvim/ftplugin".source = ./ftplugin;
@@ -34,8 +26,6 @@
     "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/common/nvim/lua";
     "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/common/nvim/ftplugin";
     "nvim/after".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/common/nvim/after";
-
-    "nvim/parser".source = "${treesitterParsers}/parser"; # treesitter master only
   };
 
   xdg.dataFile = let
@@ -43,7 +33,6 @@
       lib.lists.forEach [
         "blink-cmp"
         "conform-nvim"
-        "diffview-nvim"
         "friendly-snippets"
         "kanagawa-nvim"
         "lazy-nvim"
@@ -53,14 +42,6 @@
         "nvim-dap"
         # "nvim-dap-view" # not in nixpkgs
         "nvim-lint"
-        "nvim-treesitter" # uses master
-        "nvim-treesitter-context"
-        "nvim-treesitter-textobjects" # uses master
-        "quicker-nvim"
-        "snacks-nvim"
-        # "amp-nvim"
-        "copilot-lua"
-        "claudecode-nvim"
       ]
       (
         name: {
@@ -104,35 +85,38 @@
         }
       )
     );
+    treesitterParsers = pkgs.symlinkJoin {
+      name = "treesitter-parsers";
+      paths = pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies;
+      # paths = builtins.filter
+      #   (x: (builtins.parseDrvName x.name).name != "vimplugin-treesitter-grammar-javascript")
+      #   pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies;
+    };
+    treesitter = pkgs.fetchFromGitHub {
+      owner = "nvim-treesitter";
+      repo = "nvim-treesitter";
+      rev = "main";
+      sha256 = "sha256-kPB4KyhE0+mNfanTIzc4O+4wvw/u8lyHTHoQ368KWXI=";
+    };
   in
     {
-      "nvim/nixpkgs/fzf" = {
-        source = "${pkgs.fzf}/share/vim-plugins/fzf";
-      };
-
       # treesitter main parsers:
-      # "nvim/site/queries" = {
-      #   source = "${pkgs.vimPlugins.nvim-treesitter.withAllGrammars}/queries";
-      # };
-      # "nvim/site/parser".source = "${treesitterParsers}/parser";
+      "nvim/site/queries" = {
+        source = "${treesitter}/runtime/queries";
+      };
+      "nvim/site/parser".source = "${treesitterParsers}/parser";
 
-      # for switching to treesitter main:
-      # "nvim/nixpkgs/nvim-treesitter-textobjects" = {
-      #   source = pkgs.fetchFromGitHub {
-      #     owner = "nvim-treesitter";
-      #     repo = "nvim-treesitter-textobjects";
-      #     rev = "main";
-      #     sha256 = "sha256-sJdKVaGNXW4HEi6NXEqUhelr8T7/M216m7bPKHAd1do=";
-      #   };
-      # };
-      # "nvim/nixpkgs/nvim-treesitter" = {
-      #   source = pkgs.fetchFromGitHub {
-      #     owner = "nvim-treesitter";
-      #     repo = "nvim-treesitter";
-      #     rev = "main";
-      #     sha256 = "sha256-m3ShsTug4wSee89K+GaTKodC1cWsskR35y9SjDtVRgU=";
-      #   };
-      # };
+      "nvim/nixpkgs/nvim-treesitter-textobjects" = {
+        source = pkgs.fetchFromGitHub {
+          owner = "nvim-treesitter";
+          repo = "nvim-treesitter-textobjects";
+          rev = "main";
+          sha256 = "sha256-jjKT3bZHwZIVDsTw4m7cJm9G2JW8lUXasKTaiGzT0Ag=";
+        };
+      };
+      "nvim/nixpkgs/nvim-treesitter" = {
+        source = treesitter;
+      };
     }
     // vimPlugins // miniPlugins;
 }

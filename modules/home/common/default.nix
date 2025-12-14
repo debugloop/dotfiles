@@ -17,6 +17,8 @@
     ./starship.nix
   ];
 
+  age.identityPaths = ["/home/danieln/.ssh/agenix"];
+
   home = {
     username = "danieln";
     homeDirectory = "/home/danieln";

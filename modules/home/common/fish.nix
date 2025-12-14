@@ -43,7 +43,8 @@
     '';
     shellAbbrs = {
       g = "git";
-      v = "vim";
+      h = "history --show-time='%F %T ' search";
+      e = "vim";
       d = "dlv --headless -l 'localhost:2345' debug";
     };
     functions = {
@@ -84,6 +85,30 @@
           fish_hybrid_key_bindings
           bind -M insert \cz 'fg 2>/dev/null;
           commandline -f repaint'
+        '';
+      };
+      down-or-search = {
+        body = ''
+          if commandline --search-mode
+            commandline -f history-search-forward
+            return
+          end
+
+          if commandline --paging-mode
+            commandline -f down-line
+            return
+          end
+
+          set -l lineno (commandline -L)
+          set -l line_count (count (commandline))
+
+          switch $lineno
+            case $line_count
+              commandline -f history-search-forward or complete
+
+            case \'*\'
+              commandline -f down-line
+          end
         '';
       };
     };

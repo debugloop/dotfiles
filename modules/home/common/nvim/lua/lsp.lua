@@ -40,6 +40,7 @@ end, { desc = "lsp: show references" })
 vim.keymap.set("n", "gh", vim.lsp.buf.incoming_calls, { desc = "lsp: show callers" })
 vim.keymap.set("n", "gH", vim.lsp.buf.outgoing_calls, { desc = "lsp: show callees" })
 vim.keymap.set("n", "<leader>sd", vim.diagnostic.setqflist, { desc = "lsp: list diagnostics" })
+vim.keymap.set("n", "<cr>", vim.lsp.buf.hover)
 
 vim.lsp.config("gopls", {
   cmd = { "gopls" },
@@ -279,5 +280,5 @@ vim.lsp.enable({
   "harper",
   "fish",
   "rust_analyzer",
-  -- "copilot",
+  "copilot",
 })

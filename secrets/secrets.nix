@@ -2,12 +2,18 @@ let
   simmons = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM6PfN5CQE9VRocpilzDhhfaHfQwwC0mZkx4ndYTsS75";
   hyperion = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL5AsSvmh0/jPzl4gDynYuPnI4yFkK9srbAxPsQgL/sE";
   lusus = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIII2XSMk/4DoyRzSts/YeU8iN+eNDeRiNmfrHCmutcpQ";
-  all = [simmons hyperion lusus];
+  all = [
+    simmons
+    hyperion
+    lusus
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINAqpPvRQGeHOvH1XRr0IPTLz2md6+L1Iz9e6e/S/UKJ"
+  ];
 in {
   "password.age".publicKeys = all;
   "restic_password.age".publicKeys = all;
   "tailscale.age".publicKeys = all;
   "grafana.age".publicKeys = all;
+  "gh-token.age".publicKeys = all;
   "miniflux.age".publicKeys = all;
   "factorio.age".publicKeys = all;
   "mullvad.conf.age".publicKeys = all;
