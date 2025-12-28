@@ -43,10 +43,6 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
   pattern = "*",
   callback = function()
     vim.cmd("clearjumps")
-    if vim.fn.argc() > 1 then
-      vim.cmd.blast()
-      vim.cmd.bfirst()
-    end
   end,
 })
 

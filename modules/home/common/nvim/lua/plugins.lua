@@ -146,17 +146,17 @@ return inject_all({
           "fallback",
         },
         ["<enter>"] = { "select_and_accept", "fallback" },
-        -- ["<esc>"] = { "hide", "fallback" },
         ["<left>"] = { "cancel", "fallback" },
         ["<down>"] = { "show_and_insert", "select_next", "fallback" },
         ["<up>"] = { "select_prev", "fallback" },
-        ["<right>"] = { "select_and_accept", "fallback" },
+        ["<right>"] = { "show_and_insert", "select_and_accept", "fallback" },
       },
       cmdline = {
         enabled = true,
         keymap = {
           preset = "inherit",
           ["<enter>"] = { "fallback" },
+          ["<down>"] = { "select_next", "fallback" },
         },
       },
       completion = {
@@ -1235,7 +1235,7 @@ return inject_all({
         desc = "continue or start fresh session",
       },
       {
-        "<leader>qb",
+        "<leader>sb",
         function()
           require("dap").list_breakpoints()
           vim.cmd.cwindow()
