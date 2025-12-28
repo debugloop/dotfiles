@@ -41,7 +41,9 @@
         ".config/Slack"
         ".config/Postman"
         ".config/qView"
+        ".config/zed"
         ".local/share/docker"
+        ".local/share/zed"
         ".ts3client"
         ".local/share/Steam"
         # others
