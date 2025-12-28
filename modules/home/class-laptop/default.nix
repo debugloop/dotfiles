@@ -2,16 +2,12 @@
   imports = [
     ./ai.nix
     ./applications.nix
-    ./clipman.nix
     ./ghostty.nix
     ./kanshi.nix
     ./kitty.nix
-    ./mako.nix
     ./niri.nix
-    ./osd.nix
+    ./noctalia.nix
     ./swayidle.nix
-    ./swaylock.nix
-    ./waybar.nix
   ];
 
   gtk.enable = true; # applies generated configs
@@ -43,8 +39,10 @@
       slurp
       wdisplays
       wev
+      wl-clipboard
       wl-mirror
       xdg-utils
+      zed-editor-fhs
       # cli apps with graphical deps
       imagemagick
       pdftk
@@ -79,8 +77,6 @@
 
   services = {
     cliphist.enable = true;
-    network-manager-applet.enable = true;
-    blueman-applet.enable = true;
     gnome-keyring.enable = true;
   };
 }

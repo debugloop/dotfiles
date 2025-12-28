@@ -59,12 +59,7 @@
     extraPortals = [pkgs.xdg-desktop-portal-gtk];
   };
 
-  environment.systemPackages = with pkgs; [
-    networkmanagerapplet # required system-wide for icons
-  ];
-
   services = {
-    blueman.enable = true;
     gnome.gnome-keyring = {
       enable = true;
     };

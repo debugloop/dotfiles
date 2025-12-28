@@ -10,7 +10,7 @@
   programs.niri = {
     package = perSystem.niri.niri-unstable;
     settings = {
-      gestures.hot-corners.enable = false;
+      # gestures.hot-corners.enable = false;
       screenshot-path = "~/pictures/screenshot-%d-%m-%Y-%T.png";
       input = {
         workspace-auto-back-and-forth = true;
@@ -51,13 +51,14 @@
       prefer-no-csd = true;
       layout = {
         empty-workspace-above-first = true;
-        gaps = 2;
-        # struts = {
-        #   top = -6;
-        #   bottom = -6;
-        #   left = -6;
-        #   right = -6;
-        # };
+        always-center-single-column = true;
+        gaps = 12;
+        struts = {
+          top = -6;
+          bottom = -6;
+          left = -6;
+          right = -6;
+        };
         shadow = {
           enable = false;
           color = "#${config.colors.blue}";
@@ -104,14 +105,17 @@
         };
         insert-hint.display.color = "#${config.colors.green}88";
       };
+      debug = {
+        honor-xdg-activation-with-invalid-serial = true;
+      };
       window-rules = [
         {
           clip-to-geometry = true;
           geometry-corner-radius = {
-            bottom-left = 1.0;
-            bottom-right = 1.0;
-            top-left = 1.0;
-            top-right = 1.0;
+            bottom-left = 10.0;
+            bottom-right = 10.0;
+            top-left = 10.0;
+            top-right = 10.0;
           };
         }
         {
@@ -156,9 +160,15 @@
           ];
           focus-ring = {
             enable = true;
-            width = 2;
+            width = 1;
             active.color = "#${config.colors.bright-red}";
             inactive.color = "#${config.colors.bright-red}";
+          };
+          border = {
+            enable = true;
+            width = 1;
+            active.color = "#${config.colors.bright-red}00";
+            inactive.color = "#${config.colors.bright-red}00";
           };
           shadow = {
             enable = true;
@@ -199,16 +209,18 @@
       # };
       binds = with config.lib.niri.actions; {
         # launch
-        "Mod+D".action = spawn "bash" "-c" "${pkgs.procps}/bin/pkill wofi || ${pkgs.wofi}/bin/wofi -aGS drun";
+        # "Mod+D".action = spawn "bash" "-c" "${pkgs.procps}/bin/pkill wofi || ${pkgs.wofi}/bin/wofi -aGS drun";
+        "Mod+D".action = spawn "noctalia-shell" "ipc" "call" "launcher" "toggle";
         "Mod+Return".action = spawn "${pkgs.kitty}/bin/kitty";
 
         # notifications
-        "Mod+N".action = spawn "${pkgs.mako}/bin/makoctl" "dismiss" "-a";
+        # "Mod+N".action = spawn "${pkgs.mako}/bin/makoctl" "dismiss" "-a";
 
         # lock and suspend
-        "Mod+Backslash".action = spawn "${pkgs.swaylock-effects}/bin/swaylock" "-f";
-        "Mod+Ctrl+Backslash".action = spawn "systemctl" "suspend";
-        "Cancel".action = spawn "${pkgs.swaylock-effects}/bin/swaylock" "-f";
+        # "Mod+Backslash".action = spawn "${pkgs.swaylock-effects}/bin/swaylock" "-f";
+        "Mod+Backslash".action = spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock";
+        # "Mod+Ctrl+Backslash".action = spawn "systemctl" "suspend";
+        "Mod+Ctrl+Backslash".action = spawn "noctalia-shell" "ipc" "call" "sessionMenu" "lockAndSuspend";
 
         # window actions
         "Mod+Q".action = close-window;
@@ -219,19 +231,7 @@
         "Mod+W".action = toggle-column-tabbed-display;
         "Mod+Ctrl+V".action = toggle-window-floating;
         "Mod+V".action = switch-focus-between-floating-and-tiling;
-        # "Mod+Space".action = spawn "${pkgs.writeScript "consume_next.py" ''
-        #   #!/usr/bin/env python
-        #   import subprocess
-        #
-        #   p = subprocess.Popen(['niri', 'msg', '-j', 'event-stream'], stdout=subprocess.PIPE)
-        #
-        #   for line in p.stdout:
-        #       line = line.decode('utf-8')
-        #       if 'WindowOpenedOrChanged' in line:
-        #           subprocess.call(['niri', 'msg', 'action', 'consume-or-expel-window-left'])
-        #           break
-        # ''}";
-        "Mod+Space".action = toggle-overview;
+        "Mod+O".action = toggle-overview;
 
         # window width
         "Mod+R".action = switch-preset-column-width;
@@ -294,14 +294,10 @@
         "Mod+Ctrl+Left".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-monitor-left || niri msg action move-column-left-or-to-monitor-left";
         "Mod+Ctrl+Right".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-monitor-right || niri msg action move-column-right-or-to-monitor-right";
 
-        # swaylike workspace focus with wrapping
-        # "Mod+Ctrl+J".action = spawn "fish" "-c" "niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].is_focused' | grep true; and niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[0].idx'); or niri msg action focus-workspace-down";
-        # "Mod+Ctrl+K".action = spawn "fish" "-c" "niri msg -j workspaces | jq -r 'sort_by(.idx).[0].is_focused' | grep true; and niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx'); or niri msg action focus-workspace-up";
-
         # monitors
-        "Mod+Tab".action = focus-monitor-next;
-        "Mod+Shift+Tab".action = move-window-to-monitor-next;
-        "Mod+Ctrl+Tab".action = move-workspace-to-monitor-next;
+        # "Mod+Tab".action = focus-monitor-next;
+        # "Mod+Shift+Tab".action = move-window-to-monitor-next;
+        # "Mod+Ctrl+Tab".action = move-workspace-to-monitor-next;
 
         # laptop screen
         "Mod+Equal".action = spawn "niri" "msg" "output" "eDP-1" "on";
@@ -325,77 +321,41 @@
           action = focus-workspace-up;
         };
 
-        # colorcode workspaces
-        # "Mod+Ctrl+Grave".action = unset-workspace-name;
-        "Mod+Ctrl+1".action = set-workspace-name "red";
-        "Mod+Ctrl+2".action = set-workspace-name "green";
-        "Mod+Ctrl+3".action = set-workspace-name "blue";
-        "Mod+Ctrl+4".action = set-workspace-name "orange";
-        "Mod+Ctrl+7".action = set-workspace-name "pink";
-        "Mod+Ctrl+8".action = set-workspace-name "cyan";
-        "Mod+Ctrl+9".action = set-workspace-name "purple";
-        "Mod+Ctrl+0".action = set-workspace-name "yellow";
-        "Mod+Ctrl+Minus".action = unset-workspace-name;
-        # TODO: flake support for these?
-        "Mod+Shift+1".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action move-window-to-workspace red || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name red";
-        "Mod+Shift+2".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action move-window-to-workspace green || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name green";
-        "Mod+Shift+3".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action move-window-to-workspace blue || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name blue";
-        "Mod+Shift+4".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action move-window-to-workspace orange || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name orange";
-        "Mod+Shift+7".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"pink\")' && niri msg action move-window-to-workspace pink || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name pink";
-        "Mod+Shift+8".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"cyan\")' && niri msg action move-window-to-workspace cyan || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name cyan";
-        "Mod+Shift+9".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action move-window-to-workspace purple || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name purple";
-        "Mod+Shift+0".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action move-window-to-workspace yellow || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name yellow";
-        "Mod+Shift+Minus".action = spawn "fish" "-c" "niri msg action move-window-to-workspace 42";
-        # "Mod+1".action = focus-workspace "red";
-        "Mod+1".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action focus-workspace red || niri msg action focus-workspace 64 && niri msg action set-workspace-name red";
-        "Mod+2".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action focus-workspace green || niri msg action focus-workspace 64 && niri msg action set-workspace-name green";
-        "Mod+3".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action focus-workspace blue || niri msg action focus-workspace 64 && niri msg action set-workspace-name blue";
-        "Mod+4".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action focus-workspace orange || niri msg action focus-workspace 64 && niri msg action set-workspace-name orange";
-        "Mod+7".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"pink\")' && niri msg action focus-workspace pink || niri msg action focus-workspace 64 && niri msg action set-workspace-name pink";
-        "Mod+8".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"cyan\")' && niri msg action focus-workspace cyan || niri msg action focus-workspace 64 && niri msg action set-workspace-name cyan";
-        "Mod+9".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action focus-workspace purple || niri msg action focus-workspace 64 && niri msg action set-workspace-name purple";
-        "Mod+0".action = spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action focus-workspace yellow || niri msg action focus-workspace 64 && niri msg action set-workspace-name yellow";
-        "Mod+Minus".action = focus-workspace 42;
+        # name workspaces
+        "Mod+Ctrl+1".action = set-workspace-name "a";
+        "Mod+Ctrl+2".action = set-workspace-name "b";
+        "Mod+Ctrl+3".action = set-workspace-name "c";
+        "Mod+Ctrl+4".action = set-workspace-name "firefox";
+        "Mod+Ctrl+5".action = set-workspace-name "slack";
+        "Mod+Ctrl+6".action = set-workspace-name "private";
+        "Mod+Ctrl+7".action = set-workspace-name "x";
+        "Mod+Ctrl+8".action = set-workspace-name "y";
+        "Mod+Ctrl+9".action = set-workspace-name "z";
+        "Mod+Ctrl+0".action = unset-workspace-name;
 
-        # # workspace addresses, 0 is last with window, minus is the empty workspace
-        # # focus
-        # "Mod+1".action = focus-workspace 1;
-        # "Mod+2".action = focus-workspace 2;
-        # "Mod+3".action = focus-workspace 3;
-        # "Mod+4".action = focus-workspace 4;
-        # "Mod+5".action = focus-workspace 5;
-        # "Mod+6".action = focus-workspace 6;
-        # "Mod+7".action = focus-workspace 7;
-        # "Mod+8".action = focus-workspace 8;
-        # "Mod+9".action = focus-workspace 9;
-        # "Mod+0".action = spawn "fish" "-c" "niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx')";
-        # "Mod+Minus".action = focus-workspace 42;
-        #
-        # # small move
-        # "Mod+Shift+1".action = move-window-to-workspace 1;
-        # "Mod+Shift+2".action = move-window-to-workspace 2;
-        # "Mod+Shift+3".action = move-window-to-workspace 3;
-        # "Mod+Shift+4".action = move-window-to-workspace 4;
-        # "Mod+Shift+5".action = move-window-to-workspace 5;
-        # "Mod+Shift+6".action = move-window-to-workspace 6;
-        # "Mod+Shift+7".action = move-window-to-workspace 7;
-        # "Mod+Shift+8".action = move-window-to-workspace 8;
-        # "Mod+Shift+9".action = move-window-to-workspace 9;
-        # "Mod+Shift+0".action = spawn "fish" "-c" "niri msg action move-window-to-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx')";
-        # "Mod+Shift+Minus".action = move-window-to-workspace 42;
-        #
-        # # large move
-        # "Mod+Ctrl+1".action = move-column-to-workspace 1;
-        # "Mod+Ctrl+2".action = move-column-to-workspace 2;
-        # "Mod+Ctrl+3".action = move-column-to-workspace 3;
-        # "Mod+Ctrl+4".action = move-column-to-workspace 4;
-        # "Mod+Ctrl+5".action = move-column-to-workspace 5;
-        # "Mod+Ctrl+6".action = move-column-to-workspace 6;
-        # "Mod+Ctrl+7".action = move-column-to-workspace 7;
-        # "Mod+Ctrl+8".action = move-column-to-workspace 8;
-        # "Mod+Ctrl+9".action = move-column-to-workspace 9;
-        # "Mod+Ctrl+0".action = spawn "fish" "-c" "niri msg action move-column-to-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx')";
-        # "Mod+Ctrl+Minus".action = move-column-to-workspace 42;
+        # small move
+        "Mod+Shift+1".action.move-window-to-workspace = [{focus = true;} 1];
+        "Mod+Shift+2".action.move-window-to-workspace = [{focus = true;} 2];
+        "Mod+Shift+3".action.move-window-to-workspace = [{focus = true;} 3];
+        "Mod+Shift+4".action.move-window-to-workspace = [{focus = true;} 4];
+        "Mod+Shift+5".action.move-window-to-workspace = [{focus = true;} 5];
+        "Mod+Shift+6".action.move-window-to-workspace = [{focus = true;} 6];
+        "Mod+Shift+7".action.move-window-to-workspace = [{focus = true;} 7];
+        "Mod+Shift+8".action.move-window-to-workspace = [{focus = true;} 8];
+        "Mod+Shift+9".action.move-window-to-workspace = [{focus = true;} 9];
+        "Mod+Shift+0".action.move-window-to-workspace = [{focus = true;} 42];
+
+        # focus
+        "Mod+1".action = focus-workspace 1;
+        "Mod+2".action = focus-workspace 2;
+        "Mod+3".action = focus-workspace 3;
+        "Mod+4".action = focus-workspace 4;
+        "Mod+5".action = focus-workspace 5;
+        "Mod+6".action = focus-workspace 6;
+        "Mod+7".action = focus-workspace 7;
+        "Mod+8".action = focus-workspace 8;
+        "Mod+9".action = focus-workspace 9;
+        "Mod+0".action = focus-workspace 42;
 
         # escape from keylocks
         "Mod+Escape" = {
@@ -412,49 +372,45 @@
         # media and brightness
         "XF86AudioRaiseVolume" = {
           allow-when-locked = true;
-          action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=1 && pkill -SIGRTMIN+4 waybar";
+          # action = spawn "noctalia-shell" "ipc" "call" "volume" "increase";
+          action = spawn "bash" "-c" "noctalia-shell ipc call volume increase; ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
         };
         "XF86AudioLowerVolume" = {
           allow-when-locked = true;
-          action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=-1 && pkill -SIGRTMIN+4 waybar";
-        };
-        "Shift+XF86AudioRaiseVolume" = {
-          allow-when-locked = true;
-          action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=5 && pkill -SIGRTMIN+4 waybar";
-        };
-        "Shift+XF86AudioLowerVolume" = {
-          allow-when-locked = true;
-          action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=-5 && pkill -SIGRTMIN+4 waybar";
+          # action = spawn "noctalia-shell" "ipc" "call" "volume" "decrease";
+          action = spawn "bash" "-c" "noctalia-shell ipc call volume decrease; ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
         };
         "XF86AudioMute" = {
           allow-when-locked = true;
-          action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=mute-toggle && pkill -SIGRTMIN+4 waybar";
+          action = spawn "noctalia-shell" "ipc" "call" "volume" "muteOutput";
         };
         "XF86AudioMicMute" = {
           allow-when-locked = true;
-          action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume=mute-toggle && pkill -SIGRTMIN+4 waybar";
+          action = spawn "noctalia-shell" "ipc" "call" "volume" "muteInput";
         };
         "XF86AudioPlay" = {
           allow-when-locked = true;
-          action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--playerctl=play-pause";
+          action = spawn "noctalia-shell" "ipc" "call" "media" "playPause";
         };
         "XF86AudioNext" = {
           allow-when-locked = true;
-          action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--playerctl=next";
+          action = spawn "noctalia-shell" "ipc" "call" "media" "next";
         };
         "XF86AudioPrev" = {
           allow-when-locked = true;
-          action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--playerctl=prev";
+          action = spawn "noctalia-shell" "ipc" "call" "media" "previous";
         };
         "XF86AudioStop" = {
           allow-when-locked = true;
-          action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--playerctl=play-pause";
+          action = spawn "noctalia-shell" "ipc" "call" "media" "playPause";
         };
         "XF86MonBrightnessUp" = {
-          action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--brightness=raise";
+          allow-when-locked = true;
+          action = spawn "noctalia-shell" "ipc" "call" "brightness" "increase";
         };
         "XF86MonBrightnessDown" = {
-          action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--brightness=lower";
+          allow-when-locked = true;
+          action = spawn "noctalia-shell" "ipc" "call" "brightness" "decrease";
         };
       };
     };

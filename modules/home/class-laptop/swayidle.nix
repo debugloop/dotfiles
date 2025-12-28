@@ -1,15 +1,15 @@
-{pkgs, ...}: {
+{
+  perSystem,
+  pkgs,
+  ...
+}: {
   services.swayidle = {
     enable = true;
     systemdTarget = "graphical-session.target";
     timeouts = [
       {
-        timeout = 60;
-        command = "echo '1min idle timeout'; if ${pkgs.procps}/bin/pgrep swaylock; then echo 'already locked, power off monitors!' && ${pkgs.niri}/bin/niri msg action power-off-monitors; fi";
-      }
-      {
         timeout = 300;
-        command = "echo '5min idle timeout'; if ${pkgs.procps}/bin/pgrep swaylock; then echo 'already locked'; else echo 'locking!' && ${pkgs.swaylock-effects}/bin/swaylock -f; fi";
+        command = "echo '5min idle timeout, locking' && ${perSystem.noctalia.default}/bin/noctalia-shell ipc call lockScreen lock";
       }
       {
         timeout = 360;
@@ -19,7 +19,7 @@
     events = [
       {
         event = "before-sleep";
-        command = "echo 'before-sleep hook'; if ${pkgs.procps}/bin/pgrep swaylock; then echo 'already locked'; else echo 'locking!' && ${pkgs.swaylock-effects}/bin/swaylock -f --grace=0; fi";
+        command = "echo 'going to sleep, locking' && ${perSystem.noctalia.default}/bin/noctalia-shell ipc call lockScreen lock";
       }
       {
         event = "after-resume";
