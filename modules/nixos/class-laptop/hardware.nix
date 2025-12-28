@@ -30,7 +30,8 @@
   ];
 
   services = {
-    tlp.enable = true;
+    tuned.enable = true;
+    upower.enable = true;
     udev = {
       packages = [
         pkgs.light
