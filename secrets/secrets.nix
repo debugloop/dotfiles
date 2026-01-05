@@ -7,6 +7,7 @@ let
     hyperion
     lusus
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINAqpPvRQGeHOvH1XRr0IPTLz2md6+L1Iz9e6e/S/UKJ"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGWBVbLoVONgH7omrP0wxWDD59jOv5n3V1PU9H2sA4Zp"
   ];
 in {
   "password.age".publicKeys = all;
