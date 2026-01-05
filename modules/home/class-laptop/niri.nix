@@ -7,6 +7,7 @@
   home.packages = with pkgs; [
     xwayland-satellite
   ];
+  services.swww.enable = true;
   programs.niri = {
     package = perSystem.niri.niri-unstable;
     settings = {
@@ -51,13 +52,14 @@
       prefer-no-csd = true;
       layout = {
         empty-workspace-above-first = true;
-        gaps = 2;
-        # struts = {
-        #   top = -6;
-        #   bottom = -6;
-        #   left = -6;
-        #   right = -6;
-        # };
+        always-center-single-column = true;
+        gaps = 12;
+        struts = {
+          top = -6;
+          bottom = -6;
+          left = -6;
+          right = -6;
+        };
         shadow = {
           enable = false;
           color = "#${config.colors.blue}";
@@ -104,14 +106,17 @@
         };
         insert-hint.display.color = "#${config.colors.green}88";
       };
+      debug = {
+        honor-xdg-activation-with-invalid-serial = true;
+      };
       window-rules = [
         {
           clip-to-geometry = true;
           geometry-corner-radius = {
-            bottom-left = 1.0;
-            bottom-right = 1.0;
-            top-left = 1.0;
-            top-right = 1.0;
+            bottom-left = 0.0;
+            bottom-right = 10.0;
+            top-left = 10.0;
+            top-right = 0.0;
           };
         }
         {
@@ -156,9 +161,15 @@
           ];
           focus-ring = {
             enable = true;
-            width = 2;
+            width = 1;
             active.color = "#${config.colors.bright-red}";
             inactive.color = "#${config.colors.bright-red}";
+          };
+          border = {
+            enable = true;
+            width = 1;
+            active.color = "#${config.colors.bright-red}00";
+            inactive.color = "#${config.colors.bright-red}00";
           };
           shadow = {
             enable = true;
@@ -208,7 +219,6 @@
         # lock and suspend
         "Mod+Backslash".action = spawn "${pkgs.swaylock-effects}/bin/swaylock" "-f";
         "Mod+Ctrl+Backslash".action = spawn "systemctl" "suspend";
-        "Cancel".action = spawn "${pkgs.swaylock-effects}/bin/swaylock" "-f";
 
         # window actions
         "Mod+Q".action = close-window;
@@ -219,25 +229,13 @@
         "Mod+W".action = toggle-column-tabbed-display;
         "Mod+Ctrl+V".action = toggle-window-floating;
         "Mod+V".action = switch-focus-between-floating-and-tiling;
-        # "Mod+Space".action = spawn "${pkgs.writeScript "consume_next.py" ''
-        #   #!/usr/bin/env python
-        #   import subprocess
-        #
-        #   p = subprocess.Popen(['niri', 'msg', '-j', 'event-stream'], stdout=subprocess.PIPE)
-        #
-        #   for line in p.stdout:
-        #       line = line.decode('utf-8')
-        #       if 'WindowOpenedOrChanged' in line:
-        #           subprocess.call(['niri', 'msg', 'action', 'consume-or-expel-window-left'])
-        #           break
-        # ''}";
         "Mod+Space".action = toggle-overview;
 
         # window width
         "Mod+R".action = switch-preset-column-width;
         "Mod+Period".action = switch-preset-column-width;
         "Mod+Comma".action = switch-preset-column-width-back;
-        "Mod+M".action = maximize-column;
+        "Mod+M".action = maximize-window-to-edges;
         "Mod+Ctrl+M".action = expand-column-to-available-width;
         "Mod+XF86AudioRaiseVolume".action = switch-preset-column-width;
         "Mod+XF86AudioLowerVolume".action = switch-preset-column-width-back;
@@ -294,14 +292,10 @@
         "Mod+Ctrl+Left".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-monitor-left || niri msg action move-column-left-or-to-monitor-left";
         "Mod+Ctrl+Right".action = spawn "fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-monitor-right || niri msg action move-column-right-or-to-monitor-right";
 
-        # swaylike workspace focus with wrapping
-        # "Mod+Ctrl+J".action = spawn "fish" "-c" "niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].is_focused' | grep true; and niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[0].idx'); or niri msg action focus-workspace-down";
-        # "Mod+Ctrl+K".action = spawn "fish" "-c" "niri msg -j workspaces | jq -r 'sort_by(.idx).[0].is_focused' | grep true; and niri msg action focus-workspace (niri msg -j workspaces | jq -r 'sort_by(.idx).[-2].idx'); or niri msg action focus-workspace-up";
-
         # monitors
-        "Mod+Tab".action = focus-monitor-next;
-        "Mod+Shift+Tab".action = move-window-to-monitor-next;
-        "Mod+Ctrl+Tab".action = move-workspace-to-monitor-next;
+        # "Mod+Tab".action = focus-monitor-next;
+        # "Mod+Shift+Tab".action = move-window-to-monitor-next;
+        # "Mod+Ctrl+Tab".action = move-workspace-to-monitor-next;
 
         # laptop screen
         "Mod+Equal".action = spawn "niri" "msg" "output" "eDP-1" "on";

@@ -43,14 +43,14 @@
 
       git_branch = {
         format = "[$symbol$branch(:$remote_branch)]($style)";
-        symbol = " ";
+        symbol = "󰘬 ";
       };
 
       git_commit = {
-        format = " [ $hash$tag]($style)";
+        format = " [󰓼 $hash$tag]($style)";
         style = "purple";
         tag_disabled = false;
-        tag_symbol = "  ";
+        tag_symbol = " 󰓼 ";
       };
 
       git_state = {
@@ -59,13 +59,13 @@
       };
 
       git_status = {
-        format = "[$conflicted$deleted](red)[$modified](blue)[$staged$renamed](yellow)[$untracked$stashed](bright-black)[$ahead_behind](bold) ";
-        ahead = "  $count";
-        behind = "  $count";
-        diverged = "  $ahead_count $behind_count";
-        conflicted = " 󱚟 $count";
+        format = "[$conflicted](red)[$modified](blue)[$staged$renamed$deleted](yellow)[$untracked$stashed](bright-black)[$ahead_behind](bold) ";
+        ahead = "  $count";
+        behind = "  $count";
+        diverged = "  $ahead_count $behind_count";
+        conflicted = "  $count";
         deleted = "  $count";
-        modified = "  $count";
+        modified = " 󰦒 $count";
         renamed = " 󰶻 $count";
         staged = " 󰘻 $count";
         stashed = "  $count";

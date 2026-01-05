@@ -20,6 +20,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     impermanence.url = "github:nix-community/impermanence";
+    zed.url = "github:zed-industries/zed";
 
     # niri-unstable = {
     #   url = "github:YaLTeR/niri/a11fe23cbf6ba01ae4c23679aa2f7d7d8b44baf4";
@@ -35,5 +36,5 @@
     # gridx.url = "path:/home/danieln/code/gridx";
   };
 
-  outputs = inputs: inputs.blueprint {inherit inputs;};
+  outputs = inputs: inputs.blueprint { inherit inputs; };
 }

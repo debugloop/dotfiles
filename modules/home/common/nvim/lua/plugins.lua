@@ -149,7 +149,25 @@ return inject_all({
         ["<left>"] = { "cancel", "fallback" },
         ["<down>"] = { "show_and_insert", "select_next", "fallback" },
         ["<up>"] = { "select_prev", "fallback" },
-        ["<right>"] = { "show_and_insert", "select_and_accept", "fallback" },
+        ["<c-right>"] = { "show_and_insert", "select_and_accept", "fallback" },
+        ["<right>"] = {
+          function(cmp)
+            local has_no_words_after = function()
+              local col = vim.api.nvim_win_get_cursor(0)[2]
+              local line = vim.api.nvim_get_current_line()
+              if col == #line then
+                return true
+              end
+              return line:sub(col + 1, col + 1):match("%s") ~= nil
+            end
+
+            if has_no_words_after() then
+              return cmp.show_and_insert()
+            end
+          end,
+          "select_and_accept",
+          "fallback",
+        },
       },
       cmdline = {
         enabled = true,

@@ -14,6 +14,7 @@
       gnumeric
       google-chrome
       inkscape
+      obsidian
       qview
       spotify
       xfce.thunar

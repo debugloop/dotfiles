@@ -59,6 +59,7 @@
       lua-language-server
       luajit
       mermaid-cli
+      nil
       nodePackages_latest.prettier
       nodePackages_latest.yaml-language-server
       pgcli

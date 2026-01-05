@@ -45,6 +45,7 @@
       wev
       wl-mirror
       xdg-utils
+      zed-editor-fhs
       # cli apps with graphical deps
       imagemagick
       pdftk

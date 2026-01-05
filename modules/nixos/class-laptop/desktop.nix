@@ -3,7 +3,8 @@
   inputs,
   perSystem,
   ...
-}: {
+}:
+{
   imports = [
     inputs.niri.nixosModules.niri
   ];
@@ -34,9 +35,9 @@
     # nerd-fonts.noto
     # nerd-fonts.iosevka
     nerd-fonts.symbols-only
-    noto-fonts
-    noto-fonts-monochrome-emoji
-    noto-fonts-lgc-plus
+    # noto-fonts
+    # noto-fonts-monochrome-emoji
+    # noto-fonts-lgc-plus
     roboto
     roboto-mono
   ];
@@ -56,7 +57,7 @@
         "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
       };
     };
-    extraPortals = [pkgs.xdg-desktop-portal-gtk];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
   environment.systemPackages = with pkgs; [
@@ -82,7 +83,10 @@
   };
 
   security = {
-    pam.services.swaylock = {};
+    pam.services = {
+      swaylock = { };
+      login.enableGnomeKeyring = true;
+    };
     rtkit.enable = true; # for pipewire
   };
 }
