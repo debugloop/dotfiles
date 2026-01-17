@@ -16,15 +16,9 @@
         command = "echo '6min idle timeout, turning off monitors' && ${pkgs.niri}/bin/niri msg action power-off-monitors";
       }
     ];
-    events = [
-      {
-        event = "before-sleep";
-        command = "echo 'before-sleep hook'; if ${pkgs.procps}/bin/pgrep swaylock; then echo 'already locked'; else echo 'locking!' && ${pkgs.swaylock-effects}/bin/swaylock -f --grace=0; fi";
-      }
-      {
-        event = "after-resume";
-        command = "echo 'after-resume hook'; ${pkgs.systemd}/bin/systemctl --user kill -sSIGHUP kanshi";
-      }
-    ];
+    events = {
+      before-sleep = "echo 'before-sleep hook'; if ${pkgs.procps}/bin/pgrep swaylock; then echo 'already locked'; else echo 'locking!' && ${pkgs.swaylock-effects}/bin/swaylock -f --grace=0; fi";
+      after-resume = "echo 'after-resume hook'; ${pkgs.systemd}/bin/systemctl --user kill -sSIGHUP kanshi";
+    };
   };
 }
