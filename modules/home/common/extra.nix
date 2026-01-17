@@ -46,7 +46,7 @@
     sessionVariables.EZA_COLORS = "reset";
     packages = with pkgs; [
       bmon
-      dogdns
+      doggo
       dool
       dust
       entr
