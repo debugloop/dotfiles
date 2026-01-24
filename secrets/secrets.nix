@@ -18,4 +18,5 @@ in {
   "miniflux.age".publicKeys = all;
   "factorio.age".publicKeys = all;
   "mullvad.conf.age".publicKeys = all;
+  "woodpecker.age".publicKeys = all;
 }

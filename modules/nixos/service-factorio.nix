@@ -8,13 +8,4 @@
   };
 
   age.secrets.factorio.file = ../../secrets/factorio.age;
-
-  environment.persistence."/nix/persist" = {
-    directories = [
-      {
-        directory = "/var/lib/private";
-        mode = "0700";
-      }
-    ];
-  };
 }

@@ -19,6 +19,11 @@
       "/var/lib/nixos" # uid and gid mappings
       "/var/log" # logs
       "/var/lib/docker" # docker rootful
+      # sandboxed systemd services -> TODO: should be per service
+      {
+        directory = "/var/lib/private";
+        mode = "0700";
+      }
     ];
     files = [
       "/etc/machine-id" # important, e.g. for journald
