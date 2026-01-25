@@ -26,6 +26,7 @@
       focus_follows_mouse = "no";
       enable_audio_bell = "no";
       confirm_os_window_close = 0;
+      placement_strategy = "top-left";
 
       # disable ligatures at cursor
       disable_ligatures = "cursor";

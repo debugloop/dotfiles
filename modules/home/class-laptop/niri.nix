@@ -39,13 +39,13 @@
       outputs = {
         "eDP-1" = {
           scale = 1.0;
-          background-color = "#${config.colors.dark_bg}";
+          background-color = "#${config.colors.light_bg}";
         };
         "DP-1" = {
-          background-color = "#${config.colors.dark_bg}";
+          background-color = "#${config.colors.light_bg}";
         };
         "DP-2" = {
-          background-color = "#${config.colors.dark_bg}";
+          background-color = "#${config.colors.light_bg}";
         };
       };
       hotkey-overlay.skip-at-startup = true;
@@ -230,6 +230,7 @@
         "Mod+Ctrl+V".action = toggle-window-floating;
         "Mod+V".action = switch-focus-between-floating-and-tiling;
         "Mod+Space".action = toggle-overview;
+        "Mod+G".action = spawn "${pkgs.wl-kbptr}/bin/wl-kbptr";
 
         # window width
         "Mod+R".action = switch-preset-column-width;

@@ -12,6 +12,7 @@
     ./swayidle.nix
     ./swaylock.nix
     ./waybar.nix
+    ./wl-kbptr.nix
   ];
 
   gtk.enable = true; # applies generated configs
