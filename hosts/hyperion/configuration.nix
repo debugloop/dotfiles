@@ -3,6 +3,7 @@
     ./hardware-configuration.nix
     flake.nixosModules.common
     flake.nixosModules.class-server
+    flake.nixosModules.service-cache
     flake.nixosModules.service-caddy
     flake.nixosModules.service-factorio
     flake.nixosModules.service-grafana

@@ -12,18 +12,15 @@
     settings = {
       experimental-features = "nix-command flakes";
       substituters = [
-        "https://cache.garnix.io"
-        "https://viperml.cachix.org"
-        "https://nix-community.cachix.org"
         "https://cache.nixos.org/"
-      ];
-      trusted-public-keys = [
-        "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
-        "viperml.cachix.org-1:qZhKBMTfmcLL+OG6fj/hzsMEedgKvZVFRRAhq7j8Vh8="
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "ssh://nix-ssh@hyperion?trusted=true&ssh-key=/etc/ssh/ssh_host_ed25519_key"
       ];
       trusted-users = ["root" "@wheel"];
     };
+  };
+  # to be able to use above ssh entry as a substituter via ssh
+  programs.ssh.knownHosts.hyperion = {
+    publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL5AsSvmh0/jPzl4gDynYuPnI4yFkK9srbAxPsQgL/sE";
   };
 
   nixpkgs = {
