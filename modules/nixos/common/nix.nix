@@ -11,11 +11,10 @@
   nix = {
     settings = {
       experimental-features = "nix-command flakes";
-      substituters = [
-        "https://cache.nixos.org/"
-        "ssh://nix-ssh@hyperion?trusted=true&ssh-key=/etc/ssh/ssh_host_ed25519_key"
+      extra-substituters = [
+        "ssh://nix-ssh@hyperion?trusted=true&ssh-key=/etc/ssh/ssh_host_ed25519_key&priority=100"
       ];
-      trusted-users = ["root" "@wheel"];
+      trusted-users = ["@wheel"];
     };
   };
   # to be able to use above ssh entry as a substituter via ssh
