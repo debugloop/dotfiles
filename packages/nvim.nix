@@ -8,7 +8,7 @@ in
     name = "nvim";
     buildInputs = [pkgs.makeWrapper];
     paths = [
-      ../modules/home/shared/nvim
+      ../modules/home/common/nvim
     ];
     postBuild = ''
       mkdir -p $out/bin $out/config/nvim $out/local/nvim/{nixpkgs,lazy}
