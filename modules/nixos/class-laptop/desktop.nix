@@ -3,8 +3,7 @@
   inputs,
   perSystem,
   ...
-}:
-{
+}: {
   imports = [
     inputs.niri.nixosModules.niri
   ];
@@ -15,8 +14,8 @@
       package = perSystem.niri.niri-unstable;
     };
     thunar = {
-      enable = false;
-      plugins = with pkgs.xfce; [
+      enable = true;
+      plugins = with pkgs; [
         thunar-archive-plugin
         thunar-volman
       ];
@@ -57,7 +56,7 @@
         "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
       };
     };
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [pkgs.xdg-desktop-portal-gtk];
   };
 
   environment.systemPackages = with pkgs; [
@@ -84,7 +83,7 @@
 
   security = {
     pam.services = {
-      swaylock = { };
+      swaylock = {};
       login.enableGnomeKeyring = true;
     };
     rtkit.enable = true; # for pipewire

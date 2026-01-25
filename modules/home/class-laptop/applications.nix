@@ -17,9 +17,6 @@
       obsidian
       qview
       spotify
-      xfce.thunar
-      xfce.thunar-archive-plugin
-      xfce.thunar-volman
       wireshark
       zathura
       teamspeak6-client

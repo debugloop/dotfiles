@@ -12,14 +12,10 @@
     settings = {
       experimental-features = "nix-command flakes";
       extra-substituters = [
-        "ssh://nix-ssh@hyperion?trusted=true&ssh-key=/etc/ssh/ssh_host_ed25519_key&priority=100"
+        "ssh://nix-ssh@hyperion?trusted=true&ssh-key=/etc/ssh/ssh_host_ed25519_key&priority=100&base64-ssh-public-host-key=c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUw1QXNTdm1oMC9qUHpsNGdEeW5ZdVBuSTR5RmtLOXNyYkF4UHNRZ0wvc0UK&compress=true"
       ];
       trusted-users = ["@wheel"];
     };
-  };
-  # to be able to use above ssh entry as a substituter via ssh
-  programs.ssh.knownHosts.hyperion = {
-    publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL5AsSvmh0/jPzl4gDynYuPnI4yFkK9srbAxPsQgL/sE";
   };
 
   nixpkgs = {
