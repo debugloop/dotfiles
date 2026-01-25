@@ -1,0 +1,50 @@
+when:
+  - event: cron
+    cron: nightly_update
+  - event: manual
+
+steps:
+  - name: prepare
+    image: bash
+    environment:
+      CODEBERG_TOKEN:
+        from_secret: codeberg_token
+    commands:
+      - git config user.email "git@danieln.de"
+      - git config user.name "Woodpecker"
+      - git config push.default current
+      - git config push.autoSetupRemote true
+      - git switch -c nightly_update
+      - git remote set-url origin https://$${CODEBERG_TOKEN}@codeberg.org/${CI_REPO}
+
+  - name: update flake inputs
+    image: bash
+    commands:
+      - nix flake update $(nix flake metadata --json | jq -r '.locks.nodes.root.inputs|keys|map(select(. != "gridx"))|join(" ")')
+      - echo $(git status --porcelain)
+      - test -n "$(git status --porcelain)" || exit 0
+      - git commit -am "update flake inputs"
+
+  - name: push and create pr
+    image: bash
+    environment:
+      CODEBERG_TOKEN:
+        from_secret: codeberg_token
+    commands:
+      - echo $(git rev-parse @)
+      - test "${CI_COMMIT_SHA}" != "$(git rev-parse @)" || exit 0
+      - git push -f
+      - >-
+        NUMBER="$(curl -s -XPOST \
+          -H "accept: application/json" \
+          -H 'Content-Type: application/json' \
+          -H "Authorization: token $${CODEBERG_TOKEN}" \
+          -d '{ "base": "main", "head": "nightly_update", "title": "Nightly Update" }' \
+          ${CI_FORGE_URL}/api/v1/repos/${CI_REPO}/pulls | jq -r .number)"
+      - >-
+        curl -s -XPOST \
+          -H "accept: application/json" \
+          -H 'Content-Type: application/json' \
+          -H "Authorization: token $${CODEBERG_TOKEN}" \
+          -d '{ "Do": "rebase", "merge_when_checks_succeed": true, "delete_branch_after_merge": true }' \
+          ${CI_FORGE_URL}/api/v1/repos/${CI_REPO}/pulls/$${NUMBER}/merge
