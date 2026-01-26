@@ -7,5 +7,5 @@ steps:
   - name: build
     image: bash
     commands:
-      - nix -vL --show-trace --option substituters "https://cache.nixos.org/" build .#nixosConfigurations.simmons.config.system.build.toplevel
-      - nix -vL --show-trace --option substituters "https://cache.nixos.org/" build .#nixosConfigurations.hyperion.config.system.build.toplevel
+      - nix -vL --show-trace build .#nixosConfigurations.simmons.config.system.build.toplevel
+      - nix -vL --show-trace build .#nixosConfigurations.hyperion.config.system.build.toplevel
