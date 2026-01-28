@@ -11,7 +11,7 @@
   system.autoUpgrade = {
     enable = true;
     persistent = false;
-    flake = "github:debugloop/dotfiles";
+    flake = "git+https://codeberg.org/debugloop/dotfiles";
     allowReboot = true;
   };
 
