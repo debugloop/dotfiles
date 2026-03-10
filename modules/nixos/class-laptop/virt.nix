@@ -1,4 +1,6 @@
 {pkgs, ...}: {
+  services.flatpak.enable = true;
+
   virtualisation = {
     docker = {
       enable = false;
@@ -24,9 +26,9 @@
 
   # Use pasta instead of slirp4netns for better DNS handling
   # Pasta auto-discovers DNS from /etc/resolv.conf by default via --dns-host
-  environment.systemPackages = [ pkgs.passt ];
+  environment.systemPackages = [pkgs.passt];
   systemd.user.services.docker = {
-    path = [ pkgs.passt ];
+    path = [pkgs.passt];
     environment = {
       DOCKERD_ROOTLESS_ROOTLESSKIT_NET = "pasta";
       DOCKERD_ROOTLESS_ROOTLESSKIT_PORT_DRIVER = "implicit";

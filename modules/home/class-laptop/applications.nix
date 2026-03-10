@@ -10,6 +10,7 @@
     };
     packages = with pkgs; [
       abiword
+      dune3d
       gimp
       gnumeric
       google-chrome

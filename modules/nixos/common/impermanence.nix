@@ -19,6 +19,7 @@
       "/var/lib/nixos" # uid and gid mappings
       "/var/log" # logs
       "/var/lib/docker" # docker rootful
+      "/var/lib/flatpak"
       # sandboxed systemd services -> TODO: should be per service
       {
         directory = "/var/lib/private";
@@ -58,6 +59,8 @@
         ".undo" # nvim undo
         ".local/state/wireplumber" # volume settings
         ".claude"
+        ".var/app"
+        ".local/share/flatpak"
         # history for shells
         ".local/share/direnv"
         ".local/share/zoxide"

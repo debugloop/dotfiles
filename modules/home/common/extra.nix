@@ -53,6 +53,7 @@
       fd
       ffmpeg
       gping
+      jrnl
       miniserve
       nmap
       ripgrep
