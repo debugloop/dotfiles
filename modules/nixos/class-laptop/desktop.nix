@@ -8,6 +8,8 @@
     inputs.niri.nixosModules.niri
   ];
 
+  services.niri-autoselect-portal.enable = true;
+
   programs = {
     niri = {
       enable = true;

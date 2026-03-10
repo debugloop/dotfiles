@@ -33,6 +33,10 @@
     # private flakes
     gridx.url = "git+ssh://git@github.com/debugloop/gridx";
     # gridx.url = "path:/home/danieln/code/gridx";
+
+    niri-autoselect-portal = {
+      url = "https://codeberg.org/debugloop/niri-autoselect-portal";
+    };
   };
 
   outputs = inputs: inputs.blueprint {inherit inputs;};
