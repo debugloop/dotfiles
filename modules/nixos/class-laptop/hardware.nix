@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
-    light # better commands
+    # light # better commands
     ddcutil # external displays
   ];
 
@@ -34,7 +34,7 @@
     upower.enable = true;
     udev = {
       packages = [
-        pkgs.light
+        # pkgs.light
         pkgs.libmtp.out
       ];
       extraRules = ''
