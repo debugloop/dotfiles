@@ -9,6 +9,7 @@
       security = {
         admin_user = "danieln";
         admin_password = "$__file{${config.age.secrets.grafana.path}}";
+        secret_key = "SW2YcwTIb9zpOOhoPsMm"; # previous hardcoded default, rotate for multiuser env
       };
     };
     provision = {
