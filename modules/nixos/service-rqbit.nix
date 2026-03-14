@@ -9,16 +9,16 @@
   nixpkgs.overlays = [
     (self: super: {
       rqbit = super.rqbit.overrideAttrs (old: rec {
-        version = "9.0.0-main";
+        version = "9.0.0-beta.2";
         src = pkgs.fetchFromGitHub {
           owner = "ikatson";
           repo = "rqbit";
-          rev = "62a9b624ad7da4d8af3abb9c7feb23a0c915adba";
-          hash = "sha256-nNiBHH7obF4mhZLjlzXfMpejC4+Qleyk7Zy9iWGeZHw=";
+          rev = "v9.0.0-beta.2";
+          hash = "sha256-48gWvfPsmsQAifxHHCNpWYE8cGxdA4I4c27yqykSNK0=";
         };
         cargoDeps = self.rustPlatform.fetchCargoVendor {
           inherit src;
-          hash = "sha256-cy8buot0HKRpGKECaQC+8v7P4B+Y0IfKdFOmNIoA8UI=";
+          hash = "sha256-cOB4hgwGIT6NzNI45cp755ysABtXVXQ45cweJPqKdWU=";
         };
       });
     })
