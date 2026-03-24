@@ -1,3 +1,5 @@
 ./result
 *.qcow2
 .direnv
+secrets/*
+!secrets/*.age
