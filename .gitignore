@@ -3,3 +3,5 @@
 .direnv
 secrets/*
 !secrets/*.age
+keys/hosts/*
+!keys/hosts/*.pub

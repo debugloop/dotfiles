@@ -8,7 +8,7 @@ in
   pkgs.writeShellScriptBin "hetzner-server" ''
     set -euo pipefail
 
-    HOST=''${1:?"Usage: hetzner-server <hostname> [apply|destroy]"}
+    HOST=''${1:?"Usage: hetzner-server <hostname> [apply|destroy|ip]"}
     shift
 
     CMD=''${1:-apply}
@@ -23,30 +23,30 @@ in
       exit 1
     fi
 
-    TFDIR=$(mktemp -d)
-    trap "rm -rf $TFDIR" EXIT
+    TF_DIR=$(mktemp -d)
+    trap "rm -rf $TF_DIR" EXIT
     ${pkgs.nix}/bin/nix eval --json ".#nixosConfigurations.\"$HOST\".config.hetzner.terranixConfig" \
-      | ${pkgs.jq}/bin/jq . > "$TFDIR/main.tf.json"
+      | ${pkgs.jq}/bin/jq . > "$TF_DIR/main.tf.json"
 
     case "$CMD" in
       destroy)
-        echo "=== Destroying $HOST infrastructure on Hetzner ==="
-        ${tofu}/bin/tofu -chdir="$TFDIR" init
-        ${tofu}/bin/tofu -chdir="$TFDIR" destroy "$@"
+        echo "=== Destroying $HOST infrastructure ==="
+        ${tofu}/bin/tofu -chdir="$TF_DIR" init -plugin-dir=${tofu}/libexec/terraform-providers
+        ${tofu}/bin/tofu -chdir="$TF_DIR" destroy "$@"
         ;;
       apply)
-        echo "=== Applying $HOST infrastructure to Hetzner ==="
-        ${tofu}/bin/tofu -chdir="$TFDIR" init
-        ${tofu}/bin/tofu -chdir="$TFDIR" apply "$@"
-        IP=$(${tofu}/bin/tofu -chdir="$TFDIR" output -raw "''${HOST}_ip" 2>/dev/null || echo "")
+        echo "=== Applying $HOST infrastructure ==="
+        ${tofu}/bin/tofu -chdir="$TF_DIR" init -plugin-dir=${tofu}/libexec/terraform-providers
+        ${tofu}/bin/tofu -chdir="$TF_DIR" apply "$@"
+        IP=$(${tofu}/bin/tofu -chdir="$TF_DIR" output -raw "''${HOST}_ip" 2>/dev/null || echo "")
         if [ -n "$IP" ]; then
           echo "=== Next:"
           echo "nix run .#install $HOST $IP"
         fi
         ;;
       ip)
-        ${tofu}/bin/tofu -chdir="$TFDIR" init
-        IP=$(${tofu}/bin/tofu -chdir="$TFDIR" output -raw "''${HOST}_ip" 2>/dev/null || echo "")
+        ${tofu}/bin/tofu -chdir="$TF_DIR" init -plugin-dir=${tofu}/libexec/terraform-providers
+        IP=$(${tofu}/bin/tofu -chdir="$TF_DIR" output -raw "''${HOST}_ip" 2>/dev/null || echo "")
         if [ -z "$IP" ]; then
           echo "Error: IP not found for $HOST (run apply first)" >&2
           exit 1

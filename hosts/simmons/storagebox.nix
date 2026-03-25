@@ -1,4 +1,4 @@
           {
-            host = "u564729.your-storagebox.de";
-            user = "u564729-sub4";
+            host = "u564729-sub3.your-storagebox.de";
+            user = "u564729-sub3";
           }

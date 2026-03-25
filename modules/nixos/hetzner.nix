@@ -48,6 +48,8 @@
 
   config = lib.mkIf config.hetzner.enable (let
     hostName = config.networking.hostName;
+    zone = config.hetzner.dnsZone;
+    zoneKey = lib.replaceStrings ["."] ["-"] zone;
     keyNames = config.hetzner.sshKeyNames;
 
     keyDataSources = lib.listToAttrs (map (name: {
@@ -58,7 +60,6 @@
 
     sshKeyRefs = map (name: "\${data.hcloud_ssh_key.${name}.id}") keyNames;
 
-    fqdn = "${hostName}.${config.hetzner.dnsZone}";
   in {
     # SET THE OPTION VALUE HERE
     hetzner.terranixConfig = lib.mkMerge [
@@ -81,10 +82,10 @@
         };
 
         data.hcloud_ssh_key = keyDataSources;
-
-        data.hcloud_zone.zone = {
-          name = config.hetzner.dnsZone;
+        data.hcloud_zone.${zoneKey} = {
+          name = zone;
         };
+
 
         resource.hcloud_server.${hostName} = {
           name = hostName;
@@ -98,21 +99,20 @@
           };
         };
 
-        resource.hcloud_zone_record = {
-          "${hostName}-a" = {
-            zone = config.hetzner.dnsZone; # Zone name, not zone_id
-            name = hostName;
-            type = "A";
-            value = "\${hcloud_server.${hostName}.ipv4_address}";
-            # ttl is not supported here - managed via hcloud_zone_rrset if needed
-          };
-          "${hostName}-aaaa" = {
-            zone = config.hetzner.dnsZone;
-            name = hostName;
-            type = "AAAA";
-            value = "\${hcloud_server.${hostName}.ipv6_address}";
-          };
+        resource.hcloud_zone_record."${hostName}-${zoneKey}-a" = {
+          zone = zone;
+          name = hostName;
+          type = "A";
+          value = "\${hcloud_server.${hostName}.ipv4_address}";
         };
+
+        resource.hcloud_zone_record."${hostName}-${zoneKey}-aaaa" = {
+          zone = zone;
+          name = hostName;
+          type = "AAAA";
+          value = "\${hcloud_server.${hostName}.ipv6_address}";
+        };
+
         output."${hostName}_ip" = {
           value = "\${hcloud_server.${hostName}.ipv4_address}";
         };

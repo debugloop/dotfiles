@@ -12,16 +12,18 @@ pkgs.writeShellScriptBin "install" ''
   REPO=$(git -C . rev-parse --show-toplevel 2>/dev/null || pwd)
   PRIVKEY="$REPO/keys/hosts/$HOST"
   PUBKEY="$REPO/keys/hosts/$HOST.pub"
-  CLEANUP_PRIVKEY=1
+  INSTALL_OK=0
 
   if [[ ! -f "$PRIVKEY" ]]; then
     echo "Error: Pre-generated key not found: $PRIVKEY"
     echo "Generate with: ssh-keygen -t ed25519 -f $PRIVKEY -N \"\""
+    echo "Reminder: run 'nix run .#hetzner-storagebox -- apply' before install."
     exit 1
   fi
 
   # Prepare extra-files directory with SSH host keys
   EXTRA_DIR=$(mktemp -d)
+  trap 'rm -rf "$EXTRA_DIR"; if [[ "$INSTALL_OK" -eq 1 ]]; then rm -f "$PRIVKEY"; echo "Deleted private key: $PRIVKEY"; echo "Reminder: run 'sudo agenix -r' to reencrypt with the new host key."; fi' EXIT
   mkdir -p "$EXTRA_DIR/etc/ssh"
   cp "$PRIVKEY" "$EXTRA_DIR/etc/ssh/ssh_host_ed25519_key"
   cp "$PUBKEY" "$EXTRA_DIR/etc/ssh/ssh_host_ed25519_key.pub"
@@ -36,25 +38,7 @@ pkgs.writeShellScriptBin "install" ''
     --target-host "root@$IP" \
     --extra-files "$EXTRA_DIR"
 
-  # Cleanup
-  rm -rf "$EXTRA_DIR"
-
-  # Verify the deployed key matches
-  DEPLOYED_KEY=$(${pkgs.openssh}/bin/ssh-keyscan -t ed25519 "$IP" 2>/dev/null | \
-    ${pkgs.gawk}/bin/awk '/ssh-ed25519/ {print $2 " " $3; exit}')
-  EXPECTED_KEY=$(cat "$PUBKEY" | ${pkgs.gawk}/bin/awk '{print $1 " " $2}')
-
-  if [[ "$DEPLOYED_KEY" != "$EXPECTED_KEY" ]]; then
-    echo "Warning: Deployed key does not match expected!"
-    echo "Expected: $EXPECTED_KEY"
-    echo "Got:      $DEPLOYED_KEY"
-    exit 1
-  fi
-
-  if [[ "$CLEANUP_PRIVKEY" -eq 1 ]]; then
-    rm -f "$PRIVKEY"
-    echo "Deleted private key: $PRIVKEY"
-  fi
+  INSTALL_OK=1
 
   echo "=== $HOST installed with preseeded key ==="
   echo "Public key: $PUBKEY"

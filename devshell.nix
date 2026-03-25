@@ -1,13 +1,33 @@
 {
   pkgs,
-  inputs,
   perSystem,
   ...
 }: let
-  secretsNix = inputs.self.lib.mkAgenixRules {
-    inherit pkgs;
-    repoRoot = ./.;
-  };
+  allKeys =
+    map pkgs.lib.fileContents
+    (pkgs.lib.filesystem.listFilesRecursive ./keys);
+
+  secretsNix = pkgs.writeText "secrets.nix" ''
+    let
+      all = [
+        ${pkgs.lib.concatMapStringsSep "\n  " (k: ''"${pkgs.lib.trim k}"'') allKeys}
+      ];
+    in
+    {
+      "secrets/password.age".publicKeys = all;
+      "secrets/restic_password.age".publicKeys = all;
+      "secrets/tailscale.age".publicKeys = all;
+      "secrets/grafana.age".publicKeys = all;
+      "secrets/gh-token.age".publicKeys = all;
+      "secrets/miniflux.age".publicKeys = all;
+      "secrets/factorio.age".publicKeys = all;
+      "secrets/mullvad.conf.age".publicKeys = all;
+      "secrets/woodpecker.age".publicKeys = all;
+      "secrets/hetzner_token.age".publicKeys = all;
+      "secrets/hetzner_storagebox_tfstate_user.age".publicKeys = all;
+      "secrets/hetzner_storagebox_tfstate_password.age".publicKeys = all;
+    }
+  '';
 
   agenixWrapped = pkgs.writeShellScriptBin "agenix" ''
     export RULES="${secretsNix}"
@@ -28,6 +48,5 @@ in
   pkgs.mkShell {
     packages = [
       agenixWrapped
-      pkgs.ssh-to-age
     ];
   }
