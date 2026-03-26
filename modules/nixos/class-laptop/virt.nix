@@ -42,4 +42,16 @@
   networking.firewall = {
     checkReversePath = "loose";
   };
+
+  environment.persistence."/nix/persist" = {
+    directories = [
+      "/var/lib/docker"
+      "/var/lib/flatpak"
+    ];
+    users.danieln.directories = [
+      ".local/share/docker"
+      ".var/app"
+      ".local/share/flatpak"
+    ];
+  };
 }

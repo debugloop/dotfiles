@@ -12,22 +12,16 @@
   environment.persistence."/nix/persist" = {
     hideMounts = true;
     directories = [
-      "/etc/nixos" # our config
-      "/etc/NetworkManager/system-connections" # network manager connections
-      "/etc/mullvad-vpn" # mullvad state
-      "/var/lib/bluetooth" # blueman connections
-      "/var/lib/nixos" # uid and gid mappings
-      "/var/log" # logs
-      "/var/lib/docker" # docker rootful
-      "/var/lib/flatpak"
-      # sandboxed systemd services -> TODO: should be per service
+      "/etc/nixos"
+      "/var/lib/nixos"
+      "/var/log"
       {
         directory = "/var/lib/private";
         mode = "0700";
       }
     ];
     files = [
-      "/etc/machine-id" # important, e.g. for journald
+      "/etc/machine-id"
       "/etc/ssh/ssh_host_ed25519_key"
       "/etc/ssh/ssh_host_ed25519_key.pub"
       "/etc/ssh/ssh_host_rsa_key"
@@ -35,48 +29,13 @@
     ];
     users.danieln = {
       directories = [
-        # personal dirs
         "code"
         "documents"
         "downloads"
         "pictures"
-        # messy applications
-        ".mozilla"
-        ".thunderbird"
-        ".config/google-chrome"
-        ".config/Slack"
-        ".config/Postman"
-        ".config/qView"
-        ".config/zed"
-        ".local/share/docker"
-        ".local/share/zed"
-        ".ts3client"
-        ".local/share/Steam"
-        # others
-        ".backup" # nvim backups
-        ".cache" # cache between boots, save that memory
-        "go" # go libs
-        ".undo" # nvim undo
-        ".local/state/wireplumber" # volume settings
-        ".claude"
-        ".var/app"
-        ".local/share/flatpak"
-        # history for shells
-        ".local/share/direnv"
-        ".local/share/zoxide"
-        ".local/share/fish"
-        ".local/share/atuin"
-        ".local/share/nix"
-        ".local/share/posting"
-        # secrets
-        {
-          directory = ".aws";
-          mode = "0700";
-        }
-        {
-          directory = ".gnupg";
-          mode = "0700";
-        }
+        ".backup"
+        ".cache"
+        ".undo"
         {
           directory = ".gxctl";
           mode = "0700";
@@ -85,25 +44,8 @@
           directory = ".ssh";
           mode = "0700";
         }
-        {
-          directory = ".local/share/keyrings";
-          mode = "0700";
-        }
-        {
-          directory = ".config/rbw";
-          mode = "0700";
-        }
       ];
-      files = [
-        # spotify login cookie
-        ".config/spotify/prefs"
-        # spotify user settings
-        ".config/spotify/Users/analogbyte-user/prefs"
-        # kubectl settings
-        ".kube/config"
-        # other
-        ".netrc"
-      ];
+      files = [];
     };
   };
 }

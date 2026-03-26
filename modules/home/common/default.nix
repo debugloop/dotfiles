@@ -14,6 +14,7 @@
     ./helix.nix
     ./nix.nix
     ./nvim
+    ./claude.nix
     ./starship.nix
   ];
 
@@ -47,6 +48,15 @@
       wget
       whois
       zip
+    ];
+  };
+
+  home.persistence."/nix/persist" = {
+    directories = [
+      {
+        directory = ".gnupg";
+        mode = "0700";
+      }
     ];
   };
 

@@ -96,6 +96,10 @@
     users.users.danieln.initialHashedPassword = "";
   };
 
+  programs.fuse.userAllowOther = true;
+
+  systemd.services.pre-shutdown.enable = false;
+
   security = {
     sudo = {
       extraConfig = ''

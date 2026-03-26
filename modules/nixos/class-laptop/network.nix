@@ -12,4 +12,9 @@
     avahi.enable = true;
     mullvad-vpn.enable = true;
   };
+
+  environment.persistence."/nix/persist".directories = [
+    "/etc/NetworkManager/system-connections"
+    "/etc/mullvad-vpn"
+  ];
 }

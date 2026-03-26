@@ -42,6 +42,11 @@
     zoxide.enable = true;
   };
 
+  home.persistence."/nix/persist".directories = [
+    ".local/share/atuin"
+    ".local/share/zoxide"
+  ];
+
   home = {
     sessionVariables.EZA_COLORS = "reset";
     packages = with pkgs; [

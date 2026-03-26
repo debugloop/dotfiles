@@ -3,6 +3,20 @@
   config,
   ...
 }: {
+  home.persistence."/nix/persist" = {
+    directories = [
+      {
+        directory = ".aws";
+        mode = "0700";
+      }
+      {
+        directory = ".config/rbw";
+        mode = "0700";
+      }
+    ];
+    files = [".netrc"];
+  };
+
   home.packages = with pkgs; [
     awscli2
     gmailctl

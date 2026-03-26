@@ -1,4 +1,6 @@
 {config, ...}: {
+  home.persistence."/nix/persist".directories = [".local/share/fish"];
+
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
@@ -33,12 +35,6 @@
         for env_var in (gnome-keyring-daemon --start 2>/dev/null);
           set -x (echo $env_var | string split "=")
         end
-      end
-    '';
-    loginShellInit = ''
-      # start wm on tty1
-      if test (tty) = /dev/tty1
-        alias startx=niri-session
       end
     '';
     shellAbbrs = {

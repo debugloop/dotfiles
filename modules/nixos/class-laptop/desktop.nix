@@ -83,11 +83,50 @@
     printing.enable = true;
   };
 
+  services.speechd.enable = false;
+
+  services.greetd = {
+    enable = true;
+    settings.default_session = {
+      command = "niri-session";
+      user = "danieln";
+    };
+  };
+
   security = {
     pam.services = {
       swaylock = {};
       login.enableGnomeKeyring = true;
     };
     rtkit.enable = true; # for pipewire
+  };
+
+  environment.persistence."/nix/persist" = {
+    directories = [
+      "/var/lib/bluetooth"
+    ];
+    users.danieln = {
+      directories = [
+        ".mozilla"
+        ".thunderbird"
+        ".config/google-chrome"
+        ".config/Slack"
+        ".config/Postman"
+        ".config/qView"
+        ".config/zed"
+        ".local/share/zed"
+        ".ts3client"
+        ".local/share/Steam"
+        ".local/state/wireplumber"
+        {
+          directory = ".local/share/keyrings";
+          mode = "0700";
+        }
+      ];
+      files = [
+        ".config/spotify/prefs"
+        ".config/spotify/Users/analogbyte-user/prefs"
+      ];
+    };
   };
 }
