@@ -6,6 +6,8 @@
     flake.nixosModules.has-backup
   ];
 
+  system.stateVersion = "22.11";
+
   programs = {
     gamemode.enable = true;
     steam.enable = true;

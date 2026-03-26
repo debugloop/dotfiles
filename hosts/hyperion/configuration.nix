@@ -16,6 +16,8 @@
     flake.nixosModules.service-woodpecker
   ];
 
+  system.stateVersion = "22.11";
+
   networking = {
     nameservers = [
       "9.9.9.9"

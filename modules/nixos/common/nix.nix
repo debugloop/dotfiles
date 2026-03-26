@@ -4,10 +4,6 @@
     inputs.home-manager.nixosModules.home-manager
   ];
 
-  system = {
-    stateVersion = "22.11";
-  };
-
   nix = {
     settings = {
       experimental-features = "nix-command flakes";

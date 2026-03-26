@@ -23,12 +23,12 @@ pkgs.writeShellScriptBin "install" ''
 
   # Prepare extra-files directory with SSH host keys
   EXTRA_DIR=$(mktemp -d)
-  trap 'rm -rf "$EXTRA_DIR"; if [[ "$INSTALL_OK" -eq 1 ]]; then rm -f "$PRIVKEY"; echo "Deleted private key: $PRIVKEY"; echo "Reminder: run 'sudo agenix -r' to reencrypt with the new host key."; fi' EXIT
-  mkdir -p "$EXTRA_DIR/etc/ssh"
-  cp "$PRIVKEY" "$EXTRA_DIR/etc/ssh/ssh_host_ed25519_key"
-  cp "$PUBKEY" "$EXTRA_DIR/etc/ssh/ssh_host_ed25519_key.pub"
-  chmod 600 "$EXTRA_DIR/etc/ssh/ssh_host_ed25519_key"
-  chmod 644 "$EXTRA_DIR/etc/ssh/ssh_host_ed25519_key.pub"
+  trap 'rm -rf "$EXTRA_DIR"; if [[ "$INSTALL_OK" -eq 1 ]]; then rm -f "$PRIVKEY"; echo "Deleted private key: $PRIVKEY"; echo "Reminder: run sudo agenix -r to reencrypt with the new host key."; fi' EXIT
+  mkdir -p "$EXTRA_DIR/nix/persist/etc/ssh"
+  cp "$PRIVKEY" "$EXTRA_DIR/nix/persist/etc/ssh/ssh_host_ed25519_key"
+  cp "$PUBKEY" "$EXTRA_DIR/nix/persist/etc/ssh/ssh_host_ed25519_key.pub"
+  chmod 600 "$EXTRA_DIR/nix/persist/etc/ssh/ssh_host_ed25519_key"
+  chmod 644 "$EXTRA_DIR/nix/persist/etc/ssh/ssh_host_ed25519_key.pub"
 
   echo "=== Installing NixOS on $HOST via $IP ==="
   echo "Using pre-generated host key: $PUBKEY"
