@@ -101,6 +101,23 @@
     rtkit.enable = true; # for pipewire
   };
 
+  services.restic.backups.daily.exclude = [
+    "home/danieln/go" # golang cache
+    "home/danieln/scratch"
+    "home/danieln/downloads"
+    "home/danieln/.local/share/Steam"
+    "home/danieln/.thunderbird"
+    "home/danieln/.config/google-chrome"
+    "home/danieln/.config/Slack"
+    "home/danieln/.mozilla"
+    "home/danieln/code/**/.cache"       # generic caches
+    "home/danieln/code/**/.direnv"      # direnv cached envs, can be 100s of MB
+    "home/danieln/code/**/node_modules" # npm/pnpm/yarn deps, reproducible
+    "home/danieln/code/**/target"       # Rust/Cargo build artifacts
+    "home/danieln/code/**/result"       # Nix build result symlinks
+    "home/danieln/code/**/result-*"     # Nix multi-output result symlinks
+  ];
+
   environment.persistence."/nix/persist" = {
     directories = [
       "/var/lib/bluetooth"
@@ -118,6 +135,7 @@
         ".ts3client"
         ".local/share/Steam"
         ".local/state/wireplumber"
+        ".config/gtk-3.0"
         {
           directory = ".local/share/keyrings";
           mode = "0700";
@@ -126,6 +144,7 @@
       files = [
         ".config/spotify/prefs"
         ".config/spotify/Users/analogbyte-user/prefs"
+        ".config/mimeapps.list"
       ];
     };
   };

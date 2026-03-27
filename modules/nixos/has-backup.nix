@@ -52,24 +52,7 @@ in {
     paths = ["/nix/persist"];
     exclude = [
       "var/log"
-      "var/lib/flatpak"
-      "var/lib/docker"
-      "home/danieln/go" # golang cache
-      "home/danieln/scratch" # random repos
-      "home/danieln/downloads" # random crap
-      "home/danieln/.local/share/Steam" # steam and its games
-      "home/danieln/.cache" # spotify downloads
-      "home/danieln/.thunderbird" # heaps of email
-      "home/danieln/.config/google-chrome" # browser is covered by sync
-      "home/danieln/.config/Slack" # slack syncs itself
-      "home/danieln/.mozilla" # nothing that firefox sync won't cover
-      "home/danieln/.config/TeamSpeak" # nothing of value
-      "home/danieln/.var" # flatpak data
-      "home/danieln/code/*/.cache" # direnv caches etc
-      # huge repo that I don't care about
-      "home/danieln/code/qmk"
-      "home/danieln/code/qmk_firmware"
-      "home/danieln/code/Garmin"
+      "home/danieln/.cache"
     ];
     repository = "sftp:${storageBoxHostAlias}:restic";
     timerConfig = {

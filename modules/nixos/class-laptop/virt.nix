@@ -54,4 +54,12 @@
       ".local/share/flatpak"
     ];
   };
+
+  services.restic.backups.daily.exclude = [
+    "var/lib/docker"
+    "var/lib/flatpak"
+    "home/danieln/.var" # flatpak data
+    "home/danieln/.local/share/docker"
+    "home/danieln/.local/share/flatpak"
+  ];
 }
