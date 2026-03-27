@@ -22,7 +22,7 @@
     # flake.nixosModules.service-grocy
     # flake.nixosModules.service-jellyfin
     # flake.nixosModules.service-matrix
-    # flake.nixosModules.service-miniflux
+    flake.nixosModules.service-miniflux
     # flake.nixosModules.service-prometheus
     # flake.nixosModules.service-rqbit
     # flake.nixosModules.service-woodpecker

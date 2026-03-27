@@ -23,51 +23,49 @@
       host;
 
   hostEntries =
-    lib.mapAttrsToList (host: cfg: {
+    lib.mapAttrsToList (_: cfg: {
       hostName = cfg.config.networking.hostName;
       hetznerEnabled = cfg.config.hetzner.enable or false;
-      dnsZone = cfg.config.hetzner.dnsZone or null;
       vhosts = builtins.attrNames (cfg.config.services.caddy.virtualHosts or {});
     })
     inputs.self.nixosConfigurations;
 
-  cnameRecords =
-    lib.concatMap
-    (h:
-      if !h.hetznerEnabled then
-        []
-      else
-        let
-          vhosts = map warnIfOutside h.vhosts;
-          valid = lib.filter (vh:
-            let z = zoneForHost vh;
-            in z != null && vh != z && !hasPort vh && !isWildcard vh
-          ) vhosts;
-        in
-          map (vh: let
-            z = zoneForHost vh;
-            name = lib.removeSuffix ".${z}" vh;
-          in {
-            fqdn = vh;
-            zone = z;
-            inherit name;
-            target = "${h.hostName}.${z}";
-          }) valid
-    )
-    hostEntries;
+  mkIpRef = hostName: attr: "\${data.hcloud_server.${hostName}.${attr}}";
 
-  cnameAttrs = lib.listToAttrs (map (r: {
-      name = lib.replaceStrings ["."] ["-"] r.fqdn;
-      value = {
-        zone = r.zone;
-        name = r.name;
-        type = "CNAME";
-        value = r.target;
-      };
-    })
-    cnameRecords);
+  recordList = lib.concatMap (h:
+    if !h.hetznerEnabled then []
+    else
+      let
+        vhosts = map warnIfOutside h.vhosts;
+      in
+        # hostname.zone A/AAAA in all zones
+        lib.concatMap (z: [
+          {zone = z; name = h.hostName; type = "A";    value = mkIpRef h.hostName "ipv4_address";}
+          {zone = z; name = h.hostName; type = "AAAA"; value = mkIpRef h.hostName "ipv6_address";}
+        ]) zones
+        # apex A/AAAA where a service claims the zone apex as a vhost
+        ++ lib.concatMap (z: [
+          {zone = z; name = "@"; type = "A";    value = mkIpRef h.hostName "ipv4_address";}
+          {zone = z; name = "@"; type = "AAAA"; value = mkIpRef h.hostName "ipv6_address";}
+        ]) (lib.filter (vh: lib.elem vh zones) vhosts)
+        # service CNAMEs
+        ++ map (vh: let z = zoneForHost vh; in
+          {zone = z; name = lib.removeSuffix ".${z}" vh; type = "CNAME"; value = "${h.hostName}.${z}";}
+        ) (lib.filter (vh:
+          let z = zoneForHost vh;
+          in z != null && vh != z && !hasPort vh && !isWildcard vh
+        ) vhosts)
+  ) hostEntries;
 
-  recordAttrs = cnameAttrs;
+  recordAttrs = lib.listToAttrs (map (r: {
+    name = lib.replaceStrings ["." "@"] ["-" "apex"] "${r.zone}-${r.name}-${lib.toLower r.type}";
+    value = {inherit (r) zone name type value;};
+  }) recordList);
+
+  serverDataAttrs = lib.listToAttrs (map (h: {
+    name = h.hostName;
+    value = {name = h.hostName;};
+  }) (lib.filter (h: h.hetznerEnabled) hostEntries));
 
   zoneAttrs = lib.listToAttrs (map (z: {
       name = lib.replaceStrings ["."] ["-"] z;
@@ -99,6 +97,7 @@
           token = "\${var.hcloud_token}";
         };
 
+        data.hcloud_server = serverDataAttrs;
         resource.hcloud_zone = zoneAttrs;
         resource.hcloud_zone_record = recordAttrs;
       }
