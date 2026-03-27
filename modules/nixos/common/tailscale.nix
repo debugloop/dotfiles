@@ -6,6 +6,11 @@
   services.tailscale = {
     enable = true;
     authKeyFile = config.age.secrets.tailscaleAuthkey.path;
+    authKeyParameters = {
+      preauthorized = true;
+      ephemeral = false;
+    };
+    extraUpFlags = ["--advertise-tags=tag:nix"];
     openFirewall = true;
     useRoutingFeatures = "client";
   };
