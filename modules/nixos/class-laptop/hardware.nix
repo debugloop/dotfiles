@@ -1,4 +1,9 @@
-{pkgs, ...}: {
+{config, pkgs, ...}: {
+  boot = {
+    extraModulePackages = [config.boot.kernelPackages.ddcci-driver];
+    kernelModules = ["i2c-dev" "ddcci_backlight"];
+  };
+
   environment.systemPackages = with pkgs; [
     # light # better commands
     ddcutil # external displays

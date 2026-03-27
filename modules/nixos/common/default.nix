@@ -23,11 +23,6 @@
     };
   };
 
-  boot = {
-    extraModulePackages = [config.boot.kernelPackages.ddcci-driver];
-    kernelModules = ["i2c-dev" "ddcci_backlight"];
-  };
-
   networking = {
     hostName = hostName;
     firewall.enable = true;
