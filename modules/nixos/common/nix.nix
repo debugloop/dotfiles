@@ -22,10 +22,7 @@
     ];
   };
 
-  age = {
-    identityPaths = ["/nix/persist/etc/ssh/ssh_host_ed25519_key"];
-    secrets = {
-      password.file = ../../../secrets/password.age;
-    };
+  age.secrets = {
+    password.file = ../../../secrets/password.age;
   };
 }

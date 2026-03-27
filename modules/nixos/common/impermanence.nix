@@ -3,6 +3,8 @@
     inputs.impermanence.nixosModule
   ];
 
+  age.identityPaths = ["/nix/persist/etc/ssh/ssh_host_ed25519_key"];
+
   fileSystems."/" = {
     device = "none";
     fsType = "tmpfs";

@@ -23,11 +23,8 @@
     ];
   };
 
-  age = {
-    identityPaths = ["/nix/persist/etc/ssh/ssh_host_ed25519_key"];
-    secrets = {
-      tailscaleAuthkey.file = ../../../secrets/tailscale.age;
-    };
+  age.secrets = {
+    tailscaleAuthkey.file = ../../../secrets/tailscale.age;
   };
 
   environment.persistence."/nix/persist" = {
