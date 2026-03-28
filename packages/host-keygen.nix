@@ -28,7 +28,9 @@
     chmod 600 "$PRIVKEY"
     chmod 644 "$PUBKEY"
 
+    ${pkgs.git}/bin/git add "$PUBKEY"
+
     echo "Created host key pair:"
-    echo "  $PRIVKEY"
-    echo "  $PUBKEY"
+    echo "  $PRIVKEY  (not staged)"
+    echo "  $PUBKEY   (staged)"
   ''

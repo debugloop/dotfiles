@@ -24,8 +24,7 @@
       "secrets/mullvad.conf.age".publicKeys = all;
       "secrets/woodpecker.age".publicKeys = all;
       "secrets/hetzner_token.age".publicKeys = all;
-      "secrets/hetzner_storagebox_tfstate_user.age".publicKeys = all;
-      "secrets/hetzner_storagebox_tfstate_password.age".publicKeys = all;
+      "secrets/hetzner_tfstate_passphrase.age".publicKeys = all;
     }
   '';
 

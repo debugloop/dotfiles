@@ -37,7 +37,6 @@
     location = "nbg1";
     image = "debian-12";
     sshKeyNames = ["hyperion" "simmons"];
-    dnsZone = "danieln.de";
   };
 
   networking.useDHCP = true;

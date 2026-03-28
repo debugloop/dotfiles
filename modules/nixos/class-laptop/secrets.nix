@@ -8,12 +8,8 @@
       file = ../../../secrets/hetzner_storagebox_id.age;
       owner = "danieln";
     };
-    hetzner_storagebox_tfstate_user = {
-      file = ../../../secrets/hetzner_storagebox_tfstate_user.age;
-      owner = "danieln";
-    };
-    hetzner_storagebox_tfstate_password = {
-      file = ../../../secrets/hetzner_storagebox_tfstate_password.age;
+    hetzner_tfstate_passphrase = {
+      file = ../../../secrets/hetzner_tfstate_passphrase.age;
       owner = "danieln";
     };
   };
