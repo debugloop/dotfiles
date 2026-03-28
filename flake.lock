@@ -192,11 +192,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1774561634,
-        "narHash": "sha256-3q1xsREjqdVIIwQQDZQ9y0YdBzP8gAxdwKoKnZSzJtU=",
+        "lastModified": 1774647770,
+        "narHash": "sha256-UNNi14XiqRWWjO8ykbFwA5wRwx7EscsC+GItOVpuGjc=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "7c046c63ac3b467c1d589b99d531da5b6520825a",
+        "rev": "02371c05a04a2876cf92e2d67a259e8f87399068",
         "type": "github"
       },
       "original": {
@@ -255,11 +255,11 @@
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
       },
       "locked": {
-        "lastModified": 1774539534,
-        "narHash": "sha256-kRKybUNiXTivTZSUnqwXHCY4GRD3e+Nu+1Mb8jf2HCI=",
+        "lastModified": 1774620721,
+        "narHash": "sha256-QucawBaJ6Rl5JWAXAbpouXM1MsvlzwCsPGl3zOwLtzw=",
         "owner": "sodiboo",
         "repo": "niri-flake",
-        "rev": "975e9c55001333df0ddab36d938372c14917998a",
+        "rev": "fb83d584532282f585cd02f3aa513e98b843e7e7",
         "type": "github"
       },
       "original": {
@@ -274,11 +274,11 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1774026900,
-        "narHash": "sha256-QZ7CSjbBsDfMS55+KoP31wSFJE3StVuI8U+kHN4D/1c=",
+        "lastModified": 1774615085,
+        "narHash": "sha256-MoLQKyK7wHL9ffTQ+V7Xxkj2SYMSUwQXYRlCZ9ZQ/lM=",
         "ref": "refs/heads/main",
-        "rev": "18a0c039cb407908722bdcab6887a075054f5190",
-        "revCount": 5,
+        "rev": "8347adf30aa1c7c43bc0abbc2bee7d3bb49ccd95",
+        "revCount": 6,
         "type": "git",
         "url": "https://codeberg.org/debugloop/niri-autoselect-portal.git"
       },
@@ -307,11 +307,11 @@
     "niri-unstable": {
       "flake": false,
       "locked": {
-        "lastModified": 1773130184,
-        "narHash": "sha256-3bwx4WqCB06yfQIGB+OgIckOkEDyKxiTD5pOo4Xz2rI=",
+        "lastModified": 1774616418,
+        "narHash": "sha256-z+dLkAS4bqytIlOI4h2MnjBJrSP4d1Awx0n+IV5YA3Y=",
         "owner": "YaLTeR",
         "repo": "niri",
-        "rev": "b07bde3ee82dd73115e6b949e4f3f63695da35ea",
+        "rev": "8f48f56fe19918b5cfa02e5d68a47ebaf7bf3dee",
         "type": "github"
       },
       "original": {
