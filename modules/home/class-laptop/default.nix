@@ -15,7 +15,10 @@
     ./wl-kbptr.nix
   ];
 
-  gtk.enable = true; # applies generated configs
+  gtk = {
+    enable = true; # applies generated configs
+    gtk4.theme = null;
+  };
 
   home = {
     pointerCursor = {
