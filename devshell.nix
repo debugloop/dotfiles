@@ -18,7 +18,6 @@
       "secrets/restic_password.age".publicKeys = all;
       "secrets/tailscale.age".publicKeys = all;
       "secrets/grafana.age".publicKeys = all;
-      "secrets/gh-token.age".publicKeys = all;
       "secrets/miniflux.age".publicKeys = all;
       "secrets/factorio.age".publicKeys = all;
       "secrets/mullvad.conf.age".publicKeys = all;
