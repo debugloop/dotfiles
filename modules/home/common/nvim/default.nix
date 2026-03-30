@@ -24,6 +24,7 @@
 
     "nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/common/nvim/init.lua";
     "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/common/nvim/lua";
+    "nvim/lsp".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/common/nvim/lsp";
     "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/common/nvim/ftplugin";
     "nvim/after".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/common/nvim/after";
   };
