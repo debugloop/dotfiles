@@ -84,7 +84,7 @@
     ];
   };
 
-  services.restic.backups.daily.exclude = ["var/lib/prometheus2"];
+  backup.exclude = ["var/lib/prometheus2"];
 
   services.caddy.virtualHosts."prometheus.danieln.de".extraConfig = ''
     basicauth * {

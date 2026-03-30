@@ -3,9 +3,9 @@
     ./hardware-configuration.nix
     flake.nixosModules.common
     flake.nixosModules.class-laptop
-    flake.nixosModules.has-backup
   ];
 
+  backup.enable = true;
   system.stateVersion = "22.11";
 
   programs = {

@@ -101,7 +101,7 @@
     rtkit.enable = true; # for pipewire
   };
 
-  services.restic.backups.daily.exclude = [
+  backup.exclude = [
     "home/danieln/go" # golang cache
     "home/danieln/scratch"
     "home/danieln/downloads"

@@ -10,26 +10,16 @@
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
     flake.nixosModules.hetzner
-    flake.nixosModules.has-backup
     inputs.disko.nixosModules.disko
     ./disko.nix
     flake.nixosModules.common
     flake.nixosModules.class-server
-    # flake.nixosModules.service-cache
-    # flake.nixosModules.service-caddy
-    # flake.nixosModules.service-factorio
-    # flake.nixosModules.service-grafana
-    # flake.nixosModules.service-grocy
-    # flake.nixosModules.service-jellyfin
-    # flake.nixosModules.service-matrix
-    flake.nixosModules.service-miniflux
-    # flake.nixosModules.service-prometheus
-    # flake.nixosModules.service-rqbit
-    # flake.nixosModules.service-woodpecker
+    ./services.nix
   ];
 
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "roshar";
+  backup.enable = true;
 
   hetzner = {
     enable = true;

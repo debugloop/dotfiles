@@ -55,7 +55,7 @@
     ];
   };
 
-  services.restic.backups.daily.exclude = [
+  backup.exclude = [
     "var/lib/docker"
     "var/lib/flatpak"
     "home/danieln/.var" # flatpak data

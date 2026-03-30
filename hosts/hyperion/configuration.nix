@@ -1,19 +1,9 @@
 {flake, ...}: {
   imports = [
     ./hardware-configuration.nix
+    ./services.nix
     flake.nixosModules.common
     flake.nixosModules.class-server
-    flake.nixosModules.service-cache
-    flake.nixosModules.service-caddy
-    flake.nixosModules.service-factorio
-    flake.nixosModules.service-grafana
-    flake.nixosModules.service-grocy
-    flake.nixosModules.service-matrix
-    flake.nixosModules.service-miniflux
-    flake.nixosModules.service-prometheus
-    flake.nixosModules.service-jellyfin
-    flake.nixosModules.service-rqbit
-    flake.nixosModules.service-woodpecker
   ];
 
   system.stateVersion = "22.11";
