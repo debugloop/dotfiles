@@ -30,7 +30,7 @@
     ];
   };
 
-  documentation.man.generateCaches = false;
+  documentation.man.cache.enable = false;
 
   programs = {
     fish.enable = true;

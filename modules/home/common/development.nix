@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, lib, ...}: {
   programs = {
     go = {
       enable = true;
@@ -51,7 +51,7 @@
       gotest
       gotests
       gotestsum
-      gotools
+      (lib.lowPrio pkgs.gotools)
       grpcurl
       harper
       ijq
