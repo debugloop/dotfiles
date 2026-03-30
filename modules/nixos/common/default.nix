@@ -8,7 +8,8 @@
 }: {
   imports = [
     inputs.home-manager.nixosModules.home-manager
-    ../backup-persisted.nix
+    ./backup-persisted.nix
+    ./hetzner.nix
     ./impermanence.nix
     ./nix.nix
     ./software.nix

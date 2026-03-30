@@ -9,7 +9,6 @@
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
-    flake.nixosModules.hetzner
     inputs.disko.nixosModules.disko
     ./disko.nix
     flake.nixosModules.common
