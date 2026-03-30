@@ -40,7 +40,7 @@
   # NOTE: Required by the .#update script specifically for inline sed replace.
   systemd.services.woodpecker-agent-local.serviceConfig.SystemCallFilter = ["@chown"];
 
-  age.secrets.woodpecker.file = ../../secrets/woodpecker.age;
+  age.secrets.woodpecker.file = ../../../secrets/woodpecker.age;
 
   services.caddy.virtualHosts."ci.danieln.de".extraConfig = ''
     reverse_proxy localhost:8082

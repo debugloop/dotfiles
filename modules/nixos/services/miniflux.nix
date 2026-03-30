@@ -7,7 +7,7 @@
     };
   };
 
-  age.secrets.miniflux.file = ../../secrets/miniflux.age;
+  age.secrets.miniflux.file = ../../../secrets/miniflux.age;
 
   services.caddy.virtualHosts."rss.danieln.de".extraConfig = ''
     reverse_proxy localhost:8081

@@ -7,5 +7,5 @@
     extraSettingsFile = "${config.age.secrets.factorio.path}";
   };
 
-  age.secrets.factorio.file = ../../secrets/factorio.age;
+  age.secrets.factorio.file = ../../../secrets/factorio.age;
 }
