@@ -51,15 +51,6 @@
     ];
   };
 
-  home.persistence."/nix/persist" = {
-    directories = [
-      {
-        directory = ".gnupg";
-        mode = "0700";
-      }
-    ];
-  };
-
   programs = {
     dircolors.enable = true;
     gpg.enable = true;

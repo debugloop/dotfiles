@@ -1,6 +1,4 @@
 {config, ...}: {
-  home.persistence."/nix/persist".directories = [".local/share/fish"];
-
   programs.fish = {
     enable = true;
     interactiveShellInit = ''

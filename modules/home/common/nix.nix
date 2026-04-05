@@ -18,11 +18,6 @@
     ];
   };
 
-  home.persistence."/nix/persist".directories = [
-    ".local/share/direnv"
-    ".local/share/nix"
-  ];
-
   programs = {
     direnv = {
       enable = true;
