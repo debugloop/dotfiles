@@ -1,3 +1,6 @@
+let
+  basicauthHash = import ./_basicauth.nix;
+in
 {
   config,
   pkgs,
@@ -49,7 +52,7 @@
 
   services.caddy.virtualHosts."dl.danieln.de".extraConfig = ''
     basicauth * {
-      danieln $2a$14$BHCi0dM1slv2JypVYffCZ.LAbPH8x3037LwVlRaxySIppSPR1Ixlm
+      ${basicauthHash}
     }
     reverse_proxy localhost:3030
   '';

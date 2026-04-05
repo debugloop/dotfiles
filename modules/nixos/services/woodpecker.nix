@@ -42,6 +42,10 @@
 
   age.secrets.woodpecker.file = ../../../secrets/woodpecker.age;
 
+  environment.persistence."/nix/persist".directories = [
+    "/var/lib/woodpecker-server"
+  ];
+
   services.caddy.virtualHosts."ci.danieln.de".extraConfig = ''
     reverse_proxy localhost:8082
   '';
