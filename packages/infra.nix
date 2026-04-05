@@ -11,12 +11,18 @@ in
   pkgs.writeShellScriptBin "infra" ''
     set -euo pipefail
 
-    export TF_VAR_hcloud_token="$(cat /run/agenix/hetzner_token)"
-    export TF_VAR_storage_box_id="$(cat /run/agenix/hetzner_storagebox_id)"
+    export PATH="${pkgs.age-plugin-fido2-hmac}/bin:$PATH"
+    _age="${pkgs.age}/bin/age --decrypt -i ${inputs.self}/keys/physical/fido2-identity.pub"
+
+    _secrets="$($_age ${inputs.self}/secrets/hetzner_infra.age)"
+    _get() { echo "$_secrets" | grep "^$1=" | cut -d= -f2-; }
+
+    export TF_VAR_hcloud_token="$(_get hcloud_token)"
+    export TF_VAR_storage_box_id="$(_get storage_box_id)"
 
     export TF_ENCRYPTION=$(cat <<TFENC
     key_provider "pbkdf2" "key" {
-      passphrase = "$(cat /run/agenix/hetzner_tfstate_passphrase)"
+      passphrase = "$(_get tfstate_passphrase)"
     }
     method "aes_gcm" "default" {
       keys = key_provider.pbkdf2.key

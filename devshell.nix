@@ -5,13 +5,17 @@
 }: let
   allKeys =
     map pkgs.lib.fileContents
-    (pkgs.lib.filesystem.listFilesRecursive ./keys);
+    (pkgs.lib.filesystem.listFilesRecursive ./keys/auth
+      ++ pkgs.lib.filesystem.listFilesRecursive ./keys/hosts);
+
+  fido2Recipient = "age1l9vzn3un0j7kta9x388ttsheq8dq6c9954lpqee5pmaeh4xgr5aszy7xn3";
 
   secretsNix = pkgs.writeText "secrets.nix" ''
     let
       all = [
         ${pkgs.lib.concatMapStringsSep "\n  " (k: ''"${pkgs.lib.trim k}"'') allKeys}
       ];
+      fido2 = [ "${fido2Recipient}" ];
     in
     {
       "secrets/password.age".publicKeys = all;
@@ -19,11 +23,9 @@
       "secrets/tailscale.age".publicKeys = all;
       "secrets/grafana.age".publicKeys = all;
       "secrets/miniflux.age".publicKeys = all;
-      "secrets/factorio.age".publicKeys = all;
       "secrets/mullvad.conf.age".publicKeys = all;
       "secrets/woodpecker.age".publicKeys = all;
-      "secrets/hetzner_token.age".publicKeys = all;
-      "secrets/hetzner_tfstate_passphrase.age".publicKeys = all;
+      "secrets/hetzner_infra.age".publicKeys = fido2;
     }
   '';
 
@@ -46,5 +48,6 @@ in
   pkgs.mkShell {
     packages = [
       agenixWrapped
+      pkgs.age-plugin-fido2-hmac
     ];
   }
