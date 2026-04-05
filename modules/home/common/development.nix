@@ -1,4 +1,8 @@
-{pkgs, lib, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   programs = {
     go = {
       enable = true;
@@ -67,8 +71,6 @@
       luajit
       mermaid-cli
       nil
-      nodePackages_latest.prettier
-      nodePackages_latest.yaml-language-server
       pgcli
       posting
       proselint
