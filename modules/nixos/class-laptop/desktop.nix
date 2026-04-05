@@ -144,7 +144,6 @@
       files = [
         ".config/spotify/prefs"
         ".config/spotify/Users/analogbyte-user/prefs"
-        ".config/mimeapps.list"
       ];
     };
   };
