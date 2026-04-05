@@ -23,7 +23,6 @@
         ];
         modules-right = [
           "group/audio"
-          "systemd-failed-units"
           "tray"
           "battery"
           "idle_inhibitor"
@@ -235,12 +234,6 @@
         "pulseaudio/slider" = {
           orientation = "vertical";
         };
-        systemd-failed-units = {
-          hide-on-ok = true;
-          format = "";
-          system = true;
-          user = true;
-        };
       }
     ];
     style = ''
@@ -335,10 +328,6 @@
       #pulseaudio.mic {
           color: #${config.colors.background};
           background-color: #${config.colors.red};
-      }
-
-      #systemd-failed-units {
-          color: #${config.colors.red};
       }
 
       #pulseaudio-slider trough {
