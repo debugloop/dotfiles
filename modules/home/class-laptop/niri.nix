@@ -116,59 +116,50 @@
             curve = "ease-out-expo";
           };
           custom-shader = ''
-            float gh(float n) {
-                return fract(sin(n) * 43758.5453);
+            float hash(vec2 p) {
+                return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+            }
+
+            float noise(vec2 p) {
+                vec2 i = floor(p);
+                vec2 f = fract(p);
+                f = f * f * (3.0 - 2.0 * f);
+                float a = hash(i);
+                float b = hash(i + vec2(1.0, 0.0));
+                float c = hash(i + vec2(0.0, 1.0));
+                float d = hash(i + vec2(1.0, 1.0));
+                return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+            }
+
+            float fbm(vec2 p) {
+                float v = 0.0;
+                float amp = 0.5;
+                for (int i = 0; i < 5; i++) {
+                    v += amp * noise(p);
+                    p *= 2.0;
+                    amp *= 0.5;
+                }
+                return v;
             }
 
             vec4 open_color(vec3 coords_geo, vec3 size_geo) {
                 float p = niri_clamped_progress;
                 vec2 uv = coords_geo.xy;
-
-                float intensity = (1.0 - p) * (1.0 - p);
-
-                float tick = floor(p * 60.0) + niri_random_seed * 1000.0;
-                float r1 = gh(tick * 1.13);
-                float r2 = gh(tick * 2.37);
-                float r3 = gh(tick * 3.71);
-                float r4 = gh(tick * 4.19);
-                float r5 = gh(tick * 5.53);
-                float r6 = gh(tick * 6.91);
-
-                vec2 off_r = vec2(r1 - 0.5, r2 - 0.5) * intensity * 0.05;
-                vec2 off_g = vec2(r3 - 0.5, r4 - 0.5) * intensity * 0.05;
-                vec2 off_b = vec2(r5 - 0.5, r6 - 0.5) * intensity * 0.05;
-
-                float slice = floor(uv.y * 20.0);
-                float slice_offset = (gh(slice + tick) - 0.5) * intensity * 0.03;
-
-                vec2 uv_r = uv + off_r + vec2(slice_offset * 0.7, 0.0);
-                vec2 uv_g = uv + off_g + vec2(slice_offset * -0.5, 0.0);
-                vec2 uv_b = uv + off_b + vec2(slice_offset * 0.3, 0.0);
-
-                vec3 tc_r = niri_geo_to_tex * vec3(uv_r, 1.0);
-                vec3 tc_g = niri_geo_to_tex * vec3(uv_g, 1.0);
-                vec3 tc_b = niri_geo_to_tex * vec3(uv_b, 1.0);
-
-                vec4 color;
-                color.r = texture2D(niri_tex, tc_r.st).r;
-                color.g = texture2D(niri_tex, tc_g.st).g;
-                color.b = texture2D(niri_tex, tc_b.st).b;
-                color.a = max(max(
-                    texture2D(niri_tex, tc_r.st).a,
-                    texture2D(niri_tex, tc_g.st).a),
-                    texture2D(niri_tex, tc_b.st).a);
-
-                float big_glitch = step(0.85, gh(tick * 0.77));
-                vec2 shift = vec2((gh(tick * 1.5) - 0.5) * 0.06 * big_glitch * intensity, 0.0);
-                vec3 tc_shift = niri_geo_to_tex * vec3(uv + shift, 1.0);
-                vec4 shifted = texture2D(niri_tex, tc_shift.st);
-                color = mix(color, shifted, big_glitch * intensity * 0.4);
-
-                float scanline = 1.0 - sin(uv.y * size_geo.y * 3.14159) * 0.06 * intensity;
-                color.rgb *= scanline;
-
-                float alpha = smoothstep(0.0, 0.15, p);
-                return color * alpha;
+                float seed = niri_random_seed * 100.0;
+                float rp = 1.0 - p;
+                float particle_noise = fbm(uv * 8.0 + seed);
+                float fine_noise = hash(floor(uv * 60.0) + seed);
+                float direction_bias = (1.0 - uv.x) * 0.4 + uv.y * 0.4;
+                float dissolve_threshold = particle_noise * 0.5 + fine_noise * 0.2 + direction_bias;
+                float reveal = smoothstep(dissolve_threshold - 0.15, dissolve_threshold + 0.15, p * 1.6);
+                float drift = rp * rp;
+                vec2 drift_dir = normalize(vec2(1.0, -1.0));
+                float drift_amount = drift * 0.08 * (particle_noise + fine_noise * 0.5);
+                vec2 displaced_uv = uv + drift_dir * drift_amount * (1.0 - reveal);
+                vec3 tex_coords = niri_geo_to_tex * vec3(displaced_uv, 1.0);
+                vec4 color = texture2D(niri_tex, tex_coords.st);
+                float alpha = smoothstep(0.0, 0.1, p);
+                return color * reveal * alpha;
             }
           '';
         };
@@ -178,59 +169,72 @@
             curve = "ease-out-expo";
           };
           custom-shader = ''
-            float gh(float n) {
-                return fract(sin(n) * 43758.5453);
+            float hash(vec2 p) {
+                return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+            }
+
+            float noise(vec2 p) {
+                vec2 i = floor(p);
+                vec2 f = fract(p);
+                f = f * f * (3.0 - 2.0 * f);
+                float a = hash(i);
+                float b = hash(i + vec2(1.0, 0.0));
+                float c = hash(i + vec2(0.0, 1.0));
+                float d = hash(i + vec2(1.0, 1.0));
+                return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+            }
+
+            float fbm(vec2 p) {
+                float v = 0.0;
+                float amp = 0.5;
+                for (int i = 0; i < 5; i++) {
+                    v += amp * noise(p);
+                    p *= 2.0;
+                    amp *= 0.5;
+                }
+                return v;
             }
 
             vec4 close_color(vec3 coords_geo, vec3 size_geo) {
                 float p = niri_clamped_progress;
                 vec2 uv = coords_geo.xy;
+                float seed = niri_random_seed * 100.0;
 
-                float intensity = p * p;
+                float particle_noise = fbm(uv * 8.0 + seed);
+                float fine_noise = hash(floor(uv * 60.0) + seed);
 
-                float tick = floor(p * 60.0) + niri_random_seed * 1000.0;
-                float r1 = gh(tick * 1.13);
-                float r2 = gh(tick * 2.37);
-                float r3 = gh(tick * 3.71);
-                float r4 = gh(tick * 4.19);
-                float r5 = gh(tick * 5.53);
-                float r6 = gh(tick * 6.91);
+                float direction_bias = uv.x * 0.4 + (1.0 - uv.y) * 0.4;
 
-                vec2 off_r = vec2(r1 - 0.5, r2 - 0.5) * intensity * 0.06;
-                vec2 off_g = vec2(r3 - 0.5, r4 - 0.5) * intensity * 0.06;
-                vec2 off_b = vec2(r5 - 0.5, r6 - 0.5) * intensity * 0.06;
+                float dissolve_threshold = particle_noise * 0.5 + fine_noise * 0.2 + direction_bias;
 
-                float slice = floor(uv.y * 20.0);
-                float slice_offset = (gh(slice + tick) - 0.5) * intensity * 0.05;
+                float remain = 1.0 - smoothstep(dissolve_threshold - 0.15, dissolve_threshold + 0.15, p * 1.6);
 
-                vec2 uv_r = uv + off_r + vec2(slice_offset * 0.7, 0.0);
-                vec2 uv_g = uv + off_g + vec2(slice_offset * -0.5, 0.0);
-                vec2 uv_b = uv + off_b + vec2(slice_offset * 0.3, 0.0);
+                float dissolved_amount = 1.0 - remain;
+                vec2 drift_dir = normalize(vec2(1.0, -1.0));
+                float drift_strength = dissolved_amount * p * p * 0.12;
 
-                vec3 tc_r = niri_geo_to_tex * vec3(uv_r, 1.0);
-                vec3 tc_g = niri_geo_to_tex * vec3(uv_g, 1.0);
-                vec3 tc_b = niri_geo_to_tex * vec3(uv_b, 1.0);
+                float drift_rand = hash(floor(uv * 40.0) + seed + 7.0);
+                vec2 drift_offset = drift_dir * drift_strength * (0.6 + drift_rand * 0.8);
 
-                vec4 color;
-                color.r = texture2D(niri_tex, tc_r.st).r;
-                color.g = texture2D(niri_tex, tc_g.st).g;
-                color.b = texture2D(niri_tex, tc_b.st).b;
-                color.a = max(max(
-                    texture2D(niri_tex, tc_r.st).a,
-                    texture2D(niri_tex, tc_g.st).a),
-                    texture2D(niri_tex, tc_b.st).a);
+                float turb = fbm(uv * 12.0 + seed + p * 4.0) - 0.5;
+                drift_offset += vec2(turb, turb * 0.7) * dissolved_amount * p * 0.03;
 
-                float big_glitch = step(0.8 - p * 0.3, gh(tick * 0.77));
-                vec2 shift = vec2((gh(tick * 1.5) - 0.5) * 0.08 * big_glitch * intensity, 0.0);
-                vec3 tc_shift = niri_geo_to_tex * vec3(uv + shift, 1.0);
-                vec4 shifted = texture2D(niri_tex, tc_shift.st);
-                color = mix(color, shifted, big_glitch * intensity * 0.5);
+                vec2 displaced_uv = uv + drift_offset;
 
-                float scanline = 1.0 - sin(uv.y * size_geo.y * 3.14159) * 0.08 * intensity;
-                color.rgb *= scanline;
+                vec3 tex_coords = niri_geo_to_tex * vec3(displaced_uv, 1.0);
+                vec4 color = texture2D(niri_tex, tex_coords.st);
 
-                float alpha = smoothstep(1.0, 0.6, p);
-                return color * alpha;
+                float dust_life = smoothstep(0.0, 0.3, dissolved_amount) *
+                                  smoothstep(1.0, 0.5, dissolved_amount);
+                float dust_alpha = dust_life * (1.0 - p) * 0.6;
+
+                vec3 base_tex = niri_geo_to_tex * vec3(uv, 1.0);
+                vec4 base_color = texture2D(niri_tex, base_tex.st);
+
+                vec4 final_color = base_color * remain + color * dust_alpha;
+
+                float tail = smoothstep(1.0, 0.85, p);
+                return final_color * tail;
             }
           '';
         };
