@@ -72,6 +72,7 @@
       mermaid-cli
       nil
       pgcli
+      prettier
       posting
       proselint
       protobuf
@@ -95,6 +96,7 @@
       typos-lsp
       vale
       yamllint
+      yaml-language-server
       yq-go
     ];
   };
