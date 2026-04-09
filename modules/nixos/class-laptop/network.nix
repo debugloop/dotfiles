@@ -9,8 +9,12 @@
   };
 
   services = {
-    avahi.enable = true;
+    avahi = {
+      enable = true;
+      nssmdns4 = true;
+    };
     mullvad-vpn.enable = true;
+    resolved.settings.Resolve.MulticastDNS = "no";
   };
 
   environment.persistence."/nix/persist".directories = [
