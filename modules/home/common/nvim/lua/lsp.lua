@@ -31,15 +31,6 @@ vim.keymap.set("n", "gH", vim.lsp.buf.outgoing_calls, { desc = "lsp: show callee
 vim.keymap.set("n", "<leader>sd", vim.diagnostic.setqflist, { desc = "lsp: list diagnostics" })
 vim.keymap.set("n", "<cr>", vim.lsp.buf.hover)
 
-vim.lsp.enable({
-  "gopls",
-  "typos-lsp",
-  "nixd",
-  "templ",
-  "javascript",
-  "lua_ls",
-  "harper",
-  "fish",
-  "rust_analyzer",
-  "copilot",
-})
+vim.lsp.enable(vim.tbl_map(function(f)
+  return (f:gsub("%.lua$", ""))
+end, vim.fn.readdir(vim.fn.stdpath("config") .. "/lsp")))

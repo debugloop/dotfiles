@@ -1,3 +1,6 @@
+-- clear arglist so `:q` doesn't complain about "more files to edit"
+vim.api.nvim_create_autocmd("VimEnter", { command = "argdelete *" })
+
 -- general behavior
 vim.o.updatetime = 500 -- faster CursorHold
 vim.o.mouse = "" -- no mouse
@@ -104,4 +107,16 @@ vim.diagnostic.config({
     current_line = true,
   },
   severity_sort = true,
+})
+
+require("vim._core.ui2").enable({
+  msg = {
+    target = "msg",
+    targets = {
+      echomsg = "cmd",
+      progress = "cmd",
+    },
+    msg = { height = 0.3, timeout = 4000 },
+    pager = { height = 0.8 },
+  },
 })

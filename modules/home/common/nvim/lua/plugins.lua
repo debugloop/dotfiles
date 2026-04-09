@@ -367,10 +367,6 @@ return inject_all({
           MiniTablineModifiedVisible = { link = "MiniTablineVisible" },
           -- visible MiniJump
           MiniJump = { link = "@comment.note" },
-          NoiceCmdlineIcon = { fg = theme.diag.info, bg = theme.ui.bg },
-          NoiceCmdlinePopupBorder = { fg = theme.diag.info, bg = theme.ui.bg },
-          NoiceCmdlinePopupTitle = { fg = theme.diag.info, bg = theme.ui.bg },
-          NoiceConfirmBorder = { fg = theme.diag.info, bg = theme.ui.bg },
           -- document highlights
           LspReferenceRead = { bg = theme.diff.text },
           LspReferenceWrite = { bg = theme.diff.text, fg = theme.diag.warning, underline = false },
@@ -1083,100 +1079,6 @@ return inject_all({
         end
         return MiniTabline.default_format(buf_id, label) .. suffix
       end,
-    },
-  },
-
-  {
-    "folke/noice.nvim",
-    main = "noice",
-    event = "VeryLazy",
-    keys = {
-      {
-        "<leader>n",
-        function()
-          require("noice").cmd("history")
-        end,
-        desc = "show message history",
-      },
-    },
-    dependencies = {
-      { "MunifTanjim/nui.nvim" },
-    },
-    opts = {
-      cmdline = {
-        enabled = true,
-      },
-      messages = {
-        enabled = true,
-        view_search = false,
-      },
-      popupmenu = {
-        enabled = false,
-        backend = "cmp",
-      },
-      notify = {
-        enabled = true,
-      },
-      lsp = {
-        progress = {
-          enabled = true,
-        },
-        override = {
-          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-          ["vim.lsp.util.stylize_markdown"] = true,
-        },
-        hover = {
-          silent = true,
-          opts = {
-            border = "solid",
-            max_width = 100,
-          },
-        },
-        signature = {
-          enabled = false,
-        },
-        message = {
-          enabled = true,
-        },
-      },
-      presets = {
-        bottom_search = true,
-        command_palette = true,
-      },
-      views = {
-        mini = {
-          timeout = 3000,
-        },
-      },
-      routes = {
-        {
-          filter = {
-            event = "msg_show",
-            kind = "",
-            find = "bytes",
-          },
-          opts = { skip = true },
-        },
-        {
-          filter = {
-            event = "msg_show",
-            kind = "echomsg",
-            find = "deprecated",
-          },
-          opts = { skip = true },
-        },
-        {
-          filter = {
-            event = "msg_show",
-            any = {
-              { find = "%d+L, %d+B" },
-              { find = "; after #%d+" },
-              { find = "; before #%d+" },
-            },
-          },
-          view = "mini",
-        },
-      },
     },
   },
 
