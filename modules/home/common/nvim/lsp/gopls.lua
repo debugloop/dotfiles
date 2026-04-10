@@ -7,12 +7,6 @@ return {
   on_attach = function(_, _)
     vim.o.foldexpr = "v:lua.vim.lsp.foldexpr()"
 
-    -- display code lenses
-    vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-      callback = function(args)
-        vim.lsp.codelens.refresh({ bufnr = args.buf })
-      end,
-    })
     -- modify some semantic tokens
     vim.api.nvim_create_autocmd("LspTokenUpdate", {
       callback = function(args)

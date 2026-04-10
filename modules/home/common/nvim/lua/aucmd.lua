@@ -100,6 +100,12 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
   end,
 })
 
+-- argdel every buffer, so a simple :q wont complain
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = vim.api.nvim_create_augroup("argdel_on_vim_open", { clear = true }),
+  command = "%argdelete",
+})
+
 -- autocmds for every buffer
 vim.api.nvim_create_autocmd({ "BufRead" }, {
   group = vim.api.nvim_create_augroup("add_autocmd_on_buf_enter", { clear = true }),

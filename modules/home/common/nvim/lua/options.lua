@@ -1,5 +1,11 @@
--- clear arglist so `:q` doesn't complain about "more files to edit"
-vim.api.nvim_create_autocmd("VimEnter", { command = "argdelete *" })
+-- disable unused built-in plugins (they load after init.lua; guards must be set here)
+vim.g.loaded_matchit = 1
+vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_gzip = 1
+vim.g.loaded_tarPlugin = 1
+vim.g.loaded_tohtml = 1
+vim.g.loaded_tutor = 1
+vim.g.loaded_zipPlugin = 1
 
 -- general behavior
 vim.o.updatetime = 500 -- faster CursorHold
@@ -114,7 +120,6 @@ require("vim._core.ui2").enable({
     target = "msg",
     targets = {
       echomsg = "cmd",
-      progress = "cmd",
     },
     msg = { height = 0.3, timeout = 4000 },
     pager = { height = 0.8 },
