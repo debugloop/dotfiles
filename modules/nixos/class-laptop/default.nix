@@ -4,7 +4,8 @@
     ./hardware.nix
     ./network.nix
     ./nix.nix
-./virt.nix
+    ./virt.nix
+    ./microvm.nix
     inputs.niri-autoselect-portal.nixosModules.default
   ];
 }

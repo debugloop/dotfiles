@@ -8,6 +8,15 @@
   backup.enable = true;
   system.stateVersion = "22.11";
 
+  codingVmsExternalInterface = "wlp2s0";
+
+  codingVms = [
+    {
+      name = "codingvm";
+      workspace = "/home/danieln/microvm/coding";
+    }
+  ];
+
   programs = {
     gamemode.enable = true;
     steam.enable = true;

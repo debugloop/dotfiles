@@ -1,4 +1,10 @@
 return {
+  {
+    src = "https://github.com/yorickpeterse/nvim-tree-pairs",
+    config = function(_)
+      require("tree-pairs").setup()
+    end,
+  },
 
   -- nvim-spider
   {

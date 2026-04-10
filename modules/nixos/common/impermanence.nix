@@ -67,7 +67,7 @@
         "go"
         ".local/share/posting"
       ];
-      files = [".netrc" ".claude.json" ".kube/config"];
+      files = [".netrc" ".kube/config"];
     };
   };
 }
