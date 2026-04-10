@@ -9,13 +9,6 @@
     };
   };
   home = {
-    persistence."/nix/persist" = {
-      directories = [
-        "go"
-        ".local/share/posting"
-      ];
-      files = [".kube/config"];
-    };
     sessionPath = [
       "$HOME/go/bin"
     ];

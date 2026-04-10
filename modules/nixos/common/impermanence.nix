@@ -64,8 +64,10 @@
         ".local/share/fish"
         ".local/share/atuin"
         ".local/share/zoxide"
+        "go"
+        ".local/share/posting"
       ];
-      files = [".netrc" ".claude.json"];
+      files = [".netrc" ".claude.json" ".kube/config"];
     };
   };
 }
