@@ -38,15 +38,6 @@
         type = "ed25519";
       }
     ];
-    extraConfig = let
-      launcher = pkgs.writeShellScript "claude-launcher" ''
-        cd ${workspace}
-        exec ${pkgs.claude-code}/bin/claude --dangerously-skip-permissions $SSH_ORIGINAL_COMMAND
-      '';
-    in ''
-      Match User danieln
-        ForceCommand ${launcher}
-    '';
   };
 
   # Match host UID/GID so virtiofs-shared files have correct ownership
@@ -97,7 +88,7 @@
   microvm = {
     hypervisor = "cloud-hypervisor";
     vcpu = 8;
-    mem = 4096;
+    mem = 8192;
     socket = "control.socket";
 
     # Writable overlay so nix-daemon and home-manager activation work inside VM

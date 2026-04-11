@@ -26,10 +26,8 @@
         set -x CLAUDE_CONFIG_DIR /home/danieln/.claude
         ${config.microvm.extraInit}
       '';
-      loginShellInit = ''
-        cd ${config.microvm.workspace}
-        exec claude --dangerously-skip-permissions
-      '';
+      loginShellInit = "cd ${config.microvm.workspace}";
+      shellAbbrs.c = "claude --dangerously-skip-permissions";
     };
 
     programs.git.enable = true;
