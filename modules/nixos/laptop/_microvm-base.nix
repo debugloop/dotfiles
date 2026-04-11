@@ -5,6 +5,7 @@
   tapId,
   mac,
   inputs,
+  vsockCid,
   extraInit ? "",
 }: {
   config,
@@ -87,6 +88,7 @@
 
   microvm = {
     hypervisor = "cloud-hypervisor";
+    vsock.cid = vsockCid;
     vcpu = 8;
     mem = 8192;
     socket = "control.socket";

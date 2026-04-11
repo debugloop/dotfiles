@@ -103,6 +103,7 @@
                   ipAddress = "192.168.83.${toString (index + 2)}";
                   tapId = "microvm${toString (index + 2)}";
                   mac = "02:00:00:00:00:${lib.fixedWidthString 2 "0" (lib.toHexString (index + 2))}";
+                  vsockCid = index + 3;
                 }))
             ];
           };

@@ -8,9 +8,9 @@
   home.packages = with pkgs; [
     xwayland-satellite
   ];
-  services.swww.enable = true;
+  services.awww.enable = true;
   programs.niri = {
-    package = inputs.niri.packages.${pkgs.system}.niri-unstable;
+    package = inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
     settings = {
       gestures.hot-corners.enable = false;
       screenshot-path = "~/pictures/screenshot-%d-%m-%Y-%T.png";

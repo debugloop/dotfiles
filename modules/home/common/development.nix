@@ -36,6 +36,8 @@
         codespell
         curl
         delve
+        gnumake
+        gnupg
         dyff
         entr
         fd

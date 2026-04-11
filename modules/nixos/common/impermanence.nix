@@ -12,6 +12,10 @@
       options = ["defaults" "size=1G" "mode=755"];
     };
 
+    programs.fuse.userAllowOther = true;
+
+    systemd.services.pre-shutdown.enable = false;
+
     environment.persistence."/nix/persist" = {
       hideMounts = true;
       directories = [

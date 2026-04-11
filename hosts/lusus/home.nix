@@ -1,6 +1,15 @@
 {top, inputs, ...}: {
+  home = {
+    username = "danieln";
+    homeDirectory = "/home/danieln";
+    stateVersion = "22.11";
+  };
+
   imports = with top.modules.home; [
     common_base
+    common_network
+    common_session
+    common_ssh
     common_claude
     common_cloud
     common_colors
@@ -26,5 +35,5 @@
     laptop_swaylock
     laptop_waybar
     laptop_wl_kbptr
-  ] ++ [inputs.agenix.homeManagerModules.default];
+  ] ++ [inputs.agenix.homeManagerModules.default inputs.gridx.home-module];
 }

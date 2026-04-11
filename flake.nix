@@ -130,12 +130,10 @@
       };
 
       flake = {
-        nixosConfigurations = {
-          simmons = mkHost {hostname = "simmons";};
-          lusus = mkHost {hostname = "lusus";};
-          hyperion = mkHost {hostname = "hyperion";};
-          roshar = mkHost {hostname = "roshar";};
-        };
+        nixosConfigurations =
+          builtins.mapAttrs (hostname: _: mkHost {inherit hostname;})
+          (inputs.nixpkgs.lib.filterAttrs (n: t: t == "directory" && builtins.match "_.*" n == null)
+            (builtins.readDir ./hosts));
 
         lib = import ./lib {
           inherit inputs;

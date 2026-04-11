@@ -4,6 +4,10 @@
     inputs,
     ...
   }: {
+    imports = [inputs.nix-index-database.homeModules.nix-index];
+
+    age.identityPaths = ["/home/danieln/.ssh/agenix"];
+
     home = {
       sessionVariables = {
         FLAKE = "/etc/nixos";

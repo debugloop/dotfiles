@@ -11,7 +11,12 @@
     (modulesPath + "/profiles/qemu-guest.nix")
     inputs.disko.nixosModules.disko
     ./disko.nix
-    common_base
+    common_home_manager
+    common_network
+    common_openssh
+    common_locale
+    common_users
+    common_vm
     common_backup_persisted
     common_hetzner
     common_impermanence

@@ -47,6 +47,8 @@
       sessionVariables.EZA_COLORS = "reset";
       packages = with pkgs; [
         bmon
+        pwgen
+        renameutils
         doggo
         dool
         dust
