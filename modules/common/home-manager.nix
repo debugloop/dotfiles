@@ -14,7 +14,7 @@
       extraSpecialArgs = {
         inherit inputs top;
       };
-      users.danieln = import ../../../hosts/${hostName}/home.nix;
+      users.danieln = import ../../hosts/${hostName}/home.nix;
     };
   };
 }

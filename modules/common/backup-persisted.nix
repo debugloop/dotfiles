@@ -7,7 +7,7 @@
     ...
   }: let
     cfg = config.backup;
-    storageBoxFile = ../../../hosts/${hostName}/storagebox.nix;
+    storageBoxFile = ../../hosts/${hostName}/storagebox.nix;
     storageBox =
       if builtins.pathExists storageBoxFile
       then import storageBoxFile
@@ -58,7 +58,7 @@
       ];
 
       age.secrets.restic_password = {
-        file = ../../../secrets/restic_password.age;
+        file = ../../secrets/restic_password.age;
         owner = "danieln";
       };
 

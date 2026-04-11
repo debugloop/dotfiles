@@ -34,7 +34,7 @@
     age = {
       secrets = {
         grafana = {
-          file = ../../../secrets/grafana.age;
+          file = ../../secrets/grafana.age;
           mode = "770";
           owner = "grafana";
           group = "grafana";

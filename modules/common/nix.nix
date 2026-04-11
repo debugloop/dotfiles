@@ -24,7 +24,7 @@
     };
 
     age.secrets = {
-      password.file = ../../../secrets/password.age;
+      password.file = ../../secrets/password.age;
     };
   };
 }

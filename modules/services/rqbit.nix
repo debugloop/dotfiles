@@ -7,7 +7,7 @@ in { ... }: {
     ...
   }: {
     networking.wg-quick.interfaces.mullvad.configFile = "${config.age.secrets.mullvad-conf.path}";
-    age.secrets.mullvad-conf.file = ../../../secrets/mullvad.conf.age;
+    age.secrets.mullvad-conf.file = ../../secrets/mullvad.conf.age;
 
     nixpkgs.overlays = [
       (self: super: {

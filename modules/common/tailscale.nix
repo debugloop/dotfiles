@@ -25,7 +25,7 @@
     };
 
     age.secrets = {
-      tailscaleAuthkey.file = ../../../secrets/tailscale.age;
+      tailscaleAuthkey.file = ../../secrets/tailscale.age;
     };
 
     environment.persistence."/nix/persist" = {

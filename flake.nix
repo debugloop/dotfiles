@@ -135,6 +135,21 @@
           (inputs.nixpkgs.lib.filterAttrs (n: t: t == "directory" && builtins.match "_.*" n == null)
             (builtins.readDir ./hosts));
 
+        homeConfigurations = let
+          mkHome = hostname:
+            inputs.home-manager.lib.homeManagerConfiguration {
+              pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+              extraSpecialArgs = {
+                inherit inputs;
+                top = self;
+              };
+              modules = [./hosts/${hostname}/home.nix];
+            };
+        in {
+          "danieln@hyperion" = mkHome "hyperion";
+          "danieln@roshar" = mkHome "roshar";
+        };
+
         lib = import ./lib {
           inherit inputs;
           flake = self;
