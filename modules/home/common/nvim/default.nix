@@ -1,23 +1,9 @@
 {
   pkgs,
   config,
+  lib,
   ...
-}: let
-  nvimPlugins = import ./plugins.nix {inherit pkgs;};
-
-  startPlugins = builtins.listToAttrs (
-    map (name: {
-      name = "nvim/site/pack/nixpkgs/start/${name}";
-      value.source = pkgs.vimPlugins.${name};
-    })
-    nvimPlugins.startPluginNames
-  );
-
-  layersPlugin = {
-    "nvim/site/pack/nixpkgs/start/${nvimPlugins.layersNvim.name}".source =
-      nvimPlugins.layersNvim.src;
-  };
-in {
+}: {
   programs.neovim = {
     enable = true;
     viAlias = true;
@@ -39,9 +25,19 @@ in {
 
   xdg.dataFile =
     {
-      # treesitter parsers (placed in site/ for automatic discovery)
-      "nvim/site/parser".source = "${nvimPlugins.treesitterParsers}/parser";
+      "nvim/site/parser".source = "${pkgs.symlinkJoin {
+        name = "treesitter-parsers";
+        paths =
+          pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies;
+      }}/parser";
+      "nvim/site/queries".source = "${pkgs.vimPlugins.nvim-treesitter.withAllGrammars}/runtime/queries";
     }
-    // startPlugins
-    // layersPlugin;
+    // builtins.listToAttrs (
+      map (plug: {
+        name = "nvim/site/pack/nixpkgs/start/${lib.getName plug}";
+        value.source = plug;
+      })
+      (import
+        ./plugins.nix {inherit pkgs;})
+    );
 }
