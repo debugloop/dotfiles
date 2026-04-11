@@ -3,9 +3,9 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    blueprint = {
-      url = "github:numtide/blueprint";
-      inputs.nixpkgs.follows = "nixpkgs";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
     };
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -55,8 +55,92 @@
   };
 
   outputs = inputs:
-    inputs.blueprint {
-      inherit inputs;
-      nixpkgs.config.allowUnfree = true;
-    };
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} ({self, ...}: let
+      importTree = path: let
+        entries = builtins.readDir path;
+        toList = name: type:
+          if type == "directory"
+          then importTree (path + "/${name}")
+          else if
+            type == "regular"
+            && builtins.match ".*\\.nix" name != null
+            && builtins.match "_.*" name == null
+          then [(path + "/${name}")]
+          else [];
+      in
+        builtins.concatLists (builtins.attrValues (builtins.mapAttrs toList entries));
+
+      mkHost = {
+        hostname,
+        system ? "x86_64-linux",
+      }:
+        inputs.nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            top = self;
+            hostName = hostname;
+          };
+          modules = [./hosts/${hostname}/configuration.nix];
+        };
+    in {
+      imports =
+        (importTree ./modules)
+        ++ [
+          ({lib, ...}: {
+            options.flake.modules = {
+              nixos = lib.mkOption {
+                type = lib.types.attrsOf lib.types.unspecified;
+                default = {};
+              };
+              home = lib.mkOption {
+                type = lib.types.attrsOf lib.types.unspecified;
+                default = {};
+              };
+            };
+          })
+        ];
+
+      systems = ["x86_64-linux"];
+
+      perSystem = {
+        pkgs,
+        system,
+        ...
+      }: {
+        devShells.default = import ./devshell.nix {
+          inherit pkgs;
+          agenixPackage = inputs.agenix.packages.${system}.default;
+        };
+
+        packages = {
+          host-keygen = import ./packages/host-keygen.nix {inherit pkgs;};
+          nvim = import ./packages/nvim.nix {inherit pkgs;};
+          infra = import ./packages/infra.nix {inherit pkgs inputs;};
+          install = import ./packages/install.nix {
+            inherit pkgs;
+            self = inputs.self;
+          };
+        };
+
+        formatter = import ./formatter.nix {
+          inherit pkgs;
+          pname = "formatter";
+        };
+      };
+
+      flake = {
+        nixosConfigurations = {
+          simmons = mkHost {hostname = "simmons";};
+          lusus = mkHost {hostname = "lusus";};
+          hyperion = mkHost {hostname = "hyperion";};
+          roshar = mkHost {hostname = "roshar";};
+        };
+
+        lib = import ./lib {
+          inherit inputs;
+          flake = self;
+        };
+      };
+    });
 }

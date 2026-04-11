@@ -18,7 +18,7 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     users.danieln = {
-      imports = [./microvm-home.nix];
+      imports = [./_microvm-home.nix];
       microvm.extraInit = extraInit;
       microvm.workspace = workspace;
     };

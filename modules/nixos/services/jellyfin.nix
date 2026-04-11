@@ -1,16 +1,18 @@
-{...}: {
-  services = {
-    jellyfin.enable = true;
+{ ... }: {
+  flake.modules.nixos.service_jellyfin = {...}: {
+    services = {
+      jellyfin.enable = true;
 
-    caddy.virtualHosts."jellyfin.danieln.de".extraConfig = ''
-      reverse_proxy localhost:8096
-    '';
-  };
+      caddy.virtualHosts."jellyfin.danieln.de".extraConfig = ''
+        reverse_proxy localhost:8096
+      '';
+    };
 
-  environment.persistence."/nix/persist" = {
-    directories = [
-      "/var/lib/jellyfin"
-      "/var/cache/jellyfin"
-    ];
+    environment.persistence."/nix/persist" = {
+      directories = [
+        "/var/lib/jellyfin"
+        "/var/cache/jellyfin"
+      ];
+    };
   };
 }

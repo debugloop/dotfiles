@@ -1,19 +1,25 @@
 {
-  flake,
+  top,
   inputs,
   config,
   modulesPath,
   pkgs,
   ...
 }: {
-  imports = [
+  imports = with top.modules.nixos; [
     (modulesPath + "/installer/scan/not-detected.nix")
     (modulesPath + "/profiles/qemu-guest.nix")
     inputs.disko.nixosModules.disko
     ./disko.nix
-    flake.nixosModules.common
-    flake.nixosModules.class-server
-    ./services.nix
+    common_base
+    common_backup_persisted
+    common_hetzner
+    common_impermanence
+    common_nix
+    common_software
+    common_tailscale
+    server_base
+    service_miniflux
   ];
 
   nixpkgs.hostPlatform = "x86_64-linux";

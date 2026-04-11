@@ -1,7 +1,6 @@
 {
   pkgs,
-  perSystem,
-  ...
+  agenixPackage,
 }: let
   allKeys =
     map pkgs.lib.fileContents
@@ -38,7 +37,7 @@
       identity_file="''${HOME}/.ssh/id_ed25519"
     fi
 
-    ${perSystem.agenix.default}/bin/agenix -i "$identity_file" "$@"
+    ${agenixPackage}/bin/agenix -i "$identity_file" "$@"
 
     if [ -n "$SUDO_USER" ]; then
       chown -R "$SUDO_USER:" secrets/ 2>/dev/null || true

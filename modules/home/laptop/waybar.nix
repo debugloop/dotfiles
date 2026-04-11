@@ -1,8 +1,9 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{ ... }: {
+  flake.modules.home.laptop_waybar = {
+    pkgs,
+    config,
+    ...
+  }: {
   programs.waybar = {
     enable = true;
     systemd = {
@@ -342,5 +343,6 @@
           background-color: #${config.colors.blue};
       }
     '';
+  };
   };
 }

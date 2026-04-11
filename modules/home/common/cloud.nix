@@ -1,18 +1,20 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
-    awscli2
-    gmailctl
-    ssm-session-manager-plugin
-    yt-dlp
-  ];
+{ ... }: {
+  flake.modules.home.common_cloud = {pkgs, ...}: {
+    home.packages = with pkgs; [
+      awscli2
+      gmailctl
+      ssm-session-manager-plugin
+      yt-dlp
+    ];
 
-  programs = {
-    rbw.enable = true;
-    gh = {
-      enable = true;
-      settings = {
-        version = 1;
-        git_protocol = "ssh";
+    programs = {
+      rbw.enable = true;
+      gh = {
+        enable = true;
+        settings = {
+          version = 1;
+          git_protocol = "ssh";
+        };
       };
     };
   };

@@ -1,15 +1,16 @@
-{
-  config,
-  pkgs,
-  perSystem,
-  ...
-}: {
+{ ... }: {
+  flake.modules.home.laptop_niri = {
+    config,
+    pkgs,
+    inputs,
+    ...
+  }: {
   home.packages = with pkgs; [
     xwayland-satellite
   ];
   services.swww.enable = true;
   programs.niri = {
-    package = perSystem.niri.niri-unstable;
+    package = inputs.niri.packages.${pkgs.system}.niri-unstable;
     settings = {
       gestures.hot-corners.enable = false;
       screenshot-path = "~/pictures/screenshot-%d-%m-%Y-%T.png";
@@ -583,5 +584,6 @@
         };
       };
     };
+  };
   };
 }
