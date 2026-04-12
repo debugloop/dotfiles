@@ -1,6 +1,7 @@
 result
 *.qcow2
 .direnv
+.pre-commit-config.yaml
 secrets/*
 !secrets/*.age
 keys/hosts/*

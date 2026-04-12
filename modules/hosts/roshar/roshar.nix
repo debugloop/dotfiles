@@ -3,6 +3,42 @@
   inputs,
   ...
 }: {
+  flake.diskoConfigurations.roshar = {
+    disko.devices = {
+      disk.main = {
+        type = "disk";
+        device = "/dev/sda";
+        content = {
+          type = "gpt";
+          partitions = {
+            boot = {
+              size = "1M";
+              type = "EF02";
+              priority = 1;
+            };
+            ESP = {
+              size = "512M";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot";
+              };
+            };
+            root = {
+              size = "100%";
+              content = {
+                type = "filesystem";
+                format = "xfs";
+                mountpoint = "/nix";
+              };
+            };
+          };
+        };
+      };
+    };
+  };
+
   flake.nixosConfigurations.roshar = inputs.nixpkgs.lib.nixosSystem {
     specialArgs = {
       inherit inputs;
@@ -51,8 +87,9 @@
         (modulesPath + "/installer/scan/not-detected.nix")
         (modulesPath + "/profiles/qemu-guest.nix")
         inputs.disko.nixosModules.disko
-        ./_disko.nix
       ];
+
+    disko.devices = top.diskoConfigurations.roshar.disko.devices;
 
     nixpkgs.hostPlatform = "x86_64-linux";
     networking.hostName = "roshar";
