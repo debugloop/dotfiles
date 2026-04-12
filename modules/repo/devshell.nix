@@ -2,6 +2,7 @@
   perSystem = {
     pkgs,
     system,
+    config,
     ...
   }: let
     agenixPackage = inputs.agenix.packages.${system}.default;
@@ -50,6 +51,7 @@
     '';
   in {
     devShells.default = pkgs.mkShell {
+      shellHook = config.pre-commit.installationScript;
       packages = [
         agenixWrapped
         pkgs.age-plugin-fido2-hmac
