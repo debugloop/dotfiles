@@ -1,7 +1,7 @@
-{...}: {
+_: {
   flake.homeModules.common_colors = {lib, ...}:
     with lib; let
-      colorType = types.addCheck types.str (x: !isNull (builtins.match "[0-9a-fA-F]{6}" x));
+      colorType = types.addCheck types.str (x: (builtins.match "[0-9a-fA-F]{6}" x) != null);
       themeType = mkOption {
         type = types.submodule {
           options = {
@@ -69,13 +69,13 @@
           in {
             black = crust;
             bright-black = surface2;
-            red = red;
+            inherit red;
             bright-red = pink;
-            green = green;
+            inherit green;
             bright-green = green;
-            yellow = yellow;
+            inherit yellow;
             bright-yellow = rosewater;
-            blue = blue;
+            inherit blue;
             bright-blue = sky;
             purple = mauve;
             bright-purple = lavender;

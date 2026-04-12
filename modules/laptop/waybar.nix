@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.laptop_waybar = {
     pkgs,
     config,

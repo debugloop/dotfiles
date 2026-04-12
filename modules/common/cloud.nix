@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.common_cloud = {pkgs, ...}: {
     home.packages = with pkgs; [
       awscli2

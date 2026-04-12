@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.common_impermanence = {inputs, ...}: {
     imports = [
       inputs.impermanence.nixosModule

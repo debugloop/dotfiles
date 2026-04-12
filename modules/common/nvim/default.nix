@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.common_nvim = {
     pkgs,
     config,
@@ -10,6 +10,9 @@
       viAlias = true;
       vimAlias = true;
       defaultEditor = true;
+      # new defaults as of 26.05; set explicitly to silence warnings
+      withRuby = false;
+      withPython3 = false;
     };
 
     home.sessionVariables = {

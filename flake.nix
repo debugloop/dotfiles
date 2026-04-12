@@ -74,7 +74,6 @@
         packages = {
           host-keygen = import ./packages/host-keygen.nix {inherit pkgs;};
           nvim = import ./packages/nvim.nix {inherit pkgs;};
-          infra = import ./packages/infra.nix {inherit pkgs inputs;};
           install = import ./packages/install.nix {inherit pkgs inputs;};
         };
 

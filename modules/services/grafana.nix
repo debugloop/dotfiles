@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.service_grafana = {config, ...}: {
     services.grafana = {
       enable = true;

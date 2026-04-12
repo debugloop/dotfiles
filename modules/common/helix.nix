@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.common_helix = {pkgs, ...}: {
     programs.helix = {
       enable = true;

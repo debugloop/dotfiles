@@ -1,4 +1,4 @@
-{inputs, ...}: {
+_: {
   flake.homeModules.danieln = {
     top,
     inputs,

@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.common_ssh = {pkgs, ...}: {
     programs.ssh = {
       enable = true;

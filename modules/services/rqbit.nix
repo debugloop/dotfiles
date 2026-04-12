@@ -1,7 +1,7 @@
 let
   basicauthHash = import ./_basicauth.nix;
 in
-  {...}: {
+  _: {
     flake.nixosModules.service_rqbit = {
       config,
       pkgs,
@@ -12,7 +12,7 @@ in
 
       nixpkgs.overlays = [
         (self: super: {
-          rqbit = super.rqbit.overrideAttrs (old: rec {
+          rqbit = super.rqbit.overrideAttrs (_old: rec {
             version = "9.0.0-beta.2";
             src = pkgs.fetchFromGitHub {
               owner = "ikatson";

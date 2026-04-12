@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.laptop_ai = {pkgs, ...}: {
     home = {
       packages = with pkgs; [

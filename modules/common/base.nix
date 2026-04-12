@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.common_base = {pkgs, ...}: {
     home.packages = with pkgs; [
       gavin-bc

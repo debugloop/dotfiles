@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.laptop_network = {lib, ...}: {
     networking.networkmanager = {
       enable = true;

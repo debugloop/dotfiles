@@ -7,12 +7,7 @@
   inputs,
   vsockCid,
   extraInit ? "",
-}: {
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
+}: {pkgs, ...}: {
   imports = [inputs.home-manager.nixosModules.home-manager];
 
   home-manager = {
@@ -24,8 +19,6 @@
       microvm.workspace = workspace;
     };
   };
-
-  networking.hostName = name;
 
   system.stateVersion = "25.11";
 
@@ -41,6 +34,8 @@
     ];
   };
 
+  services.resolved.enable = true;
+
   # Match host UID/GID so virtiofs-shared files have correct ownership
   users.groups.danieln.gid = 1000;
   users.users.danieln = {
@@ -55,36 +50,42 @@
     ];
   };
 
-  services.resolved.enable = true;
-  networking.useDHCP = false;
-  networking.useNetworkd = true;
-  networking.tempAddresses = "disabled";
-  systemd.network.enable = true;
-  systemd.network.networks."10-e" = {
-    matchConfig.Name = "e*";
-    addresses = [{Address = "${ipAddress}/24";}];
-    routes = [{Gateway = "192.168.83.1";}];
-  };
-  networking.nameservers = ["8.8.8.8" "1.1.1.1"];
-
-  # No external exposure — we're behind host NAT
-  networking.firewall.enable = false;
-
-  systemd.settings.Manager = {
-    # Fast VM shutdown
-    DefaultTimeoutStopSec = "5s";
+  networking = {
+    hostName = name;
+    useDHCP = false;
+    useNetworkd = true;
+    tempAddresses = "disabled";
+    nameservers = [
+      "8.8.8.8"
+      "1.1.1.1"
+    ];
+    firewall.enable = false;
   };
 
-  # Fix shutdown hang: umount lives in /nix/store, so disable default deps
-  # on the store mount unit to avoid deadlock during shutdown (microvm.nix#170)
-  systemd.mounts = [
-    {
-      what = "store";
-      where = "/nix/store";
-      overrideStrategy = "asDropin";
-      unitConfig.DefaultDependencies = false;
-    }
-  ];
+  systemd = {
+    network = {
+      enable = true;
+      networks."10-e" = {
+        matchConfig.Name = "e*";
+        addresses = [{Address = "${ipAddress}/24";}];
+        routes = [{Gateway = "192.168.83.1";}];
+      };
+    };
+    settings.Manager = {
+      # Fast VM shutdown
+      DefaultTimeoutStopSec = "5s";
+    };
+    # Fix shutdown hang: umount lives in /nix/store, so disable default deps
+    # on the store mount unit to avoid deadlock during shutdown (microvm.nix#170)
+    mounts = [
+      {
+        what = "store";
+        where = "/nix/store";
+        overrideStrategy = "asDropin";
+        unitConfig.DefaultDependencies = false;
+      }
+    ];
+  };
 
   microvm = {
     hypervisor = "cloud-hypervisor";

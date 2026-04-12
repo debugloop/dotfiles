@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.laptop_swaylock = {top, ...}: {
     security.pam.services.swaylock = {};
     home-manager.sharedModules = [top.homeModules.laptop_swaylock];

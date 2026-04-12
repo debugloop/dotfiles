@@ -3,7 +3,7 @@
   inputs,
   ...
 }: let
-  infra = inputs.self.packages.${pkgs.system}.infra;
+  inherit (inputs.self.packages.${pkgs.system}) infra;
 in
   pkgs.writeShellScriptBin "install" ''
     set -euo pipefail

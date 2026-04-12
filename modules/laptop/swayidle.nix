@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.laptop_swayidle = {pkgs, ...}: {
     services.swayidle = {
       enable = true;

@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.common_fish = {config, ...}: {
     programs.fish = {
       enable = true;

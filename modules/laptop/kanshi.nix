@@ -1,5 +1,5 @@
-{...}: {
-  flake.homeModules.laptop_kanshi = {...}: {
+_: {
+  flake.homeModules.laptop_kanshi = _: {
     services.kanshi = {
       enable = true;
       systemdTarget = "graphical-session.target";

@@ -1,7 +1,7 @@
 {pkgs, ...}: let
   inherit (pkgs) lib;
-  nvimDir = ../modules/home/common/nvim;
-  nvimPlugins = import "${nvimDir}/plugins.nix" {inherit pkgs;};
+  nvimDir = ../modules/common/nvim;
+  nvimPlugins = import "${nvimDir}/_plugins.nix" {inherit pkgs;};
 
   treesitterParsers = pkgs.symlinkJoin {
     name = "treesitter-parsers";

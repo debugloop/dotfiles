@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.common_development = {
     pkgs,
     lib,

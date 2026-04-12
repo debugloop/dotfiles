@@ -1,7 +1,6 @@
-{...}: {
+_: {
   flake.nixosModules.service_woodpecker = {
     config,
-    lib,
     pkgs,
     ...
   }: {

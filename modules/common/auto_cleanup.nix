@@ -1,5 +1,5 @@
-{...}: {
-  flake.nixosModules.auto_cleanup = {...}: {
+_: {
+  flake.nixosModules.auto_cleanup = _: {
     programs.nh.clean = {
       enable = true;
       dates = "Mon *-*-* 06:00:00";

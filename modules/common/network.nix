@@ -1,5 +1,5 @@
-{...}: {
-  flake.nixosModules.common_network = {...}: {
+_: {
+  flake.nixosModules.common_network = _: {
     networking = {
       firewall.enable = true;
       nftables.enable = true;

@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.service_miniflux = {config, ...}: {
     services.miniflux = {
       enable = true;

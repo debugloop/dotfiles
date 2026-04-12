@@ -1,4 +1,4 @@
-{inputs, ...}: {
+_: {
   flake.nixosModules.common_nix = {inputs, ...}: {
     imports = [inputs.agenix.nixosModules.default];
 

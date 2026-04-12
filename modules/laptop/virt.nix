@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.laptop_virt = {pkgs, ...}: {
     services.flatpak.enable = true;
 
@@ -27,7 +27,6 @@
 
     # Use pasta instead of slirp4netns for better DNS handling
     # Pasta auto-discovers DNS from /etc/resolv.conf by default via --dns-host
-    environment.systemPackages = [pkgs.passt];
     systemd.user.services.docker = {
       path = [pkgs.passt];
       environment = {
@@ -38,22 +37,25 @@
         DOCKERD_ROOTLESS_ROOTLESSKIT_PASTA_OPTIONS = "--dns-host 1.1.1.1";
       };
     };
-    # https://github.com/NixOS/nixpkgs/issues/231191#issuecomment-1664053176
-    environment.etc."resolv.conf".mode = "direct-symlink";
     networking.firewall = {
       checkReversePath = "loose";
     };
 
-    environment.persistence."/nix/persist" = {
-      directories = [
-        "/var/lib/docker"
-        "/var/lib/flatpak"
-      ];
-      users.danieln.directories = [
-        ".local/share/docker"
-        ".var/app"
-        ".local/share/flatpak"
-      ];
+    environment = {
+      systemPackages = [pkgs.passt];
+      # https://github.com/NixOS/nixpkgs/issues/231191#issuecomment-1664053176
+      etc."resolv.conf".mode = "direct-symlink";
+      persistence."/nix/persist" = {
+        directories = [
+          "/var/lib/docker"
+          "/var/lib/flatpak"
+        ];
+        users.danieln.directories = [
+          ".local/share/docker"
+          ".var/app"
+          ".local/share/flatpak"
+        ];
+      };
     };
 
     backup.exclude = [

@@ -17,24 +17,25 @@
   };
 
   config = {
-    home.username = "danieln";
-    home.homeDirectory = "/home/danieln";
-
-    programs.fish = {
-      enable = true;
-      shellInit = ''
-        set -x CLAUDE_CONFIG_DIR /home/danieln/.claude
-        ${config.microvm.extraInit}
-      '';
-      loginShellInit = "cd ${config.microvm.workspace}";
-      shellAbbrs.c = "claude --dangerously-skip-permissions";
+    home = {
+      username = "danieln";
+      homeDirectory = "/home/danieln";
+      packages = [pkgs.claude-code];
+      stateVersion = "25.11";
     };
 
-    programs.git.enable = true;
-
-    home.packages = [pkgs.claude-code];
-
-    home.stateVersion = "25.11";
-    programs.home-manager.enable = true;
+    programs = {
+      fish = {
+        enable = true;
+        shellInit = ''
+          set -x CLAUDE_CONFIG_DIR /home/danieln/.claude
+          ${config.microvm.extraInit}
+        '';
+        loginShellInit = "cd ${config.microvm.workspace}";
+        shellAbbrs.c = "claude --dangerously-skip-permissions";
+      };
+      git.enable = true;
+      home-manager.enable = true;
+    };
   };
 }

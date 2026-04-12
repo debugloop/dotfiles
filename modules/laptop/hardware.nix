@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.laptop_hardware = {
     config,
     pkgs,

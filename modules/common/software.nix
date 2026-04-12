@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.common_software = {
     pkgs,
     inputs,

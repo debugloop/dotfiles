@@ -3,7 +3,7 @@
   flake,
   ...
 }: let
-  lib = inputs.nixpkgs.lib;
+  inherit (inputs.nixpkgs) lib;
 
   # Storage box hosts (from keys/hosts/*.pub)
   hostNames =
@@ -24,7 +24,7 @@
 
   hostEntries =
     lib.mapAttrsToList (_: cfg: {
-      hostName = cfg.config.networking.hostName;
+      inherit (cfg.config.networking) hostName;
       hetznerEnabled = cfg.config.hetzner.enable or false;
       vhosts = builtins.attrNames (cfg.config.services.caddy.virtualHosts or {});
     })
@@ -147,62 +147,62 @@
         hostNames);
     };
   };
+  hetznerModules =
+    [
+      {
+        terraform = {
+          backend.local.path = "/etc/nixos/tf-state/all.tfstate";
+          required_providers = {
+            hcloud = {
+              source = "hetznercloud/hcloud";
+              version = "~> 1.59";
+            };
+            random = {
+              source = "hashicorp/random";
+              version = "~> 3.0";
+            };
+          };
+        };
+        variable.hcloud_token = {
+          type = "string";
+          sensitive = true;
+        };
+        variable.storage_box_id = {
+          type = "number";
+          description = "Parent storage box numeric ID";
+        };
+        provider.hcloud.token = "\${var.hcloud_token}";
+      }
+      {
+        resource.hcloud_ssh_key =
+          lib.mapAttrs (name: key: {
+            inherit name;
+            public_key = key;
+          })
+          authKeys;
+      }
+      {
+        data.hcloud_zone = zoneAttrs;
+        resource.hcloud_zone_record = mkZoneRecords mkRecords;
+      }
+      storageboxResources
+      {
+        output.addresses.value =
+          lib.mapAttrs (name: _: {
+            v4 = "\${hcloud_server.${name}.ipv4_address}";
+            v6 = "\${hcloud_server.${name}.ipv6_address}";
+          })
+          hetznerHosts;
+      }
+    ]
+    ++ lib.mapAttrsToList (_: cfg: cfg.config.hetzner.terranixConfig) hetznerHosts;
 in {
   hetznerHostNames = hostNames;
+  inherit hetznerModules;
 
-  # Single merged config — one backend, one tofu apply for everything
   hetznerTerranix = pkgs:
     inputs.terranix.lib.terranixConfiguration {
       inherit pkgs;
-      modules = (
-        [
-          {
-            terraform = {
-              backend.local.path = "/etc/nixos/tf-state/all.tfstate";
-              required_providers = {
-                hcloud = {
-                  source = "hetznercloud/hcloud";
-                  version = "~> 1.59";
-                };
-                random = {
-                  source = "hashicorp/random";
-                  version = "~> 3.0";
-                };
-              };
-            };
-            variable.hcloud_token = {
-              type = "string";
-              sensitive = true;
-            };
-            variable.storage_box_id = {
-              type = "number";
-              description = "Parent storage box numeric ID";
-            };
-            provider.hcloud.token = "\${var.hcloud_token}";
-          }
-          {
-            resource.hcloud_ssh_key =
-              lib.mapAttrs (name: key: {
-                inherit name;
-                public_key = key;
-              })
-              authKeys;
-          }
-          {
-            data.hcloud_zone = zoneAttrs;
-            resource.hcloud_zone_record = mkZoneRecords mkRecords;
-          }
-          storageboxResources
-          {
-            output.addresses.value =
-              lib.mapAttrs (name: _: {
-                v4 = "\${hcloud_server.${name}.ipv4_address}";
-                v6 = "\${hcloud_server.${name}.ipv6_address}";
-              })
-              hetznerHosts;
-          }
-        ]
-        ++ lib.mapAttrsToList (_: cfg: cfg.config.hetzner.terranixConfig) hetznerHosts
-      );
+      modules = hetznerModules;
     };
 }

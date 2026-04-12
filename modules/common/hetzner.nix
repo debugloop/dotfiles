@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.common_hetzner = {
     config,
     lib,
@@ -42,7 +42,7 @@
     };
 
     config = lib.mkIf config.hetzner.enable (let
-      hostName = config.networking.hostName;
+      inherit (config.networking) hostName;
       sshKeyRefs = map (name: "\${hcloud_ssh_key.${name}.id}") config.hetzner.sshKeyNames;
     in {
       hetzner.terranixConfig = lib.mkMerge [
@@ -50,8 +50,8 @@
           resource.hcloud_server.${hostName} = {
             name = hostName;
             server_type = config.hetzner.serverType;
-            image = config.hetzner.image;
-            location = config.hetzner.location;
+            inherit (config.hetzner) image;
+            inherit (config.hetzner) location;
             ssh_keys = sshKeyRefs;
             public_net = {
               ipv4_enabled = true;

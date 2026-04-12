@@ -1,4 +1,4 @@
-{inputs, ...}: {
+_: {
   flake.nixosModules.laptop_niri = {
     pkgs,
     inputs,

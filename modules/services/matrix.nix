@@ -4,15 +4,28 @@ let
     reverse_proxy /_synapse/client/* localhost:8008
   '';
 in
-  {...}: {
-    flake.nixosModules.service_matrix = {...}: {
-      services.matrix-synapse = {
-        enable = true;
-        settings = {
-          server_name = "bugpara.de";
-          database = {
-            name = "sqlite3";
+  _: {
+    flake.nixosModules.service_matrix = _: {
+      services = {
+        matrix-synapse = {
+          enable = true;
+          settings = {
+            server_name = "bugpara.de";
+            database = {
+              name = "sqlite3";
+            };
           };
+        };
+
+        caddy.virtualHosts = {
+          "bugpara.de".extraConfig = ''
+            redir / https://danieln.de permanent
+            ${matrixProxy}'';
+          "matrix.bugpara.de".extraConfig = ''
+            ${matrixProxy}'';
+          "bugpara.de:8448".extraConfig = ''
+            reverse_proxy /_matrix/* localhost:8008
+          '';
         };
       };
 
@@ -28,16 +41,5 @@ in
           "/var/lib/matrix-synapse"
         ];
       };
-
-      services.caddy.virtualHosts."bugpara.de".extraConfig = ''
-        redir / https://danieln.de permanent
-        ${matrixProxy}'';
-
-      services.caddy.virtualHosts."matrix.bugpara.de".extraConfig = ''
-        ${matrixProxy}'';
-
-      services.caddy.virtualHosts."bugpara.de:8448".extraConfig = ''
-        reverse_proxy /_matrix/* localhost:8008
-      '';
     };
   }

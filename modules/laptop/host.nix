@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.laptop_host = {top, ...}: {
     imports = with top.nixosModules; [
       common_home_manager
