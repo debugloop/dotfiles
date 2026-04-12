@@ -13,14 +13,19 @@ _: {
       common_nix
       common_software
       common_tailscale
+      laptop_applications
+      laptop_audio
+      laptop_bluetooth
       laptop_desktop
-      laptop_niri
-      laptop_swaylock
+      laptop_fonts
       laptop_hardware
-      laptop_network
-      laptop_nix
-      laptop_virt
       laptop_microvm
+      laptop_network
+      laptop_niri
+      laptop_nix
+      laptop_printing
+      laptop_swaylock
+      laptop_virt
     ];
   };
 }

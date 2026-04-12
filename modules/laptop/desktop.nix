@@ -12,65 +12,25 @@ _: {
       ];
     };
 
-    fonts.packages = with pkgs; [
-      fira
-      fira-code
-      fira-code-symbols
-      fira-go
-      fira-math
-      iosevka
-      # nerd-fonts.fira-code
-      # nerd-fonts.fira-mono
-      # nerd-fonts.noto
-      # nerd-fonts.iosevka
-      nerd-fonts.symbols-only
-      # noto-fonts
-      # noto-fonts-monochrome-emoji
-      # noto-fonts-lgc-plus
-      roboto
-      roboto-mono
-    ];
-
     environment.systemPackages = with pkgs; [
       networkmanagerapplet # required system-wide for icons
     ];
 
     services = {
-      blueman.enable = true;
       gnome.gnome-keyring = {
         enable = true;
       };
       gvfs.enable = true;
-      pipewire = {
-        enable = true;
-        alsa = {
-          enable = true;
-          support32Bit = true;
-        };
-        pulse.enable = true;
-        wireplumber.enable = true;
-      };
-      printing.enable = true;
     };
 
-    services.speechd.enable = false;
-
-    security = {
-      pam.services = {
-        login.enableGnomeKeyring = true;
-      };
-      rtkit.enable = true; # for pipewire
+    security.pam.services = {
+      login.enableGnomeKeyring = true;
     };
 
     backup.exclude = [
       "home/danieln/go" # golang cache
       "home/danieln/scratch"
       "home/danieln/downloads"
-      "home/danieln/.local/share/Steam"
-      "home/danieln/.thunderbird"
-      "home/danieln/.config/google-chrome"
-      "home/danieln/.config/Slack"
-      "home/danieln/.mozilla"
       "home/danieln/code/**/.cache" # generic caches
       "home/danieln/code/**/.direnv" # direnv cached envs, can be 100s of MB
       "home/danieln/code/**/node_modules" # npm/pnpm/yarn deps, reproducible
@@ -79,34 +39,17 @@ _: {
       "home/danieln/code/**/result-*" # Nix multi-output result symlinks
     ];
 
-    environment.persistence."/nix/persist" = {
+    environment.persistence."/nix/persist".users.danieln = {
       directories = [
-        "/var/lib/bluetooth"
+        ".config/gtk-3.0"
+        ".config/Postman"
+        ".config/zed"
+        ".local/share/zed"
+        {
+          directory = ".local/share/keyrings";
+          mode = "0700";
+        }
       ];
-      users.danieln = {
-        directories = [
-          ".mozilla"
-          ".thunderbird"
-          ".config/google-chrome"
-          ".config/Slack"
-          ".config/Postman"
-          ".config/qView"
-          ".config/zed"
-          ".local/share/zed"
-          ".ts3client"
-          ".local/share/Steam"
-          ".local/state/wireplumber"
-          ".config/gtk-3.0"
-          {
-            directory = ".local/share/keyrings";
-            mode = "0700";
-          }
-        ];
-        files = [
-          ".config/spotify/prefs"
-          ".config/spotify/Users/analogbyte-user/prefs"
-        ];
-      };
     };
 
     home-manager.sharedModules = [top.homeModules.laptop_desktop];
@@ -182,7 +125,6 @@ _: {
     services = {
       cliphist.enable = true;
       network-manager-applet.enable = true;
-      blueman-applet.enable = true;
       gnome-keyring.enable = true;
     };
   };

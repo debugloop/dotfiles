@@ -1,4 +1,30 @@
 _: {
+  flake.nixosModules.laptop_applications = _: {
+    backup.exclude = [
+      "home/danieln/.local/share/Steam"
+      "home/danieln/.thunderbird"
+      "home/danieln/.config/google-chrome"
+      "home/danieln/.config/Slack"
+      "home/danieln/.mozilla"
+    ];
+
+    environment.persistence."/nix/persist".users.danieln = {
+      directories = [
+        ".mozilla"
+        ".thunderbird"
+        ".config/google-chrome"
+        ".config/Slack"
+        ".config/qView"
+        ".ts3client"
+        ".local/share/Steam"
+      ];
+      files = [
+        ".config/spotify/prefs"
+        ".config/spotify/Users/analogbyte-user/prefs"
+      ];
+    };
+  };
+
   flake.homeModules.laptop_applications = {
     pkgs,
     config,
