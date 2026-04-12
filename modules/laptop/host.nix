@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.laptop_host = {top, ...}: {
+  flake.nixosModules.laptop = {top, ...}: {
     imports = with top.nixosModules; [
       common_home_manager
       common_network
@@ -26,6 +26,22 @@ _: {
       laptop_printing
       laptop_swaylock
       laptop_virt
+    ];
+  };
+
+  flake.homeModules.laptop = {top, ...}: {
+    imports = with top.homeModules; [
+      laptop_ai
+      laptop_applications
+      laptop_clipman
+      laptop_ghostty
+      laptop_kanshi
+      laptop_kitty
+      laptop_mako
+      laptop_osd
+      laptop_swayidle
+      laptop_waybar
+      laptop_wl_kbptr
     ];
   };
 }

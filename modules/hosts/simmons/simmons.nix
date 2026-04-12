@@ -13,27 +13,14 @@
 
   flake.nixosModules.simmons = {top, ...}: {
     imports =
-      (with top.nixosModules; [laptop_host])
+      (with top.nixosModules; [laptop])
       ++ [./_hardware-configuration.nix];
 
     networking.hostName = "simmons";
 
     home-manager.users.danieln = {
       home.stateVersion = "26.05";
-      imports = with top.homeModules; [
-        danieln
-        laptop_ai
-        laptop_applications
-        laptop_clipman
-        laptop_ghostty
-        laptop_kanshi
-        laptop_kitty
-        laptop_mako
-        laptop_osd
-        laptop_swayidle
-        laptop_waybar
-        laptop_wl_kbptr
-      ];
+      imports = with top.homeModules; [danieln laptop];
     };
 
     backup.enable = true;
