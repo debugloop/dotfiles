@@ -1,9 +1,9 @@
 {
   pkgs,
-  self,
+  inputs,
   ...
 }: let
-  infra = self.packages.${pkgs.system}.infra;
+  infra = inputs.self.packages.${pkgs.system}.infra;
 in
   pkgs.writeShellScriptBin "install" ''
     set -euo pipefail
@@ -36,7 +36,7 @@ in
     echo "Using pre-generated host key: $PUBKEY"
 
     ${pkgs.nixos-anywhere}/bin/nixos-anywhere \
-      --flake ${self}#$HOST \
+      --flake ${inputs.self}#$HOST \
       --target-host "root@$IP" \
       --extra-files "$EXTRA_DIR"
 

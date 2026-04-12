@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.nixos.service_grocy = {...}: {
+{...}: {
+  flake.nixosModules.service_grocy = {...}: {
     services.grocy = {
       enable = true;
       hostName = "https://vorrat.danieln.de";

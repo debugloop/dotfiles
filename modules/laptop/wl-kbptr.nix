@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.laptop_wl_kbptr = {
+{...}: {
+  flake.homeModules.laptop_wl_kbptr = {
     pkgs,
     config,
     ...

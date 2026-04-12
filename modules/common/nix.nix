@@ -1,9 +1,6 @@
-{ ... }: {
-  flake.modules.nixos.common_nix = {inputs, ...}: {
-    imports = [
-      inputs.agenix.nixosModules.default
-      inputs.home-manager.nixosModules.home-manager
-    ];
+{inputs, ...}: {
+  flake.nixosModules.common_nix = {inputs, ...}: {
+    imports = [inputs.agenix.nixosModules.default];
 
     nix = {
       settings = {
@@ -11,6 +8,8 @@
         trusted-users = ["@wheel"];
       };
     };
+
+    programs.nh.enable = true;
 
     nixpkgs = {
       hostPlatform = "x86_64-linux";
@@ -25,6 +24,43 @@
 
     age.secrets = {
       password.file = ../../secrets/password.age;
+    };
+  };
+
+  flake.homeModules.common_nix = {
+    pkgs,
+    inputs,
+    ...
+  }: {
+    imports = [inputs.nix-index-database.homeModules.nix-index];
+
+    age.identityPaths = ["/home/danieln/.ssh/agenix"];
+
+    home = {
+      sessionVariables = {
+        FLAKE = "/etc/nixos";
+      };
+      packages = with pkgs; [
+        inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
+        age
+        alejandra
+        comma
+        nix-tree
+        nixd
+        nvd
+      ];
+    };
+
+    programs = {
+      direnv = {
+        enable = true;
+        nix-direnv.enable = true;
+      };
+      home-manager.enable = true;
+      nh = {
+        enable = true;
+        flake = "/etc/nixos";
+      };
     };
   };
 }

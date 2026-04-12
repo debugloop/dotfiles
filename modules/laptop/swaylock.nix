@@ -1,5 +1,10 @@
-{ ... }: {
-  flake.modules.home.laptop_swaylock = {
+{...}: {
+  flake.nixosModules.laptop_swaylock = {top, ...}: {
+    security.pam.services.swaylock = {};
+    home-manager.sharedModules = [top.homeModules.laptop_swaylock];
+  };
+
+  flake.homeModules.laptop_swaylock = {
     pkgs,
     config,
     ...

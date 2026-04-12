@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.common_development = {
+{...}: {
+  flake.homeModules.common_development = {
     pkgs,
     lib,
     ...

@@ -48,111 +48,39 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     microvm = {
       url = "github:microvm-nix/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    git-hooks-nix = {
+      url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
   outputs = inputs:
-    inputs.flake-parts.lib.mkFlake {inherit inputs;} ({self, ...}: let
-      importTree = path: let
-        entries = builtins.readDir path;
-        toList = name: type:
-          if type == "directory"
-          then importTree (path + "/${name}")
-          else if
-            type == "regular"
-            && builtins.match ".*\\.nix" name != null
-            && builtins.match "_.*" name == null
-          then [(path + "/${name}")]
-          else [];
-      in
-        builtins.concatLists (builtins.attrValues (builtins.mapAttrs toList entries));
-
-      mkHost = {
-        hostname,
-        system ? "x86_64-linux",
-      }:
-        inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            inherit inputs;
-            top = self;
-            hostName = hostname;
-          };
-          modules = [./hosts/${hostname}/configuration.nix];
-        };
-    in {
-      imports =
-        (importTree ./modules)
-        ++ [
-          ({lib, ...}: {
-            options.flake.modules = {
-              nixos = lib.mkOption {
-                type = lib.types.attrsOf lib.types.unspecified;
-                default = {};
-              };
-              home = lib.mkOption {
-                type = lib.types.attrsOf lib.types.unspecified;
-                default = {};
-              };
-            };
-          })
-        ];
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} ({...}: {
+      imports = import ./lib/import-tree.nix ./modules;
 
       systems = ["x86_64-linux"];
 
-      perSystem = {
-        pkgs,
-        system,
-        ...
-      }: {
-        devShells.default = import ./devshell.nix {
-          inherit pkgs;
-          agenixPackage = inputs.agenix.packages.${system}.default;
-        };
-
+      perSystem = {pkgs, ...}: {
         packages = {
           host-keygen = import ./packages/host-keygen.nix {inherit pkgs;};
           nvim = import ./packages/nvim.nix {inherit pkgs;};
           infra = import ./packages/infra.nix {inherit pkgs inputs;};
-          install = import ./packages/install.nix {
-            inherit pkgs;
-            self = inputs.self;
-          };
+          install = import ./packages/install.nix {inherit pkgs inputs;};
         };
 
-        formatter = import ./formatter.nix {
-          inherit pkgs;
-          pname = "formatter";
-        };
-      };
-
-      flake = {
-        nixosConfigurations =
-          builtins.mapAttrs (hostname: _: mkHost {inherit hostname;})
-          (inputs.nixpkgs.lib.filterAttrs (n: t: t == "directory" && builtins.match "_.*" n == null)
-            (builtins.readDir ./hosts));
-
-        homeConfigurations = let
-          mkHome = hostname:
-            inputs.home-manager.lib.homeManagerConfiguration {
-              pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-              extraSpecialArgs = {
-                inherit inputs;
-                top = self;
-              };
-              modules = [./hosts/${hostname}/home.nix];
-            };
-        in {
-          "danieln@hyperion" = mkHome "hyperion";
-          "danieln@roshar" = mkHome "roshar";
-        };
-
-        lib = import ./lib {
-          inherit inputs;
-          flake = self;
+        treefmt = {
+          projectRootFile = "flake.nix";
+          programs.alejandra.enable = true;
         };
       };
     });

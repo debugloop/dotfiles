@@ -1,5 +1,9 @@
-{ ... }: {
-  flake.modules.nixos.laptop_hardware = {config, pkgs, ...}: {
+{...}: {
+  flake.nixosModules.laptop_hardware = {
+    config,
+    pkgs,
+    ...
+  }: {
     boot = {
       extraModulePackages = [config.boot.kernelPackages.ddcci-driver];
       kernelModules = ["i2c-dev" "ddcci_backlight"];

@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.common_helix = {pkgs, ...}: {
+{...}: {
+  flake.homeModules.common_helix = {pkgs, ...}: {
     programs.helix = {
       enable = true;
       themes = {

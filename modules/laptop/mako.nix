@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.laptop_mako = {
+{...}: {
+  flake.homeModules.laptop_mako = {
     config,
     pkgs,
     ...

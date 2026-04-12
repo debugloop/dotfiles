@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.laptop_kitty = {
+{...}: {
+  flake.homeModules.laptop_kitty = {
     config,
     pkgs,
     ...

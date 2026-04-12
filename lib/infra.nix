@@ -98,7 +98,7 @@
       recs);
   zoneAttrs = lib.listToAttrs (map (z: {
       name = lib.replaceStrings ["."] ["-"] z;
-      value = { name = z; };
+      value = {name = z;};
     })
     dnsZones);
 
@@ -194,10 +194,12 @@ in {
           }
           storageboxResources
           {
-            output.addresses.value = lib.mapAttrs (name: _: {
-              v4 = "\${hcloud_server.${name}.ipv4_address}";
-              v6 = "\${hcloud_server.${name}.ipv6_address}";
-            }) hetznerHosts;
+            output.addresses.value =
+              lib.mapAttrs (name: _: {
+                v4 = "\${hcloud_server.${name}.ipv4_address}";
+                v6 = "\${hcloud_server.${name}.ipv6_address}";
+              })
+              hetznerHosts;
           }
         ]
         ++ lib.mapAttrsToList (_: cfg: cfg.config.hetzner.terranixConfig) hetznerHosts

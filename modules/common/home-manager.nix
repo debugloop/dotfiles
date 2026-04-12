@@ -1,8 +1,9 @@
-{ ... }: {
-  flake.modules.nixos.common_home_manager = {
+{inputs, ...}: {
+  imports = [inputs.home-manager.flakeModules.home-manager];
+
+  flake.nixosModules.common_home_manager = {
     inputs,
     top,
-    hostName,
     ...
   }: {
     imports = [inputs.home-manager.nixosModules.home-manager];
@@ -14,7 +15,7 @@
       extraSpecialArgs = {
         inherit inputs top;
       };
-      users.danieln = import ../../hosts/${hostName}/home.nix;
+      # users.danieln is set by each host module
     };
   };
 }

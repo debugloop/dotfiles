@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.nixos.service_cache = {...}: {
+{...}: {
+  flake.nixosModules.service_cache = {...}: {
     nix.sshServe = {
       enable = true;
       keys = [

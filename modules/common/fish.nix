@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.common_fish = {config, ...}: {
+{...}: {
+  flake.homeModules.common_fish = {config, ...}: {
     programs.fish = {
       enable = true;
       interactiveShellInit = ''

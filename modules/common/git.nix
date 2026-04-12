@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.common_git = {
+{...}: {
+  flake.homeModules.common_git = {
     pkgs,
     config,
     ...

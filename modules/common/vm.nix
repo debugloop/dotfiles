@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.nixos.common_vm = {lib, ...}: {
+{...}: {
+  flake.nixosModules.common_vm = {lib, ...}: {
     virtualisation.vmVariant = {
       # better performance and no qcow, it's not persisted anyhow
       virtualisation = {

@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.laptop_applications = {
+{...}: {
+  flake.homeModules.laptop_applications = {
     pkgs,
     config,
     ...

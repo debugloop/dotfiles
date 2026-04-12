@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.nixos.laptop_network = {lib, ...}: {
+{...}: {
+  flake.nixosModules.laptop_network = {lib, ...}: {
     networking.networkmanager = {
       enable = true;
       plugins = lib.mkForce [];

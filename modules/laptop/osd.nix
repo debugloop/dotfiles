@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.laptop_osd = {pkgs, ...}: {
+{...}: {
+  flake.homeModules.laptop_osd = {pkgs, ...}: {
     home.packages = with pkgs; [
       pamixer
     ];

@@ -1,13 +1,13 @@
-{ ... }: {
-  flake.modules.nixos.common_backup_persisted = {
+{...}: {
+  flake.nixosModules.common_backup_persisted = {
     config,
-    hostName,
     inputs,
     lib,
     ...
   }: let
     cfg = config.backup;
-    storageBoxFile = ../../hosts/${hostName}/storagebox.nix;
+    hostname = config.networking.hostName;
+    storageBoxFile = ../hosts/${hostname}/_storagebox.nix;
     storageBox =
       if builtins.pathExists storageBoxFile
       then import storageBoxFile
@@ -15,7 +15,7 @@
         host = "";
         user = "";
       };
-    storageBoxHostAlias = "storagebox-${hostName}";
+    storageBoxHostAlias = "storagebox-${hostname}";
   in {
     imports = [inputs.agenix.nixosModules.default];
 
@@ -32,7 +32,7 @@
       assertions = [
         {
           assertion = builtins.pathExists storageBoxFile;
-          message = ''storagebox.nix not found for host "${hostName}". Run `nix run .#infra` to provision the host and generate credentials.'';
+          message = ''storagebox.nix not found for host "${hostname}". Run `nix run .#infra` to provision the host and generate credentials.'';
         }
       ];
 
@@ -76,11 +76,12 @@
           "--keep-weekly 5"
           "--keep-yearly 10"
         ];
-        exclude = [
-          "var/log"
-          "home/danieln/.cache"
-        ]
-        ++ cfg.exclude;
+        exclude =
+          [
+            "var/log"
+            "home/danieln/.cache"
+          ]
+          ++ cfg.exclude;
       };
     };
   };

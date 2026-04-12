@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.common_claude = {...}: {
+{...}: {
+  flake.homeModules.common_claude = {...}: {
     programs.claude-code.enable = true;
 
     # CLAUDE_CONFIG_DIR consolidates .claude.json into ~/.claude/ so the single

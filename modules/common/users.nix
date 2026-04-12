@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.nixos.common_users = {
+{...}: {
+  flake.nixosModules.common_users = {
     config,
     pkgs,
     ...

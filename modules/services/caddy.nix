@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.nixos.service_caddy = {hostName, ...}: {
+{...}: {
+  flake.nixosModules.service_caddy = {config, ...}: {
     services.caddy = {
       enable = true;
       globalConfig = ''
@@ -7,7 +7,7 @@
           per_host
         }
       '';
-      virtualHosts."${hostName}.danieln.de".extraConfig = ''
+      virtualHosts."${config.networking.hostName}.danieln.de".extraConfig = ''
         metrics /metrics
       '';
     };

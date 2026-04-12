@@ -1,4 +1,4 @@
-./result
+result
 *.qcow2
 .direnv
 secrets/*

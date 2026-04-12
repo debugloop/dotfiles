@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.common_base = {pkgs, ...}: {
+{...}: {
+  flake.homeModules.common_base = {pkgs, ...}: {
     home.packages = with pkgs; [
       gavin-bc
       dmidecode

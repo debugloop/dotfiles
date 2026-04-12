@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.nixos.service_woodpecker = {
+{...}: {
+  flake.nixosModules.service_woodpecker = {
     config,
     lib,
     pkgs,

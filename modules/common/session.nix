@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.common_session = {pkgs, ...}: {
+{...}: {
+  flake.homeModules.common_session = {pkgs, ...}: {
     home = {
       sessionVariables = {
         HIGHLIGHT_STYLE = "base16/grayscale-dark";

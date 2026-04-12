@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.laptop_swayidle = {pkgs, ...}: {
+{...}: {
+  flake.homeModules.laptop_swayidle = {pkgs, ...}: {
     services.swayidle = {
       enable = true;
       systemdTargets = ["graphical-session.target"];

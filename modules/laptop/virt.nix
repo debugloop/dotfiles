@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.nixos.laptop_virt = {pkgs, ...}: {
+{...}: {
+  flake.nixosModules.laptop_virt = {pkgs, ...}: {
     services.flatpak.enable = true;
 
     virtualisation = {

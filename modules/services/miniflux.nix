@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.nixos.service_miniflux = {config, ...}: {
+{...}: {
+  flake.nixosModules.service_miniflux = {config, ...}: {
     services.miniflux = {
       enable = true;
       adminCredentialsFile = "${config.age.secrets.miniflux.path}";

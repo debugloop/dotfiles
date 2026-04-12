@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.common_cloud = {pkgs, ...}: {
+{...}: {
+  flake.homeModules.common_cloud = {pkgs, ...}: {
     home.packages = with pkgs; [
       awscli2
       gmailctl

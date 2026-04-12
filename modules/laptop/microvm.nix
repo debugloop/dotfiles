@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.nixos.laptop_microvm = {
+{...}: {
+  flake.nixosModules.laptop_microvm = {
     config,
     inputs,
     lib,
@@ -69,8 +69,7 @@
       backup.exclude = ["var/lib/microvms"];
 
       # Create workspace dirs and generate SSH host keys on activation
-      system.activationScripts =
-        lib.listToAttrs (map (vm: {
+      system.activationScripts = lib.listToAttrs (map (vm: {
           name = "microvm-${vm.name}-setup";
           value = {
             text = ''
@@ -91,25 +90,25 @@
 
       # Generate microvm.vms.* entries from the codingVms option
       microvm.vms = lib.listToAttrs (lib.imap0 (index: vm: {
-        name = vm.name;
-        value = {
-          autostart = false;
-          config = {
-            imports = [
-              inputs.microvm.nixosModules.microvm
-              (microvmBase (vm
-                // {
-                  inherit inputs;
-                  ipAddress = "192.168.83.${toString (index + 2)}";
-                  tapId = "microvm${toString (index + 2)}";
-                  mac = "02:00:00:00:00:${lib.fixedWidthString 2 "0" (lib.toHexString (index + 2))}";
-                  vsockCid = index + 3;
-                }))
-            ];
+          name = vm.name;
+          value = {
+            autostart = false;
+            config = {
+              imports = [
+                inputs.microvm.nixosModules.microvm
+                (microvmBase (vm
+                  // {
+                    inherit inputs;
+                    ipAddress = "192.168.83.${toString (index + 2)}";
+                    tapId = "microvm${toString (index + 2)}";
+                    mac = "02:00:00:00:00:${lib.fixedWidthString 2 "0" (lib.toHexString (index + 2))}";
+                    vsockCid = index + 3;
+                  }))
+              ];
+            };
           };
-        };
-      })
-      config.codingVms);
+        })
+        config.codingVms);
     };
   };
 }

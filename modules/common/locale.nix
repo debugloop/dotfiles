@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.nixos.common_locale = { ... }: {
+{...}: {
+  flake.nixosModules.common_locale = {...}: {
     time.timeZone = "Europe/Berlin";
 
     i18n = {

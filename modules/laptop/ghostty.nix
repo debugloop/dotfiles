@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.laptop_ghostty = {
+{...}: {
+  flake.homeModules.laptop_ghostty = {
     config,
     pkgs,
     ...

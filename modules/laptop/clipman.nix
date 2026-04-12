@@ -1,5 +1,5 @@
-{ ... }: {
-  flake.modules.home.laptop_clipman = {pkgs, ...}: {
+{...}: {
+  flake.homeModules.laptop_clipman = {pkgs, ...}: {
     home.packages = with pkgs; [
       wl-clipboard
       wofi

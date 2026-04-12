@@ -4,15 +4,19 @@
   ...
 }: let
   inherit (pkgs) lib;
-  terranix = inputs.self.lib.hetznerTerranix pkgs;
-  hostNames = inputs.self.lib.hetznerHostNames;
+  infra = import ../lib/infra.nix {
+    inherit inputs;
+    flake = inputs.self;
+  };
+  terranix = infra.hetznerTerranix pkgs;
+  hostNames = infra.hetznerHostNames;
   tofu = pkgs.opentofu.withPlugins (p: [p.hetznercloud_hcloud p.hashicorp_random]);
 in
   pkgs.writeShellScriptBin "infra" ''
     set -euo pipefail
 
     export PATH="${pkgs.age-plugin-fido2-hmac}/bin:$PATH"
-    _age="${pkgs.age}/bin/age --decrypt -i ${inputs.self}/keys/physical/fido2-identity.pub"
+    _age="${pkgs.age}/bin/age --decrypt -i ${inputs.self}/keys/physical/desk.pub"
 
     _secrets="$($_age ${inputs.self}/secrets/hetzner_infra.age)"
     _get() { echo "$_secrets" | grep "^$1=" | cut -d= -f2-; }
@@ -57,8 +61,8 @@ in
           echo "storagebox: missing keys/hosts/${h}.pub" >&2
           ((++FAILED))
         else
-          ${pkgs.coreutils}/bin/mkdir -p "hosts/${h}"
-          cat > "hosts/${h}/storagebox.nix" <<EOF
+          ${pkgs.coreutils}/bin/mkdir -p "modules/hosts/${h}"
+          cat > "modules/hosts/${h}/_storagebox.nix" <<EOF
         {
           host = "''${SB_HOST}";
           user = "''${SB_USER}";
@@ -77,7 +81,7 @@ in
       hostNames}
 
       [[ $FAILED -eq 0 ]] || echo "storagebox keys: $INSTALLED installed, $FAILED failed" >&2
-      ${pkgs.git}/bin/git add hosts/*/storagebox.nix 2>/dev/null || true
+      ${pkgs.git}/bin/git add modules/hosts/*/_storagebox.nix 2>/dev/null || true
     }
 
     CMD=''${1:-apply}
