@@ -25,7 +25,8 @@ _: {
       laptop_nix
       laptop_printing
       laptop_swaylock
-      laptop_virt
+      laptop_docker
+      laptop_flatpak
     ];
   };
 

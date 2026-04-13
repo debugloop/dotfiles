@@ -39,8 +39,6 @@ _: {
         gnumake
         gnupg
         dyff
-        entr
-        fd
         fish-lsp
         go-tools
         gofumpt
@@ -73,7 +71,6 @@ _: {
         proselint
         protobuf
         redis
-        ripgrep
         rr
         rust-analyzer
         cargo
@@ -83,7 +80,6 @@ _: {
         socat
         sqlite
         stylua
-        tcpdump
         tokei
         tree-sitter
         typescript

@@ -4,6 +4,8 @@ _: {
       packages = with pkgs; [
         claude-code
         sox
+        opencode
+        github-copilot-cli
       ];
     };
   };

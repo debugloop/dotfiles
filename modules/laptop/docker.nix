@@ -1,7 +1,5 @@
 _: {
-  flake.nixosModules.laptop_virt = {pkgs, ...}: {
-    services.flatpak.enable = true;
-
+  flake.nixosModules.laptop_docker = {pkgs, ...}: {
     virtualisation = {
       docker = {
         enable = false;
@@ -48,22 +46,16 @@ _: {
       persistence."/nix/persist" = {
         directories = [
           "/var/lib/docker"
-          "/var/lib/flatpak"
         ];
         users.danieln.directories = [
           ".local/share/docker"
-          ".var/app"
-          ".local/share/flatpak"
         ];
       };
     };
 
     backup.exclude = [
       "var/lib/docker"
-      "var/lib/flatpak"
-      "home/danieln/.var" # flatpak data
       "home/danieln/.local/share/docker"
-      "home/danieln/.local/share/flatpak"
     ];
   };
 }
