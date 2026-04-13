@@ -1,6 +1,6 @@
 _: {
-  flake.homeModules.danieln_full = {top, ...}: {
-    imports = with top.homeModules; [
+  flake.modules.homeManager.danieln_full = {inputs, ...}: {
+    imports = with inputs.self.modules.homeManager; [
       applications
       clipman
       ghostty

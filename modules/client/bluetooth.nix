@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.bluetooth = {top, ...}: {
+  flake.modules.nixos.bluetooth = {inputs, ...}: {
     hardware.bluetooth = {
       enable = true;
       powerOnBoot = true;
@@ -11,10 +11,10 @@ _: {
       "/var/lib/bluetooth"
     ];
 
-    home-manager.sharedModules = [top.homeModules.bluetooth];
+    home-manager.sharedModules = [inputs.self.modules.homeManager.bluetooth];
   };
 
-  flake.homeModules.bluetooth = _: {
+  flake.modules.homeManager.bluetooth = _: {
     services.blueman-applet.enable = true;
   };
 }

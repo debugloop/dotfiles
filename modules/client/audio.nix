@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.audio = {top, ...}: {
+  flake.modules.nixos.audio = {inputs, ...}: {
     services = {
       pipewire = {
         enable = true;
@@ -19,10 +19,10 @@ _: {
       ".local/state/wireplumber"
     ];
 
-    home-manager.sharedModules = [top.homeModules.audio];
+    home-manager.sharedModules = [inputs.self.modules.homeManager.audio];
   };
 
-  flake.homeModules.audio = {pkgs, ...}: {
+  flake.modules.homeManager.audio = {pkgs, ...}: {
     home.packages = with pkgs; [
       pamixer
       sox

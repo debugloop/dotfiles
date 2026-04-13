@@ -1,6 +1,6 @@
 _: {
-  flake.nixosModules.server = {top, ...}: {
-    imports = with top.nixosModules; [
+  flake.modules.nixos.server = {inputs, ...}: {
+    imports = with inputs.self.modules.nixos; [
       host
       node_exporter
       auto_upgrade
@@ -8,8 +8,8 @@ _: {
     ];
   };
 
-  flake.homeModules.server = {top, ...}: {
-    imports = with top.homeModules; [
+  flake.modules.homeManager.server = {inputs, ...}: {
+    imports = with inputs.self.modules.homeManager; [
       ssh_agent
     ];
   };

@@ -2,7 +2,7 @@ let
   basicauthHash = import ./_basicauth.nix;
 in
   _: {
-    flake.nixosModules.rqbit = {
+    flake.modules.nixos.rqbit = {
       config,
       pkgs,
       ...

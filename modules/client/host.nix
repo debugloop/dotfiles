@@ -1,6 +1,6 @@
 _: {
-  flake.nixosModules.client = {top, ...}: {
-    imports = with top.nixosModules; [
+  flake.modules.nixos.client = {inputs, ...}: {
+    imports = with inputs.self.modules.nixos; [
       host
       applications
       audio

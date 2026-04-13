@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.nix = {inputs, ...}: {
+  flake.modules.nixos.nix = {inputs, ...}: {
     imports = [inputs.agenix.nixosModules.default];
 
     nix = {
@@ -27,7 +27,7 @@ _: {
     };
   };
 
-  flake.homeModules.nix = {
+  flake.modules.homeManager.nix = {
     pkgs,
     inputs,
     ...

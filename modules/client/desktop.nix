@@ -1,7 +1,7 @@
 _: {
-  flake.nixosModules.desktop = {
+  flake.modules.nixos.desktop = {
     pkgs,
-    top,
+    inputs,
     ...
   }: {
     programs.thunar = {
@@ -52,10 +52,10 @@ _: {
       ];
     };
 
-    home-manager.sharedModules = [top.homeModules.desktop];
+    home-manager.sharedModules = [inputs.self.modules.homeManager.desktop];
   };
 
-  flake.homeModules.desktop = {pkgs, ...}: {
+  flake.modules.homeManager.desktop = {pkgs, ...}: {
     gtk = {
       enable = true; # applies generated configs
       gtk4.theme = null;

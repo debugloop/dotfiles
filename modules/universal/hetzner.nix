@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.hetzner = {
+  flake.modules.nixos.hetzner = {
     config,
     lib,
     ...

@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.applications = _: {
+  flake.modules.nixos.applications = _: {
     backup.exclude = [
       "home/danieln/.local/share/Steam"
       "home/danieln/.thunderbird"
@@ -25,7 +25,7 @@ _: {
     };
   };
 
-  flake.homeModules.applications = {
+  flake.modules.homeManager.applications = {
     pkgs,
     config,
     ...

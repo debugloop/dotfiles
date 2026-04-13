@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.auto_upgrade = _: {
+  flake.modules.nixos.auto_upgrade = _: {
     system.autoUpgrade = {
       enable = true;
       persistent = false;

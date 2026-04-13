@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.locale = _: {
+  flake.modules.nixos.locale = _: {
     time.timeZone = "Europe/Berlin";
 
     i18n = {

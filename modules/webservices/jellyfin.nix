@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.jellyfin = _: {
+  flake.modules.nixos.jellyfin = _: {
     services = {
       jellyfin.enable = true;
 

@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.network = _: {
+  flake.modules.nixos.network = _: {
     networking = {
       firewall.enable = true;
       nftables.enable = true;
@@ -8,7 +8,7 @@ _: {
     services.resolved.enable = true;
   };
 
-  flake.homeModules.network = {pkgs, ...}: {
+  flake.modules.homeManager.network = {pkgs, ...}: {
     home.packages = with pkgs; [
       dig
       netcat-openbsd

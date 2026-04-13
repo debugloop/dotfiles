@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.openssh = _: {
+  flake.modules.nixos.openssh = _: {
     services.openssh = {
       enable = true;
       settings = {

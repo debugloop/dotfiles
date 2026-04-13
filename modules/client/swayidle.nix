@@ -1,5 +1,5 @@
 _: {
-  flake.homeModules.swayidle = {pkgs, ...}: {
+  flake.modules.homeManager.swayidle = {pkgs, ...}: {
     services.swayidle = {
       enable = true;
       systemdTargets = ["graphical-session.target"];

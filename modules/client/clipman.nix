@@ -1,5 +1,5 @@
 _: {
-  flake.homeModules.clipman = {pkgs, ...}: {
+  flake.modules.homeManager.clipman = {pkgs, ...}: {
     home.packages = with pkgs; [
       wl-clipboard
     ];

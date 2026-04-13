@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.caddy = {config, ...}: {
+  flake.modules.nixos.caddy = {config, ...}: {
     services.caddy = {
       enable = true;
       globalConfig = ''

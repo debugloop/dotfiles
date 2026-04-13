@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.grafana = {config, ...}: {
+  flake.modules.nixos.grafana = {config, ...}: {
     services.grafana = {
       enable = true;
       settings = {

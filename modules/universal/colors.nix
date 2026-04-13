@@ -1,5 +1,5 @@
 _: {
-  flake.homeModules.colors = {lib, ...}:
+  flake.modules.homeManager.colors = {lib, ...}:
     with lib; let
       colorType = types.addCheck types.str (x: (builtins.match "[0-9a-fA-F]{6}" x) != null);
       themeType = mkOption {

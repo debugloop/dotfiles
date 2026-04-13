@@ -1,5 +1,5 @@
 _: {
-  flake.homeModules.wl_kbptr = {
+  flake.modules.homeManager.wl_kbptr = {
     pkgs,
     config,
     ...

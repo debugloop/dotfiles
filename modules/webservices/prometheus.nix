@@ -2,7 +2,7 @@ let
   basicauthHash = import ./_basicauth.nix;
 in
   _: {
-    flake.nixosModules.prometheus = {config, ...}: {
+    flake.modules.nixos.prometheus = {config, ...}: {
       services.prometheus = {
         enable = true;
         extraFlags = ["--storage.tsdb.retention.size=64GB"];

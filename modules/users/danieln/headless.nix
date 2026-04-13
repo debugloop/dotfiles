@@ -1,16 +1,12 @@
 _: {
-  flake.homeModules.danieln_headless = {
-    top,
-    inputs,
-    ...
-  }: {
+  flake.modules.homeManager.danieln_headless = {inputs, ...}: {
     home = {
       username = "danieln";
       homeDirectory = "/home/danieln";
     };
 
     imports =
-      (with top.homeModules; [
+      (with inputs.self.modules.homeManager; [
         ai
         base
         claude

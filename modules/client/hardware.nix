@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.hardware = {
+  flake.modules.nixos.hardware = {
     config,
     pkgs,
     ...

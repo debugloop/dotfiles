@@ -1,5 +1,5 @@
 _: {
-  flake.homeModules.mako = {
+  flake.modules.homeManager.mako = {
     config,
     pkgs,
     ...

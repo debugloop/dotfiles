@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.grocy = _: {
+  flake.modules.nixos.grocy = _: {
     services = {
       grocy = {
         enable = true;

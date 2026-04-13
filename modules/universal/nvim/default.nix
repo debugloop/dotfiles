@@ -1,5 +1,5 @@
 _: {
-  flake.homeModules.nvim = {
+  flake.modules.homeManager.nvim = {
     pkgs,
     config,
     lib,

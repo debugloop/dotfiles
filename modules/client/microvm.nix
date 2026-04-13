@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.microvm = {
+  flake.modules.nixos.microvm = {
     config,
     inputs,
     lib,

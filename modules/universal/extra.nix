@@ -1,5 +1,5 @@
 _: {
-  flake.homeModules.extra = {pkgs, ...}: {
+  flake.modules.homeManager.extra = {pkgs, ...}: {
     programs = {
       atuin = {
         enable = true;

@@ -1,5 +1,5 @@
 _: {
-  flake.homeModules.ghostty = {
+  flake.modules.homeManager.ghostty = {
     config,
     pkgs,
     ...

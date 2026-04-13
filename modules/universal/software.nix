@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.software = {
+  flake.modules.nixos.software = {
     pkgs,
     inputs,
     ...

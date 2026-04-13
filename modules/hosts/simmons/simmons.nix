@@ -6,21 +6,20 @@
   flake.nixosConfigurations.simmons = inputs.nixpkgs.lib.nixosSystem {
     specialArgs = {
       inherit inputs;
-      top = self;
     };
-    modules = [self.nixosModules.simmons];
+    modules = [self.modules.nixos.simmons];
   };
 
-  flake.nixosModules.simmons = {top, ...}: {
+  flake.modules.nixos.simmons = {inputs, ...}: {
     imports =
-      (with top.nixosModules; [client])
+      (with inputs.self.modules.nixos; [client])
       ++ [./_hardware-configuration.nix];
 
     networking.hostName = "simmons";
 
     home-manager.users.danieln = {
       home.stateVersion = "26.05";
-      imports = with top.homeModules; [danieln_headless danieln_full];
+      imports = with inputs.self.modules.homeManager; [danieln_headless danieln_full];
     };
 
     backup.enable = true;

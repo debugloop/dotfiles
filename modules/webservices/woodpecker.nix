@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.woodpecker = {
+  flake.modules.nixos.woodpecker = {
     config,
     pkgs,
     ...

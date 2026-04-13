@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.flatpak = {
+  flake.modules.nixos.flatpak = {
     services.flatpak.enable = true;
 
     environment.persistence."/nix/persist" = {

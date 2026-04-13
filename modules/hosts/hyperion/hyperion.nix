@@ -7,27 +7,25 @@
     nixosConfigurations.hyperion = inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
         inherit inputs;
-        top = self;
       };
-      modules = [self.nixosModules.hyperion];
+      modules = [self.modules.nixos.hyperion];
     };
 
     homeConfigurations."danieln@hyperion" = inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
       extraSpecialArgs = {
         inherit inputs;
-        top = self;
       };
-      modules = with self.homeModules; [danieln_headless server];
+      modules = with self.modules.homeManager; [danieln_headless server];
     };
 
-    nixosModules.hyperion = {
-      top,
+    modules.nixos.hyperion = {
       config,
+      inputs,
       ...
     }: {
       imports =
-        (with top.nixosModules; [
+        (with inputs.self.modules.nixos; [
           server
           cache
           caddy
@@ -77,7 +75,7 @@
 
       home-manager.users.danieln = {
         home.stateVersion = "22.11";
-        imports = with top.homeModules; [danieln_headless server];
+        imports = with inputs.self.modules.homeManager; [danieln_headless server];
       };
 
       system.stateVersion = "22.11";

@@ -5,7 +5,7 @@ let
   '';
 in
   _: {
-    flake.nixosModules.matrix = _: {
+    flake.modules.nixos.matrix = _: {
       services = {
         matrix-synapse = {
           enable = true;

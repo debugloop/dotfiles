@@ -1,5 +1,5 @@
 _: {
-  flake.homeModules.development = {
+  flake.modules.homeManager.development = {
     pkgs,
     lib,
     ...

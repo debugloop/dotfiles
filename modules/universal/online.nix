@@ -1,5 +1,5 @@
 _: {
-  flake.homeModules.online = {pkgs, ...}: {
+  flake.modules.homeManager.online = {pkgs, ...}: {
     home.packages = with pkgs; [
       awscli2
       gmailctl

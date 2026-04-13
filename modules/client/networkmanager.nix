@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.networkmanager = {lib, ...}: {
+  flake.modules.nixos.networkmanager = {lib, ...}: {
     networking.networkmanager = {
       enable = true;
       plugins = lib.mkForce [];

@@ -1,5 +1,5 @@
 _: {
-  flake.nixosModules.backup_persisted = {
+  flake.modules.nixos.backup_persisted = {
     config,
     inputs,
     lib,

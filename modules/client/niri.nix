@@ -1,8 +1,7 @@
 _: {
-  flake.nixosModules.niri = {
+  flake.modules.nixos.niri = {
     pkgs,
     inputs,
-    top,
     ...
   }: {
     imports = [
@@ -43,10 +42,10 @@ _: {
       };
     };
 
-    home-manager.sharedModules = [top.homeModules.niri];
+    home-manager.sharedModules = [inputs.self.modules.homeManager.niri];
   };
 
-  flake.homeModules.niri = {
+  flake.modules.homeManager.niri = {
     config,
     pkgs,
     inputs,

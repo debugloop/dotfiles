@@ -43,22 +43,19 @@
     nixosConfigurations.roshar = inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
         inherit inputs;
-        top = self;
       };
-      modules = [self.nixosModules.roshar];
+      modules = [self.modules.nixos.roshar];
     };
 
     homeConfigurations."danieln@roshar" = inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
       extraSpecialArgs = {
         inherit inputs;
-        top = self;
       };
-      modules = with self.homeModules; [danieln_headless server];
+      modules = with self.modules.homeManager; [danieln_headless server];
     };
 
-    nixosModules.roshar = {
-      top,
+    modules.nixos.roshar = {
       inputs,
       config,
       modulesPath,
@@ -66,7 +63,7 @@
       ...
     }: {
       imports =
-        (with top.nixosModules; [
+        (with inputs.self.modules.nixos; [
           server
           miniflux
         ])
@@ -76,7 +73,7 @@
           inputs.disko.nixosModules.disko
         ];
 
-      disko.devices = top.diskoConfigurations.roshar.disko.devices;
+      disko.devices = inputs.self.diskoConfigurations.roshar.disko.devices;
 
       nixpkgs.hostPlatform = "x86_64-linux";
       networking.hostName = "roshar";
@@ -137,7 +134,7 @@
 
       home-manager.users.danieln = {
         home.stateVersion = "22.11";
-        imports = with top.homeModules; [danieln_headless server];
+        imports = with inputs.self.modules.homeManager; [danieln_headless server];
       };
 
       system.stateVersion = "24.11";
