@@ -6,11 +6,11 @@
 in {
   imports = [inputs.terranix.flakeModule inputs.git-hooks-nix.flakeModule];
 
-  perSystem = {pkgs, ...}: let
-    storageboxKeygen = import (inputs.self + "/packages/storagebox-keygen.nix") {
-      inherit pkgs;
-      hostNames = infraLib.hetznerHostNames;
-    };
+  perSystem = {
+    pkgs,
+    config,
+    ...
+  }: let
     passphraseScript = pkgs.writeShellScript "infra-passphrase" ''
       set -euo pipefail
       printf '{"magic":"OpenTofu-External-Key-Provider","version":1}\n'
@@ -19,8 +19,6 @@ in {
       printf '{"keys":{"encryption_key":"%s","decryption_key":"%s"}}\n' "$_b64" "$_b64"
     '';
   in {
-    packages.storagebox-keygen = storageboxKeygen;
-
     pre-commit.settings.hooks.storagebox-key-reminder = {
       enable = true;
       name = "storagebox key reminder";
@@ -51,7 +49,7 @@ in {
         '';
         suffixText = ''
           if [[ "$1" == "apply" ]]; then
-            ${storageboxKeygen}/bin/storagebox-keygen
+            ${config.packages.storagebox-keygen}/bin/storagebox-keygen
           fi
         '';
       };
