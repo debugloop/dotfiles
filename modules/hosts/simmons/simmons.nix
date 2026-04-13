@@ -20,7 +20,7 @@
 
     home-manager.users.danieln = {
       home.stateVersion = "26.05";
-      imports = with top.homeModules; [danieln client];
+      imports = with top.homeModules; [danieln_headless danieln_full];
     };
 
     backup.enable = true;

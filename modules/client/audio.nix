@@ -23,6 +23,9 @@ _: {
   };
 
   flake.homeModules.audio = {pkgs, ...}: {
-    home.packages = with pkgs; [pamixer];
+    home.packages = with pkgs; [
+      pamixer
+      sox
+    ];
   };
 }

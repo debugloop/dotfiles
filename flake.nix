@@ -69,18 +69,5 @@
       imports = import ./lib/import-tree.nix ./modules;
 
       systems = ["x86_64-linux"];
-
-      perSystem = {pkgs, ...}: {
-        packages = {
-          host-keygen = import ./packages/host-keygen.nix {inherit pkgs;};
-          nvim = import ./packages/nvim.nix {inherit pkgs;};
-          install = import ./packages/install.nix {inherit pkgs inputs;};
-        };
-
-        treefmt = {
-          projectRootFile = "flake.nix";
-          programs.alejandra.enable = true;
-        };
-      };
     });
 }

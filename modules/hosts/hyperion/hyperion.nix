@@ -18,7 +18,7 @@
         inherit inputs;
         top = self;
       };
-      modules = with self.homeModules; [danieln server];
+      modules = with self.homeModules; [danieln_headless server];
     };
 
     nixosModules.hyperion = {
@@ -77,7 +77,7 @@
 
       home-manager.users.danieln = {
         home.stateVersion = "22.11";
-        imports = with top.homeModules; [danieln server];
+        imports = with top.homeModules; [danieln_headless server];
       };
 
       system.stateVersion = "22.11";

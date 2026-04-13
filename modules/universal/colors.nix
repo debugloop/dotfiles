@@ -37,7 +37,7 @@ _: {
         colors = themeType;
       };
       config = rec {
-        colors = themes.kanagawa;
+        colors = lib.mkDefault themes.kanagawa;
         themes = {
           catppuccin = let
             rosewater = "f5e0dc"; #f5e0dc

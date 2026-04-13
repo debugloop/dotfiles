@@ -1,5 +1,5 @@
 _: {
-  flake.homeModules.danieln = {
+  flake.homeModules.danieln_headless = {
     top,
     inputs,
     ...
@@ -11,9 +11,9 @@ _: {
 
     imports =
       (with top.homeModules; [
+        ai
         base
         claude
-        cloud
         colors
         development
         extra
@@ -23,6 +23,7 @@ _: {
         network
         nix
         nvim
+        online
         session
         ssh
         starship
