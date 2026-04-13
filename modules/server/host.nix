@@ -2,6 +2,7 @@ _: {
   flake.modules.nixos.server = {inputs, ...}: {
     imports = with inputs.self.modules.nixos; [
       host
+      basicauth
       node_exporter
       auto_upgrade
       auto_cleanup

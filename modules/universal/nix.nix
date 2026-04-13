@@ -1,41 +1,14 @@
 _: {
-  flake.modules.nixos.nix = {inputs, ...}: {
-    imports = [inputs.agenix.nixosModules.default];
-
-    nix = {
-      settings = {
-        experimental-features = "nix-command flakes";
-        trusted-users = ["@wheel"];
-      };
-    };
-
+  flake.modules.nixos.nix = {
     programs.nh.enable = true;
-
-    nixpkgs = {
-      hostPlatform = "x86_64-linux";
-      config = {
-        allowUnfree = true;
-        warnUndeclaredOptions = true;
-      };
-      overlays = [
-        # inputs.neovim-nightly-overlay.overlays.default
-      ];
-    };
-
-    age.secrets = {
-      password.file = inputs.self + "/secrets/password.age";
-    };
   };
 
   flake.modules.homeManager.nix = {
-    config,
     pkgs,
     inputs,
     ...
   }: {
     imports = [inputs.nix-index-database.homeModules.nix-index];
-
-    age.identityPaths = ["${config.home.homeDirectory}/.ssh/agenix"];
 
     home = {
       sessionVariables = {
@@ -47,7 +20,6 @@ _: {
         alejandra
         comma
         nix-tree
-        nixd
         nvd
       ];
     };

@@ -5,25 +5,26 @@ _: {
       homeDirectory = "/home/danieln";
     };
 
-    imports =
-      (with inputs.self.modules.homeManager; [
-        ai
-        base
-        claude
-        colors
-        development
-        extra
-        fish
-        git
-        helix
-        network
-        nix
-        nvim
-        online
-        session
-        ssh
-        starship
-      ])
-      ++ [inputs.agenix.homeManagerModules.default];
+    imports = with inputs.self.modules.homeManager; [
+      agenix
+      ai
+      base
+      claude
+      colors
+      development
+      extra
+      fish
+      git
+      helix
+      network
+      nix
+      nixd
+      nixpkgs
+      nvim
+      online
+      session
+      ssh
+      starship
+    ];
   };
 }
