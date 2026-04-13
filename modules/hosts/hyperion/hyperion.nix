@@ -19,11 +19,7 @@
       modules = with self.modules.homeManager; [danieln_headless server];
     };
 
-    modules.nixos.hyperion = {
-      config,
-      inputs,
-      ...
-    }: {
+    modules.nixos.hyperion = {inputs, ...}: {
       imports =
         (with inputs.self.modules.nixos; [
           server
@@ -42,6 +38,7 @@
 
       networking = {
         hostName = "hyperion";
+        domain = "danieln.de";
         nameservers = [
           "9.9.9.9"
           "149.112.112.112"
@@ -73,17 +70,9 @@
         };
       };
 
-      home-manager.users.danieln = {
-        home.stateVersion = "22.11";
-        imports = with inputs.self.modules.homeManager; [danieln_headless server];
-      };
+      home-manager.users.danieln.home.stateVersion = "22.11";
 
       system.stateVersion = "22.11";
-
-      users.users.root.openssh.authorizedKeys.keys =
-        map
-        (name: builtins.readFile (../../../keys/auth + "/${name}.pub"))
-        config.hetzner.sshKeyNames;
     };
   };
 }

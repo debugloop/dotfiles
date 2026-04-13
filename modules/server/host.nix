@@ -6,6 +6,8 @@ _: {
       auto_upgrade
       auto_cleanup
     ];
+
+    home-manager.users.danieln.imports = [inputs.self.modules.homeManager.server];
   };
 
   flake.modules.homeManager.server = {inputs, ...}: {

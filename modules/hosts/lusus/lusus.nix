@@ -19,9 +19,7 @@
 
     home-manager.users.danieln = {
       home.stateVersion = "22.11";
-      imports = with inputs.self.modules.homeManager;
-        [danieln_headless danieln_full]
-        ++ [inputs.gridx.home-module];
+      imports = [inputs.gridx.home-module];
     };
 
     system.stateVersion = "22.11";

@@ -2,6 +2,7 @@ _: {
   flake.modules.nixos.tailscale = {
     pkgs,
     config,
+    inputs,
     ...
   }: {
     services.tailscale = {
@@ -25,7 +26,7 @@ _: {
     };
 
     age.secrets = {
-      tailscaleAuthkey.file = ../../secrets/tailscale.age;
+      tailscaleAuthkey.file = inputs.self + "/secrets/tailscale.age";
     };
 
     environment.persistence."/nix/persist" = {

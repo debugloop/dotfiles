@@ -1,6 +1,7 @@
 _: {
   flake.modules.nixos.users = {
     config,
+    inputs,
     pkgs,
     ...
   }: {
@@ -30,5 +31,7 @@ _: {
     security.sudo.extraConfig = ''
       Defaults passprompt="[sudo] password for %p: "
     '';
+
+    home-manager.users.danieln.imports = [inputs.self.modules.homeManager.danieln_headless];
   };
 }

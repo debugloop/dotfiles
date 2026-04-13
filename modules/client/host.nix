@@ -17,5 +17,7 @@ _: {
       docker
       flatpak
     ];
+
+    home-manager.users.danieln.imports = [inputs.self.modules.homeManager.danieln_full];
   };
 }

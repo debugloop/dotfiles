@@ -17,12 +17,15 @@
 
     networking.hostName = "simmons";
 
-    home-manager.users.danieln = {
-      home.stateVersion = "26.05";
-      imports = with inputs.self.modules.homeManager; [danieln_headless danieln_full];
-    };
+    home-manager.users.danieln.home.stateVersion = "26.05";
 
-    backup.enable = true;
+    backup = {
+      enable = true;
+      storagebox = {
+        host = "u564729-sub3.your-storagebox.de";
+        user = "u564729-sub3";
+      };
+    };
     system.stateVersion = "26.05";
 
     codingVmsExternalInterface = "wlp2s0";

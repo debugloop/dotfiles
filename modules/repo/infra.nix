@@ -1,5 +1,5 @@
 {inputs, ...}: let
-  infraLib = import ../../lib/infra.nix {
+  infraLib = import (inputs.self + "/lib/infra.nix") {
     inherit inputs;
     flake = inputs.self;
   };
@@ -7,7 +7,7 @@ in {
   imports = [inputs.terranix.flakeModule inputs.git-hooks-nix.flakeModule];
 
   perSystem = {pkgs, ...}: let
-    storageboxKeygen = import ../../packages/storagebox-keygen.nix {
+    storageboxKeygen = import (inputs.self + "/packages/storagebox-keygen.nix") {
       inherit pkgs;
       hostNames = infraLib.hetznerHostNames;
     };

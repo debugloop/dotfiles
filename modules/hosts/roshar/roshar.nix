@@ -76,8 +76,18 @@
       disko.devices = inputs.self.diskoConfigurations.roshar.disko.devices;
 
       nixpkgs.hostPlatform = "x86_64-linux";
-      networking.hostName = "roshar";
-      backup.enable = true;
+      networking = {
+        hostName = "roshar";
+        domain = "danieln.de";
+        useDHCP = true;
+      };
+      backup = {
+        enable = true;
+        storagebox = {
+          host = "u564729-sub1.your-storagebox.de";
+          user = "u564729-sub1";
+        };
+      };
 
       hetzner = {
         enable = true;
@@ -87,7 +97,6 @@
         sshKeyNames = ["hyperion" "simmons"];
       };
 
-      networking.useDHCP = true;
       services.openssh.enable = true;
       programs.fuse.userAllowOther = true;
 
@@ -98,9 +107,7 @@
         "f /root/.ssh/known_hosts 0644 root root -"
       ];
 
-      systemd.services.storagebox-sshfs = let
-        storageBox = import ./_storagebox.nix;
-      in {
+      systemd.services.storagebox-sshfs = {
         description = "Storage Box SSHFS mount";
         after = ["network-online.target"];
         wants = ["network-online.target"];
@@ -124,7 +131,7 @@
               -o gid=0 \
               -o umask=077 \
               -o noatime \
-              ${storageBox.user}@${storageBox.host}:. /mnt/storagebox
+              ${config.backup.storagebox.user}@${config.backup.storagebox.host}:. /mnt/storagebox
           '';
           ExecStop = "${pkgs.fuse3}/bin/fusermount3 -u /mnt/storagebox";
           Restart = "on-failure";
@@ -132,17 +139,9 @@
         };
       };
 
-      home-manager.users.danieln = {
-        home.stateVersion = "22.11";
-        imports = with inputs.self.modules.homeManager; [danieln_headless server];
-      };
+      home-manager.users.danieln.home.stateVersion = "22.11";
 
       system.stateVersion = "24.11";
-
-      users.users.root.openssh.authorizedKeys.keys =
-        map
-        (name: builtins.readFile (../../../keys/auth + "/${name}.pub"))
-        config.hetzner.sshKeyNames;
     };
   };
 }

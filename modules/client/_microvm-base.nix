@@ -44,9 +44,9 @@
     isNormalUser = true;
     shell = pkgs.fish;
     openssh.authorizedKeys.keyFiles = [
-      ../../keys/auth/lusus.pub
-      ../../keys/auth/simmons.pub
-      ../../keys/auth/hyperion.pub
+      (inputs.self + "/keys/auth/lusus.pub")
+      (inputs.self + "/keys/auth/simmons.pub")
+      (inputs.self + "/keys/auth/hyperion.pub")
     ];
   };
 

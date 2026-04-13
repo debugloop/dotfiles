@@ -1,5 +1,9 @@
 _: {
-  flake.modules.nixos.miniflux = {config, ...}: {
+  flake.modules.nixos.miniflux = {
+    config,
+    inputs,
+    ...
+  }: {
     services.miniflux = {
       enable = true;
       adminCredentialsFile = "${config.age.secrets.miniflux.path}";
@@ -8,7 +12,7 @@ _: {
       };
     };
 
-    age.secrets.miniflux.file = ../../secrets/miniflux.age;
+    age.secrets.miniflux.file = inputs.self + "/secrets/miniflux.age";
 
     services.caddy.virtualHosts."rss.danieln.de".extraConfig = ''
       reverse_proxy localhost:8081

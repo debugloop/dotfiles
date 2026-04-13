@@ -7,20 +7,24 @@ _: {
   }: let
     cfg = config.backup;
     hostname = config.networking.hostName;
-    storageBoxFile = ../hosts/${hostname}/_storagebox.nix;
-    storageBox =
-      if builtins.pathExists storageBoxFile
-      then import storageBoxFile
-      else {
-        host = "";
-        user = "";
-      };
     storageBoxHostAlias = "storagebox-${hostname}";
   in {
     imports = [inputs.agenix.nixosModules.default];
 
     options.backup = {
       enable = lib.mkEnableOption "restic backup of /nix/persist";
+      storagebox = {
+        host = lib.mkOption {
+          type = lib.types.str;
+          default = "";
+          description = "Hostname of the Hetzner StorageBox subaccount.";
+        };
+        user = lib.mkOption {
+          type = lib.types.str;
+          default = "";
+          description = "Username for the Hetzner StorageBox subaccount.";
+        };
+      };
       exclude = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [];
@@ -31,8 +35,8 @@ _: {
     config = lib.mkIf cfg.enable {
       assertions = [
         {
-          assertion = builtins.pathExists storageBoxFile;
-          message = ''storagebox.nix not found for host "${hostname}". Run `nix run .#infra` to provision the host and generate credentials.'';
+          assertion = cfg.storagebox.host != "" && cfg.storagebox.user != "";
+          message = ''backup.storagebox.host and backup.storagebox.user must be set when backup is enabled for host "${hostname}".'';
         }
       ];
 
@@ -40,8 +44,8 @@ _: {
 
       programs.ssh.extraConfig = ''
         Host ${storageBoxHostAlias}
-          HostName ${storageBox.host}
-          User ${storageBox.user}
+          HostName ${cfg.storagebox.host}
+          User ${cfg.storagebox.user}
           Port 23
           IdentityFile /etc/ssh/ssh_host_ed25519_key
           IdentitiesOnly yes
@@ -58,7 +62,7 @@ _: {
       ];
 
       age.secrets.restic_password = {
-        file = ../../secrets/restic_password.age;
+        file = inputs.self + "/secrets/restic_password.age";
         owner = "danieln";
       };
 

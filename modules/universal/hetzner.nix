@@ -1,6 +1,7 @@
 _: {
   flake.modules.nixos.hetzner = {
     config,
+    inputs,
     lib,
     ...
   }: {
@@ -61,6 +62,11 @@ _: {
         }
         config.hetzner.extraTerranixConfig
       ];
+
+      users.users.root.openssh.authorizedKeys.keys =
+        map
+        (name: builtins.readFile (inputs.self + "/keys/auth/${name}.pub"))
+        config.hetzner.sshKeyNames;
     });
   };
 }

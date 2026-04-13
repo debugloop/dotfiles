@@ -1,10 +1,10 @@
 _: {
-  flake.modules.nixos.cache = _: {
+  flake.modules.nixos.cache = {inputs, ...}: {
     nix.sshServe = {
       enable = true;
       keys = [
-        (builtins.readFile ../../keys/hosts/simmons.pub)
-        (builtins.readFile ../../keys/hosts/lusus.pub)
+        (builtins.readFile (inputs.self + "/keys/hosts/simmons.pub"))
+        (builtins.readFile (inputs.self + "/keys/hosts/lusus.pub"))
       ];
     };
   };

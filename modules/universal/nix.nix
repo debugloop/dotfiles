@@ -23,18 +23,19 @@ _: {
     };
 
     age.secrets = {
-      password.file = ../../secrets/password.age;
+      password.file = inputs.self + "/secrets/password.age";
     };
   };
 
   flake.modules.homeManager.nix = {
+    config,
     pkgs,
     inputs,
     ...
   }: {
     imports = [inputs.nix-index-database.homeModules.nix-index];
 
-    age.identityPaths = ["/home/danieln/.ssh/agenix"];
+    age.identityPaths = ["${config.home.homeDirectory}/.ssh/agenix"];
 
     home = {
       sessionVariables = {

@@ -12,47 +12,10 @@ in
         };
         scrapeConfigs = [
           {
-            job_name = "node";
-            static_configs = [
-              {
-                targets = ["localhost:9100"];
-                labels.host = config.networking.hostName;
-              }
-            ];
-          }
-          {
             job_name = "prometheus";
             static_configs = [
               {
                 targets = ["localhost:9090"];
-                labels.host = config.networking.hostName;
-              }
-            ];
-          }
-          {
-            job_name = "grafana";
-            static_configs = [
-              {
-                targets = ["localhost:3000"];
-                labels.host = config.networking.hostName;
-              }
-            ];
-          }
-          {
-            job_name = "caddy";
-            scheme = "https";
-            static_configs = [
-              {
-                targets = ["hyperion.danieln.de"];
-                labels.host = config.networking.hostName;
-              }
-            ];
-          }
-          {
-            job_name = "restic-server";
-            static_configs = [
-              {
-                targets = ["localhost:8000"];
                 labels.host = config.networking.hostName;
               }
             ];
