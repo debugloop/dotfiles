@@ -68,7 +68,7 @@
       imports =
         (with top.nixosModules; [
           server
-          service_miniflux
+          miniflux
         ])
         ++ [
           (modulesPath + "/installer/scan/not-detected.nix")

@@ -17,7 +17,7 @@
     ...
   }: {
     imports =
-      (with top.nixosModules; [laptop])
+      (with top.nixosModules; [client])
       ++ [./_hardware-configuration.nix];
 
     networking.hostName = "lusus";
@@ -25,7 +25,7 @@
     home-manager.users.danieln = {
       home.stateVersion = "22.11";
       imports = with top.homeModules;
-        [danieln laptop]
+        [danieln client]
         ++ [inputs.gridx.home-module];
     };
 

@@ -29,16 +29,16 @@
       imports =
         (with top.nixosModules; [
           server
-          service_cache
-          service_caddy
-          service_grafana
-          service_grocy
-          service_matrix
-          service_miniflux
-          service_prometheus
-          service_jellyfin
-          service_rqbit
-          service_woodpecker
+          cache
+          caddy
+          grafana
+          grocy
+          matrix
+          miniflux
+          prometheus
+          jellyfin
+          rqbit
+          woodpecker
         ])
         ++ [./_hardware-configuration.nix];
 
