@@ -18,7 +18,7 @@
         inherit inputs;
         top = self;
       };
-      modules = with self.homeModules; [danieln ssh_agent];
+      modules = with self.homeModules; [danieln server];
     };
 
     nixosModules.hyperion = {
@@ -28,21 +28,7 @@
     }: {
       imports =
         (with top.nixosModules; [
-          common_home_manager
-          common_network
-          common_openssh
-          common_locale
-          common_users
-          common_vm
-          common_backup_persisted
-          common_hetzner
-          common_impermanence
-          common_nix
-          common_software
-          common_tailscale
-          node_exporter
-          auto_upgrade
-          auto_cleanup
+          server
           service_cache
           service_caddy
           service_grafana
@@ -91,7 +77,7 @@
 
       home-manager.users.danieln = {
         home.stateVersion = "22.11";
-        imports = with top.homeModules; [danieln ssh_agent];
+        imports = with top.homeModules; [danieln server];
       };
 
       system.stateVersion = "22.11";
