@@ -9,7 +9,6 @@ _: {
       agenix
       ai
       base
-      claude
       colors
       development
       extra

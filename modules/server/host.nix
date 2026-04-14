@@ -13,7 +13,7 @@ _: {
 
   flake.modules.homeManager.server = {inputs, ...}: {
     imports = with inputs.self.modules.homeManager; [
-      ssh_agent
+      ssh
     ];
   };
 }
