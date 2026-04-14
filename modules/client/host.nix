@@ -19,6 +19,7 @@ _: {
       substituters
       printing
       swaylock
+      theme
       docker
       flatpak
     ];
@@ -29,6 +30,7 @@ _: {
   flake.modules.homeManager.client = {inputs, ...}: {
     imports = with inputs.self.modules.homeManager; [
       clipman
+      failure_notify
       ghostty
       kanshi
       kitty

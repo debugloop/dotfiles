@@ -43,10 +43,6 @@ _: {
 
     environment.persistence."/nix/persist".users.${config.mainUser} = {
       directories = [
-        ".config/gtk-3.0"
-        ".config/Postman"
-        ".config/zed"
-        ".local/share/zed"
         {
           directory = ".local/share/keyrings";
           mode = "0700";
@@ -62,19 +58,8 @@ _: {
     pkgs,
     ...
   }: {
-    gtk = {
-      enable = true; # applies generated configs
-      gtk4.theme = null;
-    };
-
     home = {
-      pointerCursor = {
-        package = "${pkgs.numix-cursor-theme}";
-        name = "Numix-Cursor";
-        gtk.enable = true; # generates gtk cursor config
-      };
       sessionVariables = {
-        GTK_THEME = "Arc-Darker";
         NIXOS_OZONE_WL = "1";
         XDG_DESKTOP_DIR = config.home.homeDirectory;
         XDG_DOCUMENTS_DIR = "${config.home.homeDirectory}/documents";
@@ -83,8 +68,6 @@ _: {
       };
       packages = with pkgs; [
         # ui, utils, system apps
-        arc-theme
-        gnome-icon-theme
         grim
         hicolor-icon-theme
         libnotify.out

@@ -4,6 +4,8 @@
   ...
 }: {
   flake = {
+    sshForwardAgentHosts = ["roshar"];
+
     diskoConfigurations.roshar = {
       disko.devices = {
         disk.main = {
@@ -52,11 +54,10 @@
       extraSpecialArgs = {
         inherit inputs;
       };
-      modules = with self.modules.homeManager; [danieln_headless server];
+      modules = with self.modules.homeManager; [headless server];
     };
 
     modules.nixos.roshar = {
-      config,
       inputs,
       modulesPath,
       ...
@@ -93,8 +94,6 @@
 
       services.openssh.enable = true;
       storagebox_mount.enable = true;
-
-      home-manager.users.${config.mainUser}.home.stateVersion = "22.11";
 
       system.stateVersion = "24.11";
     };

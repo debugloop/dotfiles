@@ -10,7 +10,7 @@ _: {
         job_name = "node";
         static_configs = [
           {
-            targets = ["localhost:${toString config.services.prometheus.exporters.node.port}"];
+            targets = ["${config.networking.hostName}:${toString config.services.prometheus.exporters.node.port}"];
             labels.host = config.networking.hostName;
           }
         ];

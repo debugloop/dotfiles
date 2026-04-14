@@ -9,8 +9,6 @@ _: {
     hostname = config.networking.hostName;
     storageBoxHostAlias = "storagebox-${hostname}";
   in {
-    imports = [inputs.agenix.nixosModules.default];
-
     options.backup = {
       enable = lib.mkEnableOption "restic backup of /nix/persist";
       storagebox = {

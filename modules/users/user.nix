@@ -34,13 +34,17 @@ _: {
       Defaults passprompt="[sudo] password for %p: "
     '';
 
-    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.danieln_headless];
+    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.headless];
   };
 
-  flake.modules.homeManager.danieln_headless = {inputs, ...}: {
+  flake.modules.homeManager.headless = {
+    inputs,
+    mainUser,
+    ...
+  }: {
     home = {
-      username = "danieln";
-      homeDirectory = "/home/danieln";
+      username = mainUser;
+      homeDirectory = "/home/${mainUser}";
     };
 
     imports = with inputs.self.modules.homeManager; [

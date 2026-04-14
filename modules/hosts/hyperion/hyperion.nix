@@ -4,6 +4,8 @@
   ...
 }: {
   flake = {
+    sshForwardAgentHosts = ["hyperion"];
+
     nixosConfigurations.hyperion = inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
         inherit inputs;
@@ -16,14 +18,10 @@
       extraSpecialArgs = {
         inherit inputs;
       };
-      modules = with self.modules.homeManager; [danieln_headless server];
+      modules = with self.modules.homeManager; [headless server];
     };
 
-    modules.nixos.hyperion = {
-      config,
-      inputs,
-      ...
-    }: {
+    modules.nixos.hyperion = {inputs, ...}: {
       imports =
         (with inputs.self.modules.nixos; [
           server
@@ -73,8 +71,6 @@
           interface = "ens3";
         };
       };
-
-      home-manager.users.${config.mainUser}.home.stateVersion = "22.11";
 
       system.stateVersion = "22.11";
     };
