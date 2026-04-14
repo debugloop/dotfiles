@@ -18,8 +18,6 @@
 
   config = {
     home = {
-      username = "danieln";
-      homeDirectory = "/home/danieln";
       packages = [pkgs.claude-code];
       stateVersion = "25.11";
     };
@@ -28,7 +26,7 @@
       fish = {
         enable = true;
         shellInit = ''
-          set -x CLAUDE_CONFIG_DIR /home/danieln/.claude
+          set -x CLAUDE_CONFIG_DIR ${config.home.homeDirectory}/.claude
           ${config.microvm.extraInit}
         '';
         loginShellInit = "cd ${config.microvm.workspace}";

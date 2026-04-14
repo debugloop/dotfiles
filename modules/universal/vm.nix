@@ -1,5 +1,9 @@
 _: {
-  flake.modules.nixos.vm = {lib, ...}: {
+  flake.modules.nixos.vm = {
+    config,
+    lib,
+    ...
+  }: {
     virtualisation.vmVariant = {
       # better performance and no qcow, it's not persisted anyhow
       virtualisation = {
@@ -11,8 +15,8 @@ _: {
       environment.persistence = lib.mkForce {};
       # empty password for myself
       age = lib.mkForce {};
-      users.users.danieln.hashedPasswordFile = lib.mkForce null;
-      users.users.danieln.initialHashedPassword = "";
+      users.users.${config.mainUser}.hashedPasswordFile = lib.mkForce null;
+      users.users.${config.mainUser}.initialHashedPassword = "";
     };
   };
 }

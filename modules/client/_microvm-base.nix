@@ -1,6 +1,7 @@
 {
   name,
   workspace,
+  mainUser,
   ipAddress,
   tapId,
   mac,
@@ -13,8 +14,10 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    users.danieln = {
+    users.${mainUser} = {
       imports = [./_microvm-home.nix];
+      home.username = mainUser;
+      home.homeDirectory = "/home/${mainUser}";
       microvm.extraInit = extraInit;
       microvm.workspace = workspace;
     };
@@ -37,10 +40,10 @@
   services.resolved.enable = true;
 
   # Match host UID/GID so virtiofs-shared files have correct ownership
-  users.groups.danieln.gid = 1000;
-  users.users.danieln = {
+  users.groups.${mainUser}.gid = 1000;
+  users.users.${mainUser} = {
     uid = 1000;
-    group = "danieln";
+    group = mainUser;
     isNormalUser = true;
     shell = pkgs.fish;
     openssh.authorizedKeys.keyFiles = [
@@ -121,8 +124,8 @@
       {
         proto = "virtiofs";
         tag = "claude-credentials";
-        source = "/home/danieln/.claude";
-        mountPoint = "/home/danieln/.claude";
+        source = "/home/${mainUser}/.claude";
+        mountPoint = "/home/${mainUser}/.claude";
       }
       {
         proto = "virtiofs";

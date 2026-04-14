@@ -34,12 +34,12 @@ _: {
       serviceConfig = {
         Description = "Run rqbit download manager.";
         Type = "simple";
-        User = "danieln";
-        ExecStart = "${pkgs.rqbit}/bin/rqbit --bind-device=mullvad --disable-upnp-port-forward --disable-lsd server start /home/danieln/downloads";
+        User = config.mainUser;
+        ExecStart = "${pkgs.rqbit}/bin/rqbit --bind-device=mullvad --disable-upnp-port-forward --disable-lsd server start ${homeDir}/downloads";
       };
     };
 
-    environment.persistence."/nix/persist".users.danieln = {
+    environment.persistence."/nix/persist".users.${config.mainUser} = {
       directories = [
         ".local/share/com.rqbit.session"
       ];

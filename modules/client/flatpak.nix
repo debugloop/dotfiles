@@ -1,12 +1,12 @@
 _: {
-  flake.modules.nixos.flatpak = {
+  flake.modules.nixos.flatpak = {config, ...}: {
     services.flatpak.enable = true;
 
     environment.persistence."/nix/persist" = {
       directories = [
         "/var/lib/flatpak"
       ];
-      users.danieln.directories = [
+      users.${config.mainUser}.directories = [
         ".var/app"
         ".local/share/flatpak"
       ];
@@ -14,8 +14,8 @@ _: {
 
     backup.exclude = [
       "var/lib/flatpak"
-      "home/danieln/.var" # flatpak data
-      "home/danieln/.local/share/flatpak"
+      "home/${config.mainUser}/.var" # flatpak data
+      "home/${config.mainUser}/.local/share/flatpak"
     ];
   };
 }

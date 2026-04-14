@@ -11,7 +11,7 @@
       extraSpecialArgs = {
         inherit inputs;
       };
-      # users.danieln is set by each host module
+      # users.${config.mainUser} is set by each host module
     };
   };
 }

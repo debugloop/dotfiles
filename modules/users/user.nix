@@ -5,9 +5,11 @@ _: {
     pkgs,
     ...
   }: {
+    mainUser = "danieln";
+
     users = {
       mutableUsers = false;
-      users.danieln = {
+      users.${config.mainUser} = {
         isNormalUser = true;
         extraGroups = ["wheel" "video" "docker" "libvirtd" "dialout" "scanner" "lp"];
         shell = pkgs.fish;
@@ -32,6 +34,6 @@ _: {
       Defaults passprompt="[sudo] password for %p: "
     '';
 
-    home-manager.users.danieln.imports = [inputs.self.modules.homeManager.danieln_headless];
+    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.danieln_headless];
   };
 }

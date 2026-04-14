@@ -1,5 +1,6 @@
 _: {
   flake.modules.nixos.desktop = {
+    config,
     pkgs,
     inputs,
     ...
@@ -29,18 +30,18 @@ _: {
     };
 
     backup.exclude = [
-      "home/danieln/go" # golang cache
-      "home/danieln/scratch"
-      "home/danieln/downloads"
-      "home/danieln/code/**/.cache" # generic caches
-      "home/danieln/code/**/.direnv" # direnv cached envs, can be 100s of MB
-      "home/danieln/code/**/node_modules" # npm/pnpm/yarn deps, reproducible
-      "home/danieln/code/**/target" # Rust/Cargo build artifacts
-      "home/danieln/code/**/result" # Nix build result symlinks
-      "home/danieln/code/**/result-*" # Nix multi-output result symlinks
+      "home/${config.mainUser}/go" # golang cache
+      "home/${config.mainUser}/scratch"
+      "home/${config.mainUser}/downloads"
+      "home/${config.mainUser}/code/**/.cache" # generic caches
+      "home/${config.mainUser}/code/**/.direnv" # direnv cached envs, can be 100s of MB
+      "home/${config.mainUser}/code/**/node_modules" # npm/pnpm/yarn deps, reproducible
+      "home/${config.mainUser}/code/**/target" # Rust/Cargo build artifacts
+      "home/${config.mainUser}/code/**/result" # Nix build result symlinks
+      "home/${config.mainUser}/code/**/result-*" # Nix multi-output result symlinks
     ];
 
-    environment.persistence."/nix/persist".users.danieln = {
+    environment.persistence."/nix/persist".users.${config.mainUser} = {
       directories = [
         ".config/gtk-3.0"
         ".config/Postman"
@@ -56,7 +57,11 @@ _: {
     home-manager.sharedModules = [inputs.self.modules.homeManager.desktop];
   };
 
-  flake.modules.homeManager.desktop = {pkgs, ...}: {
+  flake.modules.homeManager.desktop = {
+    config,
+    pkgs,
+    ...
+  }: {
     gtk = {
       enable = true; # applies generated configs
       gtk4.theme = null;
@@ -71,10 +76,10 @@ _: {
       sessionVariables = {
         GTK_THEME = "Arc-Darker";
         NIXOS_OZONE_WL = "1";
-        XDG_DESKTOP_DIR = "/home/danieln";
-        XDG_DOCUMENTS_DIR = "/home/danieln/documents";
-        XDG_DOWNLOAD_DIR = "/home/danieln/downloads";
-        XDG_PICTURES_DIR = "/home/danieln/pictures";
+        XDG_DESKTOP_DIR = config.home.homeDirectory;
+        XDG_DOCUMENTS_DIR = "${config.home.homeDirectory}/documents";
+        XDG_DOWNLOAD_DIR = "${config.home.homeDirectory}/downloads";
+        XDG_PICTURES_DIR = "${config.home.homeDirectory}/pictures";
       };
       packages = with pkgs; [
         # ui, utils, system apps

@@ -1,5 +1,9 @@
 _: {
-  flake.modules.nixos.client = {inputs, ...}: {
+  flake.modules.nixos.client = {
+    config,
+    inputs,
+    ...
+  }: {
     imports = with inputs.self.modules.nixos; [
       host
       applications
@@ -19,6 +23,20 @@ _: {
       flatpak
     ];
 
-    home-manager.users.danieln.imports = [inputs.self.modules.homeManager.danieln_full];
+    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.client];
+  };
+
+  flake.modules.homeManager.client = {inputs, ...}: {
+    imports = with inputs.self.modules.homeManager; [
+      clipman
+      ghostty
+      kanshi
+      kitty
+      mako
+      osd
+      swayidle
+      waybar
+      wl_kbptr
+    ];
   };
 }

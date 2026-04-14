@@ -1,5 +1,9 @@
 _: {
-  flake.modules.nixos.docker = {pkgs, ...}: {
+  flake.modules.nixos.docker = {
+    config,
+    pkgs,
+    ...
+  }: {
     virtualisation = {
       docker = {
         enable = false;
@@ -47,7 +51,7 @@ _: {
         directories = [
           "/var/lib/docker"
         ];
-        users.danieln.directories = [
+        users.${config.mainUser}.directories = [
           ".local/share/docker"
         ];
       };
@@ -55,7 +59,7 @@ _: {
 
     backup.exclude = [
       "var/lib/docker"
-      "home/danieln/.local/share/docker"
+      "home/${config.mainUser}/.local/share/docker"
     ];
   };
 }

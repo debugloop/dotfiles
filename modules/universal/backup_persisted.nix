@@ -63,7 +63,7 @@ _: {
 
       age.secrets.restic_password = {
         file = inputs.self + "/secrets/restic_password.age";
-        owner = "danieln";
+        owner = config.mainUser;
       };
 
       services.restic.backups.daily = {
@@ -83,7 +83,7 @@ _: {
         exclude =
           [
             "var/log"
-            "home/danieln/.cache"
+            "home/${config.mainUser}/.cache"
           ]
           ++ cfg.exclude;
       };

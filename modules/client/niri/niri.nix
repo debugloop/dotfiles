@@ -1,5 +1,6 @@
 _: {
   flake.modules.nixos.niri = {
+    config,
     pkgs,
     inputs,
     ...
@@ -38,7 +39,7 @@ _: {
       enable = true;
       settings.default_session = {
         command = "niri-session";
-        user = "danieln";
+        user = config.mainUser;
       };
     };
 

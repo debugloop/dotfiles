@@ -68,8 +68,8 @@ _: {
       environment.persistence."/nix/persist".directories = [
         "/var/lib/microvms"
       ];
-      environment.persistence."/nix/persist".users.danieln.directories =
-        map (vm: lib.removePrefix "/home/danieln/" vm.workspace) config.codingVms;
+      environment.persistence."/nix/persist".users.${config.mainUser}.directories =
+        map (vm: lib.removePrefix "${homeDir}/" vm.workspace) config.codingVms;
       backup.exclude = ["var/lib/microvms"];
 
       # Create workspace dirs and generate SSH host keys on activation
@@ -77,12 +77,12 @@ _: {
           name = "microvm-${vm.name}-setup";
           value = {
             text = ''
-              install -d -m 0755 -o danieln -g users ${vm.workspace}
-              install -d -m 0700 -o danieln -g users ${vm.workspace}/ssh-host-keys
+              install -d -m 0755 -o ${config.mainUser} -g users ${vm.workspace}
+              install -d -m 0700 -o ${config.mainUser} -g users ${vm.workspace}/ssh-host-keys
               if [ ! -f ${vm.workspace}/ssh-host-keys/ssh_host_ed25519_key ]; then
                 ${pkgs.openssh}/bin/ssh-keygen -t ed25519 -N "" \
                   -f ${vm.workspace}/ssh-host-keys/ssh_host_ed25519_key
-                chown danieln:users \
+                chown ${config.mainUser}:users \
                   ${vm.workspace}/ssh-host-keys/ssh_host_ed25519_key \
                   ${vm.workspace}/ssh-host-keys/ssh_host_ed25519_key.pub
               fi
@@ -103,6 +103,7 @@ _: {
                 (microvmBase (vm
                   // {
                     inherit inputs;
+                    inherit (config) mainUser;
                     ipAddress = "192.168.83.${toString (index + 2)}";
                     tapId = "microvm${toString (index + 2)}";
                     mac = "02:00:00:00:00:${lib.fixedWidthString 2 "0" (lib.toHexString (index + 2))}";

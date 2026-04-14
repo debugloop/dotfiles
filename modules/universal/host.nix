@@ -1,6 +1,7 @@
 _: {
   flake.modules.nixos.host = {inputs, ...}: {
     imports = with inputs.self.modules.nixos; [
+      main_user
       home_manager
       agenix
       nix

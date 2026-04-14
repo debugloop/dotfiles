@@ -10,14 +10,18 @@
     modules = [self.modules.nixos.lusus];
   };
 
-  flake.modules.nixos.lusus = {inputs, ...}: {
+  flake.modules.nixos.lusus = {
+    config,
+    inputs,
+    ...
+  }: {
     imports =
       (with inputs.self.modules.nixos; [client])
       ++ [./_hardware-configuration.nix];
 
     networking.hostName = "lusus";
 
-    home-manager.users.danieln = {
+    home-manager.users.${config.mainUser} = {
       home.stateVersion = "22.11";
       imports = [inputs.gridx.home-module];
     };

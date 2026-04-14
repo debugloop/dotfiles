@@ -93,7 +93,7 @@
       services.openssh.enable = true;
       storagebox_mount.enable = true;
 
-      home-manager.users.danieln.home.stateVersion = "22.11";
+      home-manager.users.${config.mainUser}.home.stateVersion = "22.11";
 
       system.stateVersion = "24.11";
     };

@@ -19,7 +19,11 @@
       modules = with self.modules.homeManager; [danieln_headless server];
     };
 
-    modules.nixos.hyperion = {inputs, ...}: {
+    modules.nixos.hyperion = {
+      config,
+      inputs,
+      ...
+    }: {
       imports =
         (with inputs.self.modules.nixos; [
           server
@@ -70,7 +74,7 @@
         };
       };
 
-      home-manager.users.danieln.home.stateVersion = "22.11";
+      home-manager.users.${config.mainUser}.home.stateVersion = "22.11";
 
       system.stateVersion = "22.11";
     };

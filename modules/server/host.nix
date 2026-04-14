@@ -1,5 +1,9 @@
 _: {
-  flake.modules.nixos.server = {inputs, ...}: {
+  flake.modules.nixos.server = {
+    config,
+    inputs,
+    ...
+  }: {
     imports = with inputs.self.modules.nixos; [
       host
       basicauth
@@ -8,7 +12,7 @@ _: {
       auto_cleanup
     ];
 
-    home-manager.users.danieln.imports = [inputs.self.modules.homeManager.server];
+    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.server];
   };
 
   flake.modules.homeManager.server = {inputs, ...}: {

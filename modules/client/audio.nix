@@ -1,5 +1,9 @@
 _: {
-  flake.modules.nixos.audio = {inputs, ...}: {
+  flake.modules.nixos.audio = {
+    config,
+    inputs,
+    ...
+  }: {
     services = {
       pipewire = {
         enable = true;
@@ -15,7 +19,7 @@ _: {
 
     security.rtkit.enable = true;
 
-    environment.persistence."/nix/persist".users.danieln.directories = [
+    environment.persistence."/nix/persist".users.${config.mainUser}.directories = [
       ".local/state/wireplumber"
     ];
 

@@ -1,5 +1,9 @@
 _: {
-  flake.modules.homeManager.ai = {pkgs, ...}: {
+  flake.modules.homeManager.ai = {
+    config,
+    pkgs,
+    ...
+  }: {
     programs = {
       opencode.enable = true;
       claude-code.enable = true;
@@ -7,7 +11,7 @@ _: {
       # CLAUDE_CONFIG_DIR consolidates .claude.json into ~/.claude/ so the single
       # virtiofs-mounted dir covers all claude state in both host and microvms
       fish.shellInit = ''
-        set -x CLAUDE_CONFIG_DIR /home/danieln/.claude
+        set -x CLAUDE_CONFIG_DIR ${config.home.homeDirectory}/.claude
       '';
     };
 

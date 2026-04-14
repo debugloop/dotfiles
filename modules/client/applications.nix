@@ -1,14 +1,14 @@
 _: {
-  flake.modules.nixos.applications = _: {
+  flake.modules.nixos.applications = {config, ...}: {
     backup.exclude = [
-      "home/danieln/.local/share/Steam"
-      "home/danieln/.thunderbird"
-      "home/danieln/.config/google-chrome"
-      "home/danieln/.config/Slack"
-      "home/danieln/.mozilla"
+      "home/${config.mainUser}/.local/share/Steam"
+      "home/${config.mainUser}/.thunderbird"
+      "home/${config.mainUser}/.config/google-chrome"
+      "home/${config.mainUser}/.config/Slack"
+      "home/${config.mainUser}/.mozilla"
     ];
 
-    environment.persistence."/nix/persist".users.danieln = {
+    environment.persistence."/nix/persist".users.${config.mainUser} = {
       directories = [
         ".mozilla"
         ".thunderbird"

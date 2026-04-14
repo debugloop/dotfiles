@@ -1,5 +1,9 @@
 _: {
-  flake.modules.nixos.impermanence = {inputs, ...}: {
+  flake.modules.nixos.impermanence = {
+    config,
+    inputs,
+    ...
+  }: {
     imports = [
       inputs.impermanence.nixosModule
     ];
@@ -34,7 +38,7 @@ _: {
         "/etc/ssh/ssh_host_rsa_key"
         "/etc/ssh/ssh_host_rsa_key.pub"
       ];
-      users.danieln = {
+      users.${config.mainUser} = {
         directories = [
           "code"
           "documents"

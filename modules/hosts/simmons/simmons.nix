@@ -10,8 +10,12 @@
     modules = [self.modules.nixos.simmons];
   };
 
-  flake.modules.nixos.simmons = {inputs, ...}: let
-    storagebox = import ./_storagebox.nix;
+  flake.modules.nixos.simmons = {
+    config,
+    inputs,
+    ...
+  }: let
+    homeDir = config.users.users.${config.mainUser}.home;
   in {
     imports =
       (with inputs.self.modules.nixos; [client])
@@ -19,7 +23,7 @@
 
     networking.hostName = "simmons";
 
-    home-manager.users.danieln.home.stateVersion = "26.05";
+    home-manager.users.${config.mainUser}.home.stateVersion = "26.05";
 
     backup.enable = true;
     system.stateVersion = "26.05";
@@ -29,7 +33,7 @@
     codingVms = [
       {
         name = "codingvm";
-        workspace = "/home/danieln/microvm/coding";
+        workspace = "${homeDir}/microvm/coding";
       }
     ];
 
