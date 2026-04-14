@@ -1,4 +1,11 @@
 _: {
+  flake.modules.nixos.nvim = _: {
+    environment.sessionVariables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+    };
+  };
+
   flake.modules.homeManager.nvim = {
     pkgs,
     config,

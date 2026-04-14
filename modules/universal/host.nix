@@ -16,6 +16,8 @@ _: {
       impermanence
       software
       tailscale
+      fish
+      nvim
     ];
   };
 }
