@@ -19,5 +19,7 @@ _: {
     imports = with inputs.self.modules.homeManager; [
       ssh
     ];
+
+    services.ssh-agent.enable = true;
   };
 }

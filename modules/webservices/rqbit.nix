@@ -1,9 +1,13 @@
 _: {
   flake.modules.nixos.rqbit = {
     config,
+    inputs,
     pkgs,
     ...
-  }: {
+  }: let
+    homeDir = config.users.users.${config.mainUser}.home;
+  in {
+    imports = [inputs.self.modules.nixos.mullvad_wg];
     nixpkgs.overlays = [
       (self: super: {
         rqbit = super.rqbit.overrideAttrs (_old: rec {

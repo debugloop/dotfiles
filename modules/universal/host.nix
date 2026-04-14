@@ -19,6 +19,7 @@ _: {
       users
       vm
       backup_persisted
+      storagebox
       hetzner
       impermanence
       software

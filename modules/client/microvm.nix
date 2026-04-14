@@ -7,6 +7,7 @@ _: {
     ...
   }: let
     microvmBase = import ./_microvm-base.nix;
+    homeDir = config.users.users.${config.mainUser}.home;
   in {
     options.codingVmsExternalInterface = lib.mkOption {
       type = lib.types.str;
