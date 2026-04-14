@@ -59,11 +59,11 @@ _: {
             };
             calendar = {
               format = {
-                days = "<span color='#dcd7ba'>{}</span>";
-                months = "<span color='#dcd7ba'>{}</span>";
-                today = "<span color='#c34043'><b>{}</b></span>";
-                weekdays = "<span color='#dcd7ba'>{}</span>";
-                weeks = "<span color='#727169'>W{}</span>";
+                days = "<span color='#${config.colors.foreground}'>{}</span>";
+                months = "<span color='#${config.colors.foreground}'>{}</span>";
+                today = "<span color='#${config.colors.red}'><b>{}</b></span>";
+                weekdays = "<span color='#${config.colors.foreground}'>{}</span>";
+                weeks = "<span color='#${config.colors.bright-black}'>W{}</span>";
               };
               mode = "year";
               mode-mon-col = 3;
@@ -76,11 +76,11 @@ _: {
           "clock#date" = {
             calendar = {
               format = {
-                days = "<span color='#dcd7ba'>{}</span>";
-                months = "<span color='#dcd7ba'>{}</span>";
-                today = "<span color='#c34043'><b>{}</b></span>";
-                weekdays = "<span color='#dcd7ba'>{}</span>";
-                weeks = "<span color='#727169'>W{}</span>";
+                days = "<span color='#${config.colors.foreground}'>{}</span>";
+                months = "<span color='#${config.colors.foreground}'>{}</span>";
+                today = "<span color='#${config.colors.red}'><b>{}</b></span>";
+                weekdays = "<span color='#${config.colors.foreground}'>{}</span>";
+                weeks = "<span color='#${config.colors.bright-black}'>W{}</span>";
               };
               mode = "year";
               mode-mon-col = 3;
