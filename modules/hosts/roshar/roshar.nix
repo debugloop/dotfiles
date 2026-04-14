@@ -80,13 +80,7 @@
         domain = "danieln.de";
         useDHCP = true;
       };
-      backup = {
-        enable = true;
-        storagebox = {
-          host = "u564729-sub1.your-storagebox.de";
-          user = "u564729-sub1";
-        };
-      };
+      backup.enable = true;
 
       hetzner = {
         enable = true;

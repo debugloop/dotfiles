@@ -10,7 +10,9 @@
     modules = [self.modules.nixos.simmons];
   };
 
-  flake.modules.nixos.simmons = {inputs, ...}: {
+  flake.modules.nixos.simmons = {inputs, ...}: let
+    storagebox = import ./_storagebox.nix;
+  in {
     imports =
       (with inputs.self.modules.nixos; [client])
       ++ [./_hardware-configuration.nix];
@@ -19,13 +21,7 @@
 
     home-manager.users.danieln.home.stateVersion = "26.05";
 
-    backup = {
-      enable = true;
-      storagebox = {
-        host = "u564729-sub3.your-storagebox.de";
-        user = "u564729-sub3";
-      };
-    };
+    backup.enable = true;
     system.stateVersion = "26.05";
 
     codingVmsExternalInterface = "wlp2s0";
