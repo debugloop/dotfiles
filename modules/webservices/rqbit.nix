@@ -2,12 +2,8 @@ _: {
   flake.modules.nixos.rqbit = {
     config,
     pkgs,
-    inputs,
     ...
   }: {
-    networking.wg-quick.interfaces.mullvad.configFile = "${config.age.secrets.mullvad-conf.path}";
-    age.secrets.mullvad-conf.file = inputs.self + "/secrets/mullvad.conf.age";
-
     nixpkgs.overlays = [
       (self: super: {
         rqbit = super.rqbit.overrideAttrs (_old: rec {

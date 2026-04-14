@@ -9,6 +9,7 @@ _: {
       fonts
       hardware
       microvm
+      mullvad
       networkmanager
       niri
       substituters
