@@ -1,9 +1,13 @@
 _: {
-  flake.modules.nixos.nvim = _: {
+  flake.modules.nixos.nvim = {config, ...}: {
     environment.sessionVariables = {
       EDITOR = "nvim";
       VISUAL = "nvim";
     };
+    environment.persistence."/nix/persist".users.${config.mainUser}.directories = [
+      ".backup"
+      ".undo"
+    ];
   };
 
   flake.modules.homeManager.nvim = {

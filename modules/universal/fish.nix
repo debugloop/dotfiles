@@ -1,6 +1,9 @@
 _: {
-  flake.modules.nixos.fish = _: {
+  flake.modules.nixos.fish = {config, ...}: {
     programs.fish.enable = true;
+    environment.persistence."/nix/persist".users.${config.mainUser}.directories = [
+      ".local/share/fish"
+    ];
   };
 
   flake.modules.homeManager.fish = {config, ...}: {

@@ -1,4 +1,10 @@
 _: {
+  flake.modules.nixos.ai = {config, ...}: {
+    environment.persistence."/nix/persist".users.${config.mainUser}.directories = [
+      ".claude"
+    ];
+  };
+
   flake.modules.homeManager.ai = {
     config,
     pkgs,

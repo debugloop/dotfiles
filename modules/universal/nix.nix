@@ -1,11 +1,16 @@
 _: {
-  flake.modules.nixos.nix = {
+  flake.modules.nixos.nix = {config, ...}: {
     nix.settings = {
       experimental-features = "nix-command flakes";
       trusted-users = ["@wheel"];
     };
 
     programs.nh.enable = true;
+
+    environment.persistence."/nix/persist".users.${config.mainUser}.directories = [
+      ".local/share/direnv"
+      ".local/share/nix"
+    ];
   };
 
   flake.modules.homeManager.nix = {

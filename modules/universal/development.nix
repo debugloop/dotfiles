@@ -1,4 +1,22 @@
 _: {
+  flake.modules.nixos.development = {config, ...}: {
+    environment.persistence."/nix/persist".users.${config.mainUser} = {
+      directories = [
+        {
+          directory = ".gxctl";
+          mode = "0700";
+        }
+        {
+          directory = ".gnupg";
+          mode = "0700";
+        }
+        "go"
+        ".local/share/posting"
+      ];
+      files = [".netrc" ".kube/config"];
+    };
+  };
+
   flake.modules.homeManager.development = {
     pkgs,
     lib,

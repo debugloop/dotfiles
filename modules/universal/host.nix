@@ -4,7 +4,13 @@ _: {
       main_user
       home_manager
       agenix
+      ai
+      development
+      extra
+      fish
       nix
+      nvim
+      online
 
       nixpkgs
       network
@@ -17,8 +23,6 @@ _: {
       impermanence
       software
       tailscale
-      fish
-      nvim
     ];
   };
 }

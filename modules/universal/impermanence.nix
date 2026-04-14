@@ -44,39 +44,8 @@ _: {
           "documents"
           "downloads"
           "pictures"
-          ".backup"
           ".cache"
-          ".undo"
-          {
-            directory = ".gxctl";
-            mode = "0700";
-          }
-          {
-            directory = ".gnupg";
-            mode = "0700";
-          }
-          {
-            directory = ".ssh";
-            mode = "0700";
-          }
-          {
-            directory = ".aws";
-            mode = "0700";
-          }
-          {
-            directory = ".config/rbw";
-            mode = "0700";
-          }
-          ".claude"
-          ".local/share/direnv"
-          ".local/share/nix"
-          ".local/share/fish"
-          ".local/share/atuin"
-          ".local/share/zoxide"
-          "go"
-          ".local/share/posting"
         ];
-        files = [".netrc" ".kube/config"];
       };
     };
   };
