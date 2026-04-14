@@ -4,6 +4,8 @@ _: {
     pkgs,
     ...
   }: {
+    users.users.${config.mainUser}.extraGroups = ["scanner"];
+
     boot = {
       extraModulePackages = [config.boot.kernelPackages.ddcci-driver];
       kernelModules = ["i2c-dev" "ddcci_backlight"];

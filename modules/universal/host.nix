@@ -5,8 +5,10 @@ _: {
       home_manager
       agenix
       ai
-      development
-      extra
+      devtools
+      go
+      kubernetes
+      coretools
       fish
       nix
       nvim
@@ -22,7 +24,7 @@ _: {
       storagebox
       hetzner
       impermanence
-      software
+      system
       tailscale
     ];
   };

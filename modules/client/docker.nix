@@ -4,6 +4,8 @@ _: {
     pkgs,
     ...
   }: {
+    users.users.${config.mainUser}.extraGroups = ["docker"];
+
     virtualisation = {
       docker = {
         enable = false;

@@ -1,11 +1,10 @@
 _: {
-  flake.modules.nixos.software = {
+  flake.modules.nixos.system = {
     pkgs,
     inputs,
     ...
   }: {
     environment.systemPackages = with pkgs; [
-      # root stuff
       bridge-utils
       coreutils
       file
@@ -26,10 +25,5 @@ _: {
     ];
 
     documentation.man.cache.enable = false;
-
-    programs = {
-      mtr.enable = true;
-      traceroute.enable = true;
-    };
   };
 }

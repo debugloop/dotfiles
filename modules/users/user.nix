@@ -11,7 +11,7 @@ _: {
       mutableUsers = false;
       users.${config.mainUser} = {
         isNormalUser = true;
-        extraGroups = ["wheel" "video" "docker" "libvirtd" "dialout" "scanner" "lp"];
+        extraGroups = ["wheel" "video" "dialout"];
         shell = pkgs.fish;
         hashedPasswordFile = config.age.secrets.password.path;
         openssh.authorizedKeys.keys = [
@@ -52,8 +52,11 @@ _: {
       ai
       base
       colors
-      development
-      extra
+      devtools
+      go
+      kubernetes
+      languages
+      coretools
       fish
       git
       helix

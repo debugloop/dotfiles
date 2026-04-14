@@ -1,12 +1,12 @@
 _: {
-  flake.modules.nixos.extra = {config, ...}: {
+  flake.modules.nixos.coretools = {config, ...}: {
     environment.persistence."/nix/persist".users.${config.mainUser}.directories = [
       ".local/share/atuin"
       ".local/share/zoxide"
     ];
   };
 
-  flake.modules.homeManager.extra = {pkgs, ...}: {
+  flake.modules.homeManager.coretools = {pkgs, ...}: {
     programs = {
       atuin = {
         enable = true;

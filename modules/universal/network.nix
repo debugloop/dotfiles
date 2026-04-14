@@ -5,6 +5,11 @@ _: {
       nftables.enable = true;
     };
 
+    programs = {
+      mtr.enable = true;
+      traceroute.enable = true;
+    };
+
     services.resolved.enable = true;
   };
 
