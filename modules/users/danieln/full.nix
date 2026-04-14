@@ -1,7 +1,6 @@
 _: {
   flake.modules.homeManager.danieln_full = {inputs, ...}: {
     imports = with inputs.self.modules.homeManager; [
-      applications
       clipman
       ghostty
       kanshi

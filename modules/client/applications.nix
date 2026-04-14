@@ -1,5 +1,5 @@
 _: {
-  flake.modules.nixos.applications = {config, ...}: {
+  flake.modules.nixos.applications = {config, inputs, ...}: {
     backup.exclude = [
       "home/${config.mainUser}/.local/share/Steam"
       "home/${config.mainUser}/.thunderbird"
@@ -23,6 +23,8 @@ _: {
         ".config/spotify/Users/analogbyte-user/prefs"
       ];
     };
+
+    home-manager.sharedModules = [inputs.self.modules.homeManager.applications];
   };
 
   flake.modules.homeManager.applications = {
