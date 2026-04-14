@@ -4,7 +4,7 @@ _: {
       home_manager
       agenix
       nix
-      nix_daemon
+
       nixpkgs
       network
       openssh

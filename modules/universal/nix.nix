@@ -20,6 +20,7 @@ _: {
         alejandra
         comma
         nix-tree
+        nixd
         nvd
       ];
     };

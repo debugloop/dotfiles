@@ -18,8 +18,6 @@ _: {
       helix
       network
       nix
-      nixd
-      nixpkgs
       nvim
       online
       session
