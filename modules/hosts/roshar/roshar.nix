@@ -56,6 +56,7 @@
     };
 
     modules.nixos.roshar = {
+      config,
       inputs,
       modulesPath,
       ...
