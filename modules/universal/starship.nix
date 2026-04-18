@@ -61,15 +61,17 @@ _: {
 
         git_status = {
           format = "[$conflicted](red)[$modified](blue)[$staged$renamed$deleted](yellow)[$untracked$stashed](bright-black)[$ahead_behind](bold) ";
-          ahead = "  $count";
-          behind = "  $count";
-          diverged = "  $ahead_count $behind_count";
-          conflicted = "  $count";
-          deleted = "  $count";
+          ahead = "  $count";
+          behind = "  $count";
+          diverged = "  $ahead_count $behind_count";
+          conflicted = "  $count";
+          deleted = "  $count";
+          # worktree_deleted = "  $count";
+          # index_deleted = "  $count";
           modified = " 󰦒 $count";
           renamed = " 󰶻 $count";
           staged = " 󰘻 $count";
-          stashed = "  $count";
+          stashed = "  $count";
           untracked = " … $count";
         };
 
