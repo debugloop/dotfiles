@@ -22,7 +22,7 @@
     networking.hostName = "lusus";
 
     home-manager.users.${config.mainUser} = {
-      imports = [inputs.gridx.home-module];
+      imports = [inputs.gridx.modules.homeManager.gridx];
     };
 
     system.stateVersion = "22.11";
