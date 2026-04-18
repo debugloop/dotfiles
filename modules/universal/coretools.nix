@@ -34,7 +34,10 @@ _: {
       eza = {
         enable = true;
       };
-      fzf.enable = true;
+      fzf = {
+        enable = true;
+        enableFishIntegration = false;
+      };
       htop.enable = true;
       lf = {
         enable = true;

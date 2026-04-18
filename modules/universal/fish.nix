@@ -82,11 +82,29 @@ _: {
             asname $asn
           '';
         };
+        fzf_file_widget = {
+          body = ''
+            set -l result (fd --type f | fzf --reverse --scheme=path --multi --height=40% --min-height=20+)
+            and commandline -it -- (string join ' ' (string escape -- $result))
+            commandline -f repaint
+          '';
+        };
+        fzf_cd_widget = {
+          body = ''
+            set -l result (fd --type d | fzf --reverse --scheme=path --height=40% --min-height=20+)
+            and cd -- $result
+            commandline -f repaint
+          '';
+        };
         fish_user_key_bindings = {
           body = ''
             fish_hybrid_key_bindings
             bind -M insert \cz 'fg 2>/dev/null;
             commandline -f repaint'
+            bind \ct fzf_file_widget
+            bind -M insert \ct fzf_file_widget
+            bind \cg fzf_cd_widget
+            bind -M insert \cg fzf_cd_widget
           '';
         };
         down-or-search = {
