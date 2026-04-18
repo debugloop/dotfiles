@@ -43,6 +43,7 @@ _: {
 
     age.secrets.woodpecker.file = inputs.self + "/secrets/woodpecker.age";
 
+    # TODO: exists already?
     environment.persistence."/nix/persist".directories = [
       "/var/lib/woodpecker-server"
     ];
