@@ -43,10 +43,10 @@ _: {
 
     age.secrets.woodpecker.file = inputs.self + "/secrets/woodpecker.age";
 
-    # TODO: exists already?
-    environment.persistence."/nix/persist".directories = [
-      "/var/lib/woodpecker-server"
-    ];
+    # TODO: This blocks startup, so we run without state for now.
+    # environment.persistence."/nix/persist".directories = [
+    #   "/var/lib/woodpecker-server"
+    # ];
 
     services.caddy.virtualHosts."ci.danieln.de".extraConfig = ''
       reverse_proxy localhost:8082
