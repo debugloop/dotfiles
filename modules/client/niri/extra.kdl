@@ -1,0 +1,12 @@
+recent-windows {
+  binds {
+    Mod+Backspace         { next-window; }
+    Mod+Shift+Backspace   { previous-window; }
+    Mod+Ctrl+Backspace   { previous-window; }
+  }
+  highlight {
+    corner-radius 12
+    active-color "#89b4fa"
+    urgent-color "#c34043"
+  }
+}

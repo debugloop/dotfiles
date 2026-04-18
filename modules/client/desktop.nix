@@ -13,9 +13,9 @@ _: {
       ];
     };
 
-    environment.systemPackages = with pkgs; [
-      networkmanagerapplet # required system-wide for icons
-    ];
+    # environment.systemPackages = with pkgs; [
+    #   networkmanagerapplet # required system-wide for icons
+    # ];
 
     services = {
       dbus.enable = true;
@@ -78,6 +78,7 @@ _: {
         wdisplays
         wev
         wl-mirror
+        wl-clipboard-rs
         xdg-utils
         # cli apps with graphical deps
         imagemagick
@@ -113,7 +114,7 @@ _: {
 
     services = {
       cliphist.enable = true;
-      network-manager-applet.enable = true;
+      # network-manager-applet.enable = true;
       gnome-keyring.enable = true;
     };
   };

@@ -51,7 +51,22 @@ _: {
     pkgs,
     inputs,
     ...
-  }: {
+  }: let
+    call = pkgs.lib.flip import {
+      inherit
+        inputs
+        kdl
+        docs
+        binds
+        settings
+        ;
+      inherit (pkgs) lib;
+    };
+    kdl = call "${inputs.niri}/kdl.nix";
+    binds = call "${inputs.niri}/parse-binds.nix";
+    docs = call "${inputs.niri}/generate-docs.nix";
+    settings = call "${inputs.niri}/settings.nix";
+  in {
     imports = [
       inputs.self.modules.homeManager.niri_animations
       inputs.self.modules.homeManager.niri_keybindings
@@ -61,7 +76,6 @@ _: {
     home.packages = with pkgs; [
       xwayland-satellite
     ];
-    services.awww.enable = true;
     programs.niri = {
       package = inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
       settings = {
@@ -140,11 +154,13 @@ _: {
             {proportion = 0.5;}
             {proportion = 0.6;}
             {proportion = 0.7;}
+            {proportion = 1.0;}
           ];
           preset-window-heights = [
             {proportion = 0.333333;}
             {proportion = 0.5;}
             {proportion = 0.666667;}
+            {proportion = 1.0;}
           ];
           tab-indicator = {
             position = "top";
@@ -163,15 +179,12 @@ _: {
         debug = {
           honor-xdg-activation-with-invalid-serial = true;
         };
-        # workspaces = {
-        #   "1-web" = {
-        #     name = "web";
-        #   };
-        #   "2-com" = {
-        #     name = "com";
-        #   };
-        # };
       };
+      config = with inputs.niri.lib.kdl;
+        (settings.render config.programs.niri.settings)
+        ++ [
+          (leaf "include" ["${./extra.kdl}"])
+        ];
     };
   };
 }

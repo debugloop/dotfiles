@@ -4,6 +4,10 @@ _: {
     config,
     ...
   }: {
+    programs.niri.settings.binds = with config.lib.niri.actions; {
+      "Mod+G".action = spawn "${pkgs.wl-kbptr}/bin/wl-kbptr";
+    };
+
     home.packages = with pkgs; [
       wl-kbptr
     ];
