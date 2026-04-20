@@ -26,11 +26,12 @@ _: {
         typescript
         typescript-language-server
 
-        # language servers / linters for nix, yaml, fish
+        # language servers / linters for nix, yaml, fish, typst
         nil
         fish-lsp
         yaml-language-server
         typos-lsp
+        tinymist
 
         # parsers
         tree-sitter

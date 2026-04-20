@@ -55,11 +55,6 @@ _: {
           matches = [{namespace = "noctalia-overview";}];
           place-within-backdrop = true;
         }
-        {
-          # TODO
-          matches = [{namespace = "dms:clipboard";}];
-          block-out-from = "screencast";
-        }
       ];
       binds = with config.lib.niri.actions; {
         # launch

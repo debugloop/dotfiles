@@ -1,5 +1,11 @@
 vim.g.mapleader = " "
 
+-- register a mapping for two keys at once (e.g. for different keyboards)
+local function map2(modes, key1, key2, action, opts)
+  vim.keymap.set(modes, key1, action, opts)
+  vim.keymap.set(modes, key2, action, opts)
+end
+
 vim.keymap.set({ "i", "c" }, "<c-bs>", "<c-w>")
 
 vim.keymap.set("n", "<c-s>", ":w<cr>", { desc = "write" })
@@ -10,15 +16,6 @@ vim.keymap.set({ "n", "i" }, "<s-pageup>", "<c-b>", { desc = "scroll a page up" 
 vim.keymap.set({ "n", "i" }, "<s-pagedown>", "<c-f>", { desc = "scroll a page down" })
 vim.keymap.set("n", "<s-left>", vim.cmd.bp, { desc = "go to previous buffer" })
 vim.keymap.set("n", "<s-right>", vim.cmd.bn, { desc = "go to next buffer" })
-vim.keymap.set("n", "<home>", function()
-  local _, _, col, _ = unpack(vim.fn.getpos("."))
-  vim.cmd("normal! ^")
-  if col == vim.fn.getpos(".")[3] then
-    vim.cmd("normal! 0")
-  end
-end, { desc = "go to start of line" })
-vim.keymap.set({ "o", "x" }, "<home>", "^", { desc = "go to start of line" })
-vim.keymap.set({ "n", "o", "x" }, "<end>", "$", { desc = "go to end of line" })
 vim.keymap.set("n", "<s-down>", "J", { desc = "merge line down" })
 
 -- better up/down
@@ -26,16 +23,41 @@ vim.keymap.set("n", "j", [[ v:count > 1 ? "m'" . v:count . "j" : "gj" ]], { expr
 vim.keymap.set("n", "k", [[ v:count > 1 ? "m'" . v:count . "k" : "gk" ]], { expr = true, silent = true })
 
 -- smart beginning and end of line
-vim.keymap.set("n", "H", function()
+map2("n", "<home>", "H", function()
   local _, _, col, _ = unpack(vim.fn.getpos("."))
   vim.cmd("normal! ^")
   if col == vim.fn.getpos(".")[3] then
     vim.cmd("normal! 0")
   end
 end, { desc = "go to start of line" })
-vim.keymap.set({ "o", "x" }, "H", "^", { desc = "go to start of line" })
--- TODO: add map to L before comment
-vim.keymap.set({ "n", "o", "x" }, "L", "$", { desc = "go to end of line" })
+map2({ "o", "x" }, "<home>", "H", "^", { desc = "go to start of line" })
+map2("n", "<end>", "L", function()
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  local root = vim.treesitter.get_parser(0):parse()[1]:root()
+  local comment_col
+  local function find_comment(node)
+    if node:type() == "comment" then
+      local sr, sc = node:range()
+      if sr == row - 1 then
+        comment_col = sc
+        return
+      end
+    end
+    for child in node:iter_children() do
+      local sr, _, er = child:range()
+      if sr <= row - 1 and er >= row - 1 then
+        find_comment(child)
+      end
+    end
+  end
+  find_comment(root)
+  if comment_col then
+    vim.api.nvim_win_set_cursor(0, { row, col == comment_col and #vim.api.nvim_get_current_line() - 1 or comment_col })
+  else
+    vim.cmd("normal! $")
+  end
+end, { desc = "go to end of line / begin of eol comment" })
+map2({ "o", "x" }, "<end>", "L", "$", { desc = "go to end of line" })
 
 -- better paste
 vim.keymap.set({ "n", "x" }, "<leader>p", function()
@@ -76,24 +98,16 @@ vim.keymap.set("x", ">", ">gv", { desc = "indent and reselect" })
 vim.keymap.set({ "n" }, "<esc>", "<cmd>nohl<cr><esc>", { desc = "escape and clear search" })
 
 -- window movement
-vim.keymap.set("n", "<c-h>", "<c-w>h", { desc = "move focus to left window" })
-vim.keymap.set("n", "<c-j>", "<c-w>j", { desc = "move focus to window below" })
-vim.keymap.set("n", "<c-k>", "<c-w>k", { desc = "move focus to window above" })
-vim.keymap.set("n", "<c-l>", "<c-w>l", { desc = "move focus to right window" })
-vim.keymap.set("n", "<c-left>", "<c-w>h", { desc = "move focus to left window" })
-vim.keymap.set("n", "<c-down>", "<c-w>j", { desc = "move focus to window below" })
-vim.keymap.set("n", "<c-up>", "<c-w>k", { desc = "move focus to window above" })
-vim.keymap.set("n", "<c-right>", "<c-w>l", { desc = "move focus to right window" })
+map2("n", "<c-h>", "<c-left>", "<c-w>h", { desc = "move focus to left window" })
+map2("n", "<c-j>", "<c-down>", "<c-w>j", { desc = "move focus to window below" })
+map2("n", "<c-k>", "<c-up>", "<c-w>k", { desc = "move focus to window above" })
+map2("n", "<c-l>", "<c-right>", "<c-w>l", { desc = "move focus to right window" })
 
 -- same for terminal and insert mode
-vim.keymap.set({ "i", "t" }, "<c-h>", "<c-\\><c-n><c-w>h", { desc = "move focus to left window" })
-vim.keymap.set({ "i", "t" }, "<c-j>", "<c-\\><c-n><c-w>j", { desc = "move focus to window below" })
-vim.keymap.set({ "i", "t" }, "<c-k>", "<c-\\><c-n><c-w>k", { desc = "move focus to window above" })
-vim.keymap.set({ "i", "t" }, "<c-l>", "<c-\\><c-n><c-w>l", { desc = "move focus to right window" })
-vim.keymap.set({ "i", "t" }, "<c-left>", "<c-\\><c-n><c-w>h", { desc = "move focus to left window" })
-vim.keymap.set({ "i", "t" }, "<c-down>", "<c-\\><c-n><c-w>j", { desc = "move focus to window below" })
-vim.keymap.set({ "i", "t" }, "<c-up>", "<c-\\><c-n><c-w>k", { desc = "move focus to window above" })
-vim.keymap.set({ "i", "t" }, "<c-right>", "<c-\\><c-n><c-w>l", { desc = "move focus to right window" })
+map2({ "i", "t" }, "<c-h>", "<c-left>", "<c-\\><c-n><c-w>h", { desc = "move focus to left window" })
+map2({ "i", "t" }, "<c-j>", "<c-down>", "<c-\\><c-n><c-w>j", { desc = "move focus to window below" })
+map2({ "i", "t" }, "<c-k>", "<c-up>", "<c-\\><c-n><c-w>k", { desc = "move focus to window above" })
+map2({ "i", "t" }, "<c-l>", "<c-right>", "<c-\\><c-n><c-w>l", { desc = "move focus to right window" })
 
 -- window control for terminals
 vim.keymap.set({ "t" }, "<c-w>", "<c-\\><c-n><c-w>", { desc = "window control" })
