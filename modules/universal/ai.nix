@@ -13,6 +13,10 @@ _: {
     programs = {
       opencode = {
         enable = true;
+        tui = {
+          mouse = false;
+          theme = "kanagawa";
+        };
         context = ''
           * When the conversation has multiple threads or topics, or if providing multiple alternative: Pick a
             numbered identifier per item for the user to refer back to. If multiple sections need idengifiers, prefix
