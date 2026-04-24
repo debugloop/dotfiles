@@ -50,6 +50,14 @@
       ],
       "center": [
         {
+          "colorName": "tertiary",
+          "hideWhenIdle": true,
+          "id": "AudioVisualizer",
+          "width": 300
+        }
+      ],
+      "right": [
+        {
           "defaultSettings": {
             "activeColor": "primary",
             "camFilterRegex": "",
@@ -61,21 +69,39 @@
             "removeMargins": false
           },
           "id": "plugin:privacy-indicator"
-        }
-      ],
-      "right": [
+        },
         {
-          "colorName": "tertiary",
-          "hideWhenIdle": true,
-          "id": "AudioVisualizer",
-          "width": 300
+          "displayMode": "alwaysHide",
+          "iconColor": "none",
+          "id": "Microphone",
+          "middleClickCommand": "pwvucontrol || pavucontrol",
+          "textColor": "none"
+        },
+        {
+          "displayMode": "onhover",
+          "iconColor": "none",
+          "id": "Volume",
+          "middleClickCommand": "pwvucontrol || pavucontrol",
+          "textColor": "none"
+        },
+        {
+          "displayMode": "onhover",
+          "iconColor": "none",
+          "id": "Bluetooth",
+          "textColor": "none"
+        },
+        {
+          "displayMode": "onhover",
+          "iconColor": "none",
+          "id": "Network",
+          "textColor": "none"
         },
         {
           "blacklist": [],
           "chevronColor": "none",
           "colorizeIcons": false,
-          "drawerEnabled": true,
-          "hidePassive": false,
+          "drawerEnabled": false,
+          "hidePassive": true,
           "id": "Tray",
           "pinned": []
         },
@@ -87,13 +113,6 @@
           "id": "Battery",
           "showNoctaliaPerformance": false,
           "showPowerProfiles": false
-        },
-        {
-          "displayMode": "onhover",
-          "iconColor": "none",
-          "id": "Volume",
-          "middleClickCommand": "pwvucontrol || pavucontrol",
-          "textColor": "none"
         },
         {
           "iconColor": "none",
