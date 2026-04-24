@@ -76,7 +76,7 @@
               zone = z;
               name = lib.removeSuffix ".${z}" vh;
               type = "CNAME";
-              value = "${h.hostName}.${z}";
+              value = "${h.hostName}.${z}.";
             }
           ) (lib.filter (vh: let
             z = zoneForHost vh;

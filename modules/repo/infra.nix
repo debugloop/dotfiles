@@ -6,11 +6,7 @@
 in {
   imports = [inputs.terranix.flakeModule inputs.git-hooks-nix.flakeModule];
 
-  perSystem = {
-    pkgs,
-    config,
-    ...
-  }: let
+  perSystem = {pkgs, ...}: let
     passphraseScript = pkgs.writeShellScript "infra-passphrase" ''
       set -euo pipefail
       printf '{"magic":"OpenTofu-External-Key-Provider","version":1}\n'
@@ -37,7 +33,6 @@ in {
       terraformWrapper = {
         package = pkgs.opentofu.withPlugins (p: [p.hetznercloud_hcloud p.hashicorp_random]);
         prefixText = ''
-          REPO_DIR="$PWD"
           export PATH="${pkgs.age-plugin-fido2-hmac}/bin:$PATH"
           _age="${pkgs.age}/bin/age --decrypt -i ${inputs.self}/keys/physical/desk.pub"
           _secrets="$($_age ${inputs.self}/secrets/hetzner_infra.age)"
@@ -45,11 +40,12 @@ in {
           TF_VAR_hcloud_token="$(_get hcloud_token)"
           TF_VAR_storage_box_id="$(_get storage_box_id)"
           HETZNER_TF_PASSPHRASE="$(_get tfstate_passphrase)"
-          export TF_VAR_hcloud_token TF_VAR_storage_box_id HETZNER_TF_PASSPHRASE REPO_DIR
+          export TF_VAR_hcloud_token TF_VAR_storage_box_id HETZNER_TF_PASSPHRASE
         '';
         suffixText = ''
           if [[ "$1" == "apply" ]]; then
-            ${config.packages.storagebox-keygen}/bin/storagebox-keygen
+            echo "If any storagebox config or hosts have been modified, you should run:"
+            echo "  nix run .#storagebox-keygen"
           fi
         '';
       };

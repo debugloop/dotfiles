@@ -7,8 +7,13 @@ in {
   perSystem = {pkgs, ...}: {
     packages.storagebox-keygen = pkgs.writeShellScriptBin "storagebox-keygen" ''
       set -euo pipefail
-      cd "''${REPO_DIR:?REPO_DIR not set}"
-      echo ""
+      echo "Decrypting access token."
+      export PATH="${pkgs.age-plugin-fido2-hmac}/bin:$PATH"
+      _age="${pkgs.age}/bin/age --decrypt -i ${inputs.self}/keys/physical/desk.pub"
+      _secrets="$($_age ${inputs.self}/secrets/hetzner_infra.age)"
+      _get() { echo "$_secrets" | grep "^$1=" | cut -d= -f2-; }
+      HETZNER_TF_PASSPHRASE="$(_get tfstate_passphrase)"
+      export HETZNER_TF_PASSPHRASE
       echo "Installing storage box SSH keys:"
       STORAGEBOX=$(${pkgs.opentofu}/bin/tofu -chdir=/tmp/terranix-infra output -json storagebox)
       INSTALLED=0
