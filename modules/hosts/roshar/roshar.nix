@@ -65,8 +65,17 @@
       imports =
         (with inputs.self.modules.nixos; [
           server
-          miniflux
           storagebox_mount
+          miniflux
+          cache
+          caddy
+          grafana
+          prometheus
+          jellyfin
+          rqbit
+          woodpecker
+          # to be done
+          # matrix
         ])
         ++ [
           (modulesPath + "/installer/scan/not-detected.nix")
@@ -79,8 +88,8 @@
       nixpkgs.hostPlatform = "x86_64-linux";
       networking = {
         hostName = "roshar";
-        domain = "danieln.de";
-        useDHCP = true;
+        domain = "bugpara.de";
+        useDHCP = false;
       };
       backup.enable = true;
 
@@ -92,7 +101,13 @@
         sshKeyNames = ["hyperion" "simmons"];
       };
 
-      services.openssh.enable = true;
+      services = {
+        openssh.enable = true;
+        cloud-init = {
+          enable = true;
+          network.enable = true;
+        };
+      };
       storagebox_mount.enable = true;
 
       system.stateVersion = "24.11";

@@ -9,8 +9,8 @@ _: {
         enable = true;
         settings = {
           server = {
-            root_url = "https://grafana.danieln.de/";
-            domain = "grafana.danieln.de";
+            root_url = "https://grafana.bugpara.de/";
+            domain = "grafana.bugpara.de";
           };
           security = {
             admin_user = config.mainUser;
@@ -30,7 +30,7 @@ _: {
         };
       };
 
-      caddy.virtualHosts."grafana.danieln.de".extraConfig = ''
+      caddy.virtualHosts."grafana.bugpara.de".extraConfig = ''
         reverse_proxy localhost:3000
       '';
 

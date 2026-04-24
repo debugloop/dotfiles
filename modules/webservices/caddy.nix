@@ -9,12 +9,15 @@ _: {
           }
         '';
         virtualHosts = {
-          "${config.networking.hostName}.danieln.de".extraConfig = ''
-            metrics /metrics
-          '';
-          "danieln.de".extraConfig = ''
-            respond "brb!"
-          '';
+          # "${config.networking.hostName}.bugpara.de".extraConfig = ''
+          #   metrics /metrics
+          # '';
+          # "${config.networking.hostName}.danieln.de".extraConfig = ''
+          #   metrics /metrics
+          # '';
+          # "danieln.de".extraConfig = ''
+          #   respond "brb!"
+          # '';
         };
       };
 

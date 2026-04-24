@@ -27,14 +27,14 @@
           server
           cache
           caddy
-          grafana
-          grocy
+          # grafana
+          # grocy
           matrix
-          miniflux
-          prometheus
-          jellyfin
-          rqbit
-          woodpecker
+          # miniflux
+          # prometheus
+          # jellyfin
+          # rqbit
+          # woodpecker
         ])
         ++ [./_hardware-configuration.nix];
 

@@ -14,7 +14,7 @@ _: {
 
     age.secrets.miniflux.file = inputs.self + "/secrets/miniflux.age";
 
-    services.caddy.virtualHosts."rss.danieln.de".extraConfig = ''
+    services.caddy.virtualHosts."rss.bugpara.de".extraConfig = ''
       reverse_proxy localhost:8081
     '';
 

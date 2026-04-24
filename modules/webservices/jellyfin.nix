@@ -3,7 +3,7 @@ _: {
     services = {
       jellyfin.enable = true;
 
-      caddy.virtualHosts."jellyfin.danieln.de".extraConfig = ''
+      caddy.virtualHosts."jellyfin.bugpara.de".extraConfig = ''
         reverse_proxy localhost:8096
       '';
     };

@@ -24,7 +24,7 @@ _: {
 
     backup.exclude = ["var/lib/prometheus2"];
 
-    services.caddy.virtualHosts."prometheus.danieln.de".extraConfig = ''
+    services.caddy.virtualHosts."prometheus.bugpara.de".extraConfig = ''
       basicauth * {
         ${config.webservices.basicauth}
       }

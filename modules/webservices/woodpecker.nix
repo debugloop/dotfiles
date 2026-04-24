@@ -11,7 +11,7 @@ _: {
         environmentFile = "${config.age.secrets.woodpecker.path}";
         environment = {
           WOODPECKER_ADMIN = "debugloop";
-          WOODPECKER_HOST = "https://ci.danieln.de";
+          WOODPECKER_HOST = "https://ci.bugpara.de";
 
           WOODPECKER_GITEA = "true";
           WOODPECKER_GITEA_URL = "https://codeberg.org";
@@ -48,7 +48,7 @@ _: {
     #   "/var/lib/woodpecker-server"
     # ];
 
-    services.caddy.virtualHosts."ci.danieln.de".extraConfig = ''
+    services.caddy.virtualHosts."ci.bugpara.de".extraConfig = ''
       reverse_proxy localhost:8082
     '';
   };
