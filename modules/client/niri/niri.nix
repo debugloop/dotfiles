@@ -76,6 +76,9 @@ _: {
     home.packages = with pkgs; [
       xwayland-satellite
     ];
+
+    services.awww.enable = true;
+
     programs.niri = {
       package = inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
       settings = {

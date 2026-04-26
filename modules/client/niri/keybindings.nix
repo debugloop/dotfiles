@@ -1,6 +1,12 @@
 _: {
-  flake.modules.homeManager.niri_keybindings = {config, ...}: {
+  flake.modules.homeManager.niri_keybindings = {
+    config,
+    pkgs,
+    ...
+  }: {
     programs.niri.settings.binds = with config.lib.niri.actions; {
+      "Mod+D".action = spawn "bash" "-c" "${pkgs.procps}/bin/pkill wofi || ${pkgs.wofi}/bin/wofi -aGS drun";
+
       # lock and suspend
       "Mod+Ctrl+Backslash".action = spawn "systemctl" "suspend";
 
@@ -116,18 +122,6 @@ _: {
       "Mod+Shift+8".action.move-window-to-workspace = 8;
       "Mod+Shift+9".action.move-window-to-workspace = 9;
       "Mod+Shift+0".action.move-window-to-workspace = 42;
-
-      # large move
-      "Mod+Ctrl+1".action.move-column-to-workspace = 1;
-      "Mod+Ctrl+2".action.move-column-to-workspace = 2;
-      "Mod+Ctrl+3".action.move-column-to-workspace = 3;
-      "Mod+Ctrl+4".action.move-column-to-workspace = 4;
-      "Mod+Ctrl+5".action.move-column-to-workspace = 5;
-      "Mod+Ctrl+6".action.move-column-to-workspace = 6;
-      "Mod+Ctrl+7".action.move-column-to-workspace = 7;
-      "Mod+Ctrl+8".action.move-column-to-workspace = 8;
-      "Mod+Ctrl+9".action.move-column-to-workspace = 9;
-      "Mod+Ctrl+0".action.move-column-to-workspace = 42;
 
       # escape from keylocks
       "Mod+Escape" = {

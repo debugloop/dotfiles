@@ -51,6 +51,7 @@ _: {
         gnumeric
         google-chrome
         inkscape
+        nmgui
         obsidian
         qview
         spotify

@@ -1,3 +1,11 @@
+layer-rule {
+  match namespace="^waybar$"
+  background-effect {
+    blur true
+    xray false
+  }
+}
+
 recent-windows {
   binds {
     Mod+Backspace         { next-window; }

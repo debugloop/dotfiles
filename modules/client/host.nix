@@ -16,8 +16,8 @@ _: {
       mullvad
       networkmanager
       niri
-      noctalia
       substituters
+      swaylock
       printing
       theme
       docker
@@ -33,6 +33,11 @@ _: {
       ghostty
       kanshi
       kitty
+      clipman
+      mako
+      osd
+      swayidle
+      waybar
       wl_kbptr
     ];
   };
