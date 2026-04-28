@@ -30,6 +30,7 @@
         "secrets/mullvad.conf.age".publicKeys = all;
         "secrets/woodpecker.age".publicKeys = all;
         "secrets/hetzner_infra.age".publicKeys = all;
+        "secrets/wall.age".publicKeys = all;
         "secrets/hetzner_tfstate_passphrase.age".publicKeys = fido2;
       }
     '';

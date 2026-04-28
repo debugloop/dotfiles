@@ -22,6 +22,7 @@ _: {
       theme
       docker
       flatpak
+      wallpaper
     ];
 
     home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.client];
