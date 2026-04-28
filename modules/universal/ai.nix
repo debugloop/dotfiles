@@ -14,7 +14,6 @@ _: {
       opencode = {
         enable = true;
         tui = {
-          mouse = false;
           theme = "kanagawa";
         };
         context = ''
