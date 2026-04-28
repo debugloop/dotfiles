@@ -98,7 +98,7 @@
         serverType = "cx23";
         location = "nbg1";
         image = "debian-12";
-        sshKeyNames = ["hyperion" "simmons"];
+        sshKeyNames = ["simmons"];
       };
 
       services = {

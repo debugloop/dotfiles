@@ -8,4 +8,4 @@ steps:
     image: bash
     commands:
       - nix -vL --show-trace build .#nixosConfigurations.simmons.config.system.build.toplevel
-      - nix -vL --show-trace build .#nixosConfigurations.hyperion.config.system.build.toplevel
+      - nix -vL --show-trace build .#nixosConfigurations.roshar.config.system.build.toplevel

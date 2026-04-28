@@ -5,7 +5,6 @@ _: {
     ...
   }: let
     accounts = {
-      hyperion = import ./_hyperion.nix;
       roshar = import ./_roshar.nix;
       simmons = import ./_simmons.nix;
     };

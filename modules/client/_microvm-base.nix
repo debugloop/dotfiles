@@ -49,7 +49,6 @@
     openssh.authorizedKeys.keyFiles = [
       (inputs.self + "/keys/auth/lusus.pub")
       (inputs.self + "/keys/auth/simmons.pub")
-      (inputs.self + "/keys/auth/hyperion.pub")
     ];
   };
 
