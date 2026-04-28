@@ -26,10 +26,10 @@
         (with inputs.self.modules.nixos; [
           server
           cache
-          caddy
+          # caddy
           # grafana
           # grocy
-          matrix
+          # matrix
           # miniflux
           # prometheus
           # jellyfin

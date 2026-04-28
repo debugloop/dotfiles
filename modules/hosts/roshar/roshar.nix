@@ -75,7 +75,7 @@
           rqbit
           woodpecker
           # to be done
-          # matrix
+          matrix
         ])
         ++ [
           (modulesPath + "/installer/scan/not-detected.nix")
