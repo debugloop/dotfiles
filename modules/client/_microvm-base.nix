@@ -8,7 +8,15 @@
   inputs,
   vsockCid,
   extraInit ? "",
-}: {pkgs, ...}: {
+  authKeysDir,
+}: {
+  pkgs,
+  lib,
+  ...
+}: let
+  # Dynamically discover all auth SSH keys from authKeysDir
+  authKeyFiles = lib.filter (lib.hasSuffix ".pub") (lib.filesystem.listFilesRecursive authKeysDir);
+in {
   imports = [inputs.home-manager.nixosModules.home-manager];
 
   home-manager = {
@@ -46,10 +54,7 @@
     group = mainUser;
     isNormalUser = true;
     shell = pkgs.fish;
-    openssh.authorizedKeys.keyFiles = [
-      (inputs.self + "/keys/auth/lusus.pub")
-      (inputs.self + "/keys/auth/simmons.pub")
-    ];
+    openssh.authorizedKeys.keyFiles = authKeyFiles;
   };
 
   networking = {

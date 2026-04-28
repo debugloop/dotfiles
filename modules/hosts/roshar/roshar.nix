@@ -45,6 +45,7 @@
     nixosConfigurations.roshar = inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
         inherit inputs;
+        authKeysDir = inputs.self + "/keys/auth";
       };
       modules = [self.modules.nixos.roshar];
     };

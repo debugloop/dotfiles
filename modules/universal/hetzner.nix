@@ -3,8 +3,14 @@ _: {
     config,
     inputs,
     lib,
+    authKeysDir,
     ...
-  }: {
+  }: let
+    # Dynamically discover all auth SSH key names from authKeysDir
+    authKeyNames =
+      map (f: lib.removeSuffix ".pub" (baseNameOf f))
+      (lib.filter (lib.hasSuffix ".pub") (lib.filesystem.listFilesRecursive authKeysDir));
+  in {
     options.hetzner = {
       enable = lib.mkEnableOption "Hetzner Cloud provisioning";
 
@@ -25,8 +31,8 @@ _: {
 
       sshKeyNames = lib.mkOption {
         type = lib.types.listOf lib.types.str;
-        default = [];
-        description = "Names of SSH keys to attach (managed by hetzner in lib)";
+        default = authKeyNames;
+        description = "Names of SSH keys to attach (defaults to all keys in authKeysDir)";
       };
 
       extraTerranixConfig = lib.mkOption {
