@@ -20,10 +20,8 @@ _: {
         ".config/Postman"
         ".config/Slack"
         ".config/qView"
-        ".config/zed"
         ".ts3client"
         ".local/share/Steam"
-        ".local/share/zed"
       ];
       files = [
         ".config/spotify/prefs"
