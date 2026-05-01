@@ -63,7 +63,7 @@ _: {
           format = "[$conflicted](red)[$modified](blue)[$staged$renamed$deleted](yellow)[$untracked$stashed](bright-black)[$ahead_behind](bold) ";
           ahead = "  $count";
           behind = "  $count";
-          diverged = "  $ahead_count $behind_count";
+          diverged = " \${behind_count} $ahead_count";
           conflicted = "  $count";
           deleted = "  $count";
           # worktree_deleted = "  $count";
