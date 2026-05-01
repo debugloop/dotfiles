@@ -45,6 +45,7 @@ _: {
           ];
           modules-center = [
             "pulseaudio#mic"
+            "custom/casts"
           ];
           modules-right = [
             "group/audio"
@@ -210,6 +211,11 @@ _: {
           "pulseaudio/slider" = {
             orientation = "vertical";
           };
+          "custom/casts" = {
+            exec = "niri msg --json casts | ${pkgs.jq}/bin/jq -e 'any(.[]; (.target | keys) - [\"Nothing\"] | length > 0)' >/dev/null 2>&1 && echo ''";
+            interval = 2;
+            tooltip = false;
+          };
         }
       ];
       style = ''
@@ -234,7 +240,14 @@ _: {
         .modules-right {
             background-color: alpha(#${config.colors.dark_bg}, 0.8);
             border-radius: 1em;
+        }
+        .modules-left,
+        .modules-right {
             margin: 0.3em 0.4em;
+        }
+        .modules-center {
+            margin: 0;
+            background-color: transparent;
         }
 
         /* workspaces */
@@ -291,9 +304,16 @@ _: {
             padding-top: 0em;
         }
 
-        #pulseaudio.mic {
+        #pulseaudio.mic,
+        #custom-casts {
             color: #${config.colors.background};
-            background-color: alpha(#${config.colors.red}, 0.8);
+            padding: 1em 0;
+        }
+        #pulseaudio.mic {
+            background-color: #${config.colors.red};
+        }
+        #custom-casts {
+            background-color: #${config.colors.purple};
         }
 
         #pulseaudio-slider trough {
