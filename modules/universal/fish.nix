@@ -96,15 +96,24 @@ _: {
             commandline -f repaint
           '';
         };
+        fzf_rg_widget = {
+          body = ''
+            set -l result (rg --color=always --line-number --no-heading "" 2>/dev/null | fzf --ansi --delimiter : --reverse --multi --height=60% --min-height=20+ --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' --preview-window 'down,+{2}+3/3' | cut -d: -f1 | sort -u)
+            and commandline -it -- (string join ' ' (string escape -- $result))
+            commandline -f repaint
+          '';
+        };
         fish_user_key_bindings = {
           body = ''
             fish_hybrid_key_bindings
             bind -M insert \cz 'fg 2>/dev/null;
             commandline -f repaint'
-            bind \ct fzf_file_widget
-            bind -M insert \ct fzf_file_widget
-            bind \cg fzf_cd_widget
-            bind -M insert \cg fzf_cd_widget
+            bind \et fzf_file_widget
+            bind -M insert \et fzf_file_widget
+            bind \eg fzf_cd_widget
+            bind -M insert \eg fzf_cd_widget
+            bind \ef fzf_rg_widget
+            bind -M insert \ef fzf_rg_widget
           '';
         };
         down-or-search = {
