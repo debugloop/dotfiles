@@ -1,7 +1,7 @@
 _: {
   flake.modules.nixos.opencode = {
-    config,
     inputs,
+    config,
     ...
   }: {
     home-manager.sharedModules = [inputs.self.modules.homeManager.opencode];
@@ -12,13 +12,6 @@ _: {
         ".local/share/opencode"
       ];
     };
-
-    services.caddy.virtualHosts."ai.bugpara.de".extraConfig = ''
-      basicauth * {
-        ${config.webservices.basicauth}
-      }
-      reverse_proxy localhost:4096
-    '';
   };
 
   flake.modules.homeManager.opencode = {
@@ -32,13 +25,16 @@ _: {
         enable = true;
         extraArgs = [
           "--hostname"
-          "127.0.0.1"
+          "0.0.0.0"
           "--port"
           "4096"
         ];
       };
     };
 
-    systemd.user.services.opencode-web.Service.WorkingDirectory = "${config.home.homeDirectory}/code";
+    systemd.user.services.opencode-web.Service = {
+      WorkingDirectory = "${config.home.homeDirectory}/code";
+      Environment = "PATH=/etc/profiles/per-user/${config.home.username}/bin:/run/current-system/sw/bin";
+    };
   };
 }
