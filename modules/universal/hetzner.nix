@@ -64,6 +64,9 @@ _: {
               ipv4_enabled = true;
               ipv6_enabled = true;
             };
+            lifecycle = {
+              ignore_changes = ["ssh_keys"];
+            };
           };
         }
         config.hetzner.extraTerranixConfig
