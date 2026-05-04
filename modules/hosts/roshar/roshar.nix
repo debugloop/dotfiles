@@ -66,17 +66,19 @@
       imports =
         (with inputs.self.modules.nixos; [
           server
-          storagebox_mount
-          miniflux
           cache
           caddy
           grafana
-          prometheus
           jellyfin
-          rqbit
-          woodpecker
-          # to be done
           matrix
+          miniflux
+          opencode
+          prometheus
+          rqbit
+          # TODO: needs reintegration
+          woodpecker
+          # TODO: needs to be used by jellyfin and rqbit
+          storagebox_mount
         ])
         ++ [
           (modulesPath + "/installer/scan/not-detected.nix")

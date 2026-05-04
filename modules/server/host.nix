@@ -8,7 +8,7 @@ _: {
       host
       basicauth
       node_exporter
-      # auto_upgrade
+      auto_upgrade
       auto_cleanup
     ];
 
