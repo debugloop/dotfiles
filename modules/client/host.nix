@@ -23,6 +23,7 @@ _: {
       docker
       flatpak
       wallpaper
+      zed
     ];
 
     home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.client];
