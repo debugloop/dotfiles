@@ -12,6 +12,8 @@ _: {
       auto_cleanup
     ];
 
+    users.users.${config.mainUser}.linger = true;
+
     home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.server];
   };
 

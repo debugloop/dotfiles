@@ -33,7 +33,6 @@ _: {
     };
 
     systemd.user.services.opencode-web.Service = {
-      WorkingDirectory = "${config.home.homeDirectory}/code";
       Environment = "PATH=/etc/profiles/per-user/${config.home.username}/bin:/run/current-system/sw/bin";
     };
   };
