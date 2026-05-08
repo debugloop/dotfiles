@@ -231,7 +231,7 @@ _: {
         /* the bar itself */
         #waybar {
             color: #${config.colors.foreground};
-            font-family: "Iosevka";
+            font-family: "Iosevka", "Symbols Nerd Font";
             font-size: 12px;
             background-color: alpha(#${config.colors.dark_bg}, 0.5);
         }

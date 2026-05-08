@@ -10,7 +10,7 @@ _: {
       # nerd-fonts.fira-code
       # nerd-fonts.fira-mono
       # nerd-fonts.noto
-      # nerd-fonts.iosevka
+      nerd-fonts.iosevka
       nerd-fonts.symbols-only
       # noto-fonts
       # noto-fonts-monochrome-emoji
