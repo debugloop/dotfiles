@@ -103,11 +103,27 @@ _: {
             commandline -f repaint
           '';
         };
+        fzf_fg_widget = {
+          body = ''
+            set -l job_count (count (jobs -p))
+            if test $job_count -eq 0
+              return
+            else if test $job_count -eq 1
+              fg
+            else
+              set -l selected (jobs | tail -n +2 | fzf --reverse --height=40% --min-height=10+ | string split -f1 ' ')
+              if test -n "$selected"
+                fg %$selected
+              end
+            end
+            commandline -f repaint
+          '';
+        };
         fish_user_key_bindings = {
           body = ''
             fish_hybrid_key_bindings
-            bind -M insert \cz 'fg 2>/dev/null;
-            commandline -f repaint'
+            bind \cz fzf_fg_widget
+            bind -M insert \cz fzf_fg_widget
             bind \et fzf_file_widget
             bind -M insert \et fzf_file_widget
             bind \eg fzf_cd_widget
