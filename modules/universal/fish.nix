@@ -44,9 +44,11 @@ _: {
         end
       '';
       shellAbbrs = {
+        c = "curl";
         g = "git";
         h = "history --show-time='%F %T ' search";
         e = "vim";
+        v = "vim";
         d = "dlv --headless -l 'localhost:2345' debug";
       };
       functions = {
@@ -103,6 +105,13 @@ _: {
             commandline -f repaint
           '';
         };
+        fzf_git_commit_widget = {
+          body = ''
+            set -l result (git log --oneline --color=always 2>/dev/null | fzf --ansi --reverse --height=40% --min-height=20+ | string match -r '^[0-9a-f]+')
+            and commandline -it -- $result
+            commandline -f repaint
+          '';
+        };
         fzf_fg_widget = {
           body = ''
             set -l job_count (count (jobs -p))
@@ -126,8 +135,10 @@ _: {
             bind -M insert \cz fzf_fg_widget
             bind \et fzf_file_widget
             bind -M insert \et fzf_file_widget
-            bind \eg fzf_cd_widget
-            bind -M insert \eg fzf_cd_widget
+            bind \ed fzf_cd_widget
+            bind -M insert \ed fzf_cd_widget
+            bind \eg fzf_git_commit_widget
+            bind -M insert \eg fzf_git_commit_widget
             bind \ef fzf_rg_widget
             bind -M insert \ef fzf_rg_widget
           '';
