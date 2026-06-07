@@ -38,6 +38,9 @@ _: {
       '';
     };
 
-    home.packages = with pkgs; [github-copilot-cli];
+    home.packages = with pkgs; [
+      github-copilot-cli
+      nodejs_25
+    ];
   };
 }
