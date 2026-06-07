@@ -1,21 +1,4 @@
 return {
-  {
-    src = "https://github.com/yorickpeterse/nvim-tree-pairs",
-    config = function(_)
-      require("tree-pairs").setup()
-    end,
-  },
-
-  -- nvim-spider
-  {
-    defer = true,
-    config = function(_)
-      vim.keymap.set({ "n", "o", "x" }, "w", "<cmd>lua require('spider').motion('w')<cr>")
-      vim.keymap.set({ "n", "o", "x" }, "e", "<cmd>lua require('spider').motion('e')<cr>")
-      vim.keymap.set({ "n", "o", "x" }, "b", "<cmd>lua require('spider').motion('b')<cr>")
-    end,
-  },
-
   -- blink.cmp
   {
     event = { "InsertEnter", "CmdlineEnter" },
@@ -28,6 +11,14 @@ return {
         ["<tab>"] = {
           function(cmp)
             local has_words_before = function()
+              if vim.api.nvim_get_mode().mode == "c" then
+                local line = vim.fn.getcmdline()
+                local col = vim.fn.getcmdpos() - 1
+                if col == 0 then
+                  return false
+                end
+                return line:sub(col, col):match("%s") == nil
+              end
               local col = vim.api.nvim_win_get_cursor(0)[2]
               if col == 0 then
                 return false
@@ -36,40 +27,38 @@ return {
               return line:sub(col, col):match("%s") == nil
             end
             if has_words_before() then
-              return cmp.show_and_insert()
+              cmp.show_and_insert()
+              return true
             end
           end,
           "fallback",
         },
-        ["<enter>"] = { "select_and_accept", "fallback" },
         ["<left>"] = { "cancel", "fallback" },
         ["<down>"] = { "show_and_insert", "select_next", "fallback" },
         ["<up>"] = { "select_prev", "fallback" },
         ["<c-right>"] = { "show_and_insert", "select_and_accept", "fallback" },
-        ["<right>"] = {
-          function(cmp)
-            local has_no_words_after = function()
-              local col = vim.api.nvim_win_get_cursor(0)[2]
-              local line = vim.api.nvim_get_current_line()
-              if col == #line then
-                return true
-              end
-              return line:sub(col + 1, col + 1):match("%s") ~= nil
-            end
-            if has_no_words_after() then
-              return cmp.show_and_insert()
-            end
-          end,
-          "select_and_accept",
-          "fallback",
-        },
+        ["<right>"] = { "select_and_accept", "fallback" },
       },
       cmdline = {
         enabled = true,
         keymap = {
           preset = "inherit",
-          ["<enter>"] = { "fallback" },
-          ["<down>"] = { "select_next", "fallback" },
+          ["<down>"] = {
+            function(cmp)
+              if cmp.is_visible() then
+                return cmp.select_next()
+              end
+              local before = vim.fn.getcmdline()
+              vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Down>", true, false, true), "n", false)
+              vim.schedule(function()
+                local after = vim.fn.getcmdline()
+                if after == before then
+                  cmp.show()
+                end
+              end)
+              return true
+            end,
+          },
         },
       },
       completion = {
@@ -140,6 +129,14 @@ return {
         },
       },
     },
+  },
+
+  -- codediff.nvim
+  {
+    defer = true,
+    config = function(_)
+      require("codediff").setup({})
+    end,
   },
 
   -- conform.nvim
@@ -248,6 +245,7 @@ return {
           LspReferenceRead = { bg = theme.diff.text },
           LspReferenceWrite = { bg = theme.diff.text, fg = theme.diag.warning, underline = false },
           LspReferenceText = { link = "None" },
+          MiniDiffOverContext = { link = "Comment" },
         }
       end,
       colors = {
@@ -279,27 +277,35 @@ return {
     end,
   },
 
+  {
+    ft = "go",
+    config = function(opts)
+      require("dap-view").setup(opts)
+    end,
+    opts = {
+      winbar = {
+        sections = { "watches", "scopes", "breakpoints", "threads", "repl" },
+      },
+      windows = {
+        terminal = {
+          hide = { "go" },
+        },
+      },
+    },
+  },
+
   -- nvim-dap
   {
     ft = "go",
     config = function(opts)
-      require("dap-view").setup({
-        winbar = {
-          sections = { "watches", "scopes", "breakpoints", "threads", "repl" },
-        },
-        windows = {
-          terminal = {
-            hide = { "go" },
-          },
-        },
-      })
+      require("dap-view").setup()
       local dap = require("dap")
       dap.adapters = opts.adapters
       dap.configurations = opts.configurations
       -- ui tweaks
-      vim.fn.sign_define("DapBreakpoint", { text = "" })
-      vim.fn.sign_define("DapBreakpointCondition", { text = "" })
-      vim.fn.sign_define("DapBreakpointRejected", { text = "" })
+      vim.fn.sign_define("DapBreakpoint", { text = "●" })
+      vim.fn.sign_define("DapBreakpointCondition", { text = "◆" })
+      vim.fn.sign_define("DapBreakpointRejected", { text = "◌" })
       vim.fn.sign_define("DapStopped", {
         text = "",
         linehl = "debugPC",
@@ -627,24 +633,69 @@ return {
     },
   },
 
-  -- nvim-treesitter
+  -- nvim-spider
+  {
+    defer = true,
+    config = function(_)
+      vim.keymap.set({ "n", "o", "x" }, "w", "<cmd>lua require('spider').motion('w')<cr>")
+      vim.keymap.set({ "n", "o", "x" }, "e", "<cmd>lua require('spider').motion('e')<cr>")
+      vim.keymap.set({ "n", "o", "x" }, "b", "<cmd>lua require('spider').motion('b')<cr>")
+    end,
+  },
+
+  -- nvim-tree-pairs
+  {
+    defer = true,
+    config = function(_)
+      require("tree-pairs").setup()
+    end,
+  },
+
+  -- opencode.nvim
   {
     config = function(_)
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "*" },
-        callback = function()
-          local ok = pcall(vim.treesitter.start)
-          if ok then
-            vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-          end
-        end,
-      })
+      vim.o.autoread = true
+      ---@type opencode.Opts
+      vim.g.opencode_opts = {
+        server = {
+          start = function()
+            vim.fn.system({
+              "kitty",
+              "--detach",
+              "--directory",
+              vim.fn.getcwd(),
+              "--",
+              "fish",
+              "-c",
+              "opencode --port; exec fish",
+            })
+          end,
+        },
+      }
+      vim.keymap.set({ "n", "x" }, "<leader>aa", function()
+        require("opencode").ask("@this: ")
+      end, { desc = "Ask opencode…" })
+      vim.keymap.set({ "n", "x" }, "<leader>an", function()
+        require("opencode").start()
+      end, { desc = "Open opencode in new kitty window" })
+      vim.keymap.set({ "n", "x" }, "<leader>as", function()
+        require("opencode").select()
+      end, { desc = "Select opencode…" })
+      vim.keymap.set({ "x" }, ".", function()
+        return require("opencode").operator("@this ")
+      end, { desc = "Add range to opencode", expr = true })
+      vim.keymap.set("n", "<c-pageup>", function()
+        require("opencode").command("session.half.page.up")
+      end, { desc = "Scroll opencode up" })
+      vim.keymap.set("n", "<c-pagedown>", function()
+        require("opencode").command("session.half.page.down")
+      end, { desc = "Scroll opencode down" })
     end,
   },
 
   -- snacks.nvim: main setup + words/toggles
   {
+    defer = true,
     config = function(opts)
       require("snacks").setup(opts)
       vim.print = require("snacks").debug.inspect
@@ -810,10 +861,14 @@ return {
             keys = {
               ["<c-space>"] = { "cycle_win", mode = { "i", "n" } },
               ["<right>"] = { "focus_preview", mode = { "i", "n" } },
+              ["<pageup>"] = { "preview_scroll_up", mode = { "i", "n" } },
+              ["<pagedown>"] = { "preview_scroll_down", mode = { "i", "n" } },
             },
           },
           list = {
-            keys = { ["<c-space>"] = "cycle_win" },
+            keys = {
+              ["<c-space>"] = "cycle_win",
+            },
           },
           preview = {
             keys = {
@@ -839,6 +894,7 @@ return {
 
   -- snacks.nvim: picker keymaps
   {
+    defer = true,
     config = function(_)
       vim.keymap.set("n", "z=", function()
         require("snacks").picker.spelling()
@@ -943,6 +999,7 @@ return {
 
   -- snacks.nvim: git keymaps
   {
+    defer = true,
     config = function(_)
       vim.keymap.set("n", "<leader>gp", function()
         require("snacks").picker.gh_pr()
@@ -1116,6 +1173,7 @@ return {
 
   -- mini.clue
   {
+    defer = true,
     config = function(_)
       local miniclue = require("mini.clue")
       miniclue.setup({

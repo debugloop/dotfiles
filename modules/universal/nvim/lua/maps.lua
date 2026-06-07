@@ -33,7 +33,12 @@ end, { desc = "go to start of line" })
 map2({ "o", "x" }, "<home>", "H", "^", { desc = "go to start of line" })
 map2("n", "<end>", "L", function()
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-  local root = vim.treesitter.get_parser(0):parse()[1]:root()
+  local ok, parser = pcall(vim.treesitter.get_parser, 0)
+  if not ok then
+    vim.cmd("normal! $")
+    return
+  end
+  local root = parser:parse()[1]:root()
   local comment_start_col, comment_end_col
   local function find_comment(node)
     if node:type() == "comment" then
