@@ -40,7 +40,7 @@ _: {
 
     home.packages = with pkgs; [
       github-copilot-cli
-      nodejs_25
+      nodejs
     ];
   };
 }
