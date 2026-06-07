@@ -4,19 +4,22 @@ _: {
       enable = true;
       settings = {
         format = lib.strings.concatStrings [
-          "$hostname" # usually hidden
+          "$hostname"
           "$directory$custom"
           "$nix_shell"
-          "$direnv"
           "$git_branch$git_commit$git_state$git_status"
-          "$env_var"
           "$cmd_duration"
           "$line_break"
           "$jobs$status$shlvl$character"
         ];
         right_format = "$memory_usage$battery";
 
+        battery = {
+          disabled = true;
+        };
+
         custom.persistent = {
+          disabled = true;
           when = ''not persistent'';
           format = "[󱙄](bold) ";
         };
@@ -29,17 +32,6 @@ _: {
           before_repo_root_style = "green";
           repo_root_style = "bold green";
           read_only = "✖";
-        };
-
-        direnv = {
-          disabled = true;
-        };
-
-        env_var = {
-          disabled = false;
-          variable = "SERIAL_NUMBER";
-          style = "bright-black";
-          format = "[$env_value]($style)";
         };
 
         git_branch = {
