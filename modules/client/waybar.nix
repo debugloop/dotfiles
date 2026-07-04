@@ -57,7 +57,6 @@ _: {
           ];
           battery = {
             rotate = 90;
-            bat = "BAT0";
             format = "";
             format-discharging = "{icon} {capacity}% ({time})";
             format-full = "";
