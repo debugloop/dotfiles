@@ -33,6 +33,11 @@ _: {
     imports = [inputs.microvm.nixosModules.host];
 
     config = lib.mkIf (config.codingVms != []) {
+      # systemd-networkd is only needed here for the microVM bridge; don't let
+      # its wait-online service hold up boot (the bridge gets no carrier until
+      # a microVM starts and attaches a TAP interface).
+      systemd.services.systemd-networkd-wait-online.wantedBy = lib.mkForce [];
+
       # Bridge interface — managed by systemd-networkd alongside NetworkManager
       systemd.network = {
         enable = true;
