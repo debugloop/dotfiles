@@ -126,8 +126,7 @@ _: {
         "ctrl+shift+page_down" = "scroll_to_prompt +1";
 
         # font size
-        "ctrl+shift+plus" = "change_font_size current +2.0";
-        "ctrl+shift+equal" = "change_font_size current 0";
+        "ctrl+shift+equal" = "change_font_size current +2.0";
         "ctrl+shift+minus" = "change_font_size current -2.0";
         "ctrl+shift+0" = "change_font_size current 0";
 
