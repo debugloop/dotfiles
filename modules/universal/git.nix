@@ -81,6 +81,7 @@ _: {
             stat = true;
             updateRefs = true;
           };
+          remote.origin.followRemoteHEAD = "create";
           rerere = {
             enabled = true;
             autoupdate = true;
