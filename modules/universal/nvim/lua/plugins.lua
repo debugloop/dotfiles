@@ -310,14 +310,6 @@ return {
         text = "",
         linehl = "debugPC",
       })
-      -- treat dap-repl as a terminal
-      vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup("on_dap_repl", { clear = true }),
-        pattern = "dap-repl",
-        callback = function()
-          vim.cmd("startinsert")
-        end,
-      })
       -- debug mode map overlay (Layers global set by layers-nvim in start/)
       DEBUG_MODE = Layers.mode.new("Debug Mode")
       DEBUG_MODE:auto_show_help()
