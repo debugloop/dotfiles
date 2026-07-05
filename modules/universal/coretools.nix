@@ -64,7 +64,7 @@ _: {
         dust
         entr
         fd
-        ffmpeg
+        ffmpeg-headless
         gping
         jrnl
         miniserve

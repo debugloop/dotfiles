@@ -29,7 +29,11 @@ _: {
     home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.client];
   };
 
-  flake.modules.homeManager.client = {inputs, ...}: {
+  flake.modules.homeManager.client = {
+    inputs,
+    pkgs,
+    ...
+  }: {
     imports = with inputs.self.modules.homeManager; [
       failure_notify
       ghostty
@@ -41,6 +45,11 @@ _: {
       swayidle
       waybar
       wl_kbptr
+    ];
+
+    home.packages = with pkgs; [
+      jupyter
+      mermaid-cli
     ];
   };
 }

@@ -35,9 +35,7 @@ _: {
         gnupg
         ijq
         jq
-        jupyter
         jwt-cli
-        mermaid-cli
         pgcli
         posting
         prettier
