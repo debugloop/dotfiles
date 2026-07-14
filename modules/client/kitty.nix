@@ -112,7 +112,7 @@ _: {
       '';
       keybindings = {
         # os windows
-        "ctrl+shift+n" = "launch --type=os-window --cwd=current";
+        "ctrl+shift+enter" = "launch --type=os-window --cwd=current";
         "ctrl+shift+r" = "set_window_title";
 
         # clipboard

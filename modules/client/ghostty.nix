@@ -60,7 +60,7 @@ _: {
       keybind = ctrl+shift+v=paste_from_clipboard
 
       # usability
-      keybind = ctrl+shift+n=new_window
+      keybind = ctrl+shift+enter=new_window
       keybind = ctrl+shift+j=write_scrollback_file:paste
       keybind = ctrl+shift+k=write_screen_file:paste
 
