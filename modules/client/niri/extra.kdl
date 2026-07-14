@@ -6,10 +6,14 @@ layer-rule {
 }
 
 recent-windows {
+  open-delay-ms 250
   binds {
     Mod+Backspace         { next-window; }
     Mod+Shift+Backspace   { previous-window; }
     Mod+Ctrl+Backspace   { previous-window; }
+    Mod+Tab         { next-window; }
+    Mod+Shift+Tab   { previous-window; }
+    Mod+Ctrl+Tab   { previous-window; }
   }
   highlight {
     corner-radius 12
