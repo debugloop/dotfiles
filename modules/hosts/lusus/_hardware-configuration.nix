@@ -20,6 +20,7 @@
         device = "/dev/disk/by-uuid/d31e511f-f385-4993-9437-619e9501f535";
         allowDiscards = true;
       };
+      systemd.settings.Manager.DefaultTimeoutStartSec = "5min";
     };
     loader = {
       systemd-boot.enable = true;
@@ -37,6 +38,7 @@
     "/nix" = {
       device = "/dev/disk/by-uuid/2bbe58f6-c736-4207-8646-05b07fd024f4";
       fsType = "xfs";
+      options = lib.mkAfter ["x-systemd.device-timeout=5min"];
     };
 
     "/boot" = {
