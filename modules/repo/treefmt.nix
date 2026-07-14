@@ -6,7 +6,11 @@
       projectRootFile = "flake.nix";
       programs = {
         alejandra.enable = true;
-        mdformat.enable = true;
+        mdformat = {
+          enable = true;
+          plugins = ps: [ps.mdformat-frontmatter];
+          settings.number = true;
+        };
         deadnix.enable = true;
         statix.enable = true;
         stylua.enable = true;

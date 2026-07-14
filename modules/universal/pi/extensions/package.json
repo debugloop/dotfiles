@@ -1,0 +1,12 @@
+{
+  "name": "pi-global-extensions",
+  "private": true,
+  "description": "Local dependencies for forked global pi extensions (SDK packages are provided by pi's loader aliases; only non-SDK npm deps go here).",
+  "dependencies": {
+    "@shikijs/cli": "4.0.2",
+    "diff": "7.0.0",
+    "glob": "13.0.6",
+    "msgpackr": "1.12.1",
+    "xxhash-wasm": "1.1.0"
+  }
+}

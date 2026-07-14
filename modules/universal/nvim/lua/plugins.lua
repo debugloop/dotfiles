@@ -643,48 +643,6 @@ return {
     end,
   },
 
-  -- opencode.nvim
-  {
-    config = function(_)
-      vim.o.autoread = true
-      ---@type opencode.Opts
-      vim.g.opencode_opts = {
-        server = {
-          start = function()
-            vim.fn.system({
-              "kitty",
-              "--detach",
-              "--directory",
-              vim.fn.getcwd(),
-              "--",
-              "fish",
-              "-c",
-              "opencode --port; exec fish",
-            })
-          end,
-        },
-      }
-      vim.keymap.set({ "n", "x" }, "<leader>aa", function()
-        require("opencode").ask("@this: ")
-      end, { desc = "Ask opencode…" })
-      vim.keymap.set({ "n", "x" }, "<leader>an", function()
-        require("opencode").start()
-      end, { desc = "Open opencode in new kitty window" })
-      vim.keymap.set({ "n", "x" }, "<leader>as", function()
-        require("opencode").select()
-      end, { desc = "Select opencode…" })
-      vim.keymap.set({ "x" }, ".", function()
-        return require("opencode").operator("@this ")
-      end, { desc = "Add range to opencode", expr = true })
-      vim.keymap.set("n", "<c-pageup>", function()
-        require("opencode").command("session.half.page.up")
-      end, { desc = "Scroll opencode up" })
-      vim.keymap.set("n", "<c-pagedown>", function()
-        require("opencode").command("session.half.page.down")
-      end, { desc = "Scroll opencode down" })
-    end,
-  },
-
   -- snacks.nvim: main setup + words/toggles
   {
     defer = true,

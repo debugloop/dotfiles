@@ -1,0 +1,24 @@
+{
+  "defaultModel": "gpt-5.5",
+  "defaultProvider": "openai-codex",
+  "defaultThinkingLevel": "high",
+  "hideThinkingBlock": true,
+  "theme": "dark",
+  "lastChangelogVersion": "0.80.3",
+  "packages": [
+    "npm:pi-tool-display",
+    "npm:pi-provider-litellm@1.2.8"
+  ],
+  "steeringMode": "all",
+  "followUpMode": "all",
+  "quietStartup": true,
+  "enableInstallTelemetry": false,
+  "doubleEscapeAction": "tree",
+  "treeFilterMode": "default",
+  "enabledModels": [
+    "openai-codex/gpt-5.5",
+    "litellm/claude-haiku",
+    "litellm/claude-opus",
+    "litellm/claude-sonnet"
+  ]
+}
