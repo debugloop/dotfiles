@@ -49,32 +49,18 @@ _: {
           ];
           modules-right = [
             "group/audio"
-            "battery"
+            "custom/battery"
             "network"
             "idle_inhibitor"
             "group/bottom"
             "clock"
           ];
-          battery = {
+          "custom/battery" = {
+            exec = "${pkgs.sutils}/bin/battery -f ' %i%%'";
+            exec-if = "${pkgs.sutils}/bin/battery | ${pkgs.gnugrep}/bin/grep -q '^Discharging '";
             rotate = 90;
-            format = "";
-            format-discharging = "{icon} {capacity}% ({time})";
-            format-full = "";
-            format-icons = [
-              ""
-              ""
-              ""
-              ""
-              ""
-            ];
-            format-time = "{H}h {m}m";
-            interval = 10;
-            states = {
-              critical = 10;
-              full = 95;
-              warning = 30;
-            };
-            tooltip = true;
+            interval = 60;
+            tooltip = false;
           };
           clock = {
             calendar = {
