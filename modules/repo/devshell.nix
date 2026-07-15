@@ -29,6 +29,7 @@
         "secrets/miniflux.age".publicKeys = all;
         "secrets/mullvad.conf.age".publicKeys = all;
         "secrets/woodpecker.age".publicKeys = all;
+        "secrets/nix-ci-netrc.age".publicKeys = all;
         "secrets/hetzner_infra.age".publicKeys = all;
         "secrets/wall.age".publicKeys = all;
         "secrets/hetzner_tfstate_passphrase.age".publicKeys = fido2;

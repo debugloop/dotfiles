@@ -66,7 +66,6 @@
       imports =
         (with inputs.self.modules.nixos; [
           server
-          cache
           caddy
           grafana
           jellyfin
