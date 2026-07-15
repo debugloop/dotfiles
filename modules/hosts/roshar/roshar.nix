@@ -72,9 +72,9 @@
           jellyfin
           matrix
           miniflux
-          opencode
+          # opencode
           prometheus
-          rqbit
+          # rqbit
           # TODO: needs reintegration
           woodpecker
           # TODO: needs to be used by jellyfin and rqbit
