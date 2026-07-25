@@ -140,7 +140,10 @@ _: {
             new = "log-pretty @{u}...";
             p = "pull --prune --all --autostash";
             pm = "!git fetch origin $(git main):$(git main) 2>/dev/null";
-            stack = "!git log --pretty='format:%D' $(git main).. | cut -d' ' -f3";
+            # local branches that make up the current stack (base->top): every
+            # local branch whose tip is reachable from HEAD but not from main.
+            # One clean branch name per line, so `puf` can pipe it into push.
+            stack = "!git for-each-ref --format='%(refname:short)' refs/heads/ --merged HEAD --no-merged $(git main) --sort=committerdate";
             puf = "!git stack | xargs git push --set-upstream --force-with-lease --force-if-includes origin";
             rb = "!f() {
         if [ $# -eq 0 ]; then
