@@ -128,9 +128,52 @@ _: {
             commandline -f repaint
           '';
         };
+        fzf_history_widget = {
+          body = ''
+            set -l command_line (commandline)
+            set -l current_line (commandline -L)
+            set -l total_lines (count $command_line)
+            set -l fzf_query $command_line[$current_line]
+
+            test -z "$fish_private_mode"; and builtin history merge
+
+            if set -l result (builtin history -z --color=always --show-time="%F %a %T%t" | fzf \
+                --read0 \
+                --print0 \
+                --ansi \
+                --scheme=history \
+                --height=100% \
+                --layout=reverse \
+                --no-wrap \
+                --no-multi-line \
+                --delimiter=(printf '\t') \
+                --with-nth=1,2.. \
+                --nth=2.. \
+                --accept-nth=2.. \
+                --bind='ctrl-r:toggle-sort' \
+                --bind='ctrl-/:toggle-preview+toggle-multi-line' \
+                --preview-window=down,45%,wrap,border-top \
+                --preview='printf "%s\n" {2..} | bat --language fish --color=always --style=plain' \
+                --query="$fzf_query" | string split0)
+              if test "$total_lines" -eq 1
+                commandline -- $result
+              else
+                set -l before (math $current_line - 1)
+                set -l after (math $current_line + 1)
+                commandline -- $command_line[1..$before] $result
+                commandline -a -- "" $command_line[$after..-1]
+              end
+            end
+
+            commandline -f repaint
+          '';
+        };
         fish_user_key_bindings = {
           body = ''
             fish_hybrid_key_bindings
+            fzf_key_bindings
+            bind \cr fzf_history_widget
+            bind -M insert \cr fzf_history_widget
             bind \cz fzf_fg_widget
             bind -M insert \cz fzf_fg_widget
             bind \et fzf_file_widget

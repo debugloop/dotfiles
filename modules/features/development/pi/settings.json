@@ -4,7 +4,7 @@
   "defaultThinkingLevel": "high",
   "hideThinkingBlock": true,
   "theme": "dark",
-  "lastChangelogVersion": "0.80.6",
+  "lastChangelogVersion": "0.80.7",
   "packages": [
     "npm:pi-tool-display",
     "npm:pi-provider-litellm@1.2.8"

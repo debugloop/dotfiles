@@ -1,25 +1,12 @@
 _: {
   flake.modules.nixos.coretools = {config, ...}: {
     environment.persistence."/nix/persist".users.${config.mainUser}.directories = [
-      ".local/share/atuin"
       ".local/share/zoxide"
     ];
   };
 
   flake.modules.homeManager.coretools = {pkgs, ...}: {
     programs = {
-      atuin = {
-        enable = true;
-        flags = [
-          "--disable-up-arrow"
-        ];
-        settings = {
-          secrets_filter = false;
-          sync_frequency = "5m";
-          enter_accept = false;
-          keymap_mode = "vim-insert";
-        };
-      };
       bat = {
         enable = true;
         config.theme = "ansi";
@@ -36,7 +23,8 @@ _: {
       };
       fzf = {
         enable = true;
-        enableFishIntegration = false;
+        enableFishIntegration = true;
+        historyWidget.fish.command = "";
       };
       htop.enable = true;
       lf = {
