@@ -21,6 +21,11 @@ _: {
       "Mod+Space".action = toggle-overview;
       "Mod+O".action = toggle-overview;
 
+      # monitors
+      "Mod+E".action = focus-monitor-next;
+      "Mod+Shift+E".action = move-window-to-monitor-next;
+      "Mod+Ctrl+E".action = move-workspace-to-monitor-next;
+
       # window size
       "Mod+R".action = switch-preset-column-width;
       "Mod+Ctrl+R".action = switch-preset-window-height;
@@ -45,14 +50,14 @@ _: {
       # "Mod+Backspace".action = next-window;
       # "Mod+Shift+Backspace".action = previous-window;
       # "Mod+Ctrl+Backspace".action = previous-window;
-      "Mod+H".action = focus-column-or-monitor-left;
+      "Mod+H".action = focus-column-left;
       "Mod+J".action = focus-window-or-workspace-down;
       "Mod+K".action = focus-window-or-workspace-up;
-      "Mod+L".action = focus-column-or-monitor-right;
-      "Mod+Left".action = focus-column-or-monitor-left;
+      "Mod+L".action = focus-column-right;
+      "Mod+Left".action = focus-column-left;
       "Mod+Down".action = focus-window-or-workspace-down;
       "Mod+Up".action = focus-window-or-workspace-up;
-      "Mod+Right".action = focus-column-or-monitor-right;
+      "Mod+Right".action = focus-column-right;
 
       # small move
       "Mod+Shift+H".action = consume-or-expel-window-left;
