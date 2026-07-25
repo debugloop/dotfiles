@@ -1,5 +1,7 @@
 _: {
   flake.modules.nixos.go = {config, ...}: {
+    backup.exclude = ["home/${config.mainUser}/go"];
+
     environment.persistence."/nix/persist".users.${config.mainUser} = {
       directories = [
         {

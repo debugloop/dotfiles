@@ -127,12 +127,6 @@ in {
       }
       {
         proto = "virtiofs";
-        tag = "claude-credentials";
-        source = "/home/${mainUser}/.claude";
-        mountPoint = "/home/${mainUser}/.claude";
-      }
-      {
-        proto = "virtiofs";
         tag = "workspace";
         source = workspace;
         mountPoint = workspace;

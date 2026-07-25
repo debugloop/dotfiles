@@ -1,36 +1,12 @@
 _: {
-  flake.modules.homeManager.git = {
-    pkgs,
-    config,
-    ...
-  }: {
-    home = {
-      packages = with pkgs; [
-        git
-        jjui
-        jj-pre-push
-        jujutsu
-        git-absorb
-        git-trim
-        mergiraf
-        tig
-      ];
-      file = {
-        ".gitignore".text = ''
-          .session.nvim
-        '';
-      };
+  flake.modules.homeManager.git = {config, ...}: {
+    home.file = {
+      ".gitignore".text = ''
+        .session.nvim
+      '';
     };
+
     programs = {
-      jujutsu = {
-        enable = true;
-        settings = {
-          user = {
-            email = "git@danieln.de";
-            name = "Daniel Nägele";
-          };
-        };
-      };
       git = {
         enable = true;
         signing.format = null;
@@ -87,7 +63,6 @@ _: {
             autoupdate = true;
           };
           tag.sort = "version:refname";
-          trim.confirm = false;
           url."ssh://git@github.com/".insteadOf = "https://github.com/";
           user.signingkey = "~/.ssh/id_ed25519";
 
@@ -199,7 +174,6 @@ _: {
       };
       delta = {
         enable = true;
-        enableJujutsuIntegration = true;
         enableGitIntegration = true;
         options = {
           file-style = "omit";

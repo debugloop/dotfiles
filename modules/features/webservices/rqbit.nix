@@ -7,7 +7,9 @@ _: {
   }: let
     homeDir = config.users.users.${config.mainUser}.home;
   in {
-    imports = [inputs.self.modules.nixos.mullvad_wg];
+    age.secrets.mullvad-conf.file = inputs.self + "/secrets/mullvad.conf.age";
+    networking.wg-quick.interfaces.mullvad.configFile = config.age.secrets.mullvad-conf.path;
+
     nixpkgs.overlays = [
       (self: super: {
         rqbit = super.rqbit.overrideAttrs (_old: rec {

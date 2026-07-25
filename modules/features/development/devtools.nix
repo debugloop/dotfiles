@@ -1,5 +1,14 @@
 _: {
   flake.modules.nixos.devtools = {config, ...}: {
+    backup.exclude = [
+      "home/${config.mainUser}/code/**/.cache"
+      "home/${config.mainUser}/code/**/.direnv"
+      "home/${config.mainUser}/code/**/node_modules"
+      "home/${config.mainUser}/code/**/target"
+      "home/${config.mainUser}/code/**/result"
+      "home/${config.mainUser}/code/**/result-*"
+    ];
+
     environment.persistence."/nix/persist".users.${config.mainUser} = {
       directories = [
         {

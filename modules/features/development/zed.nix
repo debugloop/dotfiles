@@ -11,7 +11,7 @@ _: {
       ".local/share/zed"
     ];
 
-    home-manager.sharedModules = [inputs.self.modules.homeManager.zed];
+    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.zed];
   };
 
   flake.modules.homeManager.zed = _: {

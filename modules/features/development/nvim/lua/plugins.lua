@@ -926,12 +926,30 @@ return {
       vim.keymap.set("n", "gO", function()
         Snacks.picker.lsp_workspace_symbols({ layout = "bqflike" })
       end, { desc = "lsp: show all symbols" })
+      local function nix_module_definition(buf, name)
+        local root = vim.fs.root(buf, "flake.nix") or vim.fn.getcwd()
+        Snacks.picker.grep({
+          auto_confirm = true,
+          cwd = root,
+          glob = "*.nix",
+          layout = "bqflike",
+          live = false,
+          search = "flake\\.modules\\.(nixos|homeManager)\\." .. name .. "\\s*=",
+          title = "Nix module definition: " .. name,
+        })
+      end
+
       vim.keymap.set("n", "gd", function()
         Snacks.picker.lsp_definitions({ layout = "bqflike" })
       end, { desc = "lsp: show definition" })
       vim.keymap.set("n", "gD", function()
-        Snacks.picker.lsp_type_definitions({ layout = "bqflike" })
-      end, { desc = "lsp: show type definition" })
+        local buf = vim.api.nvim_get_current_buf()
+        if vim.bo[buf].filetype == "nix" then
+          nix_module_definition(buf, vim.fn.expand("<cword>"))
+        else
+          Snacks.picker.lsp_type_definitions({ layout = "bqflike" })
+        end
+      end, { desc = "lsp: show type definition / Nix module definition" })
       vim.keymap.set("n", "gi", function()
         Snacks.picker.lsp_implementations({ layout = "bqflike" })
       end, { desc = "lsp: show implementations" })

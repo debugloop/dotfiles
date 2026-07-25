@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: {
   options.microvm = {
@@ -17,20 +16,13 @@
   };
 
   config = {
-    home = {
-      packages = [pkgs.claude-code];
-      stateVersion = "25.11";
-    };
+    home.stateVersion = "25.11";
 
     programs = {
       fish = {
         enable = true;
-        shellInit = ''
-          set -x CLAUDE_CONFIG_DIR ${config.home.homeDirectory}/.claude
-          ${config.microvm.extraInit}
-        '';
+        shellInit = config.microvm.extraInit;
         loginShellInit = "cd ${config.microvm.workspace}";
-        shellAbbrs.c = "claude --dangerously-skip-permissions";
       };
       git.enable = true;
       home-manager.enable = true;
