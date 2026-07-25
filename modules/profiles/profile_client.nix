@@ -10,6 +10,7 @@ _: {
       bluetooth
       cloud_tools
       desktop
+      display
       fonts
       display_control
       graphics
@@ -26,7 +27,6 @@ _: {
       theme
       docker
       flatpak
-      wallpaper
       # zed
     ];
 
@@ -46,7 +46,6 @@ _: {
     imports = with inputs.self.modules.homeManager; [
       failure_notify
       ghostty
-      kanshi
       kitty
       # helix
       mako
