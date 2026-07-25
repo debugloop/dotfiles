@@ -1,27 +1,22 @@
 _: {
-  flake.modules.nixos.server = {
+  flake.modules.nixos.profile_server = {
     config,
     inputs,
     ...
   }: {
     imports = with inputs.self.modules.nixos; [
-      host
-      basicauth
       node_exporter
       auto_upgrade
       auto_cleanup
     ];
 
+    documentation.nixos.enable = false;
     users.users.${config.mainUser}.linger = true;
 
-    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.server];
+    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.profile_server];
   };
 
-  flake.modules.homeManager.server = {inputs, ...}: {
-    imports = with inputs.self.modules.homeManager; [
-      ssh
-    ];
-
+  flake.modules.homeManager.profile_server = _: {
     services.ssh-agent.enable = true;
   };
 }

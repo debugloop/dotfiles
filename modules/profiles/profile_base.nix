@@ -1,30 +1,22 @@
 _: {
-  flake.modules.nixos.host = {inputs, ...}: {
+  flake.modules.nixos.profile_base = {inputs, ...}: {
     imports = with inputs.self.modules.nixos; [
-      main_user
       home_manager
       agenix
-      ai
-      devtools
-      go
-      kubernetes
       coretools
       fish
       nix
       nvim
-      online
 
       nixpkgs
       network
       openssh
       locale
-      users
+      account
       vm
       backup_persisted
-      storagebox
-      hetzner
       impermanence
-      system
+      base_packages
       tailscale
     ];
   };

@@ -16,13 +16,20 @@
     ...
   }: {
     imports =
-      (with inputs.self.modules.nixos; [client])
+      (with inputs.self.modules.nixos; [
+        profile_base
+        profile_client
+        profile_development
+      ])
       ++ [./_hardware-configuration.nix];
 
     networking.hostName = "lusus";
 
+    backup.storagebox = import ../../features/storage/storagebox/_lusus.nix;
+
     home-manager.users.${config.mainUser} = {
       imports = [inputs.gridx.modules.homeManager.gridx];
+      programs.firefox.configPath = ".mozilla/firefox";
     };
 
     system.stateVersion = "22.11";

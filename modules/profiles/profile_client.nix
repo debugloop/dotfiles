@@ -1,17 +1,21 @@
 _: {
-  flake.modules.nixos.client = {
+  flake.modules.nixos.profile_client = {
     config,
     inputs,
     ...
   }: {
     imports = with inputs.self.modules.nixos; [
-      host
       applications
       audio
       bluetooth
+      cloud_tools
       desktop
       fonts
-      hardware
+      display_control
+      graphics
+      power
+      scanning
+      udev
       microvm
       mullvad
       networkmanager
@@ -23,13 +27,18 @@ _: {
       docker
       flatpak
       wallpaper
-      zed
+      # zed
     ];
 
-    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.client];
+    backup.exclude = [
+      "home/${config.mainUser}/scratch"
+      "home/${config.mainUser}/downloads"
+    ];
+
+    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.profile_client];
   };
 
-  flake.modules.homeManager.client = {
+  flake.modules.homeManager.profile_client = {
     inputs,
     pkgs,
     ...
@@ -39,12 +48,15 @@ _: {
       ghostty
       kanshi
       kitty
-      clipman
+      # helix
       mako
       osd
       swayidle
+      ssh_notify
+      cloud_tools
       waybar
       wl_kbptr
+      wofi
     ];
 
     home.packages = with pkgs; [

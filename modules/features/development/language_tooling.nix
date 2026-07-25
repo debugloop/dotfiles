@@ -1,17 +1,10 @@
 _: {
-  flake.modules.homeManager.languages = {pkgs, ...}: {
+  flake.modules.homeManager.language_tooling = {pkgs, ...}: {
     home = {
       sessionVariables = {
         NODE_PATH = "${pkgs.typescript}/lib/node_modules";
       };
       packages = with pkgs; [
-        # rust
-        rust-analyzer
-        cargo
-        rustfmt
-        rustc
-        gcc
-
         # lua
         lua-language-server
         luajit
@@ -26,8 +19,7 @@ _: {
         typescript
         typescript-language-server
 
-        # language servers / linters for nix, yaml, fish, typst
-        nil
+        # language servers / linters for yaml, fish, typst
         fish-lsp
         yaml-language-server
         typos-lsp

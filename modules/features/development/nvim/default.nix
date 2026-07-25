@@ -31,11 +31,11 @@ _: {
     };
 
     xdg.configFile = {
-      "nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/universal/nvim/init.lua";
-      "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/universal/nvim/lua";
-      "nvim/lsp".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/universal/nvim/lsp";
-      "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/universal/nvim/ftplugin";
-      "nvim/after".source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/universal/nvim/after";
+      "nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.root}/modules/features/development/nvim/init.lua";
+      "nvim/lua".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.root}/modules/features/development/nvim/lua";
+      "nvim/lsp".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.root}/modules/features/development/nvim/lsp";
+      "nvim/ftplugin".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.root}/modules/features/development/nvim/ftplugin";
+      "nvim/after".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.root}/modules/features/development/nvim/after";
     };
 
     xdg.dataFile =

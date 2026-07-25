@@ -1,5 +1,5 @@
 _: {
-  flake.modules.nixos.system = {
+  flake.modules.nixos.base_packages = {
     pkgs,
     inputs,
     ...
@@ -17,7 +17,6 @@ _: {
 
       # nix
       inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
-      nixos-generators
 
       # hardware support
       efibootmgr

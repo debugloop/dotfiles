@@ -14,21 +14,19 @@ _: {
   };
 
   flake.modules.homeManager.nix = {
+    config,
     pkgs,
     inputs,
     ...
   }: {
-    imports = [inputs.nix-index-database.homeModules.nix-index];
-
     home = {
       sessionVariables = {
-        FLAKE = "/etc/nixos";
+        FLAKE = config.dotfiles.root;
       };
       packages = with pkgs; [
         inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
         age
         alejandra
-        comma
         nix-tree
         nixd
         nvd
@@ -44,7 +42,7 @@ _: {
       home-manager.enable = true;
       nh = {
         enable = true;
-        flake = "/etc/nixos";
+        flake = config.dotfiles.root;
       };
     };
   };

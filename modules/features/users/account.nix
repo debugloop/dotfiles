@@ -1,0 +1,49 @@
+_: {
+  flake.modules.nixos.account = {
+    config,
+    inputs,
+    lib,
+    pkgs,
+    ...
+  }: {
+    options.mainUser = lib.mkOption {
+      type = lib.types.str;
+      description = "The primary user account name.";
+    };
+
+    config = {
+      mainUser = "danieln";
+
+      age.secrets.password.file = inputs.self + "/secrets/password.age";
+
+      users = {
+        mutableUsers = false;
+        users.${config.mainUser} = {
+          isNormalUser = true;
+          extraGroups = ["wheel" "video" "dialout"];
+          shell = pkgs.fish;
+          hashedPasswordFile = config.age.secrets.password.path;
+          openssh.authorizedKeys.keys = [
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJJvfqr6PpG4BHmUHcj7LzfYhPjoxGeLGxNGF6FAXauX danieln@lusus"
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBXLvABfBx2ThhJ/nUYaLFu2QyLYomOn4BrKUnbwGeWk danieln@simmons"
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGO/7gSRKMzTR1bSjpirDN/AIG4Mw55GyiLck9ppvzj2 JuiceSSH"
+          ];
+        };
+
+        users.root = {
+          # NOTE: This is of course not smart, but should not matter as it is only
+          # usable locally. Having this hash outside agenix keeps a backdoor for
+          # myself open in case something goes wrong with agenix, impermanence, or
+          # anything else.
+          initialHashedPassword = "$y$j9T$1DGnFy3m6PTbQoYB5kICV1$7gzz.2guf2Lj1wy4uo.YR0r1TfhI6/OTvjSi7.Tcm56";
+        };
+      };
+
+      security.sudo.extraConfig = ''
+        Defaults passprompt="[sudo] password for %p: "
+      '';
+
+      home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.profile_user_base];
+    };
+  };
+}

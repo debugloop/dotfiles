@@ -26,8 +26,8 @@ in {
               echo "storagebox: missing keys/hosts/${h}.pub" >&2
               ((++FAILED))
             else
-              ${pkgs.coreutils}/bin/mkdir -p "modules/universal/storagebox"
-              cat > "modules/universal/storagebox/_${h}.nix" <<EOF
+              ${pkgs.coreutils}/bin/mkdir -p "modules/features/storage/storagebox"
+              cat > "modules/features/storage/storagebox/_${h}.nix" <<EOF
           {
             host = "''${SB_HOST}";
             user = "''${SB_USER}";
@@ -48,7 +48,7 @@ in {
         '')
         infraLib.hetznerHostNames}
       [[ $FAILED -eq 0 ]] || echo "storagebox keys: $INSTALLED installed, $FAILED failed" >&2
-      ${pkgs.git}/bin/git add modules/universal/storagebox/_*.nix 2>/dev/null || true
+      ${pkgs.git}/bin/git add modules/features/storage/storagebox/_*.nix 2>/dev/null || true
     '';
   };
 }

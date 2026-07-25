@@ -18,14 +18,21 @@
     homeDir = config.users.users.${config.mainUser}.home;
   in {
     imports =
-      (with inputs.self.modules.nixos; [client])
+      (with inputs.self.modules.nixos; [
+        profile_base
+        profile_client
+        profile_development
+      ])
       ++ [./_hardware-configuration.nix];
 
     networking.hostName = "simmons";
 
     home-manager.users.${config.mainUser}.home.stateVersion = "26.05";
 
-    backup.enable = true;
+    backup = {
+      enable = true;
+      storagebox = import ../../features/storage/storagebox/_simmons.nix;
+    };
     system.stateVersion = "26.05";
 
     codingVmsExternalInterface = "wlp2s0";

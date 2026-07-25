@@ -1,5 +1,5 @@
 _: {
-  flake.modules.nixos.online = {config, ...}: {
+  flake.modules.nixos.cloud_tools = {config, ...}: {
     environment.persistence."/nix/persist".users.${config.mainUser}.directories = [
       {
         directory = ".aws";
@@ -12,12 +12,12 @@ _: {
     ];
   };
 
-  flake.modules.homeManager.online = {pkgs, ...}: {
+  flake.modules.homeManager.cloud_tools = {pkgs, ...}: {
     home.packages = with pkgs; [
       awscli2
       gmailctl
       ssm-session-manager-plugin
-      yt-dlp
+      yt-dlp-light
     ];
 
     programs = {

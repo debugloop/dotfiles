@@ -50,14 +50,6 @@
       modules = [self.modules.nixos.roshar];
     };
 
-    homeConfigurations."danieln@roshar" = inputs.home-manager.lib.homeManagerConfiguration {
-      pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-      extraSpecialArgs = {
-        inherit inputs;
-      };
-      modules = with self.modules.homeManager; [headless server];
-    };
-
     modules.nixos.roshar = {
       inputs,
       modulesPath,
@@ -65,13 +57,15 @@
     }: {
       imports =
         (with inputs.self.modules.nixos; [
-          server
+          profile_base
+          profile_server
+          hetzner
+          basicauth
           caddy
           grafana
           jellyfin
           matrix
           miniflux
-          # opencode
           prometheus
           # rqbit
           # TODO: needs reintegration
@@ -88,12 +82,17 @@
       disko.devices = inputs.self.diskoConfigurations.roshar.disko.devices;
 
       nixpkgs.hostPlatform = "x86_64-linux";
+      hardware.enableRedistributableFirmware = false;
+
       networking = {
         hostName = "roshar";
         domain = "bugpara.de";
         useDHCP = false;
       };
-      backup.enable = true;
+      backup = {
+        enable = true;
+        storagebox = import ../../features/storage/storagebox/_roshar.nix;
+      };
 
       hetzner = {
         enable = true;
