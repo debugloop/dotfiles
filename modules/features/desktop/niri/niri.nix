@@ -43,7 +43,7 @@ _: {
       };
     };
 
-    home-manager.sharedModules = [inputs.self.modules.homeManager.niri];
+    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.niri];
   };
 
   flake.modules.homeManager.niri = {
@@ -68,9 +68,9 @@ _: {
     settings = call "${inputs.niri}/settings.nix";
   in {
     imports = [
-      inputs.self.modules.homeManager.niri_animations
-      inputs.self.modules.homeManager.niri_keybindings
-      inputs.self.modules.homeManager.niri_window_rules
+      ./_animations.nix
+      ./_keybindings.nix
+      ./_window_rules.nix
     ];
 
     home.packages = with pkgs; [

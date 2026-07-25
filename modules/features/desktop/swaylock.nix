@@ -1,7 +1,11 @@
 _: {
-  flake.modules.nixos.swaylock = {inputs, ...}: {
+  flake.modules.nixos.swaylock = {
+    config,
+    inputs,
+    ...
+  }: {
     security.pam.services.swaylock = {};
-    home-manager.sharedModules = [inputs.self.modules.homeManager.swaylock];
+    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.swaylock];
   };
 
   flake.modules.homeManager.swaylock = {

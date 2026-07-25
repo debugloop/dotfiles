@@ -10,7 +10,7 @@ _: {
       ];
     };
 
-    home-manager.sharedModules = [inputs.self.modules.homeManager.theme];
+    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.theme];
   };
 
   flake.modules.homeManager.theme = {pkgs, ...}: {
@@ -21,6 +21,7 @@ _: {
 
     home = {
       pointerCursor = {
+        enable = true;
         package = "${pkgs.numix-cursor-theme}";
         name = "Numix-Cursor";
         gtk.enable = true;

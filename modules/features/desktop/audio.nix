@@ -23,7 +23,7 @@ _: {
       ".local/state/wireplumber"
     ];
 
-    home-manager.sharedModules = [inputs.self.modules.homeManager.audio];
+    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.audio];
   };
 
   flake.modules.homeManager.audio = {pkgs, ...}: {

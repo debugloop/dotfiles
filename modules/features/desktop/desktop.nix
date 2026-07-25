@@ -29,18 +29,6 @@ _: {
       login.enableGnomeKeyring = true;
     };
 
-    backup.exclude = [
-      "home/${config.mainUser}/go" # golang cache
-      "home/${config.mainUser}/scratch"
-      "home/${config.mainUser}/downloads"
-      "home/${config.mainUser}/code/**/.cache" # generic caches
-      "home/${config.mainUser}/code/**/.direnv" # direnv cached envs, can be 100s of MB
-      "home/${config.mainUser}/code/**/node_modules" # npm/pnpm/yarn deps, reproducible
-      "home/${config.mainUser}/code/**/target" # Rust/Cargo build artifacts
-      "home/${config.mainUser}/code/**/result" # Nix build result symlinks
-      "home/${config.mainUser}/code/**/result-*" # Nix multi-output result symlinks
-    ];
-
     environment.persistence."/nix/persist".users.${config.mainUser} = {
       directories = [
         {
@@ -50,7 +38,7 @@ _: {
       ];
     };
 
-    home-manager.sharedModules = [inputs.self.modules.homeManager.desktop];
+    home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.desktop];
   };
 
   flake.modules.homeManager.desktop = {
