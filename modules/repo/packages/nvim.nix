@@ -1,7 +1,7 @@
 _: {
   perSystem = {pkgs, ...}: let
     inherit (pkgs) lib;
-    nvimDir = ../../universal/nvim;
+    nvimDir = ../../features/development/nvim;
     nvimPlugins = import "${nvimDir}/_plugins.nix" {inherit pkgs;};
 
     treesitterParsers = pkgs.symlinkJoin {
