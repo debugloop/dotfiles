@@ -41,6 +41,7 @@ _: {
 
     home.packages = with pkgs; [
       github-copilot-cli
+      htmlq
       nodejs
     ];
 
