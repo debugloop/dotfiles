@@ -1,8 +1,22 @@
 _: {
-  flake.modules.nixos.nix = {config, ...}: {
-    nix.settings = {
-      experimental-features = "nix-command flakes";
-      trusted-users = ["@wheel"];
+  flake.modules.nixos.nix = {
+    config,
+    lib,
+    ...
+  }: {
+    nix = {
+      settings = {
+        experimental-features = "nix-command flakes";
+        trusted-users = ["@wheel"];
+      };
+    };
+
+    nixpkgs = {
+      hostPlatform = lib.mkDefault "x86_64-linux";
+      config = {
+        allowUnfree = true;
+        warnUndeclaredOptions = true;
+      };
     };
 
     programs.nh.enable = true;

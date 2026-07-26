@@ -8,7 +8,6 @@ _: {
       nix
       nvim
 
-      nixpkgs
       network
       ssh
       locale
