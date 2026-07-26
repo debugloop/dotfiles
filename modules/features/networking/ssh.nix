@@ -1,7 +1,31 @@
-_: {
-  flake.modules.homeManager.ssh = {
-    lib,
+{lib, ...}: {
+  options.flake.sshForwardAgentHosts = lib.mkOption {
+    type = lib.types.listOf lib.types.str;
+    default = [];
+    description = "Hostnames for which SSH agent forwarding should be enabled.";
+  };
+
+  config.flake.modules.nixos.ssh = {config, ...}: {
+    services.openssh = {
+      enable = true;
+      settings = {
+        PasswordAuthentication = false;
+        KbdInteractiveAuthentication = false;
+        PermitRootLogin = "prohibit-password";
+      };
+    };
+
+    environment.persistence."/nix/persist".users.${config.mainUser}.directories = [
+      {
+        directory = ".ssh";
+        mode = "0700";
+      }
+    ];
+  };
+
+  config.flake.modules.homeManager.ssh = {
     inputs,
+    lib,
     ...
   }: let
     forwardAgentHosts = inputs.self.sshForwardAgentHosts;

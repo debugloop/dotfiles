@@ -10,7 +10,7 @@ _: {
 
       nixpkgs
       network
-      openssh
+      ssh
       locale
       account
       vm
