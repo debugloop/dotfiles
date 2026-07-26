@@ -77,10 +77,12 @@ _: {
         (builtins.attrNames (builtins.readDir ./pi/extensions));
     in
       {
-        # Settings: live symlink so pi's runtime writes land in the repo file
-        # (git diff) instead of silently diverging from Nix.
+        # Settings: live symlinks so pi's runtime writes land in repo files
+        # (git diffs) instead of silently diverging from Nix.
         "${piConfigDirRel}/settings.json".source =
           config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.root}/modules/features/development/pi/settings.json";
+        "${piConfigDirRel}/extensions/pi-tool-display/config.json".source =
+          config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.root}/modules/features/development/pi/tool-display.json";
 
         # Deps: jiti resolves extension deps from this symlink's logical parent,
         # not the store realpath, so the shared node_modules must live beside them.

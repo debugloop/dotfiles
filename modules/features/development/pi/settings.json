@@ -25,5 +25,11 @@
   ],
   "compaction": {
     "enabled": false
-  }
+  },
+  "enableSkillCommands": true,
+  "outputPad": 0,
+  "autocompleteMaxVisible": 5,
+  "transport": "auto",
+  "showCacheMissNotices": true,
+  "defaultProjectTrust": "ask"
 }
