@@ -15,7 +15,6 @@ _: {
       vm
       backup_persisted
       impermanence
-      base_packages
       tailscale
     ];
   };

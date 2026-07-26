@@ -12,7 +12,6 @@ _: {
     imports = with inputs.self.modules.homeManager; [
       dotfiles
       agenix
-      base
       colors
       coretools
       fish

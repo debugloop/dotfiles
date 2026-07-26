@@ -1,5 +1,29 @@
 _: {
-  flake.modules.nixos.coretools = {config, ...}: {
+  flake.modules.nixos.coretools = {
+    config,
+    inputs,
+    pkgs,
+    ...
+  }: {
+    environment.systemPackages = with pkgs; [
+      bridge-utils
+      coreutils
+      file
+      mkpasswd
+      nettools
+      pciutils
+      procps
+      psmisc
+      usbutils
+
+      inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+      efibootmgr
+      xfsprogs
+    ];
+
+    documentation.man.cache.enable = false;
+
     environment.persistence."/nix/persist".users.${config.mainUser}.directories = [
       ".local/share/zoxide"
     ];
@@ -45,12 +69,19 @@ _: {
       sessionVariables.EZA_COLORS = "reset";
       packages = with pkgs; [
         bmon
+        dmidecode
         dust
         fd
+        gavin-bc
+        lsof
+        moreutils
         nmap
         pwgen
         ripgrep
         tcpdump
+        unzip
+        watch
+        zip
       ];
     };
   };
