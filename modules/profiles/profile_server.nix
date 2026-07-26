@@ -5,9 +5,8 @@ _: {
     ...
   }: {
     imports = with inputs.self.modules.nixos; [
+      maintenance
       node_exporter
-      auto_upgrade
-      auto_cleanup
     ];
 
     documentation.nixos.enable = false;

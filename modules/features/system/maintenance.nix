@@ -1,5 +1,11 @@
 _: {
-  flake.modules.nixos.auto_upgrade = _: {
+  flake.modules.nixos.maintenance = _: {
+    programs.nh.clean = {
+      enable = true;
+      dates = "*-*-* 06:00:00";
+      extraArgs = "--keep 2 --keep-since 2d";
+    };
+
     system.autoUpgrade = {
       enable = true;
       persistent = false;
