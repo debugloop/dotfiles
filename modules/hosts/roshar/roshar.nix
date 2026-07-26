@@ -60,7 +60,6 @@
           profile_base
           profile_server
           hetzner
-          basicauth
           caddy
           grafana
           jellyfin
