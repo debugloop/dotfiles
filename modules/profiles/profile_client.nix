@@ -12,7 +12,7 @@ _: {
       desktop
       display
       fonts
-      display_control
+      ddc
       graphics
       power
       scanning

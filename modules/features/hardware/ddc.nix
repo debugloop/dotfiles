@@ -1,5 +1,5 @@
 _: {
-  flake.modules.nixos.display_control = {
+  flake.modules.nixos.ddc = {
     config,
     pkgs,
     ...
