@@ -31,7 +31,7 @@ _: {
       };
       packages = with pkgs; [
         pantheon.elementary-gtk-theme
-        gnome-icon-theme
+        pantheon.elementary-icon-theme
       ];
     };
   };
