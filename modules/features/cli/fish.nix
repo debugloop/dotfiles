@@ -205,7 +205,7 @@ _: {
               case $line_count
                 commandline -f history-search-forward or complete
 
-              case \'*\'
+              case '*'
                 commandline -f down-line
             end
           '';
