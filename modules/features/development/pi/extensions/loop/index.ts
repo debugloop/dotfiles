@@ -12,6 +12,7 @@ import type { ExtensionAPI, ExtensionContext, SessionSwitchEvent } from "@earend
 import { compact } from "@earendil-works/pi-coding-agent";
 import { Container, type SelectItem, SelectList, Text } from "@mariozechner/pi-tui";
 import { DynamicBorder } from "@earendil-works/pi-coding-agent";
+import { selectCheapestModel } from "../_shared/cheap-model.js";
 
 type LoopMode = "tests" | "custom" | "self";
 
@@ -31,8 +32,6 @@ const LOOP_PRESETS = [
 ] as const;
 
 const LOOP_STATE_ENTRY = "loop-state";
-
-const HAIKU_MODEL_ID = "claude-haiku-4-5";
 
 const SUMMARY_SYSTEM_PROMPT = `You summarize loop breakout conditions for a status widget.
 Return a concise phrase (max 6 words) that says when the loop should stop.
@@ -90,19 +89,14 @@ async function selectSummaryModel(
 ): Promise<{ model: Model<Api>; apiKey?: string; headers?: Record<string, string> } | null> {
 	if (!ctx.model) return null;
 
-	if (ctx.model.provider === "anthropic" || ctx.model.provider === "litellm") {
-		const haikuModel = ctx.modelRegistry.find(ctx.model.provider, HAIKU_MODEL_ID);
-		if (haikuModel) {
-			const auth = await ctx.modelRegistry.getApiKeyAndHeaders(haikuModel);
-			if (auth.ok) {
-				return { model: haikuModel, apiKey: auth.apiKey, headers: auth.headers };
-			}
-		}
-	}
+	// Summarizing a breakout condition is a handful of tokens in and out, so bill
+	// it to the cheapest in-scope model on the current provider rather than the
+	// main (often frontier) model. See `_shared/cheap-model.ts`.
+	const model = await selectCheapestModel(ctx.model, ctx.modelRegistry);
 
-	const auth = await ctx.modelRegistry.getApiKeyAndHeaders(ctx.model);
+	const auth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
 	if (!auth.ok) return null;
-	return { model: ctx.model, apiKey: auth.apiKey, headers: auth.headers };
+	return { model, apiKey: auth.apiKey, headers: auth.headers };
 }
 
 async function summarizeBreakoutCondition(

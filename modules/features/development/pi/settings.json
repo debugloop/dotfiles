@@ -1,16 +1,15 @@
 {
-  "defaultModel": "gpt-5.6-sol",
-  "defaultProvider": "openai-codex",
+  "defaultModel": "claude-sonnet-5",
+  "defaultProvider": "gridx-gateway",
   "defaultThinkingLevel": "high",
-  "hideThinkingBlock": true,
+  "hideThinkingBlock": false,
   "theme": "dark",
   "lastChangelogVersion": "0.80.10",
   "packages": [
-    "npm:pi-tool-display",
-    "npm:pi-provider-litellm@1.2.8"
+    "npm:pi-tool-display"
   ],
   "steeringMode": "all",
-  "followUpMode": "all",
+  "followUpMode": "one-at-a-time",
   "quietStartup": true,
   "enableInstallTelemetry": false,
   "doubleEscapeAction": "tree",
@@ -19,9 +18,10 @@
     "openai-codex/gpt-5.6-luna",
     "openai-codex/gpt-5.6-sol",
     "openai-codex/gpt-5.6-terra",
-    "litellm/claude-opus-4-8",
-    "litellm/claude-haiku-4-5",
-    "litellm/claude-sonnet-4-6"
+    "gridx-gateway/claude-opus-5",
+    "gridx-gateway/claude-sonnet-5",
+    "gridx-gateway/claude-opus-4-8",
+    "gridx-gateway/claude-haiku-4-5"
   ],
   "compaction": {
     "enabled": false
@@ -31,5 +31,9 @@
   "autocompleteMaxVisible": 5,
   "transport": "auto",
   "showCacheMissNotices": true,
-  "defaultProjectTrust": "ask"
+  "defaultProjectTrust": "ask",
+  "editorPaddingX": 0,
+  "terminal": {
+    "showTerminalProgress": false
+  }
 }

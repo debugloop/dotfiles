@@ -13,6 +13,7 @@
 import { complete, type Model, type Api, type UserMessage } from "@earendil-works/pi-ai";
 import type { ExtensionAPI, ExtensionContext, ModelRegistry } from "@earendil-works/pi-coding-agent";
 import { BorderedLoader } from "@earendil-works/pi-coding-agent";
+import { selectCheapestModel } from "../_shared/cheap-model.js";
 import {
 	type Component,
 	Editor,
@@ -67,32 +68,15 @@ Example output:
   ]
 }`;
 
-// Prefer a cheap/fast model on the LiteLLM proxy for extraction. Extend or
-// reorder as needed; the last usable entry wins the fallback to currentModel.
-const EXTRACTION_CANDIDATES: Array<{ provider: string; id: string }> = [
-	{ provider: "litellm", id: "claude-haiku-4-5" },
-	{ provider: "litellm", id: "claude-haiku" },
-];
-
 /**
- * Prefer a cheap LiteLLM model for extraction, falling back to the current model.
+ * Prefer the cheapest in-scope model on the current provider for extraction,
+ * falling back to the current model. See `_shared/cheap-model.ts`.
  */
 async function selectExtractionModel(
 	currentModel: Model<Api>,
 	modelRegistry: ModelRegistry,
 ): Promise<Model<Api>> {
-	for (const candidate of EXTRACTION_CANDIDATES) {
-		const model = modelRegistry.find(candidate.provider, candidate.id);
-		if (!model) {
-			continue;
-		}
-		const auth = await modelRegistry.getApiKeyAndHeaders(model);
-		if (auth.ok) {
-			return model;
-		}
-	}
-
-	return currentModel;
+	return selectCheapestModel(currentModel, modelRegistry);
 }
 
 /**
@@ -442,7 +426,7 @@ export default function (pi: ExtensionAPI) {
 				return;
 			}
 
-			// Select the best model for extraction (prefer Codex mini, then haiku)
+			// Select the cheapest in-scope model on the current provider
 			const extractionModel = await selectExtractionModel(ctx.model, ctx.modelRegistry);
 
 			// Run extraction with loader UI
