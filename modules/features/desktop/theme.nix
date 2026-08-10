@@ -27,10 +27,10 @@ _: {
         gtk.enable = true;
       };
       sessionVariables = {
-        GTK_THEME = "Arc-Darker";
+        GTK_THEME = "io.elementary.stylesheet.slate";
       };
       packages = with pkgs; [
-        arc-theme
+        pantheon.elementary-gtk-theme
         gnome-icon-theme
       ];
     };
