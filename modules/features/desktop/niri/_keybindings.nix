@@ -36,11 +36,13 @@
     "Mod+R".action = switch-preset-column-width;
     "Mod+Ctrl+R".action = switch-preset-window-height;
     "Mod+Period".action = switch-preset-column-width;
+    "Mod+TouchpadScrollDown".action.set-window-width = "-50";
+    "Mod+WheelScrollDown".action.set-window-width = "-50";
     "Mod+Comma".action = switch-preset-column-width-back;
+    "Mod+TouchpadScrollUp".action.set-window-width = "+50";
+    "Mod+WheelScrollUp".action.set-window-width = "+50";
     "Mod+M".action = maximize-window-to-edges;
     "Mod+Ctrl+M".action = expand-column-to-available-width;
-    "Mod+XF86AudioRaiseVolume".action = switch-preset-column-width;
-    "Mod+XF86AudioLowerVolume".action = switch-preset-column-width-back;
 
     # window casting
     "Mod+S".action = set-dynamic-cast-window;
@@ -91,20 +93,12 @@
     "Mod+Equal".action = spawn "niri" "msg" "output" "eDP-1" "on";
     "Mod+Shift+Equal".action = spawn "niri" "msg" "output" "eDP-1" "off";
 
-    # scrolling focus
-    "Mod+Shift+WheelScrollDown" = {
-      cooldown-ms = 150;
-      action = focus-column-right;
-    };
-    "Mod+Shift+WheelScrollUp" = {
-      cooldown-ms = 150;
-      action = focus-column-left;
-    };
-    "Mod+WheelScrollDown" = {
+    # replace three finger scroll
+    "Mod+Ctrl+WheelScrollDown" = {
       cooldown-ms = 150;
       action = focus-workspace-down;
     };
-    "Mod+WheelScrollUp" = {
+    "Mod+Ctrl+WheelScrollUp" = {
       cooldown-ms = 150;
       action = focus-workspace-up;
     };

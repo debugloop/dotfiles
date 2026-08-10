@@ -122,30 +122,24 @@ _: {
         layout = {
           empty-workspace-above-first = true;
           always-center-single-column = true;
-          gaps = 12;
-          struts = {
-            top = -6;
-            bottom = -6;
-            left = -6;
-            right = -6;
-          };
+          gaps = 0;
           shadow = {
             enable = false;
             color = "#${config.colors.blue}";
             inactive-color = "#${config.colors.light_bg}00"; # transparent
           };
           focus-ring = {
-            enable = true;
+            enable = false;
             width = 2;
             active.color = "#${config.colors.blue}";
             inactive.color = "#${config.colors.cyan}";
             urgent.color = "#${config.colors.red}";
           };
           border = {
-            enable = false;
-            width = 1;
-            active.color = "#${config.colors.blue}00";
-            inactive.color = "#${config.colors.light_bg}00";
+            enable = true;
+            width = 3;
+            active.color = "#${config.colors.blue}";
+            inactive.color = "#${config.colors.light_bg}";
             urgent.color = "#${config.colors.red}";
           };
           default-column-width.proportion = 0.4;
