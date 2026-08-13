@@ -154,14 +154,12 @@ _: {
         fi
       }; f";
 
-            # repo main/master disambiguation
-            main = "!f() {
-        if git remote | grep -qE '.+'; then
-          git symbolic-ref refs/remotes/origin/HEAD --short | cut -d/ -f2;
-        else
-          echo main
-        fi
-      }; f";
+            # repo main/master disambiguation. Ask for the ref itself instead of
+            # asking whether a remote exists: remote.origin.* in the global
+            # config makes `git remote` list origin even in a repo that has
+            # none, and symbolic-ref then fails and yields an empty name. Cut
+            # from the second field on, so origin/release/1.x keeps its slashes.
+            main = "!git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | cut -d/ -f2- | grep . || echo main";
 
             # update PR with unstaged
             rekt = "!f() { git a -u; git amend; git puf; }; f"; # add updates to amend commit and force push
