@@ -17,12 +17,15 @@ const codeActionCache = new Map<string, CodeActionCacheEntry>();
 let nextCodeActionId = 1;
 
 const nvimPromptGuidelines = [
+	"Do not call discover_neovim or inspect Neovim state unless the current task refers to editor context.",
+	"Editor context includes visible, selected, or open content, or a mention of Neovim, nvim, Vim, or an editor.",
+	"Without editor context, use disk tools even if Neovim might contain the file.",
 	"Prefer high-level Neovim tools over msgpack_rpc_call. Use raw RPC only as an escape hatch.",
 	"High-level Neovim tool line numbers and columns are 1-based for the agent/user. Columns are byte columns unless a tool says otherwise.",
 	"If you find multiple instances of Neovim, use pi-ask-user if available to let the user choose one.",
 	"Call get_state_brief at the start of a turn before touching a Neovim buffer. Use get_state when cursor/selection/viewport/syntax context matters.",
-	"If a file is loaded in Neovim, prefer buffer tools over disk tools so unsaved changes and undo are preserved.",
-	"Use disk edit tools for unloaded files and broad patch-oriented changes; use Neovim tools for cursor/selection/viewport context, unsaved buffers, diagnostics, LSP, and undo integration.",
+	"When editor context applies and a file is loaded in Neovim, prefer buffer tools over disk tools so unsaved changes and undo are preserved.",
+	"When editor context applies, use disk edit tools for unloaded files and broad patch-oriented changes. Use Neovim tools for cursor, selection, or viewport context, unsaved buffers, diagnostics, LSP, and undo integration.",
 	"Saving Neovim buffers is allowed, but saves may trigger autoformat/autocmds; after saving, assume buffer contents, cursor positions, line numbers, diagnostics, and other editor state may have changed, then re-check state/diagnostics before further edits.",
 ];
 

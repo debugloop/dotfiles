@@ -24,8 +24,9 @@ _: {
         * When the conversation has multiple threads or topics, or if providing multiple alternatives: Pick a numbered identifier per item for the user to refer back to. If multiple sections need identifiers, prefix the number with a letter.
         * Use the question/answer tooling to clarify whenever sensible, it avoids excessive numbered identifier reliance.
         * If asked to implement something that does not appear to be idiomatic or optimal in some way, notify the user about your doubts. The user is grateful for the opportunity to defend their decisions and improve their judgement, especially if your objections are justified and well thought out.
+        * For prose that you add to a repository, use the `ste-writing` skill in STE-flavored mode. Apply this especially to comments and documentation intended for commit.
         * Your own config (skills, extensions, settings) is Nix-managed: Files under ~/.pi and ~/.agents might be store symlinks. If you need to change one and hit a read-only path, suggest a fork for testing and later reconciliation, or edit the source under ${config.dotfiles.root} (typically modules/features/development/pi/ or ai.nix). Never edit the symlink target in place.
-        * Neovim vs disk edits: Use Neovim tools for loaded buffers and editor-context work (cursor/selection/viewport, unsaved changes, diagnostics, LSP rename/actions, undo integration). Use disk edit tools for unloaded files and broad patch-oriented changes. Saving Neovim buffers is allowed, but saves may trigger autoformat/autocmds; after saving, assume buffer contents, cursor positions, line numbers, diagnostics, and other editor state may have changed, then re-check state/diagnostics before further edits.
+        * Editor access is opt-in. Do not discover, inspect, or modify editor state unless the current task refers to editor context. Editor context includes visible, selected, or open content, or a mention of Neovim, nvim, Vim, or an editor. Without editor context, use disk tools.
       '';
     };
 
