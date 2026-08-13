@@ -138,9 +138,21 @@ _: {
           border = {
             enable = true;
             width = 3;
-            active.color = "#${config.colors.blue}";
+            # active.color = "#${config.colors.blue}";
+            active.gradient = {
+              angle = 135;
+              from = "#${config.colors.blue}";
+              to = "#${config.colors.bright-blue}";
+              relative-to = "window";
+            };
             inactive.color = "#${config.colors.light_bg}";
-            urgent.color = "#${config.colors.red}";
+            # urgent.color = "#${config.colors.red}";
+            urgent.gradient = {
+              angle = 135;
+              from = "#${config.colors.red}";
+              to = "#${config.colors.bright-red}";
+              relative-to = "window";
+            };
           };
           default-column-width.proportion = 0.4;
           preset-column-widths = [
@@ -158,16 +170,23 @@ _: {
             {proportion = 1.0;}
           ];
           tab-indicator = {
-            position = "top";
-            place-within-column = true;
-            gap = 5;
-            width = 4;
+            position = "right";
+            gap = -15;
+            width = 8;
             gaps-between-tabs = 8;
-            length.total-proportion = 0.3;
+            length.total-proportion = 0.2;
             corner-radius = 5;
-            active.color = "#${config.colors.blue}";
-            inactive.color = "#${config.colors.light_bg}";
-            urgent.color = "#${config.colors.red}";
+            # active.color = "#${config.colors.bright-green}88";
+            active.gradient = {
+              from = "#${config.colors.green}";
+              to = "#${config.colors.bright-green}";
+            };
+            inactive.color = "#${config.colors.light_bg}88";
+            # urgent.color = "#${config.colors.red}88";
+            urgent.gradient = {
+              from = "#${config.colors.red}";
+              to = "#${config.colors.bright-red}";
+            };
           };
           insert-hint.display.color = "#${config.colors.green}88";
         };
