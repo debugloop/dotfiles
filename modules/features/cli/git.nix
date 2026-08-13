@@ -115,11 +115,33 @@ _: {
             new = "log-pretty @{u}...";
             p = "pull --prune --all --autostash";
             pm = "!git fetch origin $(git main):$(git main) 2>/dev/null";
-            # local branches that make up the current stack (base->top): every
-            # local branch whose tip is reachable from HEAD but not from main.
-            # One clean branch name per line, so `puf` can pipe it into push.
-            stack = "!git for-each-ref --format='%(refname:short)' refs/heads/ --merged HEAD --no-merged $(git main) --sort=committerdate";
+            # local branches that make up the current stack, bottom to top:
+            # every local branch whose tip sits on a commit in main..HEAD,
+            # emitted in the order the commits appear. One clean branch name
+            # per line, so `puf` can pipe it into push. The order is a contract
+            # for `pufl`, which derives PR base branches from it, so walk the
+            # commits topologically instead of sorting tips by date.
+            stack = "!f() {
+        base=$(git main);
+        {
+          git for-each-ref --format='ref %(objectname) %(refname:short)' refs/heads/;
+          git rev-list --reverse --topo-order \"$base..HEAD\" | sed 's/^/rev /';
+        } | awk '
+          $1==\"ref\" { tips[$2] = ($2 in tips ? tips[$2] \" \" : \"\") $3 }
+          $1==\"rev\" && ($2 in tips) {
+            n = split(tips[$2], names, \" \");
+            for (i = 1; i <= n; i++) print names[i];
+          }
+        ';
+      }; f";
             puf = "!git stack | xargs git push --set-upstream --force-with-lease --force-if-includes origin";
+            # push the stack, then hand it to gh so GitHub shows it as a stack.
+            # `gh stack link` pushes too, but without force, so it cannot
+            # update branches that absorb or rebase rewrote: `puf` does that
+            # part and link is left with PR bases and the stack object. Kept
+            # separate from `puf` because link opens PRs for branches that lack
+            # one, and needs two or more branches.
+            pufl = "!git puf && gh stack link $(git stack)";
             rb = "!f() {
         if [ $# -eq 0 ]; then
           git fetch origin $(git main):$(git main)
