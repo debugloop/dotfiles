@@ -1,6 +1,7 @@
 result
 result-*
 *.qcow2
+__pycache__/
 .direnv
 .pre-commit-config.yaml
 secrets/*
