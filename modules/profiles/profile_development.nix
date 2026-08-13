@@ -7,6 +7,7 @@ _: {
     imports = with inputs.self.modules.nixos; [
       ai
       devtools
+      gh
       go
       kubernetes
     ];
@@ -19,6 +20,7 @@ _: {
       ai
       devtools
       extras
+      gh
       git_tools
       go
       kubernetes

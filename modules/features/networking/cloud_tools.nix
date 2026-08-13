@@ -20,15 +20,6 @@ _: {
       yt-dlp-light
     ];
 
-    programs = {
-      rbw.enable = true;
-      gh = {
-        enable = true;
-        settings = {
-          version = 1;
-          git_protocol = "ssh";
-        };
-      };
-    };
+    programs.rbw.enable = true;
   };
 }
