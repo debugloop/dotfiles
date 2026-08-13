@@ -14,6 +14,7 @@ _: {
       fonts
       ddc
       graphics
+      magic_trackpad
       power
       scanning
       udev
