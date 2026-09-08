@@ -28,7 +28,10 @@
     backup.storagebox = import ../../features/storage/storagebox/_lusus.nix;
 
     home-manager.users.${config.mainUser} = {
-      imports = [inputs.gridx.modules.homeManager.gridx];
+      imports = with inputs.gridx.modules.homeManager; [
+        gridx
+        gridx_pi_gateway
+      ];
       programs.firefox.configPath = ".mozilla/firefox";
     };
 
