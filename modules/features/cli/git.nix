@@ -80,6 +80,9 @@ _: {
             dsc = "-c delta.side-by-side=true dc";
             fixup = "commit --fixup";
             fi = "commit --fixup";
+            # plain absorb refuses commits that other branches point at, which is
+            # every commit below the top of a stack, so always aim at the trunk.
+            ab = "!git absorb --base $(git base)";
             # base log
             log-pretty = "log --pretty=format:'%C(yellow)%h\ %C(green)%ad%Cred%d\ %C(reset)%s%C(blue)\ [%an]' --date=relative";
             log-cherry = "log --cherry-mark --pretty=format:'%C(yellow)%h\ %C(cyan)%m\ %C(green)%ad%Cred%d\ %C(reset)%s%C(blue)\ [%an]' --date=relative";
@@ -89,7 +92,7 @@ _: {
           if [ \"$(git main)\" = \"$(git rev-parse --abbrev-ref HEAD)\" ]; then
             set - -32
           else
-            set -- $(git main)..
+            set -- $(git base)..
           fi
         fi
         if [[ \"$@\" == *\"...\"* ]]; then
@@ -103,7 +106,7 @@ _: {
           if [ \"$(git main)\" = \"$(git rev-parse --abbrev-ref HEAD)\" ]; then
             set - -16
           else
-            set -- $(git main)..
+            set -- $(git base)..
           fi
         fi
         if [[ \"$@\" == *\"...\"* ]]; then
@@ -122,7 +125,7 @@ _: {
             # for `pufl`, which derives PR base branches from it, so walk the
             # commits topologically instead of sorting tips by date.
             stack = "!f() {
-        base=$(git main);
+        base=$(git base);
         {
           git for-each-ref --format='ref %(objectname) %(refname:short)' refs/heads/;
           git rev-list --reverse --topo-order \"$base..HEAD\" | sed 's/^/rev /';
@@ -134,14 +137,37 @@ _: {
           }
         ';
       }; f";
-            puf = "!git stack | xargs git push --set-upstream --force-with-lease --force-if-includes origin";
-            # push the stack, then hand it to gh so GitHub shows it as a stack.
-            # `gh stack link` pushes too, but without force, so it cannot
-            # update branches that absorb or rebase rewrote: `puf` does that
-            # part and link is left with PR bases and the stack object. Kept
-            # separate from `puf` because link opens PRs for branches that lack
-            # one, and needs two or more branches.
-            pufl = "!git puf && gh stack link $(git stack)";
+            # push every branch of the stack. --force-if-includes stays on: a
+            # rejection means something rewrote a branch behind my back, and
+            # stack-pull below is the answer to that, not a bigger hammer.
+            puf = "!git stack | xargs -r git push --set-upstream --force-with-lease --force-if-includes origin";
+            # create the stack on GitHub: gh opens a PR per branch, chains their
+            # bases, and links them. It pushes branches that the remote lacks, but
+            # only fast forward, so run `puf` first when a rewrite is unpushed.
+            # Only for creating or extending a stack: link refuses to update one
+            # that already has a merged PR. Never bundled with `puf`, so nothing
+            # named link can force push behind my back.
+            stack-link = "!gh stack link $(git stack)";
+            # the other direction: adopt whatever the remote holds for every branch
+            # of the stack. GitHub restacks the branches
+            # itself when the bottom PR merges, and taking that is less work than
+            # rebasing against it. Loops instead of piping into fetch, because fetch
+            # refuses to write the checked out branch. A branch whose commits are
+            # all upstream by patch id is a restack and gets reset; anything else is
+            # real local work and is left alone, because --keep only guards the
+            # worktree, not commits. Leaves the local trunk branch alone: nothing
+            # here computes against it, `base` reads the remote tracking ref.
+            stack-pull = "!f() {
+        git fetch -pq;
+        for b in $(git stack); do
+          git switch -q $b || continue;
+          if git cherry @{u} | grep -q '^+'; then
+            echo \"$b: holds commits that are not upstream, skipped\";
+          else
+            git reset -q --keep @{u};
+          fi;
+        done;
+      }; f";
             rb = "!f() {
         if [ $# -eq 0 ]; then
           git fetch origin $(git main):$(git main)
@@ -150,7 +176,7 @@ _: {
       }; f";
             rbi = "!f() {
         if [ $# -eq 0 ]; then
-          set -- $(git main);
+          set -- $(git base);
         fi;
         git rebase --interactive --keep-base \"$@\";
       }; f";
@@ -182,6 +208,13 @@ _: {
             # none, and symbolic-ref then fails and yields an empty name. Cut
             # from the second field on, so origin/release/1.x keeps its slashes.
             main = "!git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | cut -d/ -f2- | grep . || echo main";
+            # the trunk ref my work is based on, as opposed to `main`, which is the
+            # trunk branch *name* for refspecs and switching. Prefer the remote
+            # tracking ref: the local branch lags whenever the remote moves, and a
+            # lagging boundary lets absorb and rebase reach commits that already
+            # landed upstream. Falls back to the local branch in a repo with no
+            # remote.
+            base = "!f() { m=$(git main); git rev-parse -q --verify origin/$m >/dev/null && echo origin/$m || echo $m; }; f";
 
             # update PR with unstaged
             rekt = "!f() { git a -u; git amend; git puf; }; f"; # add updates to amend commit and force push
