@@ -1,6 +1,7 @@
 result
 result-*
 *.qcow2
+*.tfstate.backup
 __pycache__/
 .direnv
 .pre-commit-config.yaml
