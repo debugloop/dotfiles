@@ -28,6 +28,7 @@ _: {
       theme
       docker
       flatpak
+      voxtype
       # zed
     ];
 
