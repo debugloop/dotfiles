@@ -274,8 +274,8 @@
         "pi-gridx-gateway": "pi-gridx-gateway"
       },
       "locked": {
-        "lastModified": 1786114730,
-        "narHash": "sha256-FYJ4f9XY1kv/IYJSNa0KvKDfKbULwPguQwwEZdFWWZU=",
+        "lastModified": 1788943014,
+        "narHash": "sha256-40Yaz7EEmrvv+csN4BdBpLV+DIacb+oIDH15d013XTs=",
         "path": "/home/danieln/code/gridx",
         "type": "path"
       },
@@ -662,8 +662,8 @@
     "pi-gridx-gateway": {
       "flake": false,
       "locked": {
-        "lastModified": 1786114266,
-        "narHash": "sha256-iy5lEjaw6+wAWgBY+SRQtV7zwkBWJCl0utzVj5lohMk=",
+        "lastModified": 1788943002,
+        "narHash": "sha256-qYHAGfi5f4fNFAXYIoKLXvelvvJoUMqY/PegWSVwZyo=",
         "path": "/home/danieln/code/gridx-gateway",
         "type": "path"
       },
