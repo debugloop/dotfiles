@@ -21,13 +21,20 @@ _: {
     lib,
     pkgs,
     ...
-  }: {
+  }: let
+    voxtypePackage = pkgs.voxtype-vulkan;
+  in {
     services.voxtype = {
       enable = true;
       # On lusus, Vulkan was 5.6 times faster with a cold cache.
       # It was 19.6 times faster with a warm cache. Test Vulkan on simmons when possible.
-      package = pkgs.voxtype-vulkan;
-      loadModels = ["base.en"];
+      package = voxtypePackage;
+      loadModels = ["small.en"];
+      environment = {
+        PATH = lib.makeBinPath [voxtypePackage pkgs.quickshell];
+        QT_SCALE_FACTOR = "1.25";
+        VOXTYPE_OSD_QML_PATH = "${voxtypePackage.src}/quickshell";
+      };
 
       settings = {
         hotkey = {
@@ -37,15 +44,24 @@ _: {
         };
 
         whisper = {
-          model = "base.en";
+          model = "small.en";
           language = "en";
+          initial_prompt = "NixOS, Nix, Home Manager, Neovim, Niri, Wayland, systemd, Kubernetes, TypeScript, Voxtype, pi.";
+        };
+
+        osd = {
+          enabled = true;
+          frontend = "quickshell";
         };
 
         output = {
           mode = "type";
           fallback_to_clipboard = true;
           wait_for_modifier_release = true;
+          notification.on_transcription = false;
         };
+
+        text.smart_auto_submit = true;
       };
     };
 
