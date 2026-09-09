@@ -17,7 +17,11 @@ _: {
     home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.voxtype];
   };
 
-  flake.modules.homeManager.voxtype = {pkgs, ...}: {
+  flake.modules.homeManager.voxtype = {
+    lib,
+    pkgs,
+    ...
+  }: {
     services.voxtype = {
       enable = true;
       # On lusus, Vulkan was 5.6 times faster with a cold cache.
@@ -28,7 +32,7 @@ _: {
       settings = {
         hotkey = {
           enabled = true;
-          key = "F12";
+          key = "F13";
           mode = "push_to_talk";
         };
 
@@ -43,6 +47,15 @@ _: {
           wait_for_modifier_release = true;
         };
       };
+    };
+
+    systemd.user.services.voxtype = {
+      Unit = {
+        After = ["graphical-session.target"];
+        PartOf = lib.mkForce ["graphical-session.target"];
+        Requisite = ["graphical-session.target"];
+      };
+      Install.WantedBy = lib.mkForce ["graphical-session.target"];
     };
   };
 }
