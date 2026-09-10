@@ -29,7 +29,7 @@ _: {
       # On lusus, Vulkan was 5.6 times faster with a cold cache.
       # It was 19.6 times faster with a warm cache. Test Vulkan on simmons when possible.
       package = voxtypePackage;
-      loadModels = ["small.en"];
+      loadModels = ["base.en"];
       environment = {
         PATH = lib.makeBinPath [voxtypePackage pkgs.quickshell];
         QT_SCALE_FACTOR = "1.25";
@@ -44,7 +44,7 @@ _: {
         };
 
         whisper = {
-          model = "small.en";
+          model = "base.en";
           language = "en";
           initial_prompt = "NixOS, Nix, Home Manager, Neovim, Niri, Wayland, systemd, Kubernetes, TypeScript, Voxtype, pi.";
         };
@@ -58,10 +58,22 @@ _: {
           mode = "type";
           fallback_to_clipboard = true;
           wait_for_modifier_release = true;
+          shift_enter_newlines = true;
           notification.on_transcription = false;
         };
 
-        text.smart_auto_submit = true;
+        text = {
+          smart_auto_submit = true;
+          spoken_punctuation = false;
+          replacements = {
+            "insert new line" = "\n";
+            "insert newline" = "\n";
+            "insert bullet" = "\n * ";
+            "insert colon" = ":";
+            "insert dash" = "-";
+            "insert tick" = "`";
+          };
+        };
       };
     };
 
