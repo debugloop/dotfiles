@@ -62,6 +62,7 @@
           hetzner
           caddy
           grafana
+          hister_personal
           jellyfin
           matrix
           miniflux

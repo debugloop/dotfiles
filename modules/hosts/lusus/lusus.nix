@@ -20,6 +20,7 @@
         profile_base
         profile_client
         profile_development
+        hister_work
       ])
       ++ [./_hardware-configuration.nix];
 
