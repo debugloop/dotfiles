@@ -1,6 +1,6 @@
 _: {
-  flake.modules.nixos.magic_trackpad = _: {
-    powerManagement.resumeCommands = ''
+  flake.modules.nixos.magic_trackpad = {pkgs, ...}: let
+    reset = pkgs.writeShellScript "reset-magic-trackpad" ''
       for device in /sys/bus/usb/devices/*; do
         [ -f "$device/idVendor" ] || continue
         read -r vendor < "$device/idVendor"
@@ -26,9 +26,24 @@ _: {
         [ -e "$disable" ] || continue
 
         echo 1 > "$disable"
-        sleep 2
+        ${pkgs.coreutils}/bin/sleep 2
         echo 0 > "$disable"
       done
     '';
+  in {
+    powerManagement.resumeCommands = "${reset}";
+
+    systemd.services.magic-trackpad-reset = {
+      description = "Reset the Magic Trackpad USB port";
+      wantedBy = ["multi-user.target"];
+      after = ["systemd-udev-trigger.service" "systemd-modules-load.service"];
+      restartIfChanged = false;
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStartPre = "${pkgs.systemd}/bin/udevadm settle --timeout=30";
+        ExecStart = reset;
+      };
+    };
   };
 }
