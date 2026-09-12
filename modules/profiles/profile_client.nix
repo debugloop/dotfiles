@@ -14,6 +14,7 @@ _: {
       fonts
       ddc
       graphics
+      hister
       magic_trackpad
       power
       scanning
