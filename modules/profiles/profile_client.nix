@@ -23,6 +23,7 @@ _: {
       networkmanager
       niri
       substituters
+      sudo_u2f
       swaylock
       printing
       theme

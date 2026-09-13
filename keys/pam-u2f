@@ -1,0 +1,20 @@
+# Public sudo enrollment metadata for NixOS clients. No agenix encryption is needed.
+# NixOS installs this file at /etc/security/sudo-u2f.
+# Credential order for danieln: mobile, desk.
+#
+# Add a key:
+# 1. Connect only the new key. Run this command as the account to authorize, not root:
+#    pamu2fcfg --nouser --origin=pam://sudo --appid=pam://sudo
+# 2. Append the colon-prefixed output to that user's existing line, before its newline.
+#    Preserve all existing credentials. For a new user, prefix the fragment with the username.
+#    Keep exactly one line per user. A later duplicate user line replaces earlier credentials.
+#    Do not redirect command output over this file or place the fragment on a separate line.
+# 3. Stage this file with git add keys/pam-u2f. Rebuild each affected host.
+# 4. Test each key alone: run sudo -k, then sudo id -u.
+#    Leave the password empty, press Enter, and touch the key. Also test your password.
+#
+# To revoke a key, remove its colon-prefixed credential and rebuild each affected host.
+# Older generations can restore revoked keys. Run sudo -K to clear your cached authentication.
+# Use full-line comments only. Do not add comments to credential lines.
+
+danieln:Nr0sUpJSd3ePymzF7E6cP/yhhNp/TqshIJgTPQXtXZiyQJnFEgBxVT3zTcwxjR4+jiiVYuaTxpyuXbcxCi1PUA==,RcTgmMOycqDUhaCjOZ9MZUDh/Ce2uxJiOjECsPdzUB0a6d/I7cQy2uj0pMRh3Tfh0YC20hp8fbz1m4ObdrnM2w==,es256,+presence:OuQjzYFQdds2IX0wUSkjRa7BDV2FWUmIVSTX2NKeSSSJFkrMZvLlQw78Gem65+B4GhdNl6N//JYG+RYI5eV6hA==,XPQAq3vfF2Qovz9RJf5vmSOsmBoIbRYYyUohXHkv4aWelm+zWe5cZmg620fWqax8NE5OfWaXlxWKp7Wnw+fNWw==,es256,+presence
