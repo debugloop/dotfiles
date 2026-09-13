@@ -14,7 +14,7 @@ _: {
     config = {
       mainUser = "danieln";
 
-      age.secrets.password.file = inputs.self + "/secrets/password.age";
+      age.secrets.login_password_hash.file = inputs.self + "/secrets/login_password_hash.age";
 
       users = {
         mutableUsers = false;
@@ -22,7 +22,7 @@ _: {
           isNormalUser = true;
           extraGroups = ["wheel" "video" "dialout"];
           shell = pkgs.fish;
-          hashedPasswordFile = config.age.secrets.password.path;
+          hashedPasswordFile = config.age.secrets.login_password_hash.path;
           openssh.authorizedKeys.keys = [
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJJvfqr6PpG4BHmUHcj7LzfYhPjoxGeLGxNGF6FAXauX danieln@lusus"
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBXLvABfBx2ThhJ/nUYaLFu2QyLYomOn4BrKUnbwGeWk danieln@simmons"

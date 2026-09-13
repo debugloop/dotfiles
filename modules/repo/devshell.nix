@@ -22,7 +22,7 @@
         fido2 = [ "${fido2Recipient}" ];
       in
       {
-        "secrets/password.age".publicKeys = all;
+        "secrets/login_password_hash.age".publicKeys = all;
         "secrets/restic_password.age".publicKeys = all;
         "secrets/tailscale.age".publicKeys = all;
         "secrets/grafana.age".publicKeys = all;
@@ -33,6 +33,7 @@
         "secrets/nix-ci-netrc.age".publicKeys = all;
         "secrets/hetzner_infra.age".publicKeys = all;
         "secrets/wall.age".publicKeys = all;
+        "secrets/luks.age".publicKeys = fido2;
         "secrets/hetzner_tfstate_passphrase.age".publicKeys = fido2;
       }
     '';
