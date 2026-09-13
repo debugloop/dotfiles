@@ -16,6 +16,11 @@ _: {
   flake.modules.homeManager.theme = {pkgs, ...}: {
     gtk = {
       enable = true;
+      colorScheme = "dark";
+      gtk3.theme = {
+        name = "io.elementary.stylesheet.slate";
+        package = pkgs.pantheon.elementary-gtk-theme;
+      };
       gtk4.theme = null;
     };
 
@@ -26,11 +31,7 @@ _: {
         name = "Numix-Cursor";
         gtk.enable = true;
       };
-      sessionVariables = {
-        GTK_THEME = "io.elementary.stylesheet.slate";
-      };
       packages = with pkgs; [
-        pantheon.elementary-gtk-theme
         pantheon.elementary-icon-theme
       ];
     };
