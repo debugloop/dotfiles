@@ -28,6 +28,7 @@ import {
 
 // Structured output format for question extraction
 interface ExtractedQuestion {
+	identifier?: string;
 	question: string;
 	context?: string;
 }
@@ -36,34 +37,46 @@ interface ExtractionResult {
 	questions: ExtractedQuestion[];
 }
 
-const SYSTEM_PROMPT = `You are a question extractor. Given text from a conversation, extract any questions that need answering.
+const SYSTEM_PROMPT = `You triage an assistant response for decisions that need a user answer.
+
+Responses often group items under identifiers such as A1, A2, B1, or F3. Examine every labeled item and unlabeled paragraph. Do not limit the scan to sentences with question marks.
 
 Output a JSON object with this structure:
 {
   "questions": [
     {
-      "question": "The question text",
-      "context": "Optional context that helps answer the question"
+      "identifier": "A1",
+      "question": "The direct question for the user",
+      "context": "Optional information needed to answer"
     }
   ]
 }
 
-Rules:
-- Extract all questions that require user input
-- Keep questions in the order they appeared
-- Be concise with question text
-- Include context only when it provides essential information for answering
-- If no questions are found, return {"questions": []}
+Include an item when it:
+- asks the user a direct question
+- asks the user to accept or reject a recommendation
+- presents alternatives that require a choice
+- leaves a decision unresolved
+
+Ignore facts, status reports, completed actions, and recommendations that do not need approval. Keep the original order. Copy the identifier exactly when one exists. Rewrite each item as one concise question. Preserve a recommended answer in the context. Use context only when the user needs it to decide. If no item needs an answer, return {"questions": []}.
+
+Example input:
+A1. Keep the current database.
+A2. Redis would reduce latency, but it adds another service. Should we add it?
+B1. I recommend deleting the unused compatibility layer.
 
 Example output:
 {
   "questions": [
     {
-      "question": "What is your preferred database?",
-      "context": "We can only configure MySQL and PostgreSQL because of what is implemented."
+      "identifier": "A2",
+      "question": "Should we add Redis?",
+      "context": "It would reduce latency, but it adds another service."
     },
     {
-      "question": "Should we use TypeScript or JavaScript?"
+      "identifier": "B1",
+      "question": "Should we delete the unused compatibility layer?",
+      "context": "The assistant recommends deletion."
     }
   ]
 }`;
@@ -182,7 +195,7 @@ class QnAComponent implements Component {
 		for (let i = 0; i < this.questions.length; i++) {
 			const q = this.questions[i];
 			const a = this.answers[i]?.trim() || "(no answer)";
-			parts.push(`Q: ${q.question}`);
+			parts.push(`${q.identifier ? `[${q.identifier}] ` : ""}Q: ${q.question}`);
 			if (q.context) {
 				parts.push(`> ${q.context}`);
 			}
@@ -332,7 +345,8 @@ class QnAComponent implements Component {
 
 		// Current question
 		const q = this.questions[this.currentIndex];
-		const questionText = `${this.bold("Q:")} ${q.question}`;
+		const identifier = q.identifier ? `${this.cyan(`[${q.identifier}]`)} ` : "";
+		const questionText = `${identifier}${this.bold("Q:")} ${q.question}`;
 		const wrappedQuestion = wrapTextWithAnsi(questionText, contentWidth);
 		for (const line of wrappedQuestion) {
 			lines.push(padToWidth(boxLine(line)));
@@ -508,7 +522,7 @@ export default function (pi: ExtensionAPI) {
 	};
 
 	pi.registerCommand("answer", {
-		description: "Extract questions from last assistant message into interactive Q&A",
+		description: "Ask for decisions from the last assistant response, one item at a time",
 		handler: (_args, ctx) => answerHandler(ctx),
 	});
 

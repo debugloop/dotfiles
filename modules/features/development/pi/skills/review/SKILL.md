@@ -6,6 +6,6 @@ disable-model-invocation: true
 
 # Review
 
-This is an alias for `/code-review`. Load the `code-review` skill instead — it has the full two-axis review process (Standards + Spec).
+This is an alias for the `code-review` skill. Load that skill because it contains the full Standards and Spec review process.
 
-All the review logic lives there. Use `/code-review` directly.
+All review logic is in that skill.

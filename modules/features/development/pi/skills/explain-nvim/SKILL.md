@@ -37,29 +37,17 @@ when the last stop is done.)
 
 ## Neovim conventions (pi)
 
-Pi reaches Neovim through the generic `msgpack_rpc_call` tool (raw `nvim_*` RPC)
-plus `discover_neovim`. There is no MCP annotation helper and no keypress→agent
-callback, so the walk keeps the agent **in the loop**: annotate up front, land
-on a stop, narrate, then wait for the user to say "next" and advance the cursor
-yourself. Follow these conventions throughout:
+Pi reaches Neovim through the `pi-neovim` tools. There is no keypress-to-agent callback, so the agent controls the walk. Add the annotations, open a stop, explain it, and wait for the user to say "next." Use these conventions:
 
-- **State before acting.** Before each turn's Neovim work, re-check the live
-  state (`nvim_get_current_buf`, `nvim_win_get_cursor`, buffer list). Never carry
-  cursor position or file identity across turns.
-- **Buffer over disk.** If a file is already loaded as a buffer, read/inspect it
-  via buffer RPC (`nvim_buf_get_lines`), not disk — what the user sees is the
-  buffer.
-- **Annotations are extmark virtual text**, all `※ `-prefixed. Use
-  `nvim_buf_set_extmark` with `virt_lines` (for `above`-style notes) or
-  `virt_text` (for end-of-line notes) on a dedicated namespace
-  (`nvim_create_namespace("explain-nvim")`) so you can clear them cleanly at wrap-up.
+- **State before acting.** Call `get_state_brief` before each turn's Neovim work. Never reuse a cursor position or file identity from an earlier turn.
+- **Buffer over disk.** If Neovim loaded a file, inspect it with `read_buffer`. This reads the content that the user sees.
+- **Annotations use virtual text.** Prefix each note with `※ `. Use `add_virtual_texts` with the `explain-nvim` namespace. Use `above` for block notes and `eol` for line notes.
 - **Palette** (colorscheme-adaptive highlight groups): `DiagnosticWarn` by
   default (reads well, adapts) — reach for another `Diagnostic*` group only when
   semantics demand it (`DiagnosticError`, `DiagnosticInfo`, `DiagnosticHint`,
   `DiagnosticOk`). For full-line backgrounds prefer a group with a real
   background (`Visual`, `DiffAdd`) over foreground-only groups.
-- **Indexing.** `nvim_buf_*` and extmark rows are 0-based; `nvim_win_get_cursor`
-  row is 1-based, col 0-based. Report positions to the user as 1-based.
+- **Indexing.** The high-level tools use 1-based lines and byte columns. Raw Neovim RPC uses its native indexing rules.
 
 ## Process
 
@@ -106,12 +94,9 @@ start moving:
    shows the change relative to the base across every buffer:
    `git read-tree <merge-base>`. This is repo-global until reset (wrap-up); that
    is the accepted tradeoff, and it mirrors a "set git base" workflow.
-2. **Open every itinerary file** (`nvim_cmd`/`nvim_command` with `edit <file>`,
-   or `nvim_call_function("bufload", ...)`) so its buffer is loaded.
-3. **Annotate every stop** with extmarks on the `explain-nvim` namespace in one pass
-   (conventions below).
-4. **Land on stop 1**: open its file and center — `nvim_win_set_cursor` to the
-   line, then `nvim_command("normal! zz")`.
+2. **Open every itinerary file** with `open_file` so Neovim loads its buffer.
+3. **Annotate every stop** with `add_virtual_texts`. Use the `explain-nvim` namespace.
+4. **Land on stop 1** with `open_file` and its line argument.
 
 ### 5. Annotation conventions
 
@@ -144,17 +129,12 @@ Because pi has no keypress→agent callback, you drive the pacing conversational
 - On landing at each stop, deliver its narration in the tour voice — Intuition
   at the first substantive stop, then the per-stop "Code" walkthrough. Keep it
   tight; the extmarks carry the detail.
-- Then **stop and wait** for the user to say "next" (or ask a question). On
-  "next", re-check state, open the next stop's file, move the cursor, center
-  (`zz`), and narrate.
+- Then **stop and wait** for the user to say "next" or ask a question. On "next," check the state, open the next stop at its line, and explain it.
 - On a question, answer against the real buffer/diff, then offer to continue.
 
 ### 7. Wrap up
 
-After the last stop, wrap up: restore the git index (`git reset` — ends the
-diff-vs-base view), and offer to clear annotations (`nvim_buf_clear_namespace`
-on each touched buffer for the `explain-nvim` namespace). Don't clear without asking —
-the user may want to keep them for their own review pass.
+After the last stop, restore the git index with `git reset`. Offer to remove the annotations with `clear_virtual_texts` on each touched buffer. Use the `explain-nvim` namespace. Do not remove them without permission because the user can keep them for another review.
 
 ## Degraded mode (no Neovim)
 

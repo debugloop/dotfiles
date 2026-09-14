@@ -59,8 +59,6 @@ Iterate until the user approves the breakdown.
 
 Default to an in-chat checklist. If the user asks for a durable artifact, write a markdown file such as `.scratch/<short-feature-slug>/tasks.md`.
 
-If a session-local Pi task/todo extension is available, prefer it for ephemeral checklists the agent will actively maintain during the current session. The Pi examples include a `todo.ts` extension that is a good starting point: it stores state in the session branch, not in repo files, which fits this repo's "human owns roadmap, agent owns current batch" workflow. Do not assume such a tool exists; use it only when it is actually available.
-
 Do **not** create issues, apply labels, claim work, publish to a tracker, or maintain a queue.
 
 <tasks-file-template>
@@ -88,4 +86,4 @@ Work the **frontier**: any task whose blockers are all done. For a purely linear
 
 In any form, avoid specific file paths or code snippets — they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.
 
-Work the frontier one task at a time with `/implement`, clearing context between tasks when useful.
+After the user selects a task, treat it as a fresh and tightly scoped implementation request. Clear context between tasks when useful.

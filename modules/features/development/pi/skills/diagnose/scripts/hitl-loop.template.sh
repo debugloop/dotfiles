@@ -11,6 +11,9 @@
 #   capture VAR "<question>"      → show question, read response into VAR
 #
 # At the end, captured values are printed as KEY=VALUE for the agent to parse.
+#
+# `capture` prints its value for the agent. Capture observations only. Ask the
+# user to enter secrets directly into the target application during a `step`.
 
 set -euo pipefail
 

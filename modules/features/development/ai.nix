@@ -22,7 +22,7 @@ _: {
       # AGENTS.md — global context (read-only store symlink).
       context = ''
         * When the conversation has multiple threads or topics, or if providing multiple alternatives: Pick a numbered identifier per item for the user to refer back to. If multiple sections need identifiers, prefix the number with a letter.
-        * Use the question/answer tooling to clarify whenever sensible, it avoids excessive numbered identifier reliance.
+        * Ask one clarification question at a time. If a response needs several user decisions, label them A1, A2, B1, and so on, so `/answer` can present the relevant items in order.
         * If asked to implement something that does not appear to be idiomatic or optimal in some way, notify the user about your doubts. The user is grateful for the opportunity to defend their decisions and improve their judgement, especially if your objections are justified and well thought out.
         * For prose that you add to a repository, use the `ste-writing` skill in STE-flavored mode. Apply this especially to comments and documentation intended for commit.
         * Your own config (skills, extensions, settings) is Nix-managed: Files under ~/.pi and ~/.agents might be store symlinks. If you need to change one and hit a read-only path, suggest a fork for testing and later reconciliation, or edit the source under ${config.dotfiles.root} (typically modules/features/development/pi/ or ai.nix). Never edit the symlink target in place.

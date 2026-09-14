@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match the user's request, PRD, or explicit spec?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
+description: Review changes since a fixed point along two separate axes. Standards checks repository rules. Spec checks the user's request or explicit spec. Use for branch, PR, or work-in-progress reviews.
 ---
 
 # Review
@@ -10,7 +10,7 @@ Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
 - **Standards** — does the code conform to this repo's documented coding standards?
 - **Spec** — does the code faithfully implement the user's request, PRD, or explicit spec?
 
-Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
+Run the axes as two separate passes. Complete the first report before the second pass. Keep their evidence and conclusions separate where possible.
 
 This repo does **not** use an agent-managed issue tracker by default. Prefer an explicit spec path, PRD file, or conversation context over issue lookup.
 
@@ -22,7 +22,7 @@ Whatever the user said is the fixed point — a commit SHA, branch name, tag, `m
 
 Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
 
-Before going further, confirm the fixed point resolves (`git rev-parse <fixed-point>`) and the diff is non-empty. A bad ref or empty diff should fail here — not inside two parallel sub-agents.
+Before you continue, make sure that the fixed point resolves with `git rev-parse <fixed-point>`. Stop if the reference is invalid or the diff is empty.
 
 ### 2. Identify the spec source
 
@@ -31,7 +31,7 @@ Look for the originating spec, in this order:
 1. A path the user passed as an argument.
 2. A PRD/spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
 3. Issue or PR references in commit messages only when they are directly fetchable from the repo's normal tooling (for example `gh` in a GitHub repo) or the user asks you to fetch them.
-4. If nothing is found, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
+4. If nothing is found, ask the user where the spec is. If no spec exists, skip the Spec pass and report "no spec available."
 
 ### 3. Identify the standards sources
 
@@ -57,23 +57,28 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 - **Middle Man** — a class or function that mostly just delegates onward. → cut it, call the real target direct.
 - **Refused Bequest** — a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
 
-### 4. Spawn both sub-agents in parallel
+### 4. Run two separate passes
 
-Send a single message with two `Agent` tool calls. Use the `general-purpose` subagent for both.
+Use the same diff and commit list for both passes. This harness does not supply isolated sub-agents, so do not claim that the passes are independent.
 
-**Standards sub-agent prompt** — include:
+**Standards pass**
 
-- The full diff command and commit list.
-- The list of standards-source files you found in step 3, **plus the smell baseline from step 3** pasted in full — the sub-agent has no other access to it.
-- The brief: "Report — per file/hunk where relevant — (a) every place the diff violates a documented standard: cite the standard (file + the rule); and (b) any baseline smell you spot: name it and quote the hunk. Distinguish hard violations from judgement calls — documented-standard breaches can be hard, but baseline smells are always judgement calls, and a documented repo standard overrides the baseline. Skip anything tooling enforces. Under 400 words."
+1. Read the standards sources and the full diff.
+2. Report each documented-standard violation by file and hunk.
+3. Cite the standards file and rule.
+4. Report baseline smells separately and label them as judgment calls.
+5. Skip checks that automated tooling already enforces.
+6. Save this report before you start the Spec pass.
 
-**Spec sub-agent prompt** — include:
+**Spec pass**
 
-- The diff command and commit list.
-- The path or fetched contents of the spec.
-- The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
+1. Read the spec and diff again. Do not treat conclusions from the Standards pass as Spec evidence.
+2. Report missing or partial requirements.
+3. Report behavior that the spec did not request.
+4. Report implementations that appear to contradict a requirement.
+5. Quote the relevant spec text for each finding.
 
-If the spec is missing, skip the Spec sub-agent and note this in the final report.
+If no spec exists, skip this pass and state that no spec was available.
 
 ### 5. Aggregate
 

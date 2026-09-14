@@ -8,18 +8,25 @@ disable-model-invocation: true
 
 Surface architectural friction and propose **deepening opportunities** — refactors that turn shallow modules into deep ones. The aim is testability and AI-navigability.
 
-This command is _informed_ by the project's domain model and built on a shared design vocabulary:
+Load the `codebase-design` skill before you start. Use its architecture vocabulary and principles throughout the review. Read its `DEEPENING.md` file before you assess dependencies.
 
-- Run the `/codebase-design` skill for the architecture vocabulary (**module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**) and its principles (the deletion test, "the interface is the test surface", "one adapter = hypothetical seam, two = real"). Use these terms exactly in every suggestion — don't drift into "component," "service," "API," or "boundary."
-- The domain language in `CONTEXT.md` gives names to good seams; ADRs in `docs/adr/` record decisions this command should not re-litigate.
+The domain language in `CONTEXT.md` gives names to good seams. ADRs in `docs/adr/` record decisions that this command must not re-open without evidence.
 
 ## Process
 
-### 1. Explore
+### 1. Set the scope
 
-Read the project's domain glossary (`CONTEXT.md`) and any ADRs in the area you're touching first.
+Favor areas that change often. Deepening a stable module has little value.
 
-Then use the Agent tool with `subagent_type=Explore` to walk the codebase. Don't follow rigid heuristics — explore organically and note where you experience friction:
+- If the user names a module, subsystem, or pain point, use that scope.
+- Otherwise, inspect a useful part of `git log --oneline` and identify repeated hot spots.
+- If history has no clear hot spot, widen the scan.
+
+Read the project's domain glossary and relevant ADRs before you inspect the code.
+
+### 2. Explore
+
+Explore the selected area directly. Do not require an `Agent` or sub-agent tool. Note where you experience friction:
 
 - Where does understanding one concept require bouncing between many small modules?
 - Where are modules **shallow** — interface nearly as complex as the implementation?
@@ -27,9 +34,11 @@ Then use the Agent tool with `subagent_type=Explore` to walk the codebase. Don't
 - Where do tightly-coupled modules leak across their seams?
 - Which parts of the codebase are untested, or hard to test through their current interface?
 
-Apply the **deletion test** to anything you suspect is shallow: would deleting it concentrate complexity, or just move it? A "yes, concentrates" is the signal you want.
+Apply the deletion test to each shallow module. A useful module causes complexity to spread when you remove it.
 
-### 2. Present candidates as an HTML report
+Classify each candidate's dependencies with [`DEEPENING.md`](../codebase-design/DEEPENING.md). Do not add a seam only for testing.
+
+### 3. Present candidates as an HTML report
 
 Write a self-contained HTML file to the OS temp directory so nothing lands in the repo. Resolve the temp dir from `$TMPDIR`, falling back to `/tmp` (or `%TEMP%` on Windows), and write to `<tmpdir>/architecture-review-<timestamp>.html` so each run gets a fresh file. Open it for the user — `xdg-open <path>` on Linux, `open <path>` on macOS, `start <path>` on Windows — and tell them the absolute path.
 
@@ -46,7 +55,7 @@ For each candidate, render a card with:
 
 End the report with a **Top recommendation** section: which candidate you'd tackle first and why.
 
-**Use CONTEXT.md vocabulary for the domain, and the `/codebase-design` vocabulary for the architecture.** If `CONTEXT.md` defines "Order," talk about "the Order intake module" — not "the FooBarHandler," and not "the Order service."
+**Use `CONTEXT.md` vocabulary for the domain and `codebase-design` vocabulary for the architecture.** If `CONTEXT.md` defines "Order," use "the Order intake module," not "the FooBarHandler" or "the Order service."
 
 **ADR conflicts**: if a candidate contradicts an existing ADR, only surface it when the friction is real enough to warrant revisiting the ADR. Mark it clearly in the card (e.g. a warning callout: _"contradicts ADR-0007 — but worth reopening because…"_). Don't list every theoretical refactor an ADR forbids.
 
@@ -54,13 +63,15 @@ See [HTML-REPORT.md](HTML-REPORT.md) for the full HTML scaffold, diagram pattern
 
 Do NOT propose interfaces yet. After the file is written, ask the user: "Which of these would you like to explore?"
 
-### 3. Grilling loop
+### 4. Decision interview
 
-Once the user picks a candidate, run the `/grilling` skill to walk the design tree with them — constraints, dependencies, the shape of the deepened module, what sits behind the seam, what tests survive.
+Once the user picks a candidate, interview them about constraints, dependencies, the deepened module, its seam, and the tests that survive.
 
-Side effects happen inline as decisions crystallize — run the `/domain-modeling` skill to keep the domain model current as you go:
+Ask one question at a time. Give your recommended answer with each question, then wait for the user's answer.
+
+Load the `domain-modeling` skill when the discussion changes domain terms or decisions:
 
 - **Naming a deepened module after a concept not in `CONTEXT.md`?** Add the term to `CONTEXT.md`. Create the file lazily if it doesn't exist.
 - **Sharpening a fuzzy term during the conversation?** Update `CONTEXT.md` right there.
 - **User rejects the candidate with a load-bearing reason?** Offer an ADR, framed as: _"Want me to record this as an ADR so future architecture reviews don't re-suggest it?"_ Only offer when the reason would actually be needed by a future explorer to avoid re-suggesting the same thing — skip ephemeral reasons ("not worth it right now") and self-evident ones.
-- **Want to explore alternative interfaces for the deepened module?** Run the `/codebase-design` skill and use its design-it-twice parallel sub-agent pattern.
+- **Want to explore alternative interfaces for the deepened module?** Read [`DESIGN-IT-TWICE.md`](../codebase-design/DESIGN-IT-TWICE.md). Produce at least three designs before you compare them.

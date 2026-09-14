@@ -7,7 +7,15 @@ description: Disciplined diagnosis loop for hard bugs and performance regression
 
 A discipline for hard bugs. Skip phases only when explicitly justified.
 
-When exploring the codebase, read `CONTEXT.md` (if it exists) to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
+When exploring the codebase, read `CONTEXT.md` if it exists. Also read the ADRs for the affected area.
+
+## Protect sensitive data
+
+Redact secrets from all commands, output, and captured artifacts that you show. Replace each secret with `<REDACTED>`.
+
+Keep credentials in environment variables. Quote only the artifact lines that contain the diagnostic signal. If redaction removes required evidence, stop and ask the user how to proceed.
+
+Use project tools only when they are already available or the user approves their installation. Do not install a browser harness, debugger, or profiler only because this skill lists it.
 
 ## Phase 1 — Build a feedback loop
 
@@ -131,4 +139,4 @@ Required before declaring done:
 - [ ] Throwaway prototypes deleted (or moved to a clearly-marked debug location)
 - [ ] The hypothesis that turned out correct is stated in the commit / PR message — so the next debugger learns
 
-**Then ask: what would have prevented this bug?** If the answer involves architectural change (no good test seam, tangled callers, hidden coupling) hand off to the `/improve-codebase-architecture` skill with the specifics. Make the recommendation **after** the fix is in, not before — you have more information now than when you started.
+**Then ask: what would have prevented this bug?** If the answer needs an architecture change, record it as a separate follow-up. Do not start an architecture review unless the user asks for one.
