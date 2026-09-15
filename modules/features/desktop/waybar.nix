@@ -191,8 +191,7 @@ _: {
             format-source = "";
             format-source-muted = "";
             tooltip = false;
-            # TODO: swayosd mic mute broken, pactl added as workaround (will double-toggle when fixed)
-            on-click = "bash -c '${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle; ${pkgs.swayosd}/bin/swayosd-client --input-volume=mute-toggle && pkill -SIGRTMIN+4 waybar'";
+            on-click = "bash -c '${pkgs.swayosd}/bin/swayosd-client --input-volume=mute-toggle && pkill -SIGRTMIN+4 waybar'";
           };
           "pulseaudio/slider" = {
             orientation = "vertical";

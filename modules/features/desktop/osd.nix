@@ -25,10 +25,9 @@ _: {
         allow-when-locked = true;
         action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=mute-toggle && pkill -SIGRTMIN+4 waybar";
       };
-      # TODO: swayosd mic mute broken, pactl added as workaround (will double-toggle when fixed)
       "XF86AudioMicMute" = {
         allow-when-locked = true;
-        action = spawn "bash" "-c" "${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle; ${pkgs.swayosd}/bin/swayosd-client --input-volume=mute-toggle && pkill -SIGRTMIN+4 waybar";
+        action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume=mute-toggle && pkill -SIGRTMIN+4 waybar";
       };
       "XF86AudioPlay" = {
         allow-when-locked = true;
