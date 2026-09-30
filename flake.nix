@@ -30,10 +30,6 @@
       # inputs.niri-unstable.follows = "niri-unstable";
     };
 
-    # private flakes
-    # gridx.url = "git+ssh://git@github.com/debugloop/gridx";
-    gridx.url = "path:/home/danieln/code/gridx";
-
     niri-autoselect-portal = {
       url = "git+https://codeberg.org/debugloop/niri-autoselect-portal.git";
     };

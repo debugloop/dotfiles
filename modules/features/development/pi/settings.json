@@ -18,9 +18,7 @@
     "openai-codex/gpt-5.6-luna",
     "openai-codex/gpt-5.6-sol",
     "openai-codex/gpt-5.6-terra",
-    "openai-codex/gpt-6-astra",
-    "gridx-gateway/claude-sonnet-5",
-    "gridx-gateway/claude-opus-5"
+    "openai-codex/gpt-6-astra"
   ],
   "compaction": {
     "enabled": false

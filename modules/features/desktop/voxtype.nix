@@ -26,8 +26,6 @@ _: {
   in {
     services.voxtype = {
       enable = true;
-      # On lusus, Vulkan was 5.6 times faster with a cold cache.
-      # It was 19.6 times faster with a warm cache. Test Vulkan on simmons when possible.
       package = voxtypePackage;
       loadModels = ["base.en"];
       environment = {

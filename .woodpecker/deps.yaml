@@ -20,7 +20,7 @@ steps:
   - name: update flake inputs
     image: bash
     commands:
-      - nix flake update $(nix flake metadata --json | jq -r '.locks.nodes.root.inputs|keys|map(select(. != "gridx"))|join(" ")')
+      - nix flake update
       - echo $(git status --porcelain)
       - test -n "$(git status --porcelain)" || exit 0
       - git commit -am "update flake inputs"
