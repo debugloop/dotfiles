@@ -14,7 +14,7 @@ _: {
     ...
   }: {
     programs.niri.settings.binds = with config.lib.niri.actions; {
-      "Mod+Backslash".action = spawn "${pkgs.swaylock-effects}/bin/swaylock" "-f";
+      "Mod+Slash".action = spawn "${pkgs.swaylock-effects}/bin/swaylock" "-f";
     };
 
     programs.swaylock = {

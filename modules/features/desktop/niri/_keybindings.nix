@@ -7,7 +7,7 @@
     "Mod+D".action = spawn "bash" "-c" "${pkgs.procps}/bin/pkill wofi || ${pkgs.wofi}/bin/wofi -aGS drun";
 
     # lock and suspend
-    "Mod+Ctrl+Backslash".action = spawn "systemctl" "suspend";
+    "Mod+Ctrl+Slash".action = spawn "systemctl" "suspend";
 
     # window actions
     "Mod+Q".action = close-window;
