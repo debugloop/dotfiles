@@ -33,41 +33,54 @@ end, { desc = "go to start of line" })
 map2({ "o", "x" }, "<home>", "H", "^", { desc = "go to start of line" })
 map2("n", "<end>", "L", function()
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-  local ok, parser = pcall(vim.treesitter.get_parser, 0)
-  if not ok then
+  local ok, comment_start_col = pcall(function()
+    local parser = vim.treesitter.get_parser(0)
+    if not parser then
+      return nil
+    end
+
+    local trees = parser:parse()
+    if not trees or not trees[1] then
+      return nil
+    end
+
+    local root = trees[1]:root()
+    if not root then
+      return nil
+    end
+
+    local start_col
+    local function find_comment(node)
+      if node:type() == "comment" then
+        local sr, sc = node:range()
+        if sr == row - 1 then
+          start_col = sc
+          return
+        end
+      end
+      for child in node:iter_children() do
+        local sr, _, er = child:range()
+        if sr <= row - 1 and er >= row - 1 then
+          find_comment(child)
+        end
+      end
+    end
+    find_comment(root)
+    return start_col
+  end)
+
+  if not ok or comment_start_col == nil then
     vim.cmd("normal! $")
     return
   end
-  local root = parser:parse()[1]:root()
-  local comment_start_col, comment_end_col
-  local function find_comment(node)
-    if node:type() == "comment" then
-      local sr, sc, _, ec = node:range()
-      if sr == row - 1 then
-        comment_start_col = sc
-        comment_end_col = ec
-        return
-      end
-    end
-    for child in node:iter_children() do
-      local sr, _, er = child:range()
-      if sr <= row - 1 and er >= row - 1 then
-        find_comment(child)
-      end
-    end
-  end
-  find_comment(root)
-  if comment_start_col then
-    local line_len = #vim.api.nvim_get_current_line() - 1
-    if col >= line_len then
-      vim.api.nvim_win_set_cursor(0, { row, comment_start_col })
-    elseif col >= comment_start_col then
-      vim.api.nvim_win_set_cursor(0, { row, line_len })
-    else
-      vim.api.nvim_win_set_cursor(0, { row, comment_start_col })
-    end
+
+  local line_len = #vim.api.nvim_get_current_line() - 1
+  if col >= line_len then
+    vim.api.nvim_win_set_cursor(0, { row, comment_start_col })
+  elseif col >= comment_start_col then
+    vim.api.nvim_win_set_cursor(0, { row, line_len })
   else
-    vim.cmd("normal! $")
+    vim.api.nvim_win_set_cursor(0, { row, comment_start_col })
   end
 end, { desc = "go to end of line / begin of eol comment" })
 map2({ "o", "x" }, "<end>", "L", "$", { desc = "go to end of line" })
