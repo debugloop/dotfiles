@@ -21,15 +21,6 @@
     };
     impermanence.url = "github:nix-community/impermanence";
 
-    # niri-unstable = {
-    #   url = "github:YaLTeR/niri/a11fe23cbf6ba01ae4c23679aa2f7d7d8b44baf4";
-    #   flake = false;
-    # };
-    niri = {
-      url = "github:sodiboo/niri-flake";
-      # inputs.niri-unstable.follows = "niri-unstable";
-    };
-
     niri-autoselect-portal = {
       url = "git+https://codeberg.org/debugloop/niri-autoselect-portal.git";
     };

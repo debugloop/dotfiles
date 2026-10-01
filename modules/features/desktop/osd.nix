@@ -1,56 +1,48 @@
 _: {
-  flake.modules.homeManager.osd = {
-    config,
-    pkgs,
-    ...
-  }: {
-    programs.niri.settings.binds = with config.lib.niri.actions; {
+  flake.modules.homeManager.osd = {pkgs, ...}: {
+    wayland.windowManager.niri.settings.binds = {
       "XF86AudioRaiseVolume" = {
-        allow-when-locked = true;
-        action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=1 && pkill -SIGRTMIN+4 waybar";
+        _props.allow-when-locked = true;
+        spawn = ["bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=1 && pkill -SIGRTMIN+4 waybar"];
       };
       "XF86AudioLowerVolume" = {
-        allow-when-locked = true;
-        action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=-1 && pkill -SIGRTMIN+4 waybar";
+        _props.allow-when-locked = true;
+        spawn = ["bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=-1 && pkill -SIGRTMIN+4 waybar"];
       };
       "Shift+XF86AudioRaiseVolume" = {
-        allow-when-locked = true;
-        action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=5 && pkill -SIGRTMIN+4 waybar";
+        _props.allow-when-locked = true;
+        spawn = ["bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=5 && pkill -SIGRTMIN+4 waybar"];
       };
       "Shift+XF86AudioLowerVolume" = {
-        allow-when-locked = true;
-        action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=-5 && pkill -SIGRTMIN+4 waybar";
+        _props.allow-when-locked = true;
+        spawn = ["bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=-5 && pkill -SIGRTMIN+4 waybar"];
       };
       "XF86AudioMute" = {
-        allow-when-locked = true;
-        action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=mute-toggle && pkill -SIGRTMIN+4 waybar";
+        _props.allow-when-locked = true;
+        spawn = ["bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume=mute-toggle && pkill -SIGRTMIN+4 waybar"];
       };
       "XF86AudioMicMute" = {
-        allow-when-locked = true;
-        action = spawn "bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume=mute-toggle && pkill -SIGRTMIN+4 waybar";
+        _props.allow-when-locked = true;
+        spawn = ["bash" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume=mute-toggle && pkill -SIGRTMIN+4 waybar"];
       };
       "XF86AudioPlay" = {
-        allow-when-locked = true;
-        action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--playerctl=play-pause";
+        _props.allow-when-locked = true;
+        spawn = ["${pkgs.swayosd}/bin/swayosd-client" "--playerctl=play-pause"];
       };
       "XF86AudioNext" = {
-        allow-when-locked = true;
-        action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--playerctl=next";
+        _props.allow-when-locked = true;
+        spawn = ["${pkgs.swayosd}/bin/swayosd-client" "--playerctl=next"];
       };
       "XF86AudioPrev" = {
-        allow-when-locked = true;
-        action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--playerctl=prev";
+        _props.allow-when-locked = true;
+        spawn = ["${pkgs.swayosd}/bin/swayosd-client" "--playerctl=prev"];
       };
       "XF86AudioStop" = {
-        allow-when-locked = true;
-        action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--playerctl=play-pause";
+        _props.allow-when-locked = true;
+        spawn = ["${pkgs.swayosd}/bin/swayosd-client" "--playerctl=play-pause"];
       };
-      "XF86MonBrightnessUp" = {
-        action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--brightness=raise";
-      };
-      "XF86MonBrightnessDown" = {
-        action = spawn "${pkgs.swayosd}/bin/swayosd-client" "--brightness=lower";
-      };
+      "XF86MonBrightnessUp".spawn = ["${pkgs.swayosd}/bin/swayosd-client" "--brightness=raise"];
+      "XF86MonBrightnessDown".spawn = ["${pkgs.swayosd}/bin/swayosd-client" "--brightness=lower"];
     };
 
     services.swayosd = {

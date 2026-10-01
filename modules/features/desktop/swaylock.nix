@@ -13,9 +13,7 @@ _: {
     config,
     ...
   }: {
-    programs.niri.settings.binds = with config.lib.niri.actions; {
-      "Mod+Slash".action = spawn "${pkgs.swaylock-effects}/bin/swaylock" "-f";
-    };
+    wayland.windowManager.niri.settings.binds."Mod+Slash".spawn = ["${pkgs.swaylock-effects}/bin/swaylock" "-f"];
 
     programs.swaylock = {
       enable = true;

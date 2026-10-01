@@ -5,16 +5,27 @@ _: {
     inputs,
     ...
   }: {
-    imports = [
-      inputs.niri.nixosModules.niri
-      inputs.niri-autoselect-portal.nixosModules.default
-    ];
+    imports = [inputs.niri-autoselect-portal.nixosModules.default];
 
     services.niri-autoselect-portal.enable = true;
 
     programs.niri = {
       enable = true;
-      package = inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
+      package = pkgs.niri;
+      useNautilus = false;
+    };
+
+    systemd.user.services.niri-polkit = {
+      description = "PolicyKit authentication agent for Niri";
+      after = ["graphical-session.target"];
+      partOf = ["graphical-session.target"];
+      wantedBy = ["niri.service"];
+      serviceConfig = {
+        ExecStart = "${pkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1";
+        Restart = "on-failure";
+        RestartSec = 1;
+        TimeoutStopSec = 10;
+      };
     };
 
     xdg.portal = {
@@ -49,113 +60,103 @@ _: {
   flake.modules.homeManager.niri = {
     config,
     pkgs,
-    inputs,
     ...
-  }: let
-    call = pkgs.lib.flip import {
-      inherit
-        inputs
-        kdl
-        docs
-        binds
-        settings
-        ;
-      inherit (pkgs) lib;
-    };
-    kdl = call "${inputs.niri}/kdl.nix";
-    binds = call "${inputs.niri}/parse-binds.nix";
-    docs = call "${inputs.niri}/generate-docs.nix";
-    settings = call "${inputs.niri}/settings.nix";
-  in {
+  }: {
     imports = [
       ./_animations.nix
       ./_keybindings.nix
       ./_window_rules.nix
     ];
 
-    home.packages = with pkgs; [
-      xwayland-satellite
-    ];
+    wayland.windowManager.niri = {
+      enable = true;
+      package = pkgs.niri;
+      systemd.enable = false;
+      portalPackage = null;
+      xwaylandSatellitePackage = pkgs.xwayland-satellite;
 
-    programs.niri = {
-      package = inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
       settings = {
-        gestures.hot-corners.enable = false;
-        screenshot-path = "~/pictures/screenshot-%d-%m-%Y-%T.png";
+        _children = [
+          {
+            output = {
+              _args = ["DP-1"];
+              background-color = "#${config.colors.light_bg}";
+              transform = "normal";
+            };
+          }
+          {
+            output = {
+              _args = ["DP-2"];
+              background-color = "#${config.colors.light_bg}";
+              transform = "normal";
+            };
+          }
+          {
+            output = {
+              _args = ["eDP-1"];
+              background-color = "#${config.colors.light_bg}";
+              scale = 1.0;
+              transform = "normal";
+            };
+          }
+        ];
+
+        cursor = {
+          xcursor-theme = "default";
+          xcursor-size = 24;
+        };
+        debug.honor-xdg-activation-with-invalid-serial = true;
+        gestures.hot-corners.off = {};
+        hotkey-overlay.skip-at-startup = {};
         input = {
-          workspace-auto-back-and-forth = true;
-          # warp-mouse-to-focus.enable = true;
-          focus-follows-mouse = {
-            enable = true;
-            max-scroll-amount = "0%";
-          };
+          focus-follows-mouse._props.max-scroll-amount = "0%";
           keyboard = {
+            repeat-delay = 600;
+            repeat-rate = 25;
+            track-layout = "global";
             xkb = {
               layout = "eu";
+              model = "";
               options = "compose:rctrl,lv3:ralt_switch_multikey";
+              rules = "";
+              variant = "";
             };
           };
           touchpad = {
             accel-profile = "adaptive";
             accel-speed = 0.4;
-            tap = true;
-            dwt = true;
-            middle-emulation = true;
-            natural-scroll = true;
+            dwt = {};
+            middle-emulation = {};
+            natural-scroll = {};
+            tap = {};
           };
+          workspace-auto-back-and-forth = {};
         };
-        overview.backdrop-color = "#${config.colors.light_bg}";
-        outputs = {
-          "eDP-1" = {
-            scale = 1.0;
-            background-color = "#${config.colors.light_bg}";
-          };
-          "DP-1" = {
-            background-color = "#${config.colors.light_bg}";
-          };
-          "DP-2" = {
-            background-color = "#${config.colors.light_bg}";
-          };
-        };
-        hotkey-overlay.skip-at-startup = true;
-        prefer-no-csd = true;
         layout = {
-          empty-workspace-above-first = true;
-          always-center-single-column = true;
-          gaps = 0;
-          shadow = {
-            enable = false;
-            color = "#${config.colors.blue}";
-            inactive-color = "#${config.colors.light_bg}00"; # transparent
-          };
-          focus-ring = {
-            enable = false;
-            width = 2;
-            active.color = "#${config.colors.blue}";
-            inactive.color = "#${config.colors.cyan}";
-            urgent.color = "#${config.colors.red}";
-          };
+          always-center-single-column = {};
           border = {
-            enable = true;
-            width = 3;
-            # active.color = "#${config.colors.blue}";
-            active.gradient = {
+            active-gradient._props = {
               angle = 135;
               from = "#${config.colors.blue}";
-              to = "#${config.colors.bright-blue}";
               relative-to = "window";
+              to = "#${config.colors.bright-blue}";
             };
-            inactive.color = "#${config.colors.light_bg}";
-            # urgent.color = "#${config.colors.red}";
-            urgent.gradient = {
+            inactive-color = "#${config.colors.light_bg}";
+            urgent-gradient._props = {
               angle = 135;
               from = "#${config.colors.red}";
-              to = "#${config.colors.bright-red}";
               relative-to = "window";
+              to = "#${config.colors.bright-red}";
             };
+            width = 3;
           };
+          center-focused-column = "never";
           default-column-width.proportion = 0.4;
-          preset-column-widths = [
+          empty-workspace-above-first = {};
+          focus-ring.off = {};
+          gaps = 0;
+          insert-hint.color = "#${config.colors.green}88";
+          preset-column-widths._children = [
             {proportion = 0.3;}
             {proportion = 0.4;}
             {proportion = 0.5;}
@@ -163,42 +164,46 @@ _: {
             {proportion = 0.7;}
             {proportion = 1.0;}
           ];
-          preset-window-heights = [
+          preset-window-heights._children = [
             {proportion = 0.333333;}
             {proportion = 0.5;}
             {proportion = 0.666667;}
             {proportion = 1.0;}
           ];
+          struts = {
+            bottom = 0;
+            left = 0;
+            right = 0;
+            top = 0;
+          };
           tab-indicator = {
-            position = "right";
-            gap = -15;
-            width = 8;
-            gaps-between-tabs = 8;
-            length.total-proportion = 0.2;
-            corner-radius = 5;
-            # active.color = "#${config.colors.bright-green}88";
-            active.gradient = {
+            active-gradient._props = {
+              angle = 180;
               from = "#${config.colors.green}";
+              relative-to = "window";
               to = "#${config.colors.bright-green}";
             };
-            inactive.color = "#${config.colors.light_bg}88";
-            # urgent.color = "#${config.colors.red}88";
-            urgent.gradient = {
+            corner-radius = 5;
+            gap = -15;
+            gaps-between-tabs = 8;
+            inactive-color = "#${config.colors.light_bg}88";
+            length._props.total-proportion = 0.2;
+            position = "right";
+            urgent-gradient._props = {
+              angle = 180;
               from = "#${config.colors.red}";
+              relative-to = "window";
               to = "#${config.colors.bright-red}";
             };
+            width = 8;
           };
-          insert-hint.display.color = "#${config.colors.green}88";
         };
-        debug = {
-          honor-xdg-activation-with-invalid-serial = true;
-        };
+        overview.backdrop-color = "#${config.colors.light_bg}";
+        prefer-no-csd = {};
+        screenshot-path = "~/pictures/screenshot-%d-%m-%Y-%T.png";
       };
-      config = with inputs.niri.lib.kdl;
-        (settings.render config.programs.niri.settings)
-        ++ [
-          (leaf "include" ["${./extra.kdl}"])
-        ];
+
+      extraConfig = ''include "${./extra.kdl}"'';
     };
   };
 }

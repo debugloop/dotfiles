@@ -5,28 +5,28 @@ _: {
     lib,
     ...
   }: {
-    programs.niri.settings.binds = with config.lib.niri.actions; {
-      "Mod+Ctrl+1".action = set-workspace-name "red";
-      "Mod+Ctrl+2".action = set-workspace-name "green";
-      "Mod+Ctrl+3".action = set-workspace-name "blue";
-      "Mod+Ctrl+4".action = set-workspace-name "orange";
-      "Mod+Ctrl+5".action = set-workspace-name "yellow";
-      "Mod+Ctrl+6".action = set-workspace-name "purple";
-      "Mod+Ctrl+0".action = unset-workspace-name;
+    wayland.windowManager.niri.settings.binds = {
+      "Mod+Ctrl+1".set-workspace-name = "red";
+      "Mod+Ctrl+2".set-workspace-name = "green";
+      "Mod+Ctrl+3".set-workspace-name = "blue";
+      "Mod+Ctrl+4".set-workspace-name = "orange";
+      "Mod+Ctrl+5".set-workspace-name = "yellow";
+      "Mod+Ctrl+6".set-workspace-name = "purple";
+      "Mod+Ctrl+0".unset-workspace-name = {};
 
-      "Mod+Shift+1".action = lib.mkForce (spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action move-window-to-workspace red || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name red");
-      "Mod+Shift+2".action = lib.mkForce (spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action move-window-to-workspace green || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name green");
-      "Mod+Shift+3".action = lib.mkForce (spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action move-window-to-workspace blue || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name blue");
-      "Mod+Shift+4".action = lib.mkForce (spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action move-window-to-workspace orange || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name orange");
-      "Mod+Shift+5".action = lib.mkForce (spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action move-window-to-workspace yellow || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name yellow");
-      "Mod+Shift+6".action = lib.mkForce (spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action move-window-to-workspace purple || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name purple");
+      "Mod+Shift+1" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action move-window-to-workspace red || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name red"];};
+      "Mod+Shift+2" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action move-window-to-workspace green || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name green"];};
+      "Mod+Shift+3" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action move-window-to-workspace blue || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name blue"];};
+      "Mod+Shift+4" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action move-window-to-workspace orange || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name orange"];};
+      "Mod+Shift+5" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action move-window-to-workspace yellow || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name yellow"];};
+      "Mod+Shift+6" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action move-window-to-workspace purple || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name purple"];};
 
-      "Mod+1".action = lib.mkForce (spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action focus-workspace red || niri msg action focus-workspace 64 && niri msg action set-workspace-name red");
-      "Mod+2".action = lib.mkForce (spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action focus-workspace green || niri msg action focus-workspace 64 && niri msg action set-workspace-name green");
-      "Mod+3".action = lib.mkForce (spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action focus-workspace blue || niri msg action focus-workspace 64 && niri msg action set-workspace-name blue");
-      "Mod+4".action = lib.mkForce (spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action focus-workspace orange || niri msg action focus-workspace 64 && niri msg action set-workspace-name orange");
-      "Mod+5".action = lib.mkForce (spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action focus-workspace yellow || niri msg action focus-workspace 64 && niri msg action set-workspace-name yellow");
-      "Mod+6".action = lib.mkForce (spawn "fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action focus-workspace purple || niri msg action focus-workspace 64 && niri msg action set-workspace-name purple");
+      "Mod+1" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action focus-workspace red || niri msg action focus-workspace 64 && niri msg action set-workspace-name red"];};
+      "Mod+2" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action focus-workspace green || niri msg action focus-workspace 64 && niri msg action set-workspace-name green"];};
+      "Mod+3" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action focus-workspace blue || niri msg action focus-workspace 64 && niri msg action set-workspace-name blue"];};
+      "Mod+4" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action focus-workspace orange || niri msg action focus-workspace 64 && niri msg action set-workspace-name orange"];};
+      "Mod+5" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action focus-workspace yellow || niri msg action focus-workspace 64 && niri msg action set-workspace-name yellow"];};
+      "Mod+6" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action focus-workspace purple || niri msg action focus-workspace 64 && niri msg action set-workspace-name purple"];};
     };
 
     programs.waybar = {

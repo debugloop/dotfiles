@@ -22,9 +22,7 @@
     ];
     setWallpaperCommand = lib.escapeShellArgs setWallpaper;
   in {
-    programs.niri.settings.spawn-at-startup = [
-      {argv = setWallpaper;}
-    ];
+    wayland.windowManager.niri.settings.spawn-at-startup = setWallpaper;
 
     services = {
       awww.enable = true;

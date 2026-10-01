@@ -4,9 +4,7 @@ _: {
     pkgs,
     ...
   }: {
-    programs.niri.settings.binds = with config.lib.niri.actions; {
-      "Mod+N".action = spawn "${pkgs.mako}/bin/makoctl" "dismiss" "-a";
-    };
+    wayland.windowManager.niri.settings.binds."Mod+N".spawn = ["${pkgs.mako}/bin/makoctl" "dismiss" "-a"];
 
     services.mako = {
       enable = true;

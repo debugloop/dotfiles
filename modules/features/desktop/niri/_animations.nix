@@ -1,10 +1,8 @@
 _: {
-  programs.niri.settings.animations = {
+  wayland.windowManager.niri.settings.animations = {
     window-open = {
-      kind.easing = {
-        duration-ms = 1500;
-        curve = "ease-out-expo";
-      };
+      duration-ms = 1500;
+      curve = "ease-out-expo";
       custom-shader = ''
         float hash(vec2 p) {
             return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -54,10 +52,8 @@ _: {
       '';
     };
     window-close = {
-      kind.easing = {
-        duration-ms = 1500;
-        curve = "ease-out-expo";
-      };
+      duration-ms = 1500;
+      curve = "ease-out-expo";
       custom-shader = ''
         float hash(vec2 p) {
             return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);

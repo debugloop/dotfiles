@@ -4,9 +4,7 @@ _: {
     pkgs,
     ...
   }: {
-    programs.niri.settings.binds = with config.lib.niri.actions; {
-      "Mod+Return".action = spawn "${pkgs.kitty}/bin/kitty";
-    };
+    wayland.windowManager.niri.settings.binds."Mod+Return".spawn = ["${pkgs.kitty}/bin/kitty"];
 
     programs.kitty = {
       enable = true;
