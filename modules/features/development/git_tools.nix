@@ -6,7 +6,6 @@ _: {
       jj-pre-push
       jjui
       jujutsu
-      mergiraf
       tig
     ];
 
