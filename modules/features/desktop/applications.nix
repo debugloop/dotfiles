@@ -8,17 +8,15 @@ _: {
       "home/${config.mainUser}/.local/share/Steam"
       "home/${config.mainUser}/.thunderbird"
       "home/${config.mainUser}/.config/google-chrome"
-      "home/${config.mainUser}/.config/Slack"
-      "home/${config.mainUser}/.mozilla"
+      "home/${config.mainUser}/.config/mozilla"
     ];
 
     environment.persistence."/nix/persist".users.${config.mainUser} = {
       directories = [
-        ".mozilla"
+        ".config/mozilla"
         ".thunderbird"
         ".config/google-chrome"
         ".config/Postman"
-        ".config/Slack"
         ".config/qView"
         ".ts3client"
         ".local/share/Steam"
