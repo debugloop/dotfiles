@@ -8,7 +8,7 @@ passphrase as an alternative. Keep the YubiKey at the desk if the laptop leaves.
 Anyone with the laptop and YubiKey can unlock the disk.
 
 The Nix configuration enables FIDO2 support in the systemd initrd. It waits up to
-10 seconds for the key before it requests the passphrase. This timeout applies
+5 seconds for the key before it requests the passphrase. This timeout applies
 to device discovery, not touch or PIN prompts.
 
 Enrollment stores the credential and its authentication policy in the LUKS2

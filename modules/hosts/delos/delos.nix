@@ -39,6 +39,10 @@
       disko.devices = inputs.self.diskoConfigurations.delos.disko.devices;
       fileSystems."/".options = lib.mkForce config.disko.devices.nodev."/".mountOptions;
       boot.initrd.systemd.fido2.enable = true;
+      boot.initrd.luks.devices.crypt.crypttabExtraOpts = [
+        "fido2-device=auto"
+        "token-timeout=5s"
+      ];
 
       # TODO: Assign a dedicated StorageBox account before enabling backups.
       backup.enable = false;
