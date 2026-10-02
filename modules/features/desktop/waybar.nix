@@ -140,6 +140,7 @@ _: {
               "cpu"
               "memory"
               "disk"
+              "tray"
             ];
           };
           memory = {
