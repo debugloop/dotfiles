@@ -21,6 +21,7 @@ _: {
       ];
       packages = with pkgs; [
         delve
+        gcc # for -race
         go-tools
         gofumpt
         goimports-reviser
