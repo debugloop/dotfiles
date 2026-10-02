@@ -76,7 +76,7 @@ in {
     nodev."/" = {
       fsType = "tmpfs";
       device = "none";
-      mountOptions = ["defaults" "size=1G" "mode=755"];
+      mountOptions = ["defaults" "size=4G" "mode=755"];
     };
   };
 }

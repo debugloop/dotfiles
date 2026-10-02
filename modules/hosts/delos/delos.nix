@@ -18,6 +18,7 @@
     modules.nixos.delos = {
       config,
       inputs,
+      lib,
       ...
     }: {
       imports =
@@ -36,6 +37,7 @@
       networking.hostName = "delos";
 
       disko.devices = inputs.self.diskoConfigurations.delos.disko.devices;
+      fileSystems."/".options = lib.mkForce config.disko.devices.nodev."/".mountOptions;
       boot.initrd.systemd.fido2.enable = true;
 
       # TODO: Assign a dedicated StorageBox account before enabling backups.
