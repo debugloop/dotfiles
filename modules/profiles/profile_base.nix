@@ -15,7 +15,6 @@ _: {
       vm
       backup_persisted
       impermanence
-      tailscale
     ];
   };
 }

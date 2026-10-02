@@ -59,6 +59,7 @@
         (with inputs.self.modules.nixos; [
           profile_base
           profile_server
+          tailscale_personal
           hetzner
           caddy
           grafana

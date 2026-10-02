@@ -22,6 +22,7 @@
         profile_base
         profile_client
         profile_development
+        tailscale_personal
       ])
       ++ [./_hardware-configuration.nix];
 
