@@ -1,3 +1,10 @@
+local golangci_config_files = {
+  ".golangci.json",
+  ".golangci.toml",
+  ".golangci.yaml",
+  ".golangci.yml",
+}
+
 return {
   -- blink.cmp
   {
@@ -165,7 +172,17 @@ return {
     opts = {
       formatters_by_ft = {
         css = { "prettier" },
-        go = { "golangci-lint", "gofumpt", "goimports", "goimports-reviser" },
+        go = function(bufnr)
+          local filename = vim.api.nvim_buf_get_name(bufnr)
+          local config = vim.fs.find(golangci_config_files, {
+            path = vim.fs.dirname(filename),
+            upward = true,
+          })[1]
+          if config then
+            return { "golangci-lint" }
+          end
+          return { "gofumpt", "goimports", "goimports-reviser" }
+        end,
         html = { "prettier" },
         http = { "kulala-fmt" },
         javascript = { "prettier" },
@@ -190,6 +207,9 @@ return {
         }
       end,
       formatters = {
+        ["golangci-lint"] = {
+          cwd = require("conform.util").root_file(golangci_config_files),
+        },
         prettier = {
           prepend_args = { "--tab-width", "4" },
         },
