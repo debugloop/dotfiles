@@ -86,7 +86,7 @@ vim.o.sidescrolloff = 8 -- always show this many columns of context at the edges
 -- splits
 vim.o.splitbelow = true -- open horizontal splits below the current window
 vim.o.splitright = true -- open vertical splits to the right of the current window
-vim.o.splitkeep = "screen" -- reduce scroll during window split
+vim.o.splitkeep = "cursor" -- keep the cursor on the same text during window splits
 
 -- diff
 vim.o.diffopt = "internal,filler,closeoff,indent-heuristic,linematch:60,algorithm:histogram" -- better diff algorithm
