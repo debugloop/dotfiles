@@ -1,15 +1,20 @@
 _: {
   flake.modules.nixos.gh = {config, ...}: {
-    # `gh auth login` puts the token in the gnome keyring (already persisted by
-    # the desktop module) and keeps only the active host and account here. Both
-    # halves are needed: without hosts.yml gh does not know which account the
-    # keyring entry belongs to and asks for a new login on every boot.
+    # `gh auth login` stores the token in the Gnome keyring. The desktop module
+    # persists the keyring. It stores the account metadata and settings here.
     environment.persistence."/nix/persist".users.${config.mainUser} = {
-      files = [".config/gh/hosts.yml"];
+      files = [
+        ".config/gh/config.yml"
+        ".config/gh/hosts.yml"
+      ];
     };
   };
 
   flake.modules.homeManager.gh = {pkgs, ...}: {
+    # The gh module generates a read-only config.yml. Disable that file so gh
+    # can update the persisted copy.
+    xdg.configFile."gh/config.yml".enable = false;
+
     programs.gh = {
       enable = true;
       extensions = [
@@ -31,10 +36,6 @@ _: {
           nativeCheckInputs = (prev.nativeCheckInputs or []) ++ [pkgs.git];
         }))
       ];
-      settings = {
-        version = 1;
-        git_protocol = "ssh";
-      };
     };
   };
 }
