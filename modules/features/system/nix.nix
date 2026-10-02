@@ -52,6 +52,7 @@ _: {
         enable = true;
         silent = true;
         nix-direnv.enable = true;
+        mise.enable = true;
       };
       home-manager.enable = true;
       nh = {
