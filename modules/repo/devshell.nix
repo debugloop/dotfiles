@@ -14,17 +14,27 @@
 
     fido2Recipient = "age1l9vzn3un0j7kta9x388ttsheq8dq6c9954lpqee5pmaeh4xgr5aszy7xn3";
 
+    personalTailscaleKeys =
+      map pkgs.lib.fileContents [
+        (inputs.self + "/keys/hosts/roshar.pub")
+        (inputs.self + "/keys/hosts/simmons.pub")
+      ]
+      ++ [fido2Recipient];
+
     secretsNix = pkgs.writeText "secrets.nix" ''
       let
         all = [
           ${pkgs.lib.concatMapStringsSep "\n  " (k: ''"${pkgs.lib.trim k}"'') allKeys}
         ];
         fido2 = [ "${fido2Recipient}" ];
+        personalTailscale = [
+          ${pkgs.lib.concatMapStringsSep "\n  " (k: ''"${pkgs.lib.trim k}"'') personalTailscaleKeys}
+        ];
       in
       {
         "secrets/login_password_hash.age".publicKeys = all;
         "secrets/restic_password.age".publicKeys = all;
-        "secrets/tailscale.age".publicKeys = all;
+        "secrets/tailscale.age".publicKeys = personalTailscale;
         "secrets/grafana.age".publicKeys = all;
         "secrets/hister.age".publicKeys = all;
         "secrets/miniflux.age".publicKeys = all;
