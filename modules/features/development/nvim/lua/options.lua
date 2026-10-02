@@ -30,6 +30,15 @@ vim.o.linebreak = true -- prefer wrap at spaces
 vim.o.breakindent = true -- indent wrapped lines to match line start
 vim.o.breakindentopt = "list:-1" -- add padding for lists (if 'wrap' is set)
 
+-- ignore EditorConfig tab widths for Go files
+local editorconfig = require("editorconfig")
+local apply_tab_width = editorconfig.properties.tab_width
+editorconfig.properties.tab_width = function(bufnr, value, options)
+  if vim.bo[bufnr].filetype ~= "go" then
+    apply_tab_width(bufnr, value, options)
+  end
+end
+
 -- file safety
 vim.o.backup = true -- enable backup files
 vim.o.backupdir = vim.fn.expand("~/.backup") -- set backup location
