@@ -1,9 +1,5 @@
 _: {
-  flake.modules.nixos.docker = {
-    config,
-    pkgs,
-    ...
-  }: {
+  flake.modules.nixos.docker = {config, ...}: {
     users.users.${config.mainUser}.extraGroups = ["docker"];
 
     virtualisation = {
@@ -29,24 +25,11 @@ _: {
       };
     };
 
-    # Use pasta instead of slirp4netns for better DNS handling
-    # Pasta auto-discovers DNS from /etc/resolv.conf by default via --dns-host
-    systemd.user.services.docker = {
-      path = [pkgs.passt];
-      environment = {
-        DOCKERD_ROOTLESS_ROOTLESSKIT_NET = "pasta";
-        DOCKERD_ROOTLESS_ROOTLESSKIT_PORT_DRIVER = "implicit";
-        # Use Cloudflare DNS for pasta (works on any network)
-        # Containers don't need split DNS, so public resolver is fine
-        DOCKERD_ROOTLESS_ROOTLESSKIT_PASTA_OPTIONS = "--dns-host 1.1.1.1";
-      };
-    };
     networking.firewall = {
       checkReversePath = "loose";
     };
 
     environment = {
-      systemPackages = [pkgs.passt];
       # https://github.com/NixOS/nixpkgs/issues/231191#issuecomment-1664053176
       etc."resolv.conf".mode = "direct-symlink";
       persistence."/nix/persist" = {
