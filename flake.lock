@@ -45,6 +45,50 @@
         "type": "github"
       }
     },
+    "dash0-cli": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "dash0-flake",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789379040,
+        "narHash": "sha256-TX3Cqdp79whFu4HzQAMeF/hf99jogegxTdv1AFREMCU=",
+        "owner": "dash0hq",
+        "repo": "dash0-cli",
+        "rev": "a86d26e13a6e8b6909fde7ba25e61c9d74b8b02f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dash0hq",
+        "ref": "v1.18.0",
+        "repo": "dash0-cli",
+        "type": "github"
+      }
+    },
+    "dash0-flake": {
+      "inputs": {
+        "agenix": [
+          "agenix"
+        ],
+        "dash0-cli": "dash0-cli",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791286745,
+        "narHash": "sha256-UU0MhA3xrw/XXq0f+KMUEv2PcCdiaZe2NeoZ/L0hOgw=",
+        "path": "/home/danieln/code/dash0-flake",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/danieln/code/dash0-flake",
+        "type": "path"
+      }
+    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -135,6 +179,24 @@
       "original": {
         "owner": "hercules-ci",
         "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "flake-utils": {
+      "inputs": {
+        "systems": "systems_2"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
         "type": "github"
       }
     },
@@ -424,6 +486,7 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "dash0-flake": "dash0-flake",
         "disko": "disko",
         "flake-parts": "flake-parts",
         "git-hooks-nix": "git-hooks-nix",
@@ -483,6 +546,21 @@
         "type": "github"
       }
     },
+    "systems_3": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
     "terranix": {
       "inputs": {
         "flake-parts": "flake-parts_2",
@@ -490,7 +568,7 @@
         "nixpkgs": [
           "nixpkgs"
         ],
-        "systems": "systems_2"
+        "systems": "systems_3"
       },
       "locked": {
         "lastModified": 1784465933,

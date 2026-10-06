@@ -21,6 +21,12 @@
     };
     impermanence.url = "github:nix-community/impermanence";
 
+    dash0-flake = {
+      url = "path:/home/danieln/code/dash0-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.agenix.follows = "agenix";
+    };
+
     niri-autoselect-portal = {
       url = "git+https://codeberg.org/debugloop/niri-autoselect-portal.git";
     };

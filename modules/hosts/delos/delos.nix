@@ -32,6 +32,7 @@
         ++ [
           ./_hardware-configuration.nix
           inputs.disko.nixosModules.disko
+          inputs.dash0-flake.nixosModules.work
         ];
 
       networking.hostName = "delos";
