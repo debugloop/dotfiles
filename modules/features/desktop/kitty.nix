@@ -4,7 +4,18 @@ _: {
     pkgs,
     ...
   }: {
-    wayland.windowManager.niri.settings.binds."Mod+Return".spawn = ["${pkgs.kitty}/bin/kitty"];
+    wayland.windowManager.niri.settings.binds = {
+      "Mod+Return".spawn = ["${pkgs.kitty}/bin/kitty"];
+      "Mod+Ctrl+Return".spawn = [
+        "${pkgs.kitty}/bin/kitty"
+        "--app-id"
+        "kitty-agent"
+        "-o"
+        "window_title_bar_min_windows=1"
+      ];
+    };
+    xdg.configFile."kitty/kitty_title_bar.py".source = ./kitty_title_bar.py;
+    xdg.configFile."kitty/kitty_agent_window.py".source = ./kitty_agent_window.py;
 
     programs.kitty = {
       enable = true;
@@ -30,6 +41,11 @@ _: {
         enable_audio_bell = "no";
         confirm_os_window_close = 0;
         placement_strategy = "top-left";
+
+        # Allow only agent-window and title-bar controls through remote control.
+        window_title_bar_min_windows = 0;
+        allow_remote_control = "password";
+        remote_control_password = ''"" ${./kitty_remote_control.py}'';
 
         # disable ligatures at cursor
         disable_ligatures = "cursor";
@@ -112,6 +128,7 @@ _: {
         # os windows
         "ctrl+shift+enter" = "launch --type=os-window --cwd=current";
         "ctrl+shift+r" = "set_window_title";
+        "ctrl+shift+t" = "kitten kitty_title_bar.py toggle";
 
         # clipboard
         "ctrl+shift+c" = "copy_to_clipboard";
