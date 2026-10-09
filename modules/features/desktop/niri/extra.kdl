@@ -10,7 +10,7 @@ recent-windows {
   binds {
     Mod+Backspace         { next-window; }
     Mod+Shift+Backspace   { previous-window; }
-    Mod+Ctrl+Backspace   { previous-window; }
+    Mod+Ctrl+Backspace    { next-window filter="app-id"; }
     Mod+Tab         { next-window; }
     Mod+Shift+Tab   { previous-window; }
     Mod+Ctrl+Tab   { previous-window; }
