@@ -675,12 +675,6 @@ return {
           require("snacks").rename.on_rename_file(event.data.from, event.data.to)
         end,
       })
-      vim.keymap.set("n", "]]", function()
-        Snacks.words.jump(vim.v.count1, true)
-      end, { desc = "jump to next reference" })
-      vim.keymap.set("n", "[[", function()
-        Snacks.words.jump(-vim.v.count1, true)
-      end, { desc = "jump to prev reference" })
       vim.keymap.set("n", "<leader>ob", function()
         Snacks.toggle.option("background", { on = "light", off = "dark" }):toggle()
       end, { desc = "toggle background" })
@@ -690,9 +684,6 @@ return {
       vim.keymap.set("n", "<leader>oD", function()
         Snacks.toggle.dim():toggle()
       end, { desc = "toggle dimming" })
-      vim.keymap.set("n", "<leader>oh", function()
-        Snacks.toggle.inlay_hints():toggle()
-      end, { desc = "toggle inlay hints" })
       vim.keymap.set("n", "<leader>oi", function()
         local toggle = Snacks.toggle.get("indentscope")
         if not toggle then
@@ -709,9 +700,6 @@ return {
         end
         toggle:toggle()
       end, { desc = "toggle indentscope" })
-      vim.keymap.set("n", "<leader>oI", function()
-        Snacks.toggle.words():toggle()
-      end, { desc = "toggle illumination" })
       vim.keymap.set("n", "<leader>ol", function()
         Snacks.toggle.option("list"):toggle()
       end, { desc = "toggle list" })
@@ -940,48 +928,6 @@ return {
       vim.keymap.set("n", "<leader>ss", function()
         Snacks.picker.resume({})
       end, { desc = "Resume" })
-      vim.keymap.set("n", "go", function()
-        Snacks.picker.lsp_symbols({ layout = "bqflike" })
-      end, { desc = "lsp: show symbols" })
-      vim.keymap.set("n", "gO", function()
-        Snacks.picker.lsp_workspace_symbols({ layout = "bqflike" })
-      end, { desc = "lsp: show all symbols" })
-      local function nix_module_definition(buf, name)
-        local root = vim.fs.root(buf, "flake.nix") or vim.fn.getcwd()
-        Snacks.picker.grep({
-          auto_confirm = true,
-          cwd = root,
-          glob = "*.nix",
-          layout = "bqflike",
-          live = false,
-          search = "flake\\.modules\\.(nixos|homeManager)\\." .. name .. "\\s*=",
-          title = "Nix module definition: " .. name,
-        })
-      end
-
-      vim.keymap.set("n", "gd", function()
-        Snacks.picker.lsp_definitions({ layout = "bqflike" })
-      end, { desc = "lsp: show definition" })
-      vim.keymap.set("n", "gD", function()
-        local buf = vim.api.nvim_get_current_buf()
-        if vim.bo[buf].filetype == "nix" then
-          nix_module_definition(buf, vim.fn.expand("<cword>"))
-        else
-          Snacks.picker.lsp_type_definitions({ layout = "bqflike" })
-        end
-      end, { desc = "lsp: show type definition / Nix module definition" })
-      vim.keymap.set("n", "gi", function()
-        Snacks.picker.lsp_implementations({ layout = "bqflike" })
-      end, { desc = "lsp: show implementations" })
-      vim.keymap.set("n", "gr", function()
-        Snacks.picker.lsp_references({ layout = "bqflike" })
-      end, { desc = "lsp: show refs" })
-      vim.keymap.set("n", "gh", function()
-        Snacks.picker.lsp_incoming_calls({ layout = "bqflike" })
-      end, { desc = "lsp: show incoming" })
-      vim.keymap.set("n", "gH", function()
-        Snacks.picker.lsp_outgoing_calls({ layout = "bqflike" })
-      end, { desc = "lsp: show outgoing" })
     end,
   },
 
