@@ -44,7 +44,6 @@ _: {
         end
       '';
       shellAbbrs = {
-        c = "curl";
         g = "git";
         h = "history --show-time='%F %T ' search";
         e = "vim";
@@ -226,7 +225,6 @@ _: {
         dmesg = "dmesg -T";
         docker-ip = "docker inspect --format '{{ .NetworkSettings.IPAddress }}'";
         ip = "ip -c";
-        c = "cd (git rev-parse --show-toplevel)";
         sloc = "tokei";
         s = "kitten ssh";
         vs = "vim (git f)";
