@@ -141,9 +141,31 @@ return {
   -- codediff.nvim
   {
     defer = true,
-    config = function(_)
-      require("codediff").setup({})
+    config = function(opts)
+      -- Use polling when no watcher is available. Nix plugin paths are read-only.
+      vim.env.CODEDIFF_WATCHER_NO_AUTO_INSTALL = "1"
+      require("codediff").setup(opts)
+      require("codediff_picker").setup()
     end,
+    opts = {
+      diff = {
+        ignore_trim_whitespace = true,
+      },
+      explorer = {
+        view_mode = "tree",
+        line_stats = {
+          enabled = true,
+        },
+      },
+      keymaps = {
+        view = {
+          next_hunk = "]g",
+          prev_hunk = "[g",
+          next_file = { "]f", "<s-right>" },
+          prev_file = { "[f", "<s-left>" },
+        },
+      },
+    },
   },
 
   -- conform.nvim
