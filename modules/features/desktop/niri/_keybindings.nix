@@ -58,6 +58,13 @@
     "Ctrl+Print".screenshot-window = {};
 
     # focus
+    "Mod+U".spawn = [
+      "${pkgs.writeShellApplication {
+        name = "niri-focus-urgent";
+        runtimeInputs = [pkgs.niri pkgs.jq];
+        text = builtins.readFile ./_focus_urgent.sh;
+      }}/bin/niri-focus-urgent"
+    ];
     "Mod+H".focus-column-left = {};
     "Mod+J".focus-window-or-workspace-down = {};
     "Mod+K".focus-window-or-workspace-up = {};
