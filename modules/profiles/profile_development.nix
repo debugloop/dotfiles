@@ -9,7 +9,6 @@ _: {
       devtools
       gh
       go
-      kubernetes
     ];
 
     home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.profile_development];
@@ -23,7 +22,6 @@ _: {
       gh
       git_tools
       go
-      kubernetes
       language_tooling
       nix_index
     ];
