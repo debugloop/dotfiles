@@ -20,6 +20,7 @@ in {
         PATH=${pkgs.lib.makeBinPath [pkgs.age-plugin-fido2-hmac]}:"$PATH" \
           ${pkgs.age}/bin/age --decrypt \
           -i ${../../../keys/physical/desk.pub} \
+          -i ${../../../keys/physical/keychain.pub} \
           -o ${secretDir}/raw ${../../../secrets/luks.age}
         ${pkgs.python3}/bin/python3 - ${secretDir}/raw ${secretDir}/passphrase <<'PY'
         import os

@@ -9,7 +9,7 @@ in {
       set -euo pipefail
       echo "Decrypting access token."
       export PATH="${pkgs.age-plugin-fido2-hmac}/bin:$PATH"
-      _age="${pkgs.age}/bin/age --decrypt -i ${inputs.self}/keys/physical/desk.pub"
+      _age="${pkgs.age}/bin/age --decrypt -i ${inputs.self}/keys/physical/desk.pub -i ${inputs.self}/keys/physical/keychain.pub"
       _secrets="$($_age ${inputs.self}/secrets/hetzner_infra.age)"
       _get() { echo "$_secrets" | grep "^$1=" | cut -d= -f2-; }
       HETZNER_TF_PASSPHRASE="$(_get tfstate_passphrase)"
