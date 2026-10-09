@@ -6,27 +6,27 @@ _: {
     ...
   }: {
     wayland.windowManager.niri.settings.binds = {
-      "Mod+Ctrl+1".set-workspace-name = "red";
-      "Mod+Ctrl+2".set-workspace-name = "green";
-      "Mod+Ctrl+3".set-workspace-name = "blue";
-      "Mod+Ctrl+4".set-workspace-name = "orange";
-      "Mod+Ctrl+5".set-workspace-name = "yellow";
-      "Mod+Ctrl+6".set-workspace-name = "purple";
+      "Mod+Ctrl+1".set-workspace-name = "web";
+      "Mod+Ctrl+2".set-workspace-name = "comm";
+      "Mod+Ctrl+3".set-workspace-name = "personal";
+      "Mod+Ctrl+4".set-workspace-name = "square";
+      "Mod+Ctrl+5".set-workspace-name = "triangle";
+      "Mod+Ctrl+6".set-workspace-name = "hexagon";
       "Mod+Ctrl+0".unset-workspace-name = {};
 
-      "Mod+Shift+1" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action move-window-to-workspace red || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name red"];};
-      "Mod+Shift+2" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action move-window-to-workspace green || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name green"];};
-      "Mod+Shift+3" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action move-window-to-workspace blue || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name blue"];};
-      "Mod+Shift+4" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action move-window-to-workspace orange || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name orange"];};
-      "Mod+Shift+5" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action move-window-to-workspace yellow || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name yellow"];};
-      "Mod+Shift+6" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action move-window-to-workspace purple || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name purple"];};
+      "Mod+Shift+1" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"web\")' && niri msg action move-window-to-workspace web || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name web"];};
+      "Mod+Shift+2" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"comm\")' && niri msg action move-window-to-workspace comm || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name comm"];};
+      "Mod+Shift+3" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"personal\")' && niri msg action move-window-to-workspace personal || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name personal"];};
+      "Mod+Shift+4" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"square\")' && niri msg action move-window-to-workspace square || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name square"];};
+      "Mod+Shift+5" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"triangle\")' && niri msg action move-window-to-workspace triangle || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name triangle"];};
+      "Mod+Shift+6" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"hexagon\")' && niri msg action move-window-to-workspace hexagon || niri msg action move-window-to-workspace 42 && niri msg action set-workspace-name hexagon"];};
 
-      "Mod+1" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"red\")' && niri msg action focus-workspace red || niri msg action focus-workspace 64 && niri msg action set-workspace-name red"];};
-      "Mod+2" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"green\")' && niri msg action focus-workspace green || niri msg action focus-workspace 64 && niri msg action set-workspace-name green"];};
-      "Mod+3" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"blue\")' && niri msg action focus-workspace blue || niri msg action focus-workspace 64 && niri msg action set-workspace-name blue"];};
-      "Mod+4" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"orange\")' && niri msg action focus-workspace orange || niri msg action focus-workspace 64 && niri msg action set-workspace-name orange"];};
-      "Mod+5" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"yellow\")' && niri msg action focus-workspace yellow || niri msg action focus-workspace 64 && niri msg action set-workspace-name yellow"];};
-      "Mod+6" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"purple\")' && niri msg action focus-workspace purple || niri msg action focus-workspace 64 && niri msg action set-workspace-name purple"];};
+      "Mod+1" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"web\")' && niri msg action focus-workspace web || niri msg action focus-workspace 64 && niri msg action set-workspace-name web"];};
+      "Mod+2" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"comm\")' && niri msg action focus-workspace comm || niri msg action focus-workspace 64 && niri msg action set-workspace-name comm"];};
+      "Mod+3" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"personal\")' && niri msg action focus-workspace personal || niri msg action focus-workspace 64 && niri msg action set-workspace-name personal"];};
+      "Mod+4" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"square\")' && niri msg action focus-workspace square || niri msg action focus-workspace 64 && niri msg action set-workspace-name square"];};
+      "Mod+5" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"triangle\")' && niri msg action focus-workspace triangle || niri msg action focus-workspace 64 && niri msg action set-workspace-name triangle"];};
+      "Mod+6" = lib.mkForce {spawn = ["fish" "-c" "niri msg -j workspaces | jq -er '.[]|select(.name==\"hexagon\")' && niri msg action focus-workspace hexagon || niri msg action focus-workspace 64 && niri msg action set-workspace-name hexagon"];};
     };
 
     programs.waybar = {
@@ -165,7 +165,12 @@ _: {
           "niri/workspaces" = {
             format = "<span weight='1000'>{icon}</span>";
             format-icons = {
-              active = "󰄯";
+              web = "󰚡";
+              comm = "󰍥";
+              personal = "󰛊";
+              square = "󰝣";
+              triangle = "󰔷";
+              hexagon = "󰋙";
               default = "󰄰";
             };
             on-scroll-down = "niri msg action focus-workspace-down";
@@ -244,36 +249,30 @@ _: {
             color: inherit; /* needed for some reason */
             padding: 0.5em;
         }
-
-        #workspaces button.visible {
+        #workspaces button label {
+            min-width: 1em;
         }
+        #workspaces button#niri-workspace-web {
+            padding: 5px;
+        }
+        #workspaces button#niri-workspace-web label {
+            font-size: 14px;
+        }
+
         #workspaces button:hover {
             background-color: #${config.colors.background};
         }
-        #workspaces button.focused {
+        #workspaces button.active {
+            background-color: #${config.colors.light_bg};
         }
         #workspaces button.urgent {
+            background-color: #${config.colors.red};
+        }
+        #workspaces button.urgent label {
+            color: #${config.colors.background};
         }
         #workspaces button.empty {
             color: #${config.colors.bright-black};
-        }
-        #workspaces button#niri-workspace-red {
-            color: #${config.colors.red};
-        }
-        #workspaces button#niri-workspace-green {
-            color: #${config.colors.green};
-        }
-        #workspaces button#niri-workspace-blue {
-            color: #${config.colors.blue};
-        }
-        #workspaces button#niri-workspace-orange {
-            color: #${config.colors.orange};
-        }
-        #workspaces button#niri-workspace-purple {
-            color: #${config.colors.purple};
-        }
-        #workspaces button#niri-workspace-yellow {
-            color: #${config.colors.yellow};
         }
 
         /* darker tooltips */
