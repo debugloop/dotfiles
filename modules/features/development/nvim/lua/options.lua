@@ -66,7 +66,7 @@ vim.o.smartcase = true -- search case-sensitive when capital letters are searche
 
 -- ui
 vim.o.cmdheight = 0 -- more space on the bottom
-vim.o.laststatus = 3 -- global statusline
+vim.o.laststatus = 2 -- statusline per window
 vim.o.showmode = false -- less data in invisible cmd area
 vim.o.signcolumn = "yes" -- always show signcolumn (less flicker)
 
