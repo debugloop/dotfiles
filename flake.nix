@@ -88,13 +88,6 @@
       };
     };
 
-    microvm = {
-      url = "github:microvm-nix/microvm.nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-
     git-hooks-nix = {
       url = "github:cachix/git-hooks.nix";
       inputs = {

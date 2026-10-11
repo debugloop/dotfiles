@@ -14,9 +14,7 @@
     config,
     inputs,
     ...
-  }: let
-    homeDir = config.users.users.${config.mainUser}.home;
-  in {
+  }: {
     imports =
       (with inputs.self.modules.nixos; [
         profile_base
@@ -43,15 +41,6 @@
       storagebox = import ../../features/storage/storagebox/_simmons.nix;
     };
     system.stateVersion = "26.05";
-
-    codingVmsExternalInterface = "wlp2s0";
-
-    codingVms = [
-      {
-        name = "codingvm";
-        workspace = "${homeDir}/microvm/coding";
-      }
-    ];
 
     programs = {
       gamemode.enable = true;

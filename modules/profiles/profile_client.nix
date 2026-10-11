@@ -19,7 +19,6 @@ _: {
       scanning
       udev
       usb_wake
-      microvm
       mullvad
       networkmanager
       niri
