@@ -1,44 +1,56 @@
+# DO-NOT-EDIT. This file was auto-generated using github:denful/flake-file.
+# Use `nix run .#write-flake` to regenerate it.
 {
   description = "debugloop/dotfiles";
 
+  outputs = inputs:
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
+      imports = import ./lib/import-tree.nix ./modules;
+    };
+
   inputs = {
-    nixpkgs = {
-      url = "github:nixos/nixpkgs/nixos-unstable";
-    };
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs = {
-        nixpkgs-lib.follows = "nixpkgs";
-      };
-    };
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-    nix-index-database = {
-      url = "github:Mic92/nix-index-database";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
     agenix = {
       url = "github:ryantm/agenix";
       inputs = {
-        nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
+        nixpkgs.follows = "nixpkgs";
       };
     };
     agenix-rekey = {
       url = "github:oddlama/agenix-rekey";
       inputs = {
-        nixpkgs.follows = "nixpkgs";
         flake-compat.follows = "git-hooks-nix/flake-compat";
         flake-parts.follows = "flake-parts";
-        treefmt-nix.follows = "treefmt-nix";
+        nixpkgs.follows = "nixpkgs";
         pre-commit-hooks.follows = "git-hooks-nix";
+        treefmt-nix.follows = "treefmt-nix";
       };
+    };
+    dash0-flake = {
+      url = "path:/home/danieln/code/dash0-flake";
+      inputs = {
+        agenix.follows = "agenix";
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+        treefmt-nix.follows = "treefmt-nix";
+      };
+    };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    flake-file = {url = "github:denful/flake-file";};
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    git-hooks-nix = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     impermanence = {
       url = "github:nix-community/impermanence";
@@ -47,17 +59,6 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-
-    dash0-flake = {
-      url = "path:/home/danieln/code/dash0-flake";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        agenix.follows = "agenix";
-        flake-parts.follows = "flake-parts";
-        treefmt-nix.follows = "treefmt-nix";
-      };
-    };
-
     niri-autoselect-portal = {
       url = "git+https://codeberg.org/debugloop/niri-autoselect-portal.git";
       inputs = {
@@ -65,41 +66,21 @@
         pre-commit-hooks.follows = "git-hooks-nix";
       };
     };
-
+    nix-index-database = {
+      url = "github:Mic92/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixpkgs = {url = "github:nixos/nixpkgs/nixos-unstable";};
     terranix = {
       url = "github:terranix/terranix";
       inputs = {
-        nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
-      };
-    };
-
-    disko = {
-      url = "github:nix-community/disko";
-      inputs = {
         nixpkgs.follows = "nixpkgs";
       };
     };
-
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-
-    git-hooks-nix = {
-      url = "github:cachix/git-hooks.nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-
-  outputs = inputs:
-    inputs.flake-parts.lib.mkFlake {inherit inputs;} ({...}: {
-      imports = import ./lib/import-tree.nix ./modules;
-
-      systems = ["x86_64-linux"];
-    });
 }

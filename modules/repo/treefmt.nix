@@ -1,4 +1,9 @@
 {inputs, ...}: {
+  flake-file.inputs = {
+    treefmt-nix.url = "github:numtide/treefmt-nix";
+    git-hooks-nix.url = "github:cachix/git-hooks.nix";
+  };
+
   imports = [inputs.treefmt-nix.flakeModule inputs.git-hooks-nix.flakeModule];
 
   perSystem = {

@@ -1,4 +1,9 @@
 _: {
+  flake-file.inputs.niri-autoselect-portal = {
+    url = "git+https://codeberg.org/debugloop/niri-autoselect-portal.git";
+    inputs.pre-commit-hooks.follows = "git-hooks-nix";
+  };
+
   flake.modules.nixos.niri = {
     config,
     pkgs,

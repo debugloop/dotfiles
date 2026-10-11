@@ -21,6 +21,7 @@ steps:
     image: bash
     commands:
       - nix flake update
+      - nix run .#write-flake
       - echo $(git status --porcelain)
       - test -n "$(git status --porcelain)" || exit 0
       - git commit -am "update flake inputs"

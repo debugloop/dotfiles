@@ -3,6 +3,8 @@
   inputs,
   ...
 }: {
+  flake-file.inputs.dash0-flake.url = "path:/home/danieln/code/dash0-flake";
+
   flake = {
     diskoConfigurations.delos = import ./_disko.nix {
       pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;

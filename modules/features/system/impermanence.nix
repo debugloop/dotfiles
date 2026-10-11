@@ -1,4 +1,6 @@
 _: {
+  flake-file.inputs.impermanence.url = "github:nix-community/impermanence";
+
   flake.modules.nixos.impermanence = {
     config,
     inputs,

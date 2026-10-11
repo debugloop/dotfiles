@@ -4,6 +4,8 @@
     flake = inputs.self;
   };
 in {
+  flake-file.inputs.terranix.url = "github:terranix/terranix";
+
   imports = [inputs.terranix.flakeModule inputs.git-hooks-nix.flakeModule];
 
   perSystem = {pkgs, ...}: let
