@@ -82,6 +82,8 @@
 
       disko.devices = inputs.self.diskoConfigurations.roshar.disko.devices;
 
+      age.rekey.hostPubkey = ../../../keys/hosts/roshar.pub;
+
       nixpkgs.hostPlatform = "x86_64-linux";
       hardware.enableRedistributableFirmware = false;
 

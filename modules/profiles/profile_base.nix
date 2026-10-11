@@ -3,6 +3,7 @@ _: {
     imports = with inputs.self.modules.nixos; [
       home_manager
       agenix
+      agenix_rekey
       coretools
       fish
       nix

@@ -1,7 +1,7 @@
 {inputs, ...}: {
   flake.modules.nixos.substituters = {config, ...}: {
     age.secrets.nix-ci-netrc = {
-      file = inputs.self + "/secrets/nix-ci-netrc.age";
+      rekeyFile = inputs.self + "/secrets/nix-ci-netrc.age";
       owner = config.mainUser;
       mode = "0400";
     };

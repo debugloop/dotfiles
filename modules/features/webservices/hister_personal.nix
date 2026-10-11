@@ -18,7 +18,7 @@ _: {
     };
 
     age.secrets.hister = {
-      file = inputs.self + "/secrets/hister.age";
+      rekeyFile = inputs.self + "/secrets/hister.age";
       owner = config.services.hister.user;
       group = config.services.hister.group;
       mode = "0400";

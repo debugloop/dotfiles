@@ -38,7 +38,7 @@ _: {
         FLAKE = config.dotfiles.root;
       };
       packages = with pkgs; [
-        inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
+        inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.agenix
         age
         alejandra
         nix-tree

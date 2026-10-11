@@ -16,7 +16,7 @@ _: {
       psmisc
       usbutils
 
-      inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
+      inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.agenix
 
       efibootmgr
       xfsprogs

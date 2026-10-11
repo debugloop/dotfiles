@@ -23,6 +23,40 @@
         "type": "github"
       }
     },
+    "agenix-rekey": {
+      "inputs": {
+        "devshell": "devshell",
+        "flake-compat": [
+          "git-hooks-nix",
+          "flake-compat"
+        ],
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pre-commit-hooks": [
+          "git-hooks-nix"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791547681,
+        "narHash": "sha256-UdHmeDLs0FyyJzkUZs9VEANFOt+3FZNT39Vyyoj4h/g=",
+        "owner": "oddlama",
+        "repo": "agenix-rekey",
+        "rev": "87e5d5f2ca5de294eb5386c2773b94d58ec9773b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oddlama",
+        "repo": "agenix-rekey",
+        "type": "github"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -87,6 +121,27 @@
       "original": {
         "path": "/home/danieln/code/dash0-flake",
         "type": "path"
+      }
+    },
+    "devshell": {
+      "inputs": {
+        "nixpkgs": [
+          "agenix-rekey",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1728330715,
+        "narHash": "sha256-xRJ2nPOXb//u1jaBnDP56M7v5ldavjbtR6lfGqSvcKg=",
+        "owner": "numtide",
+        "repo": "devshell",
+        "rev": "dd6b80932022cea34a019e2bb32f6fa9e494dfef",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "devshell",
+        "type": "github"
       }
     },
     "disko": {
@@ -486,6 +541,7 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "agenix-rekey": "agenix-rekey",
         "dash0-flake": "dash0-flake",
         "disko": "disko",
         "flake-parts": "flake-parts",

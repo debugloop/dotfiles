@@ -7,7 +7,7 @@ _: {
     imports = [inputs.self.modules.nixos.tailscale];
 
     services.tailscale = {
-      authKeyFile = config.age.secrets.tailscaleAuthkey.path;
+      authKeyFile = config.age.secrets.tailscale_auth_key.path;
       authKeyParameters = {
         preauthorized = true;
         ephemeral = false;
@@ -17,6 +17,6 @@ _: {
 
     networking.firewall.trustedInterfaces = ["tailscale0"];
 
-    age.secrets.tailscaleAuthkey.file = inputs.self + "/secrets/tailscale.age";
+    age.secrets.tailscale_auth_key.rekeyFile = inputs.self + "/secrets/tailscale_auth_key.age";
   };
 }

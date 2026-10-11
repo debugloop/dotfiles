@@ -54,7 +54,7 @@ _: {
     };
 
     age.secrets.grafana = {
-      file = inputs.self + "/secrets/grafana.age";
+      rekeyFile = inputs.self + "/secrets/grafana.age";
       mode = "770";
       owner = "grafana";
       group = "grafana";

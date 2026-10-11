@@ -14,7 +14,7 @@ _: {
     config = {
       mainUser = "danieln";
 
-      age.secrets.login_password_hash.file = inputs.self + "/secrets/login_password_hash.age";
+      age.secrets.login_password_hash.rekeyFile = inputs.self + "/secrets/login_password_hash.age";
 
       users = {
         mutableUsers = false;

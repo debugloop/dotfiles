@@ -22,9 +22,17 @@
         exit 1
       fi
 
+      echo "Checking deployment ciphertext for $HOST."
+      if ! nix eval --raw --no-write-lock-file \
+        --option allow-import-from-derivation false \
+        "${inputs.self}#nixosConfigurations.$HOST.config.system.build.toplevel.drvPath" > /dev/null; then
+        echo "Run 'agenix rekey' and add secrets/rekeyed/$HOST before installation." >&2
+        exit 1
+      fi
+
       # Prepare extra-files directory with SSH host keys
       EXTRA_DIR=$(mktemp -d)
-      trap 'rm -rf "$EXTRA_DIR"; if [[ "$INSTALL_OK" -eq 1 ]]; then rm -f "$PRIVKEY"; echo "Deleted private key: $PRIVKEY"; echo "Reminder: run sudo agenix -r to reencrypt with the new host key."; fi' EXIT
+      trap 'rm -rf "$EXTRA_DIR"; if [[ "$INSTALL_OK" -eq 1 ]]; then rm -f "$PRIVKEY"; echo "Deleted private key: $PRIVKEY"; fi' EXIT
       mkdir -p "$EXTRA_DIR/nix/persist/etc/ssh"
       cp "$PRIVKEY" "$EXTRA_DIR/nix/persist/etc/ssh/ssh_host_ed25519_key"
       cp "$PUBKEY" "$EXTRA_DIR/nix/persist/etc/ssh/ssh_host_ed25519_key.pub"

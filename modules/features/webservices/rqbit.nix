@@ -7,7 +7,7 @@ _: {
   }: let
     homeDir = config.users.users.${config.mainUser}.home;
   in {
-    age.secrets.mullvad-conf.file = inputs.self + "/secrets/mullvad.conf.age";
+    age.secrets.mullvad-conf.rekeyFile = inputs.self + "/secrets/mullvad.conf.age";
     networking.wg-quick.interfaces.mullvad.configFile = config.age.secrets.mullvad-conf.path;
 
     nixpkgs.overlays = [

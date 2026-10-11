@@ -28,6 +28,8 @@
 
     networking.hostName = "simmons";
 
+    age.rekey.hostPubkey = ../../../keys/hosts/simmons.pub;
+
     boot.initrd.systemd.fido2.enable = true;
     boot.initrd.luks.devices.crypt.crypttabExtraOpts = [
       "fido2-device=auto"

@@ -19,6 +19,14 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    agenix-rekey = {
+      url = "github:oddlama/agenix-rekey";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-compat.follows = "git-hooks-nix/flake-compat";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.pre-commit-hooks.follows = "git-hooks-nix";
+    };
     impermanence.url = "github:nix-community/impermanence";
 
     dash0-flake = {

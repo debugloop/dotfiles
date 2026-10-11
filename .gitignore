@@ -7,5 +7,10 @@ __pycache__/
 .pre-commit-config.yaml
 secrets/*
 !secrets/*.age
+!secrets/rekeyed/
+secrets/rekeyed/*
+!secrets/rekeyed/*/
+secrets/rekeyed/*/*
+!secrets/rekeyed/*/*.age
 keys/hosts/*
 !keys/hosts/*.pub

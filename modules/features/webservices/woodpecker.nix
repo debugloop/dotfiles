@@ -41,7 +41,7 @@ _: {
     # NOTE: Required by the .#update script specifically for inline sed replace.
     systemd.services.woodpecker-agent-local.serviceConfig.SystemCallFilter = ["@chown"];
 
-    age.secrets.woodpecker.file = inputs.self + "/secrets/woodpecker.age";
+    age.secrets.woodpecker.rekeyFile = inputs.self + "/secrets/woodpecker.age";
 
     # TODO: This blocks startup, so we run without state for now.
     # environment.persistence."/nix/persist".directories = [

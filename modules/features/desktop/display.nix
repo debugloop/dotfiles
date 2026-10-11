@@ -1,7 +1,7 @@
 {inputs, ...}: {
   flake.modules.nixos.display = {config, ...}: {
     age.secrets.wall = {
-      file = inputs.self + "/secrets/wall.age";
+      rekeyFile = inputs.self + "/secrets/wall.age";
       mode = "0444";
     };
     home-manager.users.${config.mainUser}.imports = [inputs.self.modules.homeManager.display];

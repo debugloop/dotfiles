@@ -60,7 +60,7 @@ _: {
       ];
 
       age.secrets.restic_password = {
-        file = inputs.self + "/secrets/restic_password.age";
+        rekeyFile = inputs.self + "/secrets/restic_password.age";
         owner = config.mainUser;
       };
 
