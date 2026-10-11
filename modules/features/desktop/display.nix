@@ -109,8 +109,8 @@
                 exec = [setWallpaperCommand];
                 outputs = [
                   {
-                    criteria = "LG Electronics LG ULTRAWIDE 208NTKF4V093";
-                    mode = "3440x1440@60Hz";
+                    criteria = "LG Electronics LG ULTRAWIDE 604NTQDKH476";
+                    mode = "5120x1440@143.979Hz";
                     position = "0,0";
                     status = "enable";
                   }

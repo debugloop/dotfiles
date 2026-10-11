@@ -14,6 +14,7 @@
     "Mod+F".fullscreen-window = {};
     "Mod+Ctrl+F".toggle-windowed-fullscreen = {};
     "Mod+C".center-column = {};
+    "Mod+Ctrl+C".center-visible-columns = {};
     "Mod+W".toggle-column-tabbed-display = {};
     "Mod+V".toggle-window-floating = {};
     "Mod+Shift+V".switch-focus-between-floating-and-tiling = {};
@@ -73,6 +74,8 @@
     "Mod+Down".focus-window-or-workspace-down = {};
     "Mod+Up".focus-window-or-workspace-up = {};
     "Mod+Right".focus-column-right = {};
+    "Mod+Home".focus-column-first = {};
+    "Mod+End".focus-column-last = {};
 
     # small move
     "Mod+Shift+H".consume-or-expel-window-left = {};
@@ -85,6 +88,8 @@
     "Mod+Shift+Up".spawn = ["fish" "-c" "niri msg -j windows | jq -er '.[]|select(.is_focused==true)|.is_floating' && niri msg action move-window-to-workspace-up || niri msg action move-window-up-or-to-workspace-up"];
 
     # large move
+    "Mod+Ctrl+Home".move-column-to-first = {};
+    "Mod+Ctrl+End".move-column-to-last = {};
     # "Mod+Ctrl+H".move-column-left-or-to-monitor-left = {};
     "Mod+Ctrl+J".move-workspace-down = {};
     "Mod+Ctrl+K".move-workspace-up = {};

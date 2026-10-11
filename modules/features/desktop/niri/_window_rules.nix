@@ -32,7 +32,7 @@
           match._props.app-id = "kitty";
         }
         {
-          default-column-width.proportion = 0.3;
+          default-column-width.proportion = 0.2;
         }
       ];
     }

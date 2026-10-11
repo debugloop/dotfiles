@@ -151,18 +151,22 @@ _: {
             width = 3;
           };
           center-focused-column = "never";
-          default-column-width.proportion = 0.4;
+          default-column-width.proportion = 0.25;
           empty-workspace-above-first = {};
           focus-ring.off = {};
           gaps = 0;
           insert-hint.color = "#${config.colors.green}88";
           preset-column-widths._children = [
+            {proportion = 0.2;}
+            {proportion = 0.25;}
             {proportion = 0.3;}
+            {proportion = 0.35;}
             {proportion = 0.4;}
+            {proportion = 0.45;}
             {proportion = 0.5;}
             {proportion = 0.6;}
             {proportion = 0.7;}
-            {proportion = 1.0;}
+            {proportion = 0.8;}
           ];
           preset-window-heights._children = [
             {proportion = 0.333333;}
