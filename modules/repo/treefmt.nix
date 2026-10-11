@@ -1,7 +1,17 @@
 {inputs, ...}: {
   imports = [inputs.treefmt-nix.flakeModule inputs.git-hooks-nix.flakeModule];
 
-  perSystem = _: {
+  perSystem = {
+    config,
+    lib,
+    ...
+  }: {
+    apps.fmt = {
+      type = "app";
+      program = lib.getExe config.formatter;
+      meta.description = "Format the repository";
+    };
+
     treefmt = {
       projectRootFile = "flake.nix";
       programs = {

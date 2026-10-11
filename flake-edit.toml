@@ -1,0 +1,6 @@
+[follow]
+transitive_min = 0
+
+[follow.aliases]
+nixpkgs = ["nixpkgs-lib"]
+git-hooks-nix = ["pre-commit-hooks"]
