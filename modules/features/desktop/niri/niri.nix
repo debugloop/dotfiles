@@ -20,18 +20,8 @@ _: {
           postPatch =
             (old.postPatch or "")
             + ''
-              substituteInPlace src/layout/scrolling.rs \
-                --replace-fail 'if !self.columns.is_empty() && !self.view_offset.is_gesture() {' \
-                  'if !self.columns.is_empty() && !self.view_offset.is_gesture() && !self.columns[self.active_column_idx].sizing_mode().is_normal() {' \
-                --replace-fail 'self.animate_view_offset_to_column_with_config(None, col_idx, None, config);' \
-                  'if !self.columns[col_idx].sizing_mode().is_normal() { self.animate_view_offset_to_column_with_config(None, col_idx, None, config); }' \
-                --replace-fail 'gesture.tracker.velocity() * norm_factor' '0.' \
-                --replace-fail 'gesture.tracker.projected_end_pos() * norm_factor' 'pos'
-              sed -i '/        \/\/ Compute the snapping points\./,/        self.animate_view_offset_to_column(None, new_col_idx, None);/c\
-                      let midpoint = self.column_x(self.active_column_idx) + self.view_size.w / 2.;\
-                      let end = self.column_x(self.columns.len() - 1) + self.columns.last().unwrap().width();\
-                      let target_view_offset = target_view_offset.clamp(-midpoint, end - midpoint);\
-                      self.view_offset = ViewOffset::Animation(Animation::new(self.clock.clone(), current_view_offset, target_view_offset, velocity, self.options.animations.horizontal_view_movement.0));' \
+              sed -i '/        \/\/ We do not handle cancelling,/,/        self.animate_view_offset_to_column(None, new_col_idx, None);/c\
+                      self.view_offset = ViewOffset::Static(self.view_offset.current());' \
                 src/layout/scrolling.rs
             '';
         });
